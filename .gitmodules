@@ -1,0 +1,6 @@
+[submodule "refer/skills"]
+	path = refer/skills
+	url = git@github.com:mattpocock/skills.git
+[submodule "refer/superpowers"]
+	path = refer/superpowers
+	url = git@github.com:obra/superpowers.git
