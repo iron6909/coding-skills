@@ -1,47 +1,46 @@
 ---
 name: execute
-description: Implement an approved plan, review each task, commit verified changes, and report evidence.
+description: Implement an approved plan or a small, clear change, review each task, commit checked changes, and report evidence.
 disable-model-invocation: true
 ---
 
 # Execute
 
-Implement the approved plan in `.cartoons/<semantic-name>/plan.md`.
+Use one of two execution briefs:
 
-Read the linked `design.md` first. The design defines the requested behavior. The plan defines the implementation order. Do not add product scope without updating the design and plan.
+- **Planned work:** read `.cartoons/<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines task order.
+- **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No design or plan file is required.
+
+<!-- ponytail: Keep a small change in the conversation. Use clarify and plan when it needs scope decisions or several tasks. -->
+
+Do not treat incomplete planned work as a small change. Do not add product scope without approval.
 
 ## Preconditions
 
 Before changing code:
 
 - read applicable `AGENTS.md` files
-- read the complete design
-- read the complete plan
+- read the execution brief
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
-- confirm the plan has no unresolved product decisions
+- confirm the brief has no unresolved product decisions
+- record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-Do not implement an unapproved draft. If the design or plan is missing, stop and report the missing path.
+Do not implement an unapproved draft. For planned work, stop and report a missing design or plan path.
 
-## Choose the execution mode
+Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
 
-Use the smallest mode that keeps the work clear:
+## Execution ownership
 
-- **Inline** for one small task or tightly coupled tasks.
-- **Sequential worker** for several tasks that would fill the main context.
-- **Parallel workers** only for independent tasks in isolated workspaces with no shared files or interfaces.
+The main process owns all code, test, design, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
 
-Do not dispatch workers only for short work. Never run two workers against the same workspace at the same time.
+<!-- ponytail: Use one writer. Add isolated writing workers only after measuring a serial bottleneck and defining how to integrate their changes. -->
 
-A worker receives only its task brief, the design and plan paths, applicable rules, earlier task interfaces, and the required report path. Do not paste the full conversation or large source files into the worker prompt.
-
-Workers may edit code and tests only within their assigned scope. They must not change the design or plan, change unrelated files, dispatch other agents, publish changes, or hide failing checks. After a worker returns, inspect the diff and run verification in the main process.
-
-For large tasks, use one worker per clear task boundary. Keep the main context for coordination, decisions, integration, and evidence.
+Agents report findings and file paths. They must not edit files, commit, create worktrees, publish changes, or dispatch other agents.
 
 ## Task loop
 
-Work through the plan in dependency order. Do not skip a task because a later task appears to include it.
+Work through planned tasks in dependency order. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
 
 For each task:
 
@@ -52,27 +51,42 @@ For each task:
 5. Run the focused test and confirm the expected failure when adding new behavior.
 6. Implement the smallest change that passes the test.
 7. Run the focused test again.
-8. Run the affected test, lint, build, or type-check command named by the plan.
+8. Run the affected test, lint, build, or type-check command named by the brief.
 9. Inspect the diff for scope creep, accidental files, and user data loss.
 10. Run the task review below.
 11. Fix every valid review finding and repeat the affected checks.
 12. Commit the task only after review passes and checks are fresh.
 13. Record the task result before starting the next task.
 
-A failing check is not complete. Find the cause, fix the code or record a plan ruling, then run the check again. Do not weaken a test to match incorrect behavior.
+A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the plan is wrong, stop only when every path forward requires a product decision. Otherwise choose the smallest change that still follows the design, record the ruling in the execution report, and continue.
+If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within the approved scope, record the ruling, and continue.
+
+## Execution record and resume
+
+For planned work, append `## Execution record` to the existing `plan.md`. This is the execution report. Record:
+
+- the original review base and initial user changes
+- each task's status: pending, in progress, blocked, or done
+- each task's commit identifier, review result, and review-fix round count
+- check commands, exit status, and failures with exact error text
+- plan deviations, their reasons and approval when required, deferred findings, and the next action
+- the final review result and any final review fix commit
+
+Update the record after each task and before stopping for a failure or decision. For a small change, keep the same facts in the conversation. Do not create `.cartoons` files for it.
+
+On resume, read the brief and record first. Compare recorded commits and task state with the working tree and Git history. Keep the original review base. Resolve conflicts before editing. Continue from the first unfinished task, not task 1. Do not trust old check results for completion. Run the required checks again. If a small change loses its conversation record, reconstruct the boundary from Git and confirm unknown facts with the user before editing.
 
 ## Task review
 
 Review is an execution mechanism. Do not wait for the user to invoke a separate top-level review skill.
 
-After each small task, inspect the complete task diff against the design, plan, and repository rules. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
+After each small task, inspect the complete task diff against the brief and repository rules. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
 
 Check:
 
-- the task implements the design and no extra scope
-- changed files match the plan
+- the task implements the brief and no extra scope
+- changed files match the brief
 - interfaces, error paths, boundaries, and compatibility behavior are correct
 - tests assert observable behavior and cover the acceptance conditions
 - no security, accessibility, data-loss, or error-handling regression exists
@@ -87,8 +101,8 @@ If the review finds a blocking issue, fix it in the task scope and rerun the foc
 
 Allow at most **5 task review-fix rounds** for one task. One round contains one fix pass, fresh checks, and one review of the changed scope.
 
-- Rounds 1-3: continue with the current executor or reviewer when possible.
-- Rounds 4-5: use a fresh executor or reviewer with stronger reasoning when available.
+- Rounds 1-3: continue with the current reviewer when possible.
+- Rounds 4-5: use a fresh read-only reviewer with stronger reasoning when available.
 - Do not start round 6.
 
 At round 5, classify every open finding:
@@ -110,14 +124,14 @@ After the review passes and fresh checks succeed:
 
 Do not push or publish. The user controls integration and release.
 
-## Final whole-branch review
+## Final whole-change review
 
-After every planned task has passed task review and has a commit, review the complete branch once.
+After every task has passed task review and has a commit, review this run's complete change once. Use `git diff <review-base> HEAD` plus any uncommitted task changes. Exclude recorded initial user changes. Do not use the branch fork point or review only the last task. Give the reviewer the original base, initial user changes, task commits, and outstanding task diff.
 
-1. Run the full test, lint, build, and type-check commands from the plan.
-2. Use a fresh read-only reviewer for the complete branch. The reviewer checks the design, plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
+1. Run the full test, lint, build, and type-check commands from the brief.
+2. Use a fresh read-only reviewer for the complete change. The reviewer checks the brief, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
 3. Classify findings as **Blocking**, **Important**, or **Minor**.
-4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the plan.
+4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the brief.
 5. Run the affected checks and the full suite again after the fix group.
 6. Perform exactly one scoped re-review of the final review fix group.
 7. If Blocking or Important findings remain, do not start another fix wave. Report each finding, its impact, and the decision needed from the user. Do not publish.
@@ -139,16 +153,16 @@ For configuration, documentation, or generated files, use the strongest availabl
 
 Before claiming completion:
 
-- run every final command in the plan
+- run every final command in the brief
 - read the command output and exit status
 - check the full diff and status
 - confirm each acceptance condition
 - confirm every task passed review and has a commit
-- confirm the final whole-branch review passed and its fixes have a commit
+- confirm the final whole-change review passed and its fixes have a commit
 - confirm no task exceeded 5 review-fix rounds
 - report failures by command and exact error
 
-Do not claim a test, build, review, or fix passed from an earlier run or a worker report. Fresh evidence is required.
+Do not claim a test, build, review, or fix passed from an earlier run or an agent report. Fresh evidence is required.
 
 ## Context and failure handling
 
@@ -156,12 +170,7 @@ Keep reports short. Pass findings through file paths and concise summaries, not 
 
 When output is large, save it to a temporary report and read only the relevant tail or failure section. Preserve exact error text needed to fix the issue.
 
-If a worker fails:
-
-- inspect its report and working-tree diff
-- keep useful changes only when they match the plan
-- fix the issue in the current process or reassign the narrow task
-- never assume the worker's success claim is proof
+If an agent fails, inspect any partial report. Continue in the main process or reassign the narrow read-only task. Check all findings against repository evidence.
 
 Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, publish, or delete a worktree unless the user explicitly asks.
 
@@ -170,7 +179,7 @@ Do not revert unrelated user changes. Do not run destructive Git commands. Do no
 After all tasks pass, report:
 
 ```text
-Implemented: .cartoons/<semantic-name>/plan.md
+Implemented: <plan path or small-change request>
 Tasks: <task count>, each reviewed and committed
 Final review: <passed, with review-fix commit if needed>
 Checks: <commands and results>
