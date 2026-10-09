@@ -15,7 +15,13 @@ Choose the smallest suitable top-level skill for the user's current request, the
 - `plan`: turn an approved design into small, testable tasks.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
 - `debug`: reproduce, isolate, diagnose, fix, review, commit, and regression-test a failure.
+- `review`: independently review another branch, a PR, or historical commits.
+- `wayfinder`: break work that is too large for one session into an initiative of features.
+- `prototype`: build a throwaway prototype to answer a design question.
+- `research`: investigate unfamiliar territory and write a cited report.
 - `guide`: route only. Do not select it again during handoff.
+
+`guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
 
 The underlying mechanisms, such as TDD, worktrees, and subagents, are not routing targets.
 
@@ -25,15 +31,16 @@ Use the first matching rule:
 
 1. If the user explicitly names a top-level skill, use it.
 2. If the user reports a failure, error, broken behavior, or regression, use `debug`.
-3. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, use `init`.
-4. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
-5. If the user asks to prototype, spike, or build a throwaway proof-of-concept (signals: "prototype", "spike", "quick proof", "see if X works"), use `prototype`.
-6. If the user asks to research, investigate, or explore unfamiliar territory without writing code (signals: "research", "investigate", "explore", "how does X work", "what are the options for Y"), use `research`.
-7. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
-8. If an approved plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md`, use `execute`.
-9. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
-10. If the approved work is clear and ready for code changes, use `execute`.
-11. If no rule matches, use `clarify` instead of guessing.
+3. If the user asks to review a branch, PR, or past commits that are not part of the current `execute` run (signals: "review this branch", "review PR", "audit these commits"), use `review`.
+4. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, use `init`.
+5. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
+6. If the user asks to prototype, spike, or build a throwaway proof-of-concept (signals: "prototype", "spike", "quick proof", "see if X works"), use `prototype`.
+7. If the user asks to research, investigate, or explore unfamiliar territory without writing code (signals: "research", "investigate", "explore", "how does X work", "what are the options for Y"), use `research`.
+8. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
+9. If an approved plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md`, use `execute`.
+10. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
+11. If the approved work is clear and ready for code changes, use `execute`.
+12. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `init`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its brief.
 

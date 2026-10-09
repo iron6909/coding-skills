@@ -1,7 +1,7 @@
 ---
 name: prototype
 description: Build a throwaway prototype to answer a design question. Use when validating feasibility, comparing approaches, or exploring uncertain behavior before committing to a design. NOT for production code.
-disable-model-invocation: false
+disable-model-invocation: true
 ---
 
 # Prototype

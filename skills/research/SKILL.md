@@ -1,7 +1,7 @@
 ---
 name: research
 description: Investigate a technical question against primary sources and capture findings as a cited Markdown file. Use for library comparison, best practice research, API exploration, or design decision support. NOT for quick lookups.
-disable-model-invocation: false
+disable-model-invocation: true
 ---
 
 # Research
