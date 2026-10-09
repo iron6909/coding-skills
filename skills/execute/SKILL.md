@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Implement an approved plan or a small, clear change, review each step, commit checked changes, and report evidence.
+description: Implement an approved plan or a small, clear change, review each task, commit checked changes, and report evidence.
 disable-model-invocation: true
 ---
 

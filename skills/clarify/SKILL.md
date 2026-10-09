@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request, confirm its design, and save the result to .cartoons.
+description: Clarify a development request, confirm its design, and save the approved design to docs/features.
 disable-model-invocation: true
 ---
 

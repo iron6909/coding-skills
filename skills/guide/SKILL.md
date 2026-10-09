@@ -30,7 +30,7 @@ Use the first matching rule:
 5. If the user asks to prototype, spike, or build a throwaway proof-of-concept (signals: "prototype", "spike", "quick proof", "see if X works"), use `prototype`.
 6. If the user asks to research, investigate, or explore unfamiliar territory without writing code (signals: "research", "investigate", "explore", "how does X work", "what are the options for Y"), use `research`.
 7. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
-8. If an approved plan exists in `.cartoons/<semantic-name>/plan.md`, use `execute`.
+8. If an approved plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md`, use `execute`.
 9. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
 10. If the approved work is clear and ready for code changes, use `execute`.
 11. If no rule matches, use `clarify` instead of guessing.

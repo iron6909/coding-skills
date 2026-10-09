@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn an approved design into a small, ordered implementation plan saved in .cartoons.
+description: Turn an approved design into a small, ordered implementation plan saved beside the design in docs/features, with task briefs in .cartoons.
 disable-model-invocation: true
 ---
 
@@ -101,10 +101,10 @@ Do not require a failing test when the repository has no test harness or when th
 
 ## Task briefs
 
-After writing `plan.md`, generate a brief for each task:
+After writing `plan.md`, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the design directory:
 
 ```bash
-DIR=".cartoons/$(basename $(dirname $(realpath docs/features/YYYY-MM-DD-<semantic-name>/design.md)))/impl"
+DIR=".cartoons/YYYY-MM-DD-<semantic-name>/impl"
 mkdir -p "$DIR"
 # Write to $DIR/task-<N>.md
 ```

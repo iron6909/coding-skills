@@ -44,10 +44,9 @@ Look for the originating spec in this order:
 
 1. Commit messages: issue references (`#123`, `Closes #45`)
 2. `docs/features/YYYY-MM-DD-<semantic-name>/design.md` matching branch name or commit scope
-3. `.cartoons/<semantic-name>/design.md` matching branch name
-4. Path the user passed as argument
-5. Spec file under `docs/` matching branch name
-6. Ask the user. If no spec exists, skip the Spec axis
+3. Path the user passed as argument
+4. Another spec file under `docs/` matching branch name
+5. Ask the user. If no spec exists, skip the Spec axis
 
 ## Identify the standards sources
 
@@ -107,7 +106,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 Each fix follows TDD: write test that reproduces finding, confirm RED, fix, confirm GREEN, run full suite.
 
-Write findings to `.cartoons/<semantic-name>/review-<commit7>.md` if the directory exists, or create a standalone `review-<commit7>.md` in repo root.
+Write findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
 
 Record in ledger format:
 
@@ -127,7 +126,7 @@ Do not dispatch a re-review. The tests prove addressed.
 
 ```text
 Review: <fixed-point>...HEAD
-Report: .cartoons/<semantic-name>/review-<commit7>.md
+Report: <path of the review file written above>
 Standards: <N findings, M fixed>
 Spec: <match | N gaps fixed | no spec available>
 Deferred: <N minors>
