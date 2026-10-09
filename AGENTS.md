@@ -53,10 +53,15 @@ All work uses date-prefixed directories:
 ```
 /
 ├── docs/
-│   └── features/                    # Feature designs (permanent)
-│       └── 2025-01-20-feature-name/
-│           ├── design.md            # Approved design
-│           └── plan.md              # Task index
+│   ├── features/                    # Feature designs (permanent)
+│   │   └── 2025-01-20-feature-name/
+│   │       ├── design.md            # Approved design
+│   │       └── plan.md              # Task index
+│   ├── initiatives/                 # Multi-feature initiatives from wayfinder (permanent)
+│   │   └── 2025-01-20-initiative-name/
+│   │       ├── index.md             # Goal, features, dependencies
+│   │       └── feature-1-name.md    # Feature stub
+│   └── adr/                         # Architecture decision records (lazy-created)
 ├── .cartoons/                       # Execution ledgers (temporary, gitignored)
 │   └── 2025-01-20-feature-name/
 │       └── impl/
@@ -83,16 +88,16 @@ Date format: `YYYY-MM-DD-<semantic-name>` (kebab-case, 2-4 words)
 
 ## Key References
 
-Skills bundle reference docs under `skills/init/references/`:
+Each skill is self-contained: `npx skills add` installs skill directories only, so a skill never reads a sibling's files. Reference docs live under the skill that owns them (`skills/<skill>/references/`):
 
-- `domain-modeling.md` — GLOSSARY.md + ADR maintenance
-- `glossary-format.md` — Canonical term format
-- `adr-format.md` — Architecture Decision Record format
-- `tdd.md` — RED-GREEN-REFACTOR discipline
-- `subagent-dispatch.md` — When to use read-only subagents
-- `cartoons-workspace.md` — `.cartoons/` structure rules
-- `file-path-rules.md` — Naming conventions
-- `project-documents.md` — AGENTS.md, GLOSSARY.md, ADR conventions
+| Skill | References |
+|-------|-----------|
+| `init` | `project-documents.md`, `glossary-format.md`*, `subagent-dispatch.md`* |
+| `clarify` | `domain-modeling.md`, `adr-format.md`, `glossary-format.md`*, `subagent-dispatch.md`* |
+| `plan`, `review`, `research` | `subagent-dispatch.md`* |
+| `execute` | `tdd.md` |
+
+\* Shared file. The source is `shared/references/`, which is not installed. After editing it, run `node scripts/sync-references.mjs` to refresh every copy; `--check` fails on drift (run it before committing).
 
 ## Skill Integration Rules
 
@@ -139,10 +144,10 @@ Simplified: removed issue tracker, subagent concurrency, worktree management.
 
 ## Notes for Agents
 
-- All skills are `disable-model-invocation: true` — `guide` routes explicitly.
+- All skills are `disable-model-invocation: true` (user-invoked). `guide` routes requests that name no skill; the user can invoke any skill directly.
 - Small clear changes skip `clarify`/`plan` — route directly to `execute`.
 - `execute` has built-in task + final review — do not call `review` during execution.
 - Large work (multi-module, frontend+backend) routes to `wayfinder` for initiative breakdown.
 - `prototype` and `research` produce findings, not production code.
-- `.cartoons/` is temporary workspace — gitignored, deleted after merge.
-- `docs/features/` is permanent — never delete approved designs.
+- `.cartoons/` holds only `impl/` ledgers and task briefs (and review reports) — temporary, gitignored, deleted after merge.
+- `docs/features/` and `docs/initiatives/` are permanent — never delete approved designs or initiatives.

@@ -73,13 +73,15 @@ graph TD
 ```
 /
 ├── docs/
-│   └── features/                        # 功能设计(永久)
-│       ├── 2025-01-15-user-auth/
-│       │   ├── design.md               # 批准的设计
-│       │   └── plan.md                 # 任务索引
-│       └── 2025-01-20-cart-checkout/
-│           ├── design.md
-│           └── plan.md
+│   ├── features/                        # 功能设计(永久)
+│   │   ├── 2025-01-15-user-auth/
+│   │   │   ├── design.md               # 批准的设计
+│   │   │   └── plan.md                 # 任务索引
+│   │   └── 2025-01-20-cart-checkout/
+│   │       ├── design.md
+│   │       └── plan.md
+│   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出)
+│   └── adr/                             # 架构决策记录(惰性创建)
 ├── .cartoons/                           # 执行账本(临时,不提交)
 │   └── 2025-01-15-user-auth/
 │       └── impl/
@@ -156,14 +158,14 @@ execute 强制:
 → guide 路由到 clarify
 → clarify 问 2-3 个问题(格式?存储?尺寸限制?)
 → 呈现设计,用户批准
-→ 保存 docs/features/2025-01-20-avatar-upload/design.md
-→ 自动转到 plan
+→ 保存 docs/features/2025-01-20-avatar-upload/design.md,停下
+→ 用户确认后调用 plan
 → 拆分为 3 个 task:
   1. 上传 API endpoint
   2. 图片处理和存储
   3. 前端表单集成
-→ 保存 plan.md + impl/task-1.md ~ task-3.md
-→ 自动转到 execute
+→ 保存 plan.md + impl/task-1.md ~ task-3.md,停下
+→ 用户确认后调用 execute
 → 依次完成 3 个 task,每个 TDD + review + commit
 → 完成,报告证据
 ```
@@ -250,9 +252,9 @@ execute 强制:
 
 检查 `guide/SKILL.md` 路由规则。每个技能的 `description` 是触发条件。
 
-### subagent 失败
+### subagent 不可用
 
-检查是否有 `acp_delegate` 工具。subagent 只用于只读调研(researcher/reviewer/oracle)。
+subagent 仅用于只读调研。运行环境没有委派机制时,技能会退化为在主进程内联探索,不影响结果。
 
 ### 术语不一致
 
@@ -265,47 +267,6 @@ execute 强制:
 ### execute 跳过 TDD
 
 检查项目是否有测试工具。`execute/SKILL.md` 强制 RED-GREEN-REFACTOR,但配置/文档文件用最强可用检查。
-
-## 文件路径规则
-
-所有路径保持完整,不省略目录前缀:
-
-- ✅ `src/utils/cart-total.ts:45`
-- ✅ `docs/features/2025-01-20-avatar-upload/design.md`
-- ❌ `cart-total.ts` (无法定位)
-- ❌ `design.md` (模糊)
-
-## 与 AGENTS.md 的关系
-
-- **AGENTS.md** — 项目级事实和规则(栈/命令/约定/禁区),由 init 创建/更新
-- **GLOSSARY.md** — 项目术语表,减少冗余解释
-- **ADRs** — 架构决策记录,重要选择及其原因
-- **`docs/features/`** — 功能设计和计划,永久保留,日期前缀便于查找
-- **`.cartoons/`** — 执行账本,临时产物,不提交到 git
-
-## 何时用 subagent
-
-以下情况派遣 read-only subagent(用 `acp_delegate` + `agent: "researcher"`):
-
-### 触发条件(任一满足)
-
-1. 跨越多个独立模块/包
-2. 需要检查大量文件
-3. 跨技术栈边界(前端 + 后端 + 数据层 + 基础设施)
-4. 主进程会溢出
-
-### 拆分原则
-
-按清晰边界拆分,每个 subagent 窄任务:
-- 模块 + 调用者
-- 测试 + 约定
-- 接口 + 配置
-
-### subagent 约束
-
-- **Read-only** — 不问用户,不做产品决策,不写 `docs/features/`,不编辑代码,不创建分支,不派遣其他 agent
-- **只报告** — 返回边界/文件/行为/约束/测试方法/证据路径/未知项/冲突
-- **主进程拥有所有写操作** — 所有 design/plan/code/commit 由主进程完成
 
 ## 版本和更新
 
