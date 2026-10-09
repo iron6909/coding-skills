@@ -208,7 +208,7 @@ Use this structure and omit empty sections:
 
 ## Decisions
 
-<Confirmed decisions and short reasons.>
+<Confirmed decisions and short reasons. Link any ADR created for a decision, for example `docs/adr/0003-slug.md`.>
 
 ## Constraints
 
@@ -243,6 +243,8 @@ Report:
 
 ```text
 Design saved: docs/features/YYYY-MM-DD-<semantic-name>/design.md
+Glossary: <terms added or changed, or None>
+ADRs: <paths created, or None>
 Next: plan
 ```
 
