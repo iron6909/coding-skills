@@ -37,33 +37,9 @@ Use repository facts. Do not ask the user for facts that tools can find.
 
 Read directly for small changes. Dispatch read-only subagents when the plan needs broad code exploration and retaining all source details in the main context could cause overflow.
 
-Use subagents when one or more conditions apply:
+**When and how to use subagents**: read `../init/references/subagent-dispatch.md` for dispatch rules.
 
-- the design spans several independent modules or packages
-- many callers, tests, interfaces, or configuration files need inspection
-- separate frontend, backend, data, infrastructure, or tooling areas matter
-- the main process would need to retain large file listings or reports
-
-Split work by clear boundary. Give each subagent a narrow task, such as:
-
-- map the affected module, callers, and existing seams
-- inspect related tests and the repository's test commands
-- inspect interfaces, configuration, generated paths, and build constraints
-
-Request only:
-
-- inspected boundary
-- relevant files and symbols
-- current behavior
-- proposed task boundary supported by evidence
-- commands and expected checks
-- dependencies on other areas
-- unknowns and conflicts
-- evidence paths
-
-Subagents must remain read-only. They must not ask the user questions, choose unresolved product behavior, write `.cartoons`, edit code, create branches or worktrees, or dispatch other agents. Do not copy full reports into the main context. Summarize only plan-relevant findings.
-
-The main process owns decomposition and all writes. Keep these categories separate:
+Main process owns decomposition and all writes. Keep these categories separate:
 
 - repository fact
 - design decision
@@ -86,11 +62,11 @@ Follow existing project boundaries. Do not include a refactor only because it lo
 
 If the design covers independent subsystems, split it into separate plans or state the dependency clearly. Each plan should produce a testable result.
 
-## Step design
+## Task design
 
-Make each step the smallest useful unit with its own check. A step may include setup, code, tests, and documentation when they form one deliverable.
+Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
 
-Order steps by dependency:
+Order tasks by dependency:
 
 1. prerequisites and shared interfaces
 2. core behavior
@@ -110,9 +86,9 @@ Each action does one thing and has a checkable result. Use a test-first order wh
 
 Do not require a failing test when the repository has no test harness or when the work is documentation or configuration only. Name the available check instead.
 
-## Step briefs
+## Task briefs
 
-After writing `plan.md`, generate a brief for each step:
+After writing `plan.md`, generate a brief for each task:
 
 ```text
 .cartoons/<semantic-name>/impl/task-<N>.md
@@ -131,9 +107,9 @@ Each brief contains only what that task needs:
 
 ## Steps
 
-- [ ] Step 1: <one action>
+- [ ] 1: <one action>
   - Check: `<command>` → <expected result>
-- [ ] Step 2: <one action>
+- [ ] 2: <one action>
   - Check: `<command>` → <expected result>
 
 ## Files
@@ -174,18 +150,18 @@ Create `.cartoons/<semantic-name>/plan.md` as a lightweight index:
 
 - <important failure mode and the check that covers it>
 
-## Steps
+## Tasks
 
-1. Step 1: <short name> — depends on: None — produces: <interface>
-2. Step 2: <short name> — depends on: Step 1 — produces: <interface>
-3. Step 3: <short name> — depends on: Step 2 — produces: <interface>
+1. Task 1: <short name> — depends on: None — produces: <interface>
+2. Task 2: <short name> — depends on: Task 1 — produces: <interface>
+3. Task 3: <short name> — depends on: Task 2 — produces: <interface>
 
 ## Dependency graph
 
 ```mermaid
 graph TD
-  A[Step 1] --> B[Step 2]
-  B --> C[Step 3]
+  A[Task 1] --> B[Task 2]
+  B --> C[Task 3]
 ```
 
 ## Final verification
@@ -196,20 +172,20 @@ graph TD
 
 Omit empty sections. Use exact names and values supported by repository evidence. Do not invent line numbers.
 
-plan.md is an index. Step details live in `impl/step-N.md` files. Keep plan.md under 100 lines.
+plan.md is an index. Task details live in `impl/task-N.md` files. Keep plan.md under 100 lines.
 
 ## Self-review
 
 Before reporting the plan, check it against the design:
 
-- every design requirement maps to a step or final check
-- every step has one clear deliverable
-- step order respects dependencies
+- every design requirement maps to a task or final check
+- every task has one clear deliverable
+- task order respects dependencies
 - shared interfaces use the same names and types everywhere
 - each acceptance condition has an observable check
 - error, empty, boundary, and compatibility cases are covered when relevant
 - commands work from the repository root
-- no step contains an unresolved product decision
+- no task contains an unresolved product decision
 - no action is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
 
@@ -221,7 +197,7 @@ After saving plan and briefs, report:
 
 ```text
 Plan saved: .cartoons/<semantic-name>/plan.md
-Step briefs: .cartoons/<semantic-name>/impl/step-*.md (<N> steps)
+Task briefs: .cartoons/<semantic-name>/impl/task-*.md (<N> tasks)
 Next: execute
 ```
 

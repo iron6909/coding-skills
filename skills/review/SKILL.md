@@ -1,10 +1,17 @@
 ---
 name: review
-description: Review changes since a fixed point along two axes - Standards (repo coding standards) and Spec (does it match the request). Use when asked to review a branch, PR, or work-in-progress.
+description: Review changes since a fixed point along two axes - Standards (repo coding standards) and Spec (does it match the request). Use when asked to review a branch, PR, or work-in-progress. NOT for self-review during execute (execute has built-in review).
 disable-model-invocation: true
 ---
 
 # Code Review
+
+Independent review of changes on another branch, a PR, or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
+
+Use `review` when:
+- Reviewing someone else's branch or PR
+- Auditing historical commits after the fact
+- User explicitly asks for an independent review
 
 Two-axis review of the diff between HEAD and a fixed point.
 

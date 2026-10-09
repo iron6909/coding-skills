@@ -1,9 +1,3 @@
----
-name: tdd
-description: Test-driven development discipline. Load before code changes in projects with test tools. Use when implementing new behavior or fixing bugs that need regression tests.
-disable-model-invocation: true
----
-
 # Test-Driven Development
 
 Load this discipline before implementation when the project supports tests.

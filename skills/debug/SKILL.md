@@ -61,33 +61,58 @@ Complete this phase before attempting any fix.
 
 ## Phase 4: Implementation
 
-1. **Create a failing test**. Write the simplest possible reproduction. Use the repository's test framework. Confirm the test fails before fixing. Follow the `tdd` skill for the red-green loop.
+### Classify the fix size
+
+**Small fix** (1-2 files, < 20 lines changed, clear boundary):
+- Create failing test
+- Implement fix
+- Run checks
+- Commit directly
+- Do NOT invoke `execute` or `clarify`
+
+**Large fix** (multiple files, interface changes, or unclear scope):
+- Stop Phase 4
+- Create a simplified design (brief note: problem, approach, affected files)
+- Route to `clarify` if design needs approval
+- Route to `plan` if multi-step
+- Route to `execute` to implement
+
+### Small fix workflow
+
+1. **Create a failing test**. Write the simplest possible reproduction. Use the repository's test framework. Confirm the test fails before fixing. Follow red-green loop: failing test → minimal fix → passing test.
 
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 
-3. **Verify the fix**. Run the regression test. Run the original reproduction. Run affected checks. Confirm no other tests broke.
+3. **Verify the fix**. Run the regression test. Run the original reproduction. Run affected checks (test suite, lint, type-check). Confirm no other tests broke.
 
-4. **If the fix fails**:
-   - Count: how many fix attempts?
-   - If < 3: return to Phase 1 with new evidence
-   - If ≥ 3: **stop and question the architecture** (see below)
-   - Do not attempt fix #4 without user discussion
+4. **Inspect the diff**. Check for scope creep, accidental files, debug leftovers.
 
-5. **After 3 failed fixes, question architecture**. Patterns indicating architectural problems:
-   - Each fix reveals new shared state or coupling in a different place
-   - Fixes require massive refactoring
-   - Each fix creates new symptoms elsewhere
-   
-   Stop. Discuss with user:
-   - Is this pattern fundamentally sound?
-   - Are we sticking with it through inertia?
-   - Should we refactor the architecture vs continue fixing symptoms?
-   
-   This is not a failed hypothesis. This is wrong architecture.
+5. **Commit**. Write a commit message: `fix: <one-line summary>`. Include the root cause and test coverage in the body.
 
-6. **Clean up**. Remove temporary probes, logs, and throwaway files. Run final checks. Inspect the full diff.
+### If the fix fails
 
-7. **Review and commit**. Use `execute`'s task review and commit gates. Do not invoke a separate review skill. Do not commit while a blocking finding or failed check remains.
+- Count: how many fix attempts?
+- If < 3: return to Phase 1 with new evidence
+- If ≥ 3: **stop and question the architecture** (see below)
+- Do not attempt fix #4 without user discussion
+
+### After 3 failed fixes, question architecture
+
+Patterns indicating architectural problems:
+- Each fix reveals new shared state or coupling in a different place
+- Fixes require massive refactoring
+- Each fix creates new symptoms elsewhere
+
+Stop. Discuss with user:
+- Is this pattern fundamentally sound?
+- Are we sticking with it through inertia?
+- Should we refactor the architecture vs continue fixing symptoms?
+
+This is not a failed hypothesis. This is wrong architecture.
+
+### Clean up
+
+Remove temporary probes, logs, and throwaway files. Run final checks. Inspect the full diff.
 
 ## Red flags
 

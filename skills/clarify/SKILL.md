@@ -20,7 +20,53 @@ Choose the smallest suitable path:
 
 When hidden complexity appears, stop and move to the next larger path. Do not use a smaller path to skip needed decisions.
 
-## Explore first
+## Explore intent (for unclear requests)
+
+When the request is vague or lacks context, use 2-4 focused dialogue rounds before exploring code:
+
+### Round 1: Purpose and outcome
+
+Ask one question about the intended purpose or user-visible result. Do not ask about technical approach yet.
+
+**Format:**
+
+```text
+Question: <what you need to understand>
+
+<1-2 sentence explanation of why this matters>
+```
+
+Wait for the answer.
+
+### Round 2: Scope and constraints
+
+Ask one question about what is included or excluded, or about hard constraints (compatibility, performance, existing patterns).
+
+Wait for the answer.
+
+### Round 3: Edge cases and acceptance (optional)
+
+If needed, ask one question about error behavior, edge cases, or how to verify success.
+
+Wait for the answer.
+
+### Round 4: Approach confirmation (optional)
+
+If the request spans multiple subsystems or has competing approaches, present 2-3 options and ask which fits.
+
+Wait for the answer.
+
+**Rules for exploratory rounds:**
+
+- One question per round. Wait for answer before next question.
+- Ask only what changes the design. Skip questions whose answers do not affect implementation.
+- Do not ask for repository facts (use tools to find them).
+- Stop when you have enough to write a clear design.
+- For clear requests, skip directly to code exploration.
+
+**After dialogue rounds, proceed to code exploration below.**
+
+## Explore code
 
 Read the minimum project context needed to clarify the request:
 
@@ -36,38 +82,13 @@ Use repository facts instead of asking the user for facts that tools can find.
 
 Read directly for small requests. Use read-only subagents for large exploration when retaining all needed code in main context could cause overflow.
 
-**When to use subagents** (one or more applies):
+**When and how to use subagents**: read `../init/references/subagent-dispatch.md` for dispatch rules.
 
-- Request spans several independent modules
-- Many callers, tests, or config files need inspection
-- Several apps or packages need separate inspection
-- Frontend, backend, data, and infrastructure all matter
-- Main process would need large file listings or reports
+Main process owns all design decisions and writes.
 
-**Dispatch pattern:**
+## Clarify remaining decisions
 
-1. Split by clear boundary (module + callers, tests + conventions, interfaces + config)
-2. Use `acp_delegate` with `agent: "researcher"`, narrow read-only task
-3. Request only: boundary, files, behavior, constraints, test approach, evidence paths, unknowns
-4. Launch in parallel with `async: true`
-5. Wait for notifications, read result files with `read` tool
-6. Summarize findings (do not copy reports into context)
-
-**Subagent constraints:**
-- Read-only: no user questions, no design decisions, no `.cartoons` writes, no file edits, no branches
-- Reports findings only
-- Main process owns decisions and writes
-
-**Merge findings:**
-- Repository fact (keep)
-- User decision (keep)
-- Agent recommendation (summarize)
-- Unresolved question (flag)
-- Conflicts (mark unresolved until evidence or user settles)
-
-## Clarify
-
-Ask only questions that change the design. One question per message.
+After exploratory rounds (if any) and code exploration, ask only questions that change the design. One question per message.
 
 **Format:**
 
@@ -85,7 +106,7 @@ Reason: <short reason if not obvious>
 - Do not repeat user input
 - Do not ask for repository facts
 
-**Cover:**
+**Cover (if not already resolved in exploratory rounds):**
 - Problem and user-visible result
 - Scope and non-goals
 - Affected behavior and interfaces
@@ -94,7 +115,7 @@ Reason: <short reason if not obvious>
 - Acceptance conditions
 - Testing boundary
 
-Small requests may need no questions. Present short design and ask approval.
+Small requests with clear intent may need no clarification questions. Present short design and ask approval.
 
 ## Design options
 

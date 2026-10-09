@@ -29,11 +29,11 @@ Create `progress.md` ledger inside with the first line:
 # Execution ledger — plan: .cartoons/<semantic-name>/plan.md
 ```
 
-If the ledger exists and its first line names this plan, steps with `Step <N>: complete` are done. Resume from the first step without one. After context compression, trust the ledger and `git log`, not memory.
+If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. Resume from the first task without one. After context compression, trust the ledger and `git log`, not memory.
 
 For a small change, keep ledger facts in conversation. Do not create impl or ledger files.
 
-Read `impl/step-N.md` briefs for step details. The plan.md file is a lightweight index.
+Read `impl/task-N.md` briefs for task details. The plan.md file is a lightweight index.
 
 ## Preconditions
 
@@ -47,19 +47,19 @@ Before changing code:
 - confirm the brief has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: If the project supports tests, read the `tdd` skill and follow it for every step.
+**Load TDD discipline**: If the project supports tests, read `../init/references/tdd.md` and follow it for every step.
 
 Do not implement an unapproved draft. For planned work, stop and report a missing design or plan path.
 
-Keep the review base unchanged across steps and resumed sessions. Preserve initial user changes, including changes in step files. If they overlap the step, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the step. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
+Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
 
 ## Pre-flight scan
 
-Before Step 1, read plan.md for the dependency graph and final verification commands. Then scan step briefs for interface conflicts:
+Before Task 1, read plan.md for the dependency graph and final verification commands. Then scan task briefs for interface conflicts:
 
-- For each step that consumes what an earlier step produces, check the interface match
-- Record one ledger row per shared interface: step numbers, what is produced vs consumed, finding
-- Steps sharing nothing get no row
+- For each task that consumes what an earlier task produces, check the interface match
+- Record one ledger row per shared interface: task numbers, what is produced vs consumed, finding
+- Tasks sharing nothing get no row
 - If no shared interfaces exist, write `Pre-flight: no shared interfaces`
 - Rule on each conflict with the design as authority
 - Record ruling beside its row
@@ -72,15 +72,15 @@ The main process owns all code, test, design, plan, and Git writes. Use read-onl
 
 Agents report findings and file paths. They must not edit files, commit, create worktrees, publish changes, or dispatch other agents.
 
-## Step loop
+## Task loop
 
-Work through planned steps in dependency order. For a small change, apply the same loop to the request as one step. Do not skip a step because a later step appears to include it.
+Work through planned tasks in dependency order. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
 
-For each step:
+For each task:
 
-1. Write `Step <N>: started (base <commit7>)` to ledger.
-2. Read `impl/step-N.md` for the action list, files, interfaces, checks, and dependencies.
-3. Check that earlier step outputs exist and match the current step.
+1. Write `Task <N>: started (base <commit7>)` to ledger.
+2. Read `impl/task-N.md` for the action list, files, interfaces, checks, and dependencies.
+3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
 5. Write or update the smallest behavior test when the project supports tests.
 6. Run the focused test and confirm the expected failure when adding new behavior.
@@ -88,14 +88,14 @@ For each step:
 8. Run the focused test again.
 9. Run the affected test, lint, build, or type-check command named by the brief.
 10. Inspect the diff for scope creep, accidental files, and user data loss.
-11. Run the step review below.
+11. Run the task review below.
 12. Fix every valid review finding and repeat the affected checks.
-13. Commit the step only after review passes and checks are fresh.
-14. Write `Step <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
+13. Commit the task only after review passes and checks are fresh.
+14. Write `Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Step <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
+If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Task <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
 
 ## Ledger entries
 
@@ -106,20 +106,20 @@ Append to `progress.md` after each event:
 Pre-flight: <interface rows or "no shared interfaces">
 ```
 
-**Step start:**
+**Task start:**
 
 ```text
-Step <N>: started (base <commit7>)
+Task <N>: started (base <commit7>)
 ```
 
 **Ruling:**
 ```text
-Step <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
+Task <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
 ```
 
-**Step complete:**
+**Task complete:**
 ```text
-Step <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
+Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
 ```
 
 **Final review:**
@@ -133,19 +133,19 @@ For a small change, keep the same structure in conversation.
 
 ## Resume
 
-On resume, read ledger first. Compare recorded commits and step state with working tree and Git history. Keep original review base. Continue from first step without `complete`. Do not trust old check results. Run required checks again.
+On resume, read ledger first. Compare recorded commits and task state with working tree and Git history. Keep original review base. Continue from first task without `complete`. Do not trust old check results. Run required checks again.
 
 If a small change loses conversation record, reconstruct boundary from Git and confirm unknown facts with user before editing.
 
-## Step review
+## Task review
 
-Review runs after EACH step, before commit. Use a fresh read-only reviewer when the step is large enough to benefit from independent context. Review inline for small steps. The reviewer reports findings only. The executor owns all fixes and commits.
+Review runs after EACH task, before commit. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
 
-Step review checks ONE step's diff against its brief.
+Task review checks ONE task's diff against its brief.
 
 Check:
 
-- the step implements the brief and no extra scope
+- the task implements the brief and no extra scope
 - changed files match the brief
 - interfaces, error paths, boundaries, and compatibility behavior are correct
 - tests assert observable behavior and cover the acceptance conditions
@@ -155,7 +155,7 @@ Check:
 Classify each finding:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
-- **Non-blocking:** useful cleanup that is outside the step. Record it and leave it unchanged.
+- **Non-blocking:** useful cleanup that is outside the task. Record it and leave it unchanged.
 
 If the review finds a blocking issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
 
