@@ -206,51 +206,20 @@ execute 强制:
 
 | 特性 | 本项目 | Superpowers | Matt Pocock Skills |
 |------|--------|-------------|-------------------|
-| 定位 | 极简本地开发 | 完整流程管理 | 工程基础 |
-| 语言 | 中文化 | 英文 | 英文 |
-| subagent | 可选(只读调研) | 核心机制(并发实现) | 并发驱动 |
-| issue tracker | 可选 | 深度集成 | 深度集成(Linear/GitHub) |
-| worktree | 不强制 | 核心机制 | 可选 |
-| 流程 | 直线推进 | 分支并发 | 分阶段 gate |
-| TDD | 强制 RED-GREEN | 强制 | 强制 |
-| domain modeling | 内联规则 | 无 | 核心技能 |
-
-## 扩展和定制
-
-### P2 可选功能
-
-当前体系覆盖核心流程。以下增强在需求验证后添加:
-
-- **to-tasks** — 将 plan 拆分为可并发的 tracer-bullet tasks
-- **to-spec** — 对话转 spec 并发布到 issue tracker
-- **triage** — Issue 状态机流转(needs-triage → ready-for-agent → in-progress → done)
-- **retro** — 会话后改进开发环境(导航/检查/标准/工具)
-
-### 如何添加自定义技能
-
-1. 在 `skills/` 下创建 `<name>/SKILL.md`
-2. 添加 YAML frontmatter:
-   ```yaml
-   ---
-   name: custom-skill
-   description: 何时触发此技能
-   ---
-   ```
-3. 写 Markdown 指令
-4. 在 `guide/SKILL.md` 添加路由规则(如需要)
-
-### 如何修改现有技能
-
-1. 读取 `skills/<name>/SKILL.md`
-2. 用 `edit` 工具精确替换
-3. 保持 frontmatter 结构
-4. 测试路由(通过 guide)
+| 定位 | 极简本地开发 | 完整开发流程 | 工程基础技能集 |
+| 语言 | 技能英文,README 中文 | 英文 | 英文 |
+| subagent | 只读调研与审查,不并行写代码 | 每个 task 一个实现 subagent,串行,不并行实现 | `implement-spec` 并行实现 ticket |
+| issue tracker | 无,全部用本地文件 | 无;收尾阶段可推送并创建 PR | 支持 GitHub/GitLab/本地,其他以自由文本记录 |
+| worktree | 不使用 | 核心机制,开工前隔离工作区 | 仅 `implement-spec` 每个 ticket 一个 worktree |
+| 流程 | 按需路由,逐步确认 | brainstorm → worktree → plan → 执行 → 收尾 | grill → spec → ticket → implement |
+| TDD | 有测试工具时强制 RED-GREEN-REFACTOR | 强制(无失败测试不写生产代码) | `tdd` 作为参考技能,由 `implement` 驱动 |
+| domain modeling | `clarify` 的 reference:术语表 + ADR | 无 | 核心技能 `domain-modeling` |
 
 ## 故障排查
 
 ### 技能没触发
 
-检查 `guide/SKILL.md` 路由规则。每个技能的 `description` 是触发条件。
+技能都需要用户显式调用(`/技能名`)。没有指名技能时,调用 `guide` 由它路由;路由规则见 `skills/guide/SKILL.md`。
 
 ### subagent 不可用
 
