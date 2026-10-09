@@ -1,18 +1,18 @@
 ---
-name: init
-description: Inspect a workspace and create or update the smallest useful AGENTS.md files.
+name: survey
+description: Survey a workspace and create or refresh its project facts in AGENTS.md (and GLOSSARY.md). Use on first contact with a repository, and again whenever commands, structure, or conventions have changed and the project documents may be stale.
 disable-model-invocation: true
 ---
 
-# Init
+# Survey
 
-Inspect the workspace, collect project facts, and create or update `AGENTS.md` files.
+Inspect the workspace, collect project facts, and create or update `AGENTS.md` files. Run it the first time you work in a repository and again whenever the recorded facts may have drifted from the repository.
 
 Keep the result short. Record facts and project rules, not generic engineering advice.
 
 ## Scope
 
-This skill does only workspace initialization:
+This skill only surveys the workspace and records what it finds:
 
 - inspect the repository and its project boundaries
 - identify the stack, commands, structure, and local rules
@@ -163,4 +163,4 @@ Report:
 - unknowns or conflicts
 - whether subagents were used for read-only exploration
 
-Stop after initialization. Let `clarify`, `plan`, `execute`, or `debug` handle the next development step.
+Stop after the survey. Let `clarify`, `plan`, `execute`, or `debug` handle the next development step.

@@ -9,8 +9,8 @@
 安装后,在项目中执行:
 
 ```bash
-# 1. 初始化项目(首次使用)
-/init
+# 1. 勘察项目(首次使用,或项目事实过期时)
+/survey
 
 # 2. 开始第一个功能
 让我们添加用户登录功能
@@ -30,7 +30,7 @@ Agent 自动:
 graph TD
     A[用户请求] --> B[guide 路由]
     B --> C{类型?}
-    C -->|首次使用| D[init]
+    C -->|首次使用| D[survey]
     C -->|需求不明| E[clarify]
     C -->|已有设计| F[plan]
     C -->|已有计划| G[execute]
@@ -54,7 +54,7 @@ graph TD
 | 技能 | 触发时机 | 产物 | 示例 |
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
-| **init** | 首次使用,无 AGENTS.md | AGENTS.md | 项目事实:栈/命令/约定 |
+| **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **clarify** | 需求不明 | design.md | Spike/Bounded/Architectural 三路径 |
 | **plan** | 设计已批准 | plan.md + task briefs | 拆分为 tracer-bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
@@ -258,7 +258,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 ### 术语不一致
 
-运行 `init`,创建 `GLOSSARY.md`。在 clarify 阶段主动建模。
+运行 `survey`,创建 `GLOSSARY.md`。在 clarify 阶段主动建模。
 
 ### plan 任务顺序错
 

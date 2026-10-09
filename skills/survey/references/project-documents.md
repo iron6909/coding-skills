@@ -1,6 +1,6 @@
 # Project-Level Documents
 
-Three kinds of long-lived project documents. `init` creates and maintains the first two; `clarify` maintains the glossary and ADRs as design decisions appear.
+Three kinds of long-lived project documents. `survey` creates and maintains the first two; `clarify` maintains the glossary and ADRs as design decisions appear.
 
 ## AGENTS.md
 

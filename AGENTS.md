@@ -17,7 +17,7 @@ Complete local development — no GitHub/Linear/Jira integration. All design, pl
 | Skill | Purpose | Entry Point |
 |-------|---------|------------|
 | `guide` | Route to the smallest suitable skill | Always invoked first |
-| `init` | Workspace inspection, create AGENTS.md | First run in new workspace |
+| `survey` | Inspect workspace, create or refresh AGENTS.md / GLOSSARY.md | First run, or when project facts are stale |
 | `clarify` | Design exploration → approved design | Unclear requests |
 | `plan` | Design → task breakdown | After design approval |
 | `execute` | Implement plan or small change | Implementation phase |
@@ -36,7 +36,7 @@ guide (router)
     ↓
 ┌───────────────────────────────────┐
 │ Failure? → debug                  │
-│ Unknown workspace? → init         │
+│ Unknown/stale workspace? → survey         │
 │ Too large? → wayfinder            │
 │ Prototype needed? → prototype     │
 │ Research needed? → research       │
@@ -92,7 +92,7 @@ Each skill is self-contained: `npx skills add` installs skill directories only, 
 
 | Skill | References |
 |-------|-----------|
-| `init` | `project-documents.md`, `glossary-format.md`*, `subagent-dispatch.md`* |
+| `survey` | `project-documents.md`, `glossary-format.md`*, `subagent-dispatch.md`* |
 | `clarify` | `domain-modeling.md`, `adr-format.md`, `glossary-format.md`*, `subagent-dispatch.md`* |
 | `plan`, `review`, `research` | `subagent-dispatch.md`* |
 | `execute` | `tdd.md` |
