@@ -26,11 +26,12 @@ Use the first matching rule:
 1. If the user explicitly names a top-level skill, use it.
 2. If the user reports a failure, error, broken behavior, or regression, use `debug`.
 3. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, use `init`.
-4. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
-5. If an approved plan already exists for the request, use `execute`.
-6. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
-7. If the approved work is clear and ready for code changes, use `execute`.
-8. If no rule matches, use `clarify` instead of guessing.
+4. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), stop and tell the user: "This work is too large for one session. Break it into smaller pieces or use an issue tracker to plan incrementally."
+5. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
+6. If an approved plan exists in `.cartoons/<semantic-name>/plan.md`, use `execute`.
+7. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
+8. If the approved work is clear and ready for code changes, use `execute`.
+9. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `init`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its brief.
 

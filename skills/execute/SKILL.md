@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Implement an approved plan or a small, clear change, review each task, commit checked changes, and report evidence.
+description: Implement an approved plan or a small, clear change, review each step, commit checked changes, and report evidence.
 disable-model-invocation: true
 ---
 
@@ -8,12 +8,32 @@ disable-model-invocation: true
 
 Use one of two execution briefs:
 
-- **Planned work:** read `.cartoons/<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines task order.
-- **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No design or plan file is required.
+- **Planned work:** read `.cartoons/<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines step order.
+- **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No design or plan file is required.
 
-<!-- ponytail: Keep a small change in the conversation. Use clarify and plan when it needs scope decisions or several tasks. -->
+<!-- ponytail: Keep a small change in the conversation. Use clarify and plan when it needs scope decisions or several steps. -->
 
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
+
+## Workspace and ledger
+
+For planned work, create an isolated impl directory:
+
+```text
+.cartoons/<semantic-name>/impl/
+```
+
+Create `progress.md` ledger inside with the first line:
+
+```text
+# Execution ledger — plan: .cartoons/<semantic-name>/plan.md
+```
+
+If the ledger exists and its first line names this plan, steps with `Step <N>: complete` are done. Resume from the first step without one. After context compression, trust the ledger and `git log`, not memory.
+
+For a small change, keep ledger facts in conversation. Do not create impl or ledger files.
+
+Read `impl/step-N.md` briefs for step details. The plan.md file is a lightweight index.
 
 ## Preconditions
 
@@ -21,14 +41,28 @@ Before changing code:
 
 - read applicable `AGENTS.md` files
 - read the execution brief
+- check for existing ledger and resume state
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
 - confirm the brief has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
+**Load TDD discipline**: If the project supports tests, read the `tdd` skill and follow it for every step.
+
 Do not implement an unapproved draft. For planned work, stop and report a missing design or plan path.
 
-Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
+Keep the review base unchanged across steps and resumed sessions. Preserve initial user changes, including changes in step files. If they overlap the step, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the step. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
+
+## Pre-flight scan
+
+Before Step 1, read plan.md for the dependency graph and final verification commands. Then scan step briefs for interface conflicts:
+
+- For each step that consumes what an earlier step produces, check the interface match
+- Record one ledger row per shared interface: step numbers, what is produced vs consumed, finding
+- Steps sharing nothing get no row
+- If no shared interfaces exist, write `Pre-flight: no shared interfaces`
+- Rule on each conflict with the design as authority
+- Record ruling beside its row
 
 ## Execution ownership
 
@@ -38,54 +72,80 @@ The main process owns all code, test, design, plan, and Git writes. Use read-onl
 
 Agents report findings and file paths. They must not edit files, commit, create worktrees, publish changes, or dispatch other agents.
 
-## Task loop
+## Step loop
 
-Work through planned tasks in dependency order. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
+Work through planned steps in dependency order. For a small change, apply the same loop to the request as one step. Do not skip a step because a later step appears to include it.
 
-For each task:
+For each step:
 
-1. Read the task and its file list, interfaces, checks, and dependencies.
-2. Check that earlier task outputs exist and match the current task.
-3. Read the relevant code before editing.
-4. Write or update the smallest behavior test when the project supports tests.
-5. Run the focused test and confirm the expected failure when adding new behavior.
-6. Implement the smallest change that passes the test.
-7. Run the focused test again.
-8. Run the affected test, lint, build, or type-check command named by the brief.
-9. Inspect the diff for scope creep, accidental files, and user data loss.
-10. Run the task review below.
-11. Fix every valid review finding and repeat the affected checks.
-12. Commit the task only after review passes and checks are fresh.
-13. Record the task result before starting the next task.
+1. Write `Step <N>: started (base <commit7>)` to ledger.
+2. Read `impl/step-N.md` for the action list, files, interfaces, checks, and dependencies.
+3. Check that earlier step outputs exist and match the current step.
+4. Read the relevant code before editing.
+5. Write or update the smallest behavior test when the project supports tests.
+6. Run the focused test and confirm the expected failure when adding new behavior.
+7. Implement the smallest change that passes the test.
+8. Run the focused test again.
+9. Run the affected test, lint, build, or type-check command named by the brief.
+10. Inspect the diff for scope creep, accidental files, and user data loss.
+11. Run the step review below.
+12. Fix every valid review finding and repeat the affected checks.
+13. Commit the step only after review passes and checks are fresh.
+14. Write `Step <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within the approved scope, record the ruling, and continue.
+If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Step <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
 
-## Execution record and resume
+## Ledger entries
 
-For planned work, append `## Execution record` to the existing `plan.md`. This is the execution report. Record:
+Append to `progress.md` after each event:
 
-- the original review base and initial user changes
-- each task's status: pending, in progress, blocked, or done
-- each task's commit identifier, review result, and review-fix round count
-- check commands, exit status, and failures with exact error text
-- plan deviations, their reasons and approval when required, deferred findings, and the next action
-- the final review result and any final review fix commit
+**Pre-flight:**
+```text
+Pre-flight: <interface rows or "no shared interfaces">
+```
 
-Update the record after each task and before stopping for a failure or decision. For a small change, keep the same facts in the conversation. Do not create `.cartoons` files for it.
+**Step start:**
 
-On resume, read the brief and record first. Compare recorded commits and task state with the working tree and Git history. Keep the original review base. Resolve conflicts before editing. Continue from the first unfinished task, not task 1. Do not trust old check results for completion. Run the required checks again. If a small change loses its conversation record, reconstruct the boundary from Git and confirm unknown facts with the user before editing.
+```text
+Step <N>: started (base <commit7>)
+```
 
-## Task review
+**Ruling:**
+```text
+Step <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
+```
 
-Review is an execution mechanism. Do not wait for the user to invoke a separate top-level review skill.
+**Step complete:**
+```text
+Step <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
+```
 
-After each small task, inspect the complete task diff against the brief and repository rules. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
+**Final review:**
+```text
+Final: fixed <finding> — <test name> RED→GREEN, suite <N>/<N>
+Final: minor (deferred): <one-liner>
+Final: Ruling: <finding> — <decision> — cost if wrong: <cost>
+```
+
+For a small change, keep the same structure in conversation.
+
+## Resume
+
+On resume, read ledger first. Compare recorded commits and step state with working tree and Git history. Keep original review base. Continue from first step without `complete`. Do not trust old check results. Run required checks again.
+
+If a small change loses conversation record, reconstruct boundary from Git and confirm unknown facts with user before editing.
+
+## Step review
+
+Review runs after EACH step, before commit. Use a fresh read-only reviewer when the step is large enough to benefit from independent context. Review inline for small steps. The reviewer reports findings only. The executor owns all fixes and commits.
+
+Step review checks ONE step's diff against its brief.
 
 Check:
 
-- the task implements the brief and no extra scope
+- the step implements the brief and no extra scope
 - changed files match the brief
 - interfaces, error paths, boundaries, and compatibility behavior are correct
 - tests assert observable behavior and cover the acceptance conditions
@@ -95,7 +155,7 @@ Check:
 Classify each finding:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
-- **Non-blocking:** useful cleanup that is outside the task. Record it and leave it unchanged.
+- **Non-blocking:** useful cleanup that is outside the step. Record it and leave it unchanged.
 
 If the review finds a blocking issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
 
@@ -126,7 +186,9 @@ Do not push or publish. The user controls integration and release.
 
 ## Final whole-change review
 
-After every task has passed task review and has a commit, review this run's complete change once. Use `git diff <review-base> HEAD` plus any uncommitted task changes. Exclude recorded initial user changes. Do not use the branch fork point or review only the last task. Give the reviewer the original base, initial user changes, task commits, and outstanding task diff.
+Runs ONCE after all tasks pass task review and have commits. Reviews the complete change: `git diff <review-base> HEAD` plus uncommitted task changes. Exclude recorded initial user changes.
+
+Final review checks cross-task integration, interfaces, and acceptance conditions that individual task reviews cannot see.
 
 1. Run the full test, lint, build, and type-check commands from the brief.
 2. Use a fresh read-only reviewer for the complete change. The reviewer checks the brief, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
@@ -176,7 +238,9 @@ Do not revert unrelated user changes. Do not run destructive Git commands. Do no
 
 ## Completion report
 
-After all tasks pass, report:
+After all tasks pass, collect every ledger `Ruling:` line into the report under "Rulings made", in order, each with cost if wrong. Collect every `minor (deferred)` line under "Deferred minors". Both lists are exhaustive.
+
+Report:
 
 ```text
 Implemented: <plan path or small-change request>
@@ -184,8 +248,15 @@ Tasks: <task count>, each reviewed and committed
 Final review: <passed, with review-fix commit if needed>
 Checks: <commands and results>
 Changed: <short file list>
+
+Rulings made:
+- Task <N>: <ruling> — cost if wrong: <cost>
+
+Deferred minors:
+- <one-liner>
+
 Remaining: <known gaps, or None>
 Next: integration or release decision
 ```
 
-Stop after implementation, task review, commits, and verification. Do not invoke a separate top-level review skill or publish changes.
+Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate top-level review skill or publish changes.

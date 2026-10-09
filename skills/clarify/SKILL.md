@@ -34,78 +34,67 @@ Use repository facts instead of asking the user for facts that tools can find.
 
 ### Large code exploration
 
-Read directly for small requests. Dispatch read-only subagents when retaining all needed code in the main context could cause overflow.
+Read directly for small requests. Use read-only subagents for large exploration when retaining all needed code in main context could cause overflow.
 
-Use subagents when one or more conditions apply:
+**When to use subagents** (one or more applies):
 
-- the request spans several independent modules
-- the affected callers, tests, and configuration are numerous
-- several applications or packages need separate inspection
-- frontend, backend, and data or infrastructure code all matter
-- the main process would need to retain large file listings or reports
+- Request spans several independent modules
+- Many callers, tests, or config files need inspection
+- Several apps or packages need separate inspection
+- Frontend, backend, data, and infrastructure all matter
+- Main process would need large file listings or reports
 
-Split work by a clear code boundary. For example:
+**Dispatch pattern:**
 
-- feature module and its callers
-- related tests and test conventions
-- interfaces, configuration, and data structures
+1. Split by clear boundary (module + callers, tests + conventions, interfaces + config)
+2. Use `acp_delegate` with `agent: "researcher"`, narrow read-only task
+3. Request only: boundary, files, behavior, constraints, test approach, evidence paths, unknowns
+4. Launch in parallel with `async: true`
+5. Wait for notifications, read result files with `read` tool
+6. Summarize findings (do not copy reports into context)
 
-Give each subagent a narrow read-only task. Request only:
+**Subagent constraints:**
+- Read-only: no user questions, no design decisions, no `.cartoons` writes, no file edits, no branches
+- Reports findings only
+- Main process owns decisions and writes
 
-- inspected boundary
-- relevant files and symbols
-- current behavior
-- constraints
-- test approach already used in the repository
-- evidence paths
-- unknowns and conflicts
-
-Subagents must not ask the user questions, make final design decisions, write `.cartoons`, edit files, create branches or worktrees, or dispatch other agents. Do not copy full reports into the main context. Summarize only design-relevant findings.
-
-The main process owns user decisions, design synthesis, and all writes. Keep these categories separate:
-
-- repository fact
-- user decision
-- agent recommendation
-- unresolved question
-
-Treat conflicting subagent findings as unresolved until repository evidence or the user settles them.
+**Merge findings:**
+- Repository fact (keep)
+- User decision (keep)
+- Agent recommendation (summarize)
+- Unresolved question (flag)
+- Conflicts (mark unresolved until evidence or user settles)
 
 ## Clarify
 
-Ask only questions that can change the design. Ask one question per message.
+Ask only questions that change the design. One question per message.
 
-For each question:
-
-1. Explain the decision in plain language.
-2. Give a recommended answer.
-3. Give one short reason when the choice is not obvious.
-4. Wait for the user's answer before asking a dependent question.
-
-Do not repeat information the user already gave. Do not ask for facts available in the repository.
-
-Use this format:
+**Format:**
 
 ```text
-Question 1: <decision>
+Question <N>: <decision>
 
 <short explanation>
 
 Recommendation: <answer>
-Reason: <short reason>
+Reason: <short reason if not obvious>
 ```
 
-Cover the decisions that matter:
+**Rules:**
+- Wait for answer before asking dependent question
+- Do not repeat user input
+- Do not ask for repository facts
 
-- problem and user-visible result
-- scope and explicit non-goals
-- affected behavior and interfaces
-- important constraints and compatibility needs
-- error and edge-case behavior
-- acceptance conditions
-- testing boundary
+**Cover:**
+- Problem and user-visible result
+- Scope and non-goals
+- Affected behavior and interfaces
+- Constraints and compatibility
+- Error and edge-case behavior
+- Acceptance conditions
+- Testing boundary
 
-Small requests may need no question after exploration. Present a short design and ask for approval.
+Small requests may need no questions. Present short design and ask approval.
 
 ## Design options
 

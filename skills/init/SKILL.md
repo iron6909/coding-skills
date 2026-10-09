@@ -48,36 +48,33 @@ Use file contents and existing commands as evidence. Do not invent rules from co
 
 ## Large workspaces
 
-Explore small and medium workspaces directly. Use read-only subagents when a broad scan of a large repository could overflow the main context.
+Explore small and medium workspaces directly. Use read-only subagents for large repositories when retaining all file listings and reports could overflow main context.
 
-Use subagents when one or more of these conditions apply:
+**When to use subagents** (one or more applies):
 
-- the repository contains several independent applications or packages
-- separate frontend, backend, infrastructure, or tooling areas need inspection
-- the workspace has many files or nested project manifests
-- exploration needs several unrelated scans
-- the main context would need to retain large file listings or reports
+- Repository has several independent apps or packages
+- Separate frontend, backend, infrastructure, or tooling areas need inspection
+- Workspace has many files or nested project manifests
+- Exploration needs several unrelated scans
+- Main context would need large file listings or reports
 
-Split the work by clear boundary. For example:
+**Dispatch pattern:**
 
-- one subagent for the root rules and shared tooling
-- one subagent for the frontend application
-- one subagent for the backend application
-- one subagent for package or build configuration
+1. Split by clear boundary (root rules + tooling, frontend app, backend app, package config)
+2. Use `acp_delegate` with `agent: "researcher"`, narrow read-only task
+3. Request only: boundary, stack, directories, commands, local rules, generated paths, evidence paths, unknowns
+4. Launch in parallel with `async: true`
+5. Wait for notifications, read result files with `read` tool
+6. Summarize each result (do not copy reports into context)
 
-Give each subagent a narrow, read-only task. Ask it to return only:
+**Subagent constraints:**
+- Read-only: no file writes, no code edits, no branches, no more agents
+- Reports findings only
+- Main process owns all `AGENTS.md` writes
 
-- boundary inspected
-- stack and important directories
-- commands
-- local rules
-- generated or protected paths
-- evidence paths
-- unknowns and conflicts
-
-Do not ask subagents to write files, edit code, create branches, or dispatch more agents. Do not copy their full reports into the main context. Summarize each result before using it.
-
-Merge overlapping findings in the main process. Treat conflicts as unknowns until the repository gives clear evidence. The main process owns all `AGENTS.md` writes.
+**Merge findings:**
+- Overlapping facts: merge in main process
+- Conflicts: mark as unknowns until repository evidence settles them
 
 ## Existing instructions
 

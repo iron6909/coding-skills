@@ -86,11 +86,11 @@ Follow existing project boundaries. Do not include a refactor only because it lo
 
 If the design covers independent subsystems, split it into separate plans or state the dependency clearly. Each plan should produce a testable result.
 
-## Task design
+## Step design
 
-Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
+Make each step the smallest useful unit with its own check. A step may include setup, code, tests, and documentation when they form one deliverable.
 
-Order tasks by dependency:
+Order steps by dependency:
 
 1. prerequisites and shared interfaces
 2. core behavior
@@ -98,9 +98,9 @@ Order tasks by dependency:
 4. error paths and compatibility cases
 5. final verification
 
-Prefer vertical slices that can run and be checked on their own. Do not make separate tasks for every layer when one slice can prove the behavior.
+Prefer vertical slices that can run and be checked on their own. Do not make separate steps for every layer when one slice can prove the behavior.
 
-Each step does one action and has a checkable result. Use a test-first order when the project supports it:
+Each action does one thing and has a checkable result. Use a test-first order when the project supports it:
 
 1. write the test or verification case
 2. run it and record the expected failure when applicable
@@ -110,20 +110,52 @@ Each step does one action and has a checkable result. Use a test-first order whe
 
 Do not require a failing test when the repository has no test harness or when the work is documentation or configuration only. Name the available check instead.
 
-A task must tell the implementer what they cannot safely infer:
+## Step briefs
 
-- exact file path or existing symbol to change
-- behavior and fixed values from the design
-- interfaces and types that cross task boundaries
-- test name or observable assertions
-- command to run and expected result
-- dependencies on earlier tasks
+After writing `plan.md`, generate a brief for each step:
 
-Do not write the implementation body into the plan. Do not use vague steps such as `handle edge cases`, `add appropriate validation`, or `write tests for the above`.
+```text
+.cartoons/<semantic-name>/impl/task-<N>.md
+```
+
+Each brief contains only what that task needs:
+
+```markdown
+# Task <N>: <short name>
+
+**Base:** <commit that this task branches from>
+
+**Depends on:** <task numbers or None>
+
+**Produces:** <interface or behavior later tasks use>
+
+## Steps
+
+- [ ] Step 1: <one action>
+  - Check: `<command>` → <expected result>
+- [ ] Step 2: <one action>
+  - Check: `<command>` → <expected result>
+
+## Files
+
+- Create: `<exact path>` — <responsibility>
+- Modify: `<exact path>` — <responsibility>
+- Test: `<exact path>` — <coverage>
+
+## Interfaces
+
+**Consumes from Task <M>:**
+- <interface or value>
+
+**Produces for Task <P>:**
+- <interface or value>
+```
+
+Briefs let execute read task context without loading the full plan.
 
 ## Plan format
 
-Create `.cartoons/<semantic-name>/plan.md` with this structure:
+Create `.cartoons/<semantic-name>/plan.md` as a lightweight index:
 
 ```markdown
 # <Feature name> Implementation Plan
@@ -142,36 +174,19 @@ Create `.cartoons/<semantic-name>/plan.md` with this structure:
 
 - <important failure mode and the check that covers it>
 
-## Change map
+## Steps
 
-- Create: `<path>` — <responsibility>
-- Modify: `<path>` — <responsibility>
-- Test: `<path>` — <coverage>
+1. Step 1: <short name> — depends on: None — produces: <interface>
+2. Step 2: <short name> — depends on: Step 1 — produces: <interface>
+3. Step 3: <short name> — depends on: Step 2 — produces: <interface>
 
-## Tasks
+## Dependency graph
 
-### Task 1: <short name>
-
-**Depends on:** None
-
-**Files:**
-
-- Create: `<exact path>`
-- Modify: `<exact path>`
-- Test: `<exact path>`
-
-**Produces:** <interface or behavior later tasks use>
-
-- [ ] Step 1: <one action>
-  - Check: `<command>` → <expected result>
-- [ ] Step 2: <one action>
-  - Check: `<command>` → <expected result>
-
-### Task 2: <short name>
-
-**Depends on:** Task 1
-
-...
+```mermaid
+graph TD
+  A[Step 1] --> B[Step 2]
+  B --> C[Step 3]
+```
 
 ## Final verification
 
@@ -179,33 +194,34 @@ Create `.cartoons/<semantic-name>/plan.md` with this structure:
 - [ ] Run: `<broader command>` → <expected result>
 ```
 
-Omit empty sections. Use exact paths, names, values, and commands supported by repository evidence. Do not invent line numbers. Add line numbers only when they are stable and useful.
+Omit empty sections. Use exact names and values supported by repository evidence. Do not invent line numbers.
 
-Use a small plan for a small change. A plan longer than the design usually contains implementation transcript instead of useful decisions.
+plan.md is an index. Step details live in `impl/step-N.md` files. Keep plan.md under 100 lines.
 
 ## Self-review
 
 Before reporting the plan, check it against the design:
 
-- every design requirement maps to a task or final check
-- every task has one clear deliverable
-- task order respects dependencies
+- every design requirement maps to a step or final check
+- every step has one clear deliverable
+- step order respects dependencies
 - shared interfaces use the same names and types everywhere
 - each acceptance condition has an observable check
 - error, empty, boundary, and compatibility cases are covered when relevant
 - commands work from the repository root
-- no task contains an unresolved product decision
-- no step is vague or combines unrelated actions
+- no step contains an unresolved product decision
+- no action is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
 
 Fix the plan before reporting it. If a gap requires a product decision, stop and update the design instead.
 
 ## Finish
 
-After saving and reviewing the plan, report:
+After saving plan and briefs, report:
 
 ```text
 Plan saved: .cartoons/<semantic-name>/plan.md
+Step briefs: .cartoons/<semantic-name>/impl/step-*.md (<N> steps)
 Next: execute
 ```
 
