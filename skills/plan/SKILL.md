@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/design.md` into an implementation plan. Save it beside the design as `plan.md`.
 
-Do not write product code, create a worktree, commit changes, or start implementation.
+Do not write product code, commit changes, or start implementation.
 
 ## Preconditions
 

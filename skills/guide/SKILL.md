@@ -23,7 +23,7 @@ Choose the smallest suitable top-level skill for the user's current request, the
 
 `guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
 
-The underlying mechanisms, such as TDD, worktrees, and subagents, are not routing targets.
+The underlying mechanisms, such as TDD and subagents, are not routing targets.
 
 ## Routing order
 

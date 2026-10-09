@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Turn an unclear development request into an approved design. Save the design in `docs/features/YYYY-MM-DD-<semantic-name>/design.md`.
 
-Do not write product code, create `plan.md`, create a worktree, or start implementation.
+Do not write product code, create `plan.md`, or start implementation.
 
 ## Classify the request
 

@@ -20,7 +20,7 @@ This skill does only workspace initialization:
 - create `GLOSSARY.md` if project-specific terms exist
 - create child `AGENTS.md` files only for independent projects with distinct rules
 
-Do not clarify a feature, design an implementation, split tasks, write code, create `.cartoons`, create a worktree, install dependencies, or edit project configuration.
+Do not clarify a feature, design an implementation, split tasks, write code, create `.cartoons`, install dependencies, or edit project configuration.
 
 Do not create `CONTEXT.md`, `GLOSSARY-MAP.md`, ADRs, issue files, or `docs/agents/` files. ADRs are created later by `clarify` when recording important design decisions.
 

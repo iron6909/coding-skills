@@ -12,7 +12,7 @@ Use this skill for bugs, test failures, unexpected behavior, build failures, int
 
 Fix the root cause, never the symptom. Do not propose fixes before completing Phase 1.
 
-ponytail: One evidence-based hypothesis for clear bugs. List 3–5 ranked hypotheses for unclear bugs before probes.
+For a clear bug, work from one evidence-based hypothesis. For an unclear bug, list 3–5 ranked hypotheses before adding probes.
 
 ## Phase 1: Root cause investigation
 
@@ -116,16 +116,18 @@ Remove temporary probes, logs, and throwaway files. Run final checks. Inspect th
 
 ## Red flags
 
-If you think any of these, stop and return to Phase 1:
+If you catch yourself thinking any of these, stop and return to Phase 1:
 
-- "Quick fix for now, investigate later"
-- "Just try changing X and see if it works"
-- "Add multiple changes, run tests"
-- "Skip the test, I'll manually verify"
-- "It's probably X, let me fix that"
-- "I do not fully understand but this might work"
-- "One more fix attempt" (when already tried 2+)
-- Each fix reveals a new problem in a different place
+| Thought | Why it fails |
+|---------|--------------|
+| "Quick fix for now, investigate later" / "Just try changing X" | The first fix sets the pattern, and a guess teaches nothing. |
+| "Issue is simple, skip the process" / "Emergency, no time" | Simple bugs have root causes too; the process is fast for them, and guess-and-check is slower. |
+| "Add multiple changes, run tests" / "Multiple fixes save time" | You cannot isolate what worked, and stacked fixes cause new bugs. |
+| "Skip the test, I'll verify manually" / "Test after the fix works" | An untested fix does not stick. A failing test first proves the bug and the fix. |
+| "I see the problem" / "It's probably X" | Seeing a symptom is not understanding the root cause. |
+| "I do not fully understand but this might work" | Say "I do not understand X" and investigate. |
+| "One more fix attempt" (after 2+ failures) | Three failures indicate an architectural problem. Question the pattern. |
+| Each fix reveals a new problem elsewhere | Same signal: the architecture is wrong, not the last hypothesis. |
 
 ## If no reproduction is possible
 
@@ -149,15 +151,3 @@ Remaining: <known gap or None>
 ```
 
 Do not claim success without fresh test output. If no correct regression-test seam exists, state that limit and the verification used instead.
-
-## Common rationalizations
-
-| Excuse | Reality |
-|--------|----------|
-| "Issue is simple, skip process" | Simple issues have root causes. Process is fast for simple bugs. |
-| "Emergency, no time for process" | Systematic debugging is faster than guess-and-check. |
-| "Just try this first, then investigate" | First fix sets the pattern. Do it right from the start. |
-| "Write test after confirming fix works" | Untested fixes do not stick. Test first proves it. |
-| "Multiple fixes save time" | Cannot isolate what worked. Causes new bugs. |
-| "I see the problem, let me fix it" | Seeing symptoms ≠ understanding root cause. |
-| "One more fix attempt" (after 2+) | 3+ failures = architectural problem. Question pattern. |

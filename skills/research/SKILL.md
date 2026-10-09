@@ -44,7 +44,7 @@ Confirm with user:
 - Opinion pieces without evidence
 - Stack Overflow answers without verification
 
-Use `web_search` with multiple queries to cover different angles. Use `fetch_content` to read full documentation pages.
+Search the web with several differently-worded queries to cover different angles, and fetch full documentation pages rather than relying on search snippets. Use whatever search and fetch tools the harness provides.
 
 ## Investigate
 

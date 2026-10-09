@@ -11,8 +11,6 @@ Use one of two execution briefs:
 - **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines step order.
 - **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No design or plan file is required.
 
-<!-- ponytail: Keep a small change in the conversation. Use clarify and plan when it needs scope decisions or several steps. -->
-
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
 
 ## Workspace and ledger
@@ -77,9 +75,7 @@ Before Task 1, read plan.md for the dependency graph and final verification comm
 
 The main process owns all code, test, design, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
 
-<!-- ponytail: Use one writer. Add isolated writing workers only after measuring a serial bottleneck and defining how to integrate their changes. -->
-
-Agents report findings and file paths. They must not edit files, commit, create worktrees, publish changes, or dispatch other agents.
+Agents report findings and file paths. They must not edit files, commit, publish changes, or dispatch other agents.
 
 ## Task loop
 
@@ -243,7 +239,7 @@ When output is large, save it to a temporary report and read only the relevant t
 
 If an agent fails, inspect any partial report. Continue in the main process or reassign the narrow read-only task. Check all findings against repository evidence.
 
-Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, publish, or delete a worktree unless the user explicitly asks.
+Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, or publish unless the user explicitly asks.
 
 ## Completion report
 
