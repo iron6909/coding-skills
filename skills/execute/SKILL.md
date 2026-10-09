@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use one of two execution briefs:
 
-- **Planned work:** read `.cartoons/<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines step order.
+- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines step order.
 - **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No design or plan file is required.
 
 <!-- ponytail: Keep a small change in the conversation. Use clarify and plan when it needs scope decisions or several steps. -->
@@ -20,13 +20,13 @@ Do not treat incomplete planned work as a small change. Do not add product scope
 For planned work, create an isolated impl directory:
 
 ```text
-.cartoons/<semantic-name>/impl/
+.cartoons/YYYY-MM-DD-<semantic-name>/impl/
 ```
 
 Create `progress.md` ledger inside with the first line:
 
 ```text
-# Execution ledger — plan: .cartoons/<semantic-name>/plan.md
+# Execution ledger — plan: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
 ```
 
 If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. Resume from the first task without one. After context compression, trust the ledger and `git log`, not memory.
@@ -39,6 +39,7 @@ Read `impl/task-N.md` briefs for task details. The plan.md file is a lightweight
 
 Before changing code:
 
+- read `GLOSSARY.md` (if it exists) to use project terms from the glossary in all code and commit messages
 - read applicable `AGENTS.md` files
 - read the execution brief
 - check for existing ledger and resume state
@@ -47,7 +48,13 @@ Before changing code:
 - confirm the brief has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: If the project supports tests, read `../init/references/tdd.md` and follow it for every step.
+**Load TDD discipline**: If the project supports tests, read `../init/references/tdd.md` and follow the RED → GREEN → REFACTOR cycle for every behavior change:
+
+1. **RED**: Write or update the smallest failing test that proves the missing behavior
+2. **GREEN**: Write the minimal code to pass that test
+3. **REFACTOR**: Clean up duplication, improve names, simplify — while tests stay green
+
+Repeat this cycle for each task step that adds or changes behavior. Configuration, documentation, or generated files use the strongest available check instead.
 
 Do not implement an unapproved draft. For planned work, stop and report a missing design or plan path.
 

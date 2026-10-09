@@ -6,22 +6,24 @@ disable-model-invocation: true
 
 # Plan
 
-Turn an approved `.cartoons/<semantic-name>/design.md` into an implementation plan. Save it beside the design as `plan.md`.
+Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/design.md` into an implementation plan. Save it beside the design as `plan.md`.
 
-Do not write product code, create a worktree, create tickets, commit changes, or start implementation.
+Do not write product code, create a worktree, commit changes, or start implementation.
 
 ## Preconditions
 
 Find the approved design before planning.
 
 - Read the applicable `AGENTS.md` files.
-- Read `.cartoons/<semantic-name>/design.md` in full.
+- Read `docs/features/YYYY-MM-DD-<semantic-name>/design.md` in full.
 - Confirm that the design states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
 - If the design is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
 
 The design is the authority. Do not add new product decisions silently. Record a needed change in the design first, then plan from the updated design.
 
 ## Explore
+
+Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts.
 
 Read only the code needed to make the plan precise:
 
@@ -66,15 +68,26 @@ If the design covers independent subsystems, split it into separate plans or sta
 
 Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
 
-Order tasks by dependency:
+### Prefer tracer-bullet tasks
+
+A tracer-bullet task is a vertical slice that cuts through all layers to deliver one observable end-to-end behavior. Examples:
+- "User clicks login → JWT issued → dashboard renders"
+- "POST /orders → DB insert → 201 response"
+- "Upload CSV → parse → validation errors shown"
+
+Tracer-bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
+
+When a task produces an interface another task consumes, declare it explicitly in the task brief's **Produces** and **Consumes** sections. This forms the dependency graph.
+
+### Order tasks by dependency
 
 1. prerequisites and shared interfaces
-2. core behavior
+2. core behavior (tracer-bullet slices)
 3. integration and user-facing behavior
 4. error paths and compatibility cases
 5. final verification
 
-Prefer vertical slices that can run and be checked on their own. Do not make separate steps for every layer when one slice can prove the behavior.
+Do not make separate steps for every layer when one slice can prove the behavior.
 
 Each action does one thing and has a checkable result. Use a test-first order when the project supports it:
 
@@ -90,8 +103,10 @@ Do not require a failing test when the repository has no test harness or when th
 
 After writing `plan.md`, generate a brief for each task:
 
-```text
-.cartoons/<semantic-name>/impl/task-<N>.md
+```bash
+DIR=".cartoons/$(basename $(dirname $(realpath docs/features/YYYY-MM-DD-<semantic-name>/design.md)))/impl"
+mkdir -p "$DIR"
+# Write to $DIR/task-<N>.md
 ```
 
 Each brief contains only what that task needs:
@@ -131,14 +146,14 @@ Briefs let execute read task context without loading the full plan.
 
 ## Plan format
 
-Create `.cartoons/<semantic-name>/plan.md` as a lightweight index:
+Create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index:
 
 ```markdown
 # <Feature name> Implementation Plan
 
 **Goal:** <one sentence>
 
-**Design:** `.cartoons/<semantic-name>/design.md`
+**Design:** `docs/features/YYYY-MM-DD-<semantic-name>/design.md`
 
 **Approach:** <two or three sentences>
 
@@ -196,8 +211,8 @@ Fix the plan before reporting it. If a gap requires a product decision, stop and
 After saving plan and briefs, report:
 
 ```text
-Plan saved: .cartoons/<semantic-name>/plan.md
-Task briefs: .cartoons/<semantic-name>/impl/task-*.md (<N> tasks)
+Plan saved: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
+Task briefs: .cartoons/YYYY-MM-DD-<semantic-name>/impl/task-*.md (<N> tasks)
 Next: execute
 ```
 

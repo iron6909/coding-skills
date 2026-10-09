@@ -42,11 +42,12 @@ Before continuing, confirm the fixed point resolves and the diff is non-empty.
 
 Look for the originating spec in this order:
 
-1. `.cartoons/<semantic-name>/design.md` matching the branch name or commit scope
-2. Issue references in commit messages (`#123`, `Closes #45`)
-3. Path the user passed as argument
-4. Spec file under `docs/` or `specs/` matching branch name
-5. Ask the user. If no spec exists, skip the Spec axis
+1. Commit messages: issue references (`#123`, `Closes #45`)
+2. `docs/features/YYYY-MM-DD-<semantic-name>/design.md` matching branch name or commit scope
+3. `.cartoons/<semantic-name>/design.md` matching branch name
+4. Path the user passed as argument
+5. Spec file under `docs/` matching branch name
+6. Ask the user. If no spec exists, skip the Spec axis
 
 ## Identify the standards sources
 
@@ -60,6 +61,23 @@ Read repo files that document how code should be written:
 When no documented standards exist, use the **smell baseline**: Fowler code smells from _Refactoring_ ch.3.
 
 **The repo overrides**: where documented standards endorse something the baseline flags, suppress the smell.
+
+### Smell baseline
+
+These smells apply when the repo documents no coding standards. Each is a labeled heuristic, not a hard violation. Skip anything tooling already enforces.
+
+- **Mysterious Name**: function/variable/type name does not reveal what it does or holds → rename; if no honest name comes, the design is murky
+- **Duplicated Code**: same logic shape appears in multiple hunks/files → extract the shared shape, call it from both
+- **Feature Envy**: method reaches into another object's data more than its own → move the method onto the data it envies
+- **Data Clumps**: same fields/params travel together (a type wanting to be born) → bundle them into one type
+- **Primitive Obsession**: primitive/string stands in for a domain concept → give the concept its own small type
+- **Repeated Switches**: same switch/if-cascade on same type recurs → replace with polymorphism or one shared map
+- **Shotgun Surgery**: one logical change forces scattered edits across many files → gather what changes together into one module
+- **Divergent Change**: one file/module edited for several unrelated reasons → split so each module changes for one reason
+- **Speculative Generality**: abstraction/parameters/hooks added for needs the spec does not have → delete; inline back until a real need shows
+- **Message Chains**: long `a.b().c().d()` navigation the caller should not depend on → hide the walk behind one method on the first object
+- **Middle Man**: class/function mostly just delegates onward → cut it, call the real target direct
+- **Refused Bequest**: subclass/implementer ignores or overrides most of what it inherits → drop the inheritance, use composition
 
 ## Run both axes
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Clarify
 
-Turn an unclear development request into an approved design. Save the design in `.cartoons/<semantic-name>/design.md`.
+Turn an unclear development request into an approved design. Save the design in `docs/features/YYYY-MM-DD-<semantic-name>/design.md`.
 
 Do not write product code, create `plan.md`, create a worktree, or start implementation.
 
@@ -14,11 +14,36 @@ Do not write product code, create `plan.md`, create a worktree, or start impleme
 
 Choose the smallest suitable path:
 
-- **Small**: a local change with clear behavior and few decisions.
-- **Normal**: a multi-file change with a clear boundary and several decisions.
-- **Complex**: a new module, a cross-project change, an interface change, or a request with high uncertainty.
+- **Spike**: exploratory work with high uncertainty, unknown feasibility, or competing approaches. Goal is to reduce uncertainty, not to ship. Output is findings + recommendation, not production code.
+- **Bounded**: a local change with clear behavior and few decisions. Scope fits in one module or a small group of related files.
+- **Architectural**: a new module, a cross-project change, an interface change, or work that affects multiple subsystems.
 
 When hidden complexity appears, stop and move to the next larger path. Do not use a smaller path to skip needed decisions.
+
+### Spike path
+
+Use Spike when:
+- Feasibility is unknown ("can we do X with library Y?")
+- Multiple competing approaches exist and the best one is unclear
+- The request asks to "explore", "investigate", or "see if X works"
+- High technical uncertainty blocks starting implementation
+
+Spike output is a findings document, not production code. After approval, the findings feed into a Bounded or Architectural design.
+
+### Bounded path
+
+Use Bounded when:
+- The change is local (one module or a small group of files)
+- Behavior is clear and decisions are few
+- No new interfaces or cross-module contracts
+
+### Architectural path
+
+Use Architectural when:
+- New module or subsystem
+- Cross-project or multi-context change
+- Interface or contract change
+- Work spans frontend + backend + infrastructure
 
 ## Explore intent (for unclear requests)
 
@@ -67,6 +92,8 @@ Wait for the answer.
 **After dialogue rounds, proceed to code exploration below.**
 
 ## Explore code
+
+Read `GLOSSARY.md` (if it exists) before exploring code. Use project terms from the glossary in all design artifacts.
 
 Read the minimum project context needed to clarify the request:
 
@@ -142,13 +169,15 @@ A design is ready when it states:
 
 ## Save the design
 
-After approval, create a semantic directory and write:
+After approval, generate a date-prefixed directory name and write:
 
-```text
-.cartoons/<semantic-name>/design.md
+```bash
+DIR="docs/features/$(date +%Y-%m-%d)-<semantic-name>"
+mkdir -p "$DIR"
+# Write to $DIR/design.md
 ```
 
-Use a short lowercase kebab-case name. Reuse an existing directory when the user is continuing that feature. Do not create a second design file for the same work.
+Use format `YYYY-MM-DD-<semantic-name>` where semantic-name is short lowercase kebab-case (2-4 words). Reuse an existing directory when the user is continuing that feature. Do not create a second design file for the same work.
 
 Use this structure and omit empty sections:
 
@@ -211,7 +240,7 @@ Fix the document before reporting it. Do not start implementation during this ch
 Report:
 
 ```text
-Design saved: .cartoons/<semantic-name>/design.md
+Design saved: docs/features/YYYY-MM-DD-<semantic-name>/design.md
 Next: plan
 ```
 
