@@ -23,6 +23,8 @@ For planned work, create an isolated impl directory:
 .cartoons/YYYY-MM-DD-<semantic-name>/impl/
 ```
 
+`.cartoons/` is temporary and gitignored. It holds only `impl/` (the ledger and task briefs) for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Design and plan live under `docs/features/`, never here.
+
 Create `progress.md` ledger inside with the first line:
 
 ```text
@@ -48,7 +50,7 @@ Before changing code:
 - confirm the brief has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: If the project supports tests, read `../init/references/tdd.md` and follow the RED → GREEN → REFACTOR cycle for every behavior change:
+**Load TDD discipline**: If the project supports tests, read `./references/tdd.md` and follow the RED → GREEN → REFACTOR cycle for every behavior change:
 
 1. **RED**: Write or update the smallest failing test that proves the missing behavior
 2. **GREEN**: Write the minimal code to pass that test
@@ -235,7 +237,7 @@ Do not claim a test, build, review, or fix passed from an earlier run or an agen
 
 ## Context and failure handling
 
-Keep reports short. Pass findings through file paths and concise summaries, not full logs or source dumps.
+Keep reports short. Pass findings through file paths and concise summaries, not full logs or source dumps. Write paths from the repository root (`src/utils/cart-total.ts:45`), with a line number when pointing at code, so a path is never ambiguous.
 
 When output is large, save it to a temporary report and read only the relevant tail or failure section. Preserve exact error text needed to fix the issue.
 

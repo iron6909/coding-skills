@@ -24,6 +24,8 @@ Do not clarify a feature, design an implementation, split tasks, write code, cre
 
 Do not create `CONTEXT.md`, `GLOSSARY-MAP.md`, ADRs, issue files, or `docs/agents/` files. ADRs are created later by `clarify` when recording important design decisions.
 
+**Document roles and formats**: read `./references/project-documents.md` for how AGENTS.md, GLOSSARY.md, and ADRs relate, and `./references/glossary-format.md` for the glossary format. Write the glossary in that format rather than inventing a local one.
+
 ## Explore
 
 Start at the workspace root. Read, when present:
@@ -133,41 +135,9 @@ Create `GLOSSARY.md` in the repository root only when project-specific terms exi
 - Project-specific jargon ("KVNet", "prompt compression", "delegation")
 - Overloaded common words used in a special way ("skill", "task", "step")
 
-Do not create a glossary for projects with no special terminology. Do not define standard framework or language terms.
+Do not create a glossary for projects with no special terminology. Do not define standard framework or language terms. One `GLOSSARY.md` at the repository root, never per-directory.
 
-Format:
-
-```markdown
-# GLOSSARY.md
-
-## <Term>
-
-<One-sentence definition.>
-
-<Optional: short example or usage note.>
-
-## <Term>
-
-<Definition.>
-```
-
-Example:
-
-```markdown
-# GLOSSARY.md
-
-## Materialization
-
-The process of creating a lesson's physical file and directory structure from metadata.
-
-A lesson is "materialized" when it moves from the database to the file system.
-
-## Seam
-
-A public boundary where tests can verify behavior without touching implementation details.
-
-A good seam is stable across refactors.
-```
+Write it in the format defined by `./references/glossary-format.md`: a `# {Project Name}` heading, a one-sentence description, then a `## Language` section with `**Term**:` entries, each followed by a one-or-two-sentence definition and an optional `_Avoid_:` line.
 
 Keep each definition under 3 sentences. Group related terms under one heading when they form a concept family.
 

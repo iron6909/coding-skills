@@ -39,7 +39,7 @@ Use repository facts. Do not ask the user for facts that tools can find.
 
 Read directly for small changes. Dispatch read-only subagents when the plan needs broad code exploration and retaining all source details in the main context could cause overflow.
 
-**When and how to use subagents**: read `../init/references/subagent-dispatch.md` for dispatch rules.
+**When and how to use subagents**: read `./references/subagent-dispatch.md` for dispatch rules.
 
 Main process owns decomposition and all writes. Keep these categories separate:
 
@@ -185,7 +185,7 @@ graph TD
 - [ ] Run: `<broader command>` → <expected result>
 ```
 
-Omit empty sections. Use exact names and values supported by repository evidence. Do not invent line numbers.
+Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
 
 plan.md is an index. Task details live in `impl/task-N.md` files. Keep plan.md under 100 lines.
 

@@ -81,7 +81,7 @@ These smells apply when the repo documents no coding standards. Each is a labele
 
 ## Run both axes
 
-**With subagents**: dispatch two read-only reviewers in parallel with `acp_delegate` + `async: true`:
+**With subagents**: dispatch two read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
 
 1. **Standards reviewer**: reads standards docs + diff, reports violations
 2. **Spec reviewer**: reads spec + diff, reports mismatches or missing features

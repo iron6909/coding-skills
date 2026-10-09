@@ -1,5 +1,3 @@
-<!-- synced from shared/references/subagent-dispatch.md by scripts/sync-references.mjs: do not edit -->
-
 # Subagent Dispatch
 
 Use read-only subagents only when exploration would overflow the main context: many files to check, several independent modules, or work that crosses stack boundaries. Otherwise read directly.

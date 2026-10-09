@@ -109,9 +109,11 @@ Use repository facts instead of asking the user for facts that tools can find.
 
 Read directly for small requests. Use read-only subagents for large exploration when retaining all needed code in main context could cause overflow.
 
-**When and how to use subagents**: read `../init/references/subagent-dispatch.md` for dispatch rules.
+**When and how to use subagents**: read `./references/subagent-dispatch.md` for dispatch rules.
 
 Main process owns all design decisions and writes.
+
+**Domain model**: while exploring and clarifying, read `./references/domain-modeling.md`. Apply that discipline: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. When a decision passes the three-condition test, offer an ADR using `./references/adr-format.md`.
 
 ## Clarify remaining decisions
 

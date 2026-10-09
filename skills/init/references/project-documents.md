@@ -1,42 +1,27 @@
 # Project-Level Documents
 
-Three types of project-level documentation.
+Three kinds of long-lived project documents. `init` creates and maintains the first two; `clarify` maintains the glossary and ADRs as design decisions appear.
 
 ## AGENTS.md
 
-Project-level facts and rules:
+Project facts and rules that every skill respects:
 
 - Tech stack (languages, frameworks, tools)
-- Command rules (build, test, lint, run)
-- Conventions (directory structure, naming rules, test locations)
-- No-touch zones (files that cannot be changed, patterns that cannot be used)
+- Commands (build, test, lint, run)
+- Conventions (directory structure, naming, test locations)
+- Protected zones (files that cannot be changed, patterns that cannot be used)
 - Known issues and limits
-
-Created or updated by the `init` skill. All skills respect the rules in `AGENTS.md`.
 
 ## GLOSSARY.md
 
-Project terminology. Shared language. Reduces redundant explanations:
-
-- Domain term definitions (e.g. "Order", "Cart", "Session")
-- Once a term is defined, use the same name across the entire project
-- Eliminates ambiguity (e.g. distinguish "User" vs "Account")
-- Avoids repeated explanations of the same concept
-
-Inspired by Matt Pocock's domain-modeling skill.
+Project terminology. Once a term is defined, use the same name everywhere. Removes ambiguity (for example "User" vs "Account") and avoids re-explaining the same concept. Format: `./glossary-format.md`.
 
 ## ADRs (Architecture Decision Records)
 
-Architecture decisions. Important choices and their reasons:
+Important choices and their reasons, in `docs/adr/`. Prevents re-opening decisions that were already made. Created only when the three-condition test passes (hard to reverse, surprising without context, a real trade-off).
 
-- Saved in `docs/adr/` or `.adr/`
-- Records technology selection, architecture design, important constraints
-- Format: problem + decision + rationale + consequences
-- Prevents repeated discussion of already-decided issues
+## Relationship with feature work
 
-Inspired by Matt Pocock's domain-modeling skill.
-
-## Relationship with `.cartoons/`
-
-- **AGENTS.md** / **GLOSSARY.md** / **ADRs**: Project-level, long-term, shared by all features.
-- **`.cartoons/`**: Feature-level, temporary work artifacts, can be deleted after completion.
+- **AGENTS.md / GLOSSARY.md / ADRs**: project-level, long-lived, shared by all features.
+- **`docs/features/`**: per-feature design and plan. Permanent.
+- **`.cartoons/`**: per-feature execution ledger and task briefs. Temporary and gitignored; delete after completion.

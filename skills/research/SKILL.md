@@ -133,7 +133,7 @@ For deep research (>3 sources, >15 minutes), suggest running as a background del
 I can run this research in the background while you continue other work. It will take about <estimate>. Want me to do that?
 ```
 
-If yes, use `acp_delegate` with `agent: "researcher"` and the full research brief.
+If yes, delegate the full research brief to a read-only subagent (see `./references/subagent-dispatch.md`). If the harness has no delegation mechanism, tell the user and run it inline.
 
 ## Completion report
 

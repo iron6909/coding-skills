@@ -1,5 +1,3 @@
-<!-- synced from shared/references/glossary-format.md by scripts/sync-references.mjs: do not edit -->
-
 # GLOSSARY.md Format
 
 One `GLOSSARY.md` at the repository root. Create it lazily, when the first project-specific term is resolved.
