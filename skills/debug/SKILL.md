@@ -153,3 +153,5 @@ Next: <for a large fix, the recommended skill; otherwise None>
 ```
 
 Do not claim success without fresh output from the failing test and the affected checks. If no suitable regression test entry point exists, state that limit, name `architecture` as the skill that can create one, and say what verification was used instead.
+
+When the investigation turned on something the code does not explain — a trap, a misleading signal, a boundary this fix does not cover — say so in one line and offer `capture` as an optional next step. Do not invoke it. A bug whose root cause surprised you is exactly what `capture` is for; a typo fix is not.

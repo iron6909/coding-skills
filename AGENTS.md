@@ -81,6 +81,7 @@ These are the paths skills create in a project they run on.
 - `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`.
 - `docs/initiatives/YYYY-MM-DD-<name>/` holds `index.md` and `feature-N-<name>.md`.
 - `docs/research/<topic>.md` holds research reports.
+- `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
 - `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), and architecture reports (`.cartoons/architecture/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
@@ -96,6 +97,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
 | `wayfinder` | the initiative directory |
 | `research` | the report |
+| `capture` | the learning file |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |

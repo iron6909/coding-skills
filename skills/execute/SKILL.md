@@ -292,6 +292,8 @@ Next: finish (keep, merge locally, or discard)
 
 Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
 
+When this run involved a trade-off, a trap, or a discovered boundary condition that the spec and plan do not record, say so in one line and offer `capture` as an optional next step. Do not invoke it. Do not offer it when the run held no such reasoning.
+
 If the spec carries an `**Initiative stub:**` line, say so and name the stub and its `index.md`: once the user confirms the feature shipped, `wayfinder` checks it off. Do not edit the initiative from here.
 
 Stop after implementation, task review, commits, verification, and the finish decision.

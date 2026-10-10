@@ -37,6 +37,7 @@ graph TD
     C -->|工作量过大| K[wayfinder]
     C -->|独立问题| L[prototype / research]
     C -->|代码结构问题| M[architecture]
+    C -->|沉淀推理| N[capture]
 
     D --> E
     E --> F
@@ -48,6 +49,8 @@ graph TD
     M -->|选定候选| E
     H -->|大型修复| E
     L -->|答案要变成功能| E
+    G -->|可选| N
+    H -->|可选| N
 
     style B fill:#e1f5ff
     style G fill:#d4edda
@@ -69,6 +72,7 @@ graph TD
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
+| **capture** | 功能/修复/原型刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
 
 ## 关键概念
 
@@ -88,6 +92,7 @@ graph TD
 │   │       └── plan.md
 │   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出)
 │   ├── research/                        # 调研报告(永久,research 产出)
+│   ├── learnings/                       # 会话推理沉淀(永久,capture 产出)
 │   └── adr/                             # 架构决策记录(惰性创建)
 ├── .cartoons/                           # 临时,不提交
 │   ├── 2025-01-15-user-auth/
@@ -173,6 +178,9 @@ graph TD
 
 改动完成
   → finish(保留 / 本地合并 / 丢弃)
+
+改动结束后,想留下推理过程
+  → capture (docs/learnings/,可选)
 ```
 
 ## 示例场景
