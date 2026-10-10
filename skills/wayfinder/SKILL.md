@@ -71,6 +71,8 @@ Write one stub per feature at `docs/initiatives/YYYY-MM-DD-<initiative-name>/fea
 - Lists acceptance conditions
 - Links back to `index.md`
 
+A feature earns a stub only when you can state its question precisely: what would completing it decide or deliver? Work you cannot yet state precisely stays in the initiative's Notes, not in a stub. Do not pre-slice fog into stub-sized pieces.
+
 Use this structure:
 
 ```markdown
@@ -99,6 +101,10 @@ Use this structure:
 
 - [ ] <Condition>
 - [ ] <Condition>
+
+## Spec
+
+<Not started. Once work starts: the path of the spec this feature produced, for example `docs/features/2026-10-15-auth/spec.md`.>
 
 ## Notes
 
@@ -141,7 +147,7 @@ After writing the initiative and feature stubs:
 
 1. Tell the user: "Initiative saved to `docs/initiatives/<dir>/`. [N] feature stubs created. Start with feature-1."
 2. Wait for the user to pick a feature.
-3. When the user says "work on feature-N", read that stub and `index.md`, then use `clarify` to create a full spec for that feature.
+3. When the user says "work on feature-N", read that stub and `index.md`, then use `clarify` to write that feature's spec. The spec records `**Initiative stub:**` under its title, and the stub's `## Spec` section gets the spec path.
 
 Do not start work until the user picks a feature.
 
@@ -155,6 +161,16 @@ As work progresses, the initiative may change. When the user asks to update it:
 4. Commit with `docs(initiative): update <initiative-name>`.
 
 Do not update the initiative without the user asking.
+
+## Mark a feature shipped
+
+When a feature's work lands and its acceptance conditions hold, check it off in `index.md` and keep the spec path next to the entry, so the initiative points at the work that closed it:
+
+```markdown
+- [x] [feature-1: Auth with JWT](feature-1-auth.md) — docs/features/2026-10-15-auth/spec.md
+```
+
+Commit with `docs(initiative): mark feature-<N> shipped`.
 
 ## Completion report
 
