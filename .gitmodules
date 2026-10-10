@@ -16,3 +16,6 @@
 [submodule "refer/gstack"]
 	path = refer/gstack
 	url = git@github.com:garrytan/gstack.git
+[submodule "refer/OpenSpec"]
+	path = refer/OpenSpec
+	url = git@github.com:Fission-AI/OpenSpec.git
