@@ -13,3 +13,6 @@
 [submodule "refer/ECC"]
 	path = refer/ECC
 	url = git@github.com:affaan-m/ECC.git
+[submodule "refer/gstack"]
+	path = refer/gstack
+	url = git@github.com:garrytan/gstack.git
