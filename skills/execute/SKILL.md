@@ -193,8 +193,6 @@ After the review passes and fresh checks succeed:
 - keep unrelated user changes out of the commit
 - record the commit identifier and check results in the execution report
 
-Do not push or publish. The user controls integration and release.
-
 ## Final whole-change review
 
 Runs ONCE after all tasks pass task review and have commits. A small change is one task, so its task review is the final review: skip this section. Reviews the complete change: `git diff <review-base> HEAD` plus uncommitted task changes. Exclude recorded initial user changes.
@@ -216,7 +214,7 @@ The final review does not replace task review. It checks integration defects tha
 
 Use the repository's existing test tools. Prefer standard library and existing dependencies. Do not add a test framework or dependency for this workflow.
 
-Behavior changes follow `./references/tdd.md`, then the affected checks, then the full suite. For configuration, documentation, or generated files, use the strongest available check instead of forcing a test.
+For each behavior change: the TDD loop (loaded above), then the affected checks, then the full suite.
 
 Before claiming completion:
 
@@ -268,4 +266,4 @@ Read `./references/finish.md` and present its options. Leave `impl/` and every o
 
 If the spec carries an `**Initiative stub:**` line, say so and name the stub and its `index.md`: once the user confirms the feature shipped, `wayfinder` checks it off. Do not edit the initiative from here.
 
-Stop after implementation, task review, commits, verification, and the finish decision. Do not invoke a separate review skill.
+Stop after implementation, task review, commits, verification, and the finish decision.

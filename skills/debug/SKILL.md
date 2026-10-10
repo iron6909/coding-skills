@@ -26,7 +26,7 @@ Complete this phase before attempting any fix.
 
    Prefer, in order: an existing failing test, a small script that calls the failing path, a CLI or fixture comparison, a headless browser run, a replayed trace, a throwaway harness, a fuzz or property loop, or a manual scripted loop as a last resort. For performance regressions, record a baseline first, then bisect.
 
-   If you cannot build the loop, stop. Report what you tried, with exact commands and results, and ask for the smallest missing input (a redacted trace, environment access, or permission for temporary instrumentation). Do not present an untested theory as a root cause.
+   If you cannot build the loop, stop and use **If no reproduction is possible**. Do not present an untested theory as a root cause.
 
 3. **Check recent changes**. Run `git diff`, `git log`, and review recent commits. Look for new dependencies, configuration changes, and environment differences.
 
@@ -78,7 +78,7 @@ Before changing code, check the current branch. If it is the default branch (mai
 1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow it: write the simplest reproduction through a test entry point (the public interface a test calls into), confirm it fails, apply the minimal fix, and confirm it passes. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 3. **Verify the fix**. Run the regression test, the original reproduction, and the affected checks (test suite, lint, type-check). Confirm no other tests broke.
-4. **Inspect the diff**. Check for scope creep, accidental files, and leftover probes. Every `[DEBUG-...]` line is gone.
+4. **Inspect the diff**. Check for scope creep and accidental files. Remove the temporary probes, logs, and throwaway files (scratch, not documents); every `[DEBUG-...]` line is gone.
 5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Check `git diff --staged` before committing. Do not commit unrelated user changes. Do not push.
 
 ### If the fix fails
@@ -92,10 +92,6 @@ Patterns that mean the architecture is wrong rather than the last hypothesis:
 - each fix creates a new symptom elsewhere
 
 Discuss with the user: is the pattern sound, are we keeping it through inertia, and should we refactor the architecture instead of continuing to patch symptoms?
-
-### Clean up
-
-Remove temporary probes, logs, and throwaway files. Those are scratch, not documents. Run the final checks and inspect the full diff.
 
 ## Red flags
 

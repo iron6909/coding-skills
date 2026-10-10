@@ -17,7 +17,7 @@ This skill only surveys the workspace and records what it finds:
 - inspect the repository and its project boundaries
 - identify the stack, commands, structure, and local rules
 - create or update the root `AGENTS.md`
-- create `GLOSSARY.md` if project-specific terms exist
+- create `GLOSSARY.md` when project-specific terms exist
 - create child `AGENTS.md` files only for independent projects with distinct rules
 
 Do not clarify a feature, design an implementation, split tasks, write code, create `.cartoons`, install dependencies, or edit project configuration.
@@ -129,13 +129,7 @@ Omit empty sections. If a needed fact is unknown, write `Unknown` with a short r
 
 ### GLOSSARY.md (optional)
 
-Create `GLOSSARY.md` in the repository root only when project-specific terms exist. Terms that need shared definitions:
-
-- Domain concepts whose meaning is not obvious from the name
-- Project-specific jargon invented inside this repository
-- Common words the project uses in a special way
-
-Write it in the format defined by `./references/glossary-format.md`.
+Create `GLOSSARY.md` in the repository root only when project-specific terms exist. Write it in the format defined by `./references/glossary-format.md`, which also lists what counts as a project-specific term.
 
 ## Write
 
