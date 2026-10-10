@@ -35,7 +35,7 @@ For a small change, keep ledger facts in conversation. Do not create impl or led
 
 Read `impl/task-N.md` for task details. `plan.md` is a lightweight index.
 
-If `impl/task-N.md` is missing (a new clone, a lost session, or a deleted `.cartoons/`), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`.
+If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`.
 
 ## Preconditions
 
@@ -254,9 +254,9 @@ Deferred minors:
 - <one-liner>
 
 Remaining: <known gaps, or None>
-Next: finish (merge, keep, or discard)
+Next: finish (keep, merge locally, or discard)
 ```
 
-Read `./references/finish.md` and present its options. Delete `impl/` once the user has decided.
+Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
 
 Stop after implementation, task review, commits, verification, and the finish decision. Do not invoke a separate review skill.

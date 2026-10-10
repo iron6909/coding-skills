@@ -93,7 +93,7 @@ Discuss with the user: is the pattern sound, are we keeping it through inertia, 
 
 ### Clean up
 
-Remove temporary probes, logs, and throwaway files. Run the final checks and inspect the full diff.
+Remove temporary probes, logs, and throwaway files. Those are scratch, not documents. Run the final checks and inspect the full diff.
 
 ## Red flags
 

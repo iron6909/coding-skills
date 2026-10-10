@@ -59,6 +59,20 @@ Other references have one owner:
 - One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
 - A skill ends where its output is saved and says what comes next. It does not auto-invoke the next skill; `guide` is the one skill that hands off, by design.
 
+## Documents are never deleted
+
+No skill deletes a document: not `spec.md` or `spike.md`, not `plan.md`, not
+`AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under
+`.cartoons/`, not a review report or a research report. A document that looks
+obsolete is superseded or left in place; the user decides what leaves the disk.
+
+The reason is that these skills run in other people's repositories, where a
+deleted document is gone for good.
+
+This covers documents only. Scratch that is not a document is still cleaned up:
+throwaway probes and logs, a prototype outside the project, and a branch the
+user explicitly asks to drop.
+
 ## Output locations skills must use
 
 These are the paths skills create in a project they run on.

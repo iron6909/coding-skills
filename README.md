@@ -262,6 +262,12 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 检查项目是否有测试工具。`execute` 引用 `tdd.md` 执行 RED-GREEN-REFACTOR,配置/文档文件用最强可用检查。
 
+### 会不会自动删东西?
+
+**文档一律不删**:`spec.md`/`spike.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 与 research 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
+
+**不是文档的临时物照常清理**:调试探针和日志、项目外的抛弃式原型,以及你在 `finish` 里明确选择丢弃的分支。
+
 ### design 还是 spec?
 
 本套统一用 **spec**:产物是 `spec.md`。`design question`(prototype 要回答的问题)、ADR 的 `design decision`、`task design` 这些说法保留原样,指的是别的东西。

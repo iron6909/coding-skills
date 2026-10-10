@@ -20,7 +20,7 @@ Exactly these three, in this order:
 
 1. **Keep the branch** — leave it as it is for now.
 2. **Merge locally into `<base>`** — merge the branch, then run the checks again on the merged result. If they fail, keep the branch and investigate.
-3. **Discard** — delete the branch and its commits. This is destructive; ask the user to type `discard` to confirm. Require the typed word, not a yes.
+3. **Discard** — delete the branch and its commits. The branch is scratch, not a document. This is destructive; ask the user to type `discard` to confirm, and require the typed word, not a yes.
 
 Do not push, open a PR, or publish anything. This suite is local-only; the user controls integration and release.
 
@@ -28,4 +28,4 @@ Do not push, open a PR, or publish anything. This suite is local-only; the user 
 
 - Only touch a branch or workspace this run created.
 - Never force anything. If a delete is refused because of uncommitted changes, list the files and let the user choose: commit, move, or delete.
-- Keep the ledger in `.cartoons/` until the user has chosen; delete `impl/` once the work is merged or discarded.
+- `impl/`, the task briefs, and any review report are documents: they stay. They are gitignored, so they cost nothing, and they record how the work was done.
