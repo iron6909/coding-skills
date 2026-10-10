@@ -68,11 +68,23 @@ Read directly for small requests. For large exploration that could overflow the 
 
 Prefer deletion, existing project patterns, standard library features, native platform features, and installed dependencies before adding code or dependencies. Do not invent alternatives for a clear small change.
 
+## Review the draft
+
+Before presenting the draft, check it for:
+
+- unresolved placeholders or decisions
+- contradictions between sections
+- scope that is too large for one plan
+- acceptance conditions that cannot be checked
+- requirements missing from the selected approach
+
+Fix the draft first. Do not start implementation during this check. The user must approve the text you will save, so the check happens before approval, not after.
+
 ## Approval gate
 
 Label the spec (or spike) a draft until the user approves it. Do not write product code or invoke `plan` or `execute`.
 
-Approval of the request does not approve an unshown spec. If the user asks for changes, update the draft and ask again.
+Approval of the request does not approve an unshown spec. If the user asks for changes, update the draft, check it again, and ask again. After approval, change nothing but typos; any substantive edit goes back to the user.
 
 A spec is ready when it states:
 
@@ -172,18 +184,6 @@ Do not write unresolved questions, guesses, or agent recommendations as confirme
 ```
 
 Experiments are throwaway: do not commit them or move them into the project. After the user approves the findings, continue on the Bounded or Architectural path and write `spec.md` in the same directory.
-
-## Review the document
-
-Before reporting completion, check the document for:
-
-- unresolved placeholders or decisions
-- contradictions between sections
-- scope that is too large for one plan
-- acceptance conditions that cannot be checked
-- requirements missing from the selected approach
-
-Fix the document before reporting it. Do not start implementation during this check.
 
 ## Commit
 
