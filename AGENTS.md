@@ -104,7 +104,7 @@ The skill that writes a project document commits it, staging only its own files.
 
 - **spec**, **plan**: the approved spec and its task index.
 - **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. Keep them distinct: a review, commit, or ledger entry belongs to a task, never a step.
-- **tracer bullet**: a vertical-slice task. **blocking edge**: a dependency between tasks.
+- **tracer bullet**: a vertical-slice task.
 - **initiative**: a multi-feature plan from `wayfinder`. **feature stub**: one feature in it.
 - **reference**: a doc under `skills/<skill>/references/` read on demand. It is not a skill.
 

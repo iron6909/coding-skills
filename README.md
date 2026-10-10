@@ -61,7 +61,7 @@ graph TD
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **clarify** | 需求不明 | spec.md(Spike 路径为 spike.md) | Spike/Bounded/Architectural 三路径 |
-| **plan** | spec 已批准 | plan.md + task briefs | 拆分为 tracer-bullet 任务 |
+| **plan** | spec 已批准 | plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **review** | 分支/PR 审查 | Standards + Spec 双轴报告(`.cartoons/`) | Fowler smells + spec 对照;修复需你同意 |
@@ -121,7 +121,7 @@ graph TD
 
 只测 spec 里批准过的测试入口(test entry point);回归测试要验证"还原修复后必须变红"。
 
-### Tracer-bullet 任务
+### Tracer bullet 任务
 
 垂直切片优先于水平分层:
 - ✅ "用户点登录 → JWT 签发 → 仪表板渲染"

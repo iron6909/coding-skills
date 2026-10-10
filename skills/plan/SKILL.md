@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn an approved spec into a small, ordered implementation plan saved and committed beside the spec in docs/features, with task briefs in .cartoons. Use when a spec is approved and the work has more than one step.
+description: Turn an approved spec into a small, ordered implementation plan saved and committed beside the spec in docs/features, with task briefs in .cartoons. Use when a spec is approved and the work has more than one task.
 disable-model-invocation: true
 ---
 
@@ -77,28 +77,28 @@ If the spec covers independent subsystems, split it into separate plans or state
 
 Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
 
-### Prefer tracer-bullet tasks
+### Prefer tracer bullet tasks
 
-A tracer-bullet task is a vertical slice that cuts through all layers to deliver one observable end-to-end behavior. Examples:
+A tracer bullet task is a vertical slice that cuts through all layers to deliver one observable end-to-end behavior. Examples:
 - "User clicks login → JWT issued → dashboard renders"
 - "POST /orders → DB insert → 201 response"
 - "Upload CSV → parse → validation errors shown"
 
-Tracer-bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
+Tracer bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
 
 When a task produces an interface another task consumes, declare it explicitly in the **Interfaces** section of both task briefs (Consumes in one, Produces in the other), and name it in the plan's Tasks line. This records the dependencies between tasks.
 
 ### Order tasks by dependency
 
 1. prerequisites and shared interfaces
-2. core behavior (tracer-bullet slices)
+2. core behavior (tracer bullet slices)
 3. integration and user-facing behavior
 4. error paths and compatibility cases
 5. final verification
 
 Do not make separate tasks for every layer when one slice can prove the behavior.
 
-Each step does one thing and has a checkable result. Use a test-first order when the project supports it:
+Each task is one independently testable unit; internally it may contain multiple steps. Use a test-first order when the project supports it:
 
 1. write the test or verification case
 2. run it and record the expected failure when applicable
