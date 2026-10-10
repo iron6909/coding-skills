@@ -68,7 +68,7 @@ graph TD
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
-| **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
+| **wayfinder** | 大型跨模块工作 | initiative(charter + index + feature stubs) | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
@@ -90,7 +90,7 @@ graph TD
 │   │   └── 2025-01-20-cart-checkout/
 │   │       ├── spec.md
 │   │       └── plan.md
-│   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出)
+│   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出:charter 总纲 + index 索引 + feature stubs)
 │   ├── research/                        # 调研报告(永久,research 产出)
 │   ├── learnings/                       # 会话推理沉淀(永久,capture 产出)
 │   └── adr/                             # 架构决策记录(惰性创建)
@@ -140,7 +140,7 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike)、plan(plan.md)、wayfinder(initiative)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,review 报告留在 `.cartoons/`。
+写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike)、plan(plan.md)、wayfinder(charter/index/stubs)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,review 报告留在 `.cartoons/`。
 
 ## 何时用什么
 
@@ -231,7 +231,8 @@ graph TD
 
 → guide 路由到 wayfinder
 → 识别边界: frontend app, backend API, CI pipeline
-→ 定义 3 个 features,呈现草稿,用户批准后创建 initiative + stubs
+→ 起草 charter(问题/目标/范围/约束/证据),用户批准
+→ 定义 3 个 features,呈现草稿,用户批准后创建 charter + index + stubs
 → 用户选 feature-1: frontend
 → 读 feature-1 stub,调用 clarify 写出该 feature 的 spec(stub 里回填 spec 路径)
 → 然后 plan → execute

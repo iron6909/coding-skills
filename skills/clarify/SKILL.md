@@ -197,7 +197,7 @@ Omit empty sections.
 <Behaviors to test, the test entry points (public interfaces) to test through, and the relevant test boundary.>
 ```
 
-If the request came from a `wayfinder` feature stub, add `**Initiative stub:** <stub path>` under the title.
+If the request came from a `wayfinder` feature stub, add `**Initiative stub:** <stub path>` under the title, and use the stub as the primary input. The stub carries everything this feature needs on its own; read the initiative's `charter.md` only when the stub's `**Charter:**` line names a section that affects this spec, and read that section only. Do not read the charter as a whole, and do not widen the spec to other features in the initiative.
 
 Do not write unresolved questions, guesses, or agent recommendations as confirmed decisions. Do not add implementation steps or a file-by-file task list; `plan` owns those.
 
