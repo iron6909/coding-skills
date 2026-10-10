@@ -15,7 +15,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `plan`: turn an approved spec into small, testable tasks.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
-- `review`: independently review another branch, a PR, or historical commits.
+- `review`: independently review another branch or historical commits.
 - `wayfinder`: break work that is too large for one session into an initiative of features.
 - `prototype`: build a throwaway prototype to answer a design question.
 - `research`: investigate unfamiliar territory and write a cited report.
@@ -32,7 +32,7 @@ Use the first matching rule:
 
 1. If the user explicitly names a skill, use it.
 2. If the user reports a failure, error, broken behavior, or regression, use `debug`.
-3. If the user asks to review a branch, PR, or past commits that are not part of the current `execute` run (signals: "review this branch", "review PR", "audit these commits"), use `review`.
+3. If the user asks to review a branch or past commits that are not part of the current `execute` run (signals: "review this branch", "audit these commits"), use `review`.
 4. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.
 5. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
 6. If the user asks a standalone question that code can answer (signals: "prototype", "throwaway", "quick proof", "does X work"), use `prototype`. If the unknown only matters for one feature they want to build, use `clarify` (Spike path) instead.

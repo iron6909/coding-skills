@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review changes since a review base along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch, PR, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review changes since a review base along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -9,7 +9,7 @@ disable-model-invocation: true
 Independent review of changes on another branch, a PR, or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
 
 Use `review` when:
-- Reviewing someone else's branch or PR
+- Reviewing someone else's branch
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
 
@@ -24,7 +24,7 @@ Both axes run in parallel when subagents are available.
 
 Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
 
-A "PR" here means a local branch: no tracker is involved. Ask the user to fetch or check out the branch first, then review the local commits against the base. Do not attempt to resolve a PR number.
+Note: "PR" in this context means a local branch — this skill suite is local-only and does not integrate with GitHub/GitLab PRs. Ask the user to fetch or check out the branch first, then review the local commits against the base.
 
 Capture the diff command once:
 

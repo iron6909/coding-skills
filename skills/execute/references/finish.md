@@ -10,6 +10,17 @@ Do not start until:
 - the final whole-change review passed (a small change: its task review)
 - every check in `plan.md` Final verification passed on the current commit (a small change: the checks the request names)
 
+## Check for initiative context
+
+Before presenting options, check if this feature belongs to an initiative:
+
+```bash
+git log --oneline --all --grep="docs(initiative)" | head -5
+ls docs/initiatives/*/feature-*.md 2>/dev/null
+```
+
+If the current spec or branch matches a feature stub in `docs/initiatives/`, note it for later.
+
 ## Confirm the base branch
 
 Find the branch this work forked from; do not assume `main`. Report the current branch, the base branch, and how many commits are ahead.
@@ -29,3 +40,15 @@ Do not push, open a PR, or publish anything. This suite is local-only; the user 
 - Only touch a branch or workspace this run created.
 - Never force anything. If a delete is refused because of uncommitted changes, list the files and let the user choose: commit, move, or delete.
 - `impl/`, the task briefs, and any review report are documents: they stay. They are gitignored, so they cost nothing, and they record how the work was done.
+
+## Initiative handoff
+
+If this feature belongs to an initiative (found during "Check for initiative context"), remind the user:
+
+```text
+This feature is part of initiative: docs/initiatives/YYYY-MM-DD-<name>/
+To mark it shipped, run: /wayfinder
+Then tell wayfinder to mark feature-N complete.
+```
+
+Do not invoke `wayfinder` automatically. The user controls when to update the initiative.

@@ -64,7 +64,7 @@ graph TD
 | **plan** | spec 已批准 | plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **review** | 分支/PR 审查 | Standards + Spec 双轴报告(`.cartoons/`) | Fowler smells + spec 对照;修复需你同意 |
+| **review** | 分支审查（本地） | Standards + Spec 双轴报告(`.cartoons/`) | Fowler smells + spec 对照;修复需你同意 |
 | **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
