@@ -1,16 +1,32 @@
 ---
 name: plan
-description: Turn an approved spec into a small, ordered implementation plan saved and committed beside the spec in docs/features, with task briefs in .cartoons. Use when a spec is approved and the work has more than one task.
+description: Turn an approved spec into a small, ordered implementation plan. Full tier saves plan.md beside the spec in docs/features and task briefs in .cartoons; Direct and Brief tiers keep the plan in the conversation. Use when a spec is approved and the work has more than one task.
 disable-model-invocation: true
 ---
 
 # Plan
 
-Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an implementation plan. Save it beside the spec as `plan.md`.
+Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an implementation plan.
 
-Do not write product code or start implementation. Commit only `plan.md`.
+Do not write product code or start implementation.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. The plan must name, in its Final verification section, the commands that decide each DoD item — the plan is where those commands are chosen, so a DoD item with no command behind it becomes an untestable task.
+
+## Choose the output tier
+
+Read `./references/output-tier.md` before writing anything. It decides how much of this skill runs.
+
+| Tier | Produces | This skill does |
+|------|----------|-----------------|
+| **Direct** | a change description in the conversation | Preconditions, Explore, the draft, the approval gate. Then hand to `execute`. |
+| **Brief** | a task list in the conversation | the same, with tasks that carry their own checks |
+| **Full** | `plan.md` and one brief per task | everything below, including Save and Commit |
+
+Direct and Brief write no files: no `plan.md`, no briefs, no ledger. Small work does not cross sessions. If the work must survive to a later session, the tier is Full — decide that now.
+
+The hard floors in `output-tier.md` are not negotiable. Cross-module work, interface changes, anything touching auth, data migration, or an irreversible operation is Full regardless of file count.
+
+Read `output-tier.md` for the floors, the "no behavior change" test, and the choosing order.
 
 ## Preconditions
 
@@ -110,7 +126,9 @@ Each task is one independently testable unit; internally it may contain multiple
 
 Do not require a failing test when the repository has no test harness or when the work is documentation or configuration only. Name the available check instead.
 
-## Task briefs
+## Task briefs (Full tier only)
+
+Skip this section on Direct and Brief: those tiers keep tasks in the conversation and write no briefs.
 
 After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the spec directory:
 
@@ -151,7 +169,9 @@ Each brief contains only what that task needs:
 
 Briefs let execute read task context without loading the full plan.
 
-## Plan format
+## Plan format (Full tier only)
+
+Skip this section on Direct and Brief: those tiers produce no file.
 
 After approval, create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index:
 
@@ -190,7 +210,7 @@ plan.md is an index. Task details live in `impl/task-N.md` files. Keep plan.md u
 
 ## Self-review
 
-Before reporting the plan, check it against the spec:
+Applies to every tier. Before reporting the plan, check it against the spec:
 
 - every spec requirement maps to a task or final check
 - every task has one clear deliverable
@@ -202,7 +222,9 @@ Before reporting the plan, check it against the spec:
 - no task contains an unresolved product decision
 - no step is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
-- every applicable Definition of Done item has a command in Final verification that decides it
+- every applicable Definition of Done item has a command that decides it — in Final verification for Full, in the task's own check for Direct and Brief
+
+On Direct and Brief, also re-check the tier choice itself: if the work turns out to hit a hard floor in `output-tier.md`, move up to Full rather than presenting it.
 
 Fix the plan before presenting it. If a gap requires a product decision, stop and update the spec instead (`clarify` revises an approved spec).
 
@@ -228,26 +250,50 @@ Stop and fix the process when you notice:
 - a horizontal task ("all models", "all routes") replacing a tracer bullet
 - `plan.md` past 100 lines, or carrying task detail that belongs in a brief
 - writing `plan.md` or briefs before the user approved the draft
+- choosing Direct or Brief when a hard floor in `output-tier.md` applies
+- a Direct or Brief plan the user expects to resume in a later session
 
 ## Approval gate
 
-Present the plan as a draft in the conversation: goal, approach, the task list with dependencies, final verification, and review focus. Write no file yet. Approval of the spec does not approve the plan.
+Applies to every tier. Approval of the spec does not approve the plan.
 
-Wait for the user to approve. If they ask for changes, revise the draft and ask again. Only then write `plan.md` and the task briefs. A committed `plan.md` therefore means an approved plan, which is what `execute` relies on.
+Present the plan as a draft in the conversation. Write no file yet.
 
-## Commit
+- **Full**: goal, approach, the task list with dependencies, final verification, and review focus.
+- **Direct**: the files to change and what happens in each, the check that will confirm it, and the fact that nothing will be written.
+- **Brief**: the same, as a task list where each task carries its own check.
+
+Wait for the user to approve. If they ask for changes, revise the draft and ask again.
+
+On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is what `execute` relies on as the approved plan. On Direct and Brief there is nothing to write: the approval is agreement to proceed, and the tier decision is part of what the user is approving.
+
+## Commit (Full tier only)
 
 Commit `plan.md`, which is permanent. Task briefs live in gitignored `.cartoons/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
 
+Direct and Brief commit nothing here: they write no plan document. Their commits are the code commits `execute` makes.
+
 ## Finish
 
-After approval, saving, and committing, report:
+Report by tier.
+
+Full, after approval, saving, and committing:
 
 ```text
+Plan tier: full
 Plan saved: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
 Task briefs: .cartoons/YYYY-MM-DD-<semantic-name>/impl/task-*.md (<N> tasks)
 Commit: <short hash>
 Next: execute
 ```
 
-Stop after saving the plan. Do not automatically invoke `execute` or modify product files.
+Direct or Brief, after approval:
+
+```text
+Plan tier: <direct|brief>
+Plan: <the task list, or a one-line pointer to where it was shown>
+Written: nothing (session-only tier)
+Next: execute (same session)
+```
+
+Stop after the plan is approved. Do not automatically invoke `execute` or modify product files. For Direct and Brief, say plainly that the plan lives only in this session and `execute` must run before it ends.

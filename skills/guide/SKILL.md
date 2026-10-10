@@ -12,7 +12,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `clarify`: resolve the request, scope, spec, constraints, and acceptance checks.
-- `plan`: turn an approved spec into small, testable tasks.
+- `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `review`: independently review another branch or historical commits.
@@ -40,7 +40,7 @@ Use the first matching rule:
 8. If the user asks where the structure of existing code is hurting (signals: "architecture review", "modules too shallow", "hard to test", "where should we refactor"), use `architecture`. A refactor whose target is already chosen goes to `clarify`.
 9. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
 10. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-11. If the spec is approved and the work has multiple steps but no plan exists, use `plan`.
+11. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
 12. If the approved work is clear and ready for code changes, use `execute`.
 13. If no rule matches, use `clarify` instead of guessing.
 
