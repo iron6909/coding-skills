@@ -22,7 +22,7 @@ This skill only surveys the workspace and records what it finds:
 
 Do not clarify a feature, design an implementation, split tasks, write code, create `.cartoons`, install dependencies, or edit project configuration.
 
-Do not create `CONTEXT.md`, `GLOSSARY-MAP.md`, ADRs, issue files, or `docs/agents/` files. ADRs are created later by `clarify` when recording important design decisions.
+Do not create ADRs. `clarify` creates them later, when it records an important design decision.
 
 **Document roles and formats**: read `./references/project-documents.md` for how AGENTS.md, GLOSSARY.md, and ADRs relate, and `./references/glossary-format.md` for the glossary format. Write the glossary in that format rather than inventing a local one.
 
@@ -131,15 +131,11 @@ Omit empty sections. If a needed fact is unknown, write `Unknown` with a short r
 
 Create `GLOSSARY.md` in the repository root only when project-specific terms exist. Terms that need shared definitions:
 
-- Domain concepts with non-obvious meaning ("materialization", "tracer bullet", "seam")
-- Project-specific jargon ("KVNet", "prompt compression", "delegation")
-- Overloaded common words used in a special way ("skill", "task", "step")
+- Domain concepts whose meaning is not obvious from the name
+- Project-specific jargon invented inside this repository
+- Common words the project uses in a special way
 
-Do not create a glossary for projects with no special terminology. Do not define standard framework or language terms. One `GLOSSARY.md` at the repository root, never per-directory.
-
-Write it in the format defined by `./references/glossary-format.md`: a `# {Project Name}` heading, a one-sentence description, then a `## Language` section with `**Term**:` entries, each followed by a one-or-two-sentence definition and an optional `_Avoid_:` line.
-
-Keep each definition under 3 sentences. Group related terms under one heading when they form a concept family.
+Write it in the format defined by `./references/glossary-format.md`.
 
 ## Write
 

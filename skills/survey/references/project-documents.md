@@ -10,11 +10,11 @@ Project facts and rules that every skill respects:
 - Commands (build, test, lint, run)
 - Conventions (directory structure, naming, test locations)
 - Protected zones (files that cannot be changed, patterns that cannot be used)
-- Known issues and limits
+- Known issues and limits. Add this section only when the repository documents them; do not invent one.
 
 ## GLOSSARY.md
 
-Project terminology. Once a term is defined, use the same name everywhere. Removes ambiguity (for example "User" vs "Account") and avoids re-explaining the same concept. Format: `./glossary-format.md`.
+Project terminology. Once a term is defined, use the same name everywhere. Removes ambiguity (for example "User" vs "Account") and avoids re-explaining the same concept. Created lazily, when the first project-specific term is settled. Format: `./glossary-format.md`. Read by `clarify`, `plan`, `execute`, `wayfinder`, `debug`, and `architecture`.
 
 ## ADRs (Architecture Decision Records)
 

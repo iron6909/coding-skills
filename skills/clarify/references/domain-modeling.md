@@ -2,7 +2,7 @@
 
 Actively build and sharpen the project's domain model while clarifying a request. Challenge terms, stress-test them with scenarios, and update `GLOSSARY.md` and ADRs inline.
 
-This discipline *changes* the model. Reading `GLOSSARY.md` to use its terms is a one-line habit every skill already has.
+This discipline *changes* the model. Reading `GLOSSARY.md` to use its terms is a one-line habit `clarify`, `plan`, `execute`, `wayfinder`, `debug`, and `architecture` all share.
 
 ## Files
 
