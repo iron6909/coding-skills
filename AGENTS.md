@@ -47,6 +47,7 @@ Other references have one owner:
 |-------|----------------|
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
+| `execute` | `finish.md` |
 
 ## Skill authoring rules
 

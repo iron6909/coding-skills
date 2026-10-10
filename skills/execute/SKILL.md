@@ -254,7 +254,9 @@ Deferred minors:
 - <one-liner>
 
 Remaining: <known gaps, or None>
-Next: integration or release decision
+Next: finish (merge, keep, or discard)
 ```
 
-Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate review skill.
+Read `./references/finish.md` and present its options. Delete `impl/` once the user has decided.
+
+Stop after implementation, task review, commits, verification, and the finish decision. Do not invoke a separate review skill.
