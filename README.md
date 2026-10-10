@@ -253,7 +253,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 ### plan 任务顺序错
 
-检查 `plan.md` 的任务列表和每个 task brief 的 `Depends on` / `Produces` 声明。
+检查 `plan.md` 的任务列表和每个 task brief 的 `Depends on` / `Interfaces`(Consumes/Produces)声明。
 
 ### task brief 丢了(`.cartoons/` 被清掉)
 

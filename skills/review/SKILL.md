@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review changes since a fixed point along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch, PR, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review changes since a review base along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch, PR, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -13,30 +13,30 @@ Use `review` when:
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
 
-Two-axis review of the diff between HEAD and a fixed point.
+Two-axis review of the diff between HEAD and a review base.
 
 - **Standards**: does the code follow this repo's documented coding standards?
 - **Spec**: does the code implement the originating spec?
 
 Both axes run in parallel when subagents are available.
 
-## Pin the fixed point
+## Pin the review base
 
-Ask for the fixed point if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
+Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
 
 Capture the diff command once:
 
 ```bash
-git diff <fixed-point>...HEAD
+git diff <review-base>...HEAD
 ```
 
 Capture commits:
 
 ```bash
-git log <fixed-point>..HEAD --oneline
+git log <review-base>..HEAD --oneline
 ```
 
-Before continuing, confirm the fixed point resolves and the diff is non-empty.
+Before continuing, confirm the review base resolves and the diff is non-empty.
 
 ## Identify the spec source
 
@@ -44,7 +44,7 @@ Look for the originating spec in this order:
 
 1. A path the user passed as an argument
 2. `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` matching the branch name or a commit scope
-3. Another spec or design document under `docs/` matching the branch name
+3. Another spec-like document under `docs/` matching the branch name
 4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
 
 ## Identify the standards sources
@@ -103,7 +103,7 @@ The reviewer's label is advice. Your grading is the gate.
 Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
 
 ```markdown
-# Review — <fixed-point>...HEAD
+# Review — <review-base>...HEAD
 
 ## Standards
 - [Blocking|Important|Minor] <file>:<line> — <finding>
@@ -128,7 +128,7 @@ When the fixes are done, run one scoped re-check of the changed lines against th
 ## Completion report
 
 ```text
-Review: <fixed-point>...HEAD
+Review: <review-base>...HEAD
 Report: <path of the review file written above>
 Standards: <N findings, M fixed>
 Spec: <match | N gaps | no spec available>

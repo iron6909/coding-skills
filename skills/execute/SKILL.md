@@ -164,9 +164,10 @@ Check:
 Classify each finding:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
+- **Important:** a usability issue, poor error handling, an accessibility gap, or a significant performance hit inside the task. Fix it before commit.
 - **Minor:** useful cleanup that is outside the task. Record it and leave it unchanged.
 
-If the review finds a blocking issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
+If the review finds a Blocking or Important issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
 
 Allow at most **5 task review-fix rounds** for one task. One round contains one fix pass, fresh checks, and one review of the changed scope.
 
@@ -180,7 +181,7 @@ At round 5, classify every open finding:
 - **Real but outside the task:** record it as deferred follow-up and continue only if it does not block downstream work.
 - **Real and load-bearing:** stop execution and report the finding, its impact, and the smallest decision needed from the user.
 
-A review passes only when every blocking finding is fixed, explicitly ruled out, or deferred under these rules. Do not commit while a real load-bearing finding remains open.
+A review passes only when every Blocking and Important finding is fixed, explicitly ruled out, or deferred under these rules. Do not commit while a real load-bearing finding remains open.
 
 ## Task commit
 

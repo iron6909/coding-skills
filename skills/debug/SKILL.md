@@ -66,8 +66,8 @@ Redact secrets, tokens, and personal data as `<REDACTED>` before showing any com
 
 **Large fix** (multiple files, interface change, or unclear scope):
 - Stop Phase 4.
-- Write a short brief in the conversation: the confirmed root cause, the approach, and the affected files. Do not save it as a document.
-- Recommend the next skill: `clarify` to turn the brief into an approved spec, then `plan`, then `execute`. Do not invoke them.
+- Write a short summary in the conversation: the confirmed root cause, the approach, and the affected files. Do not save it as a document.
+- Recommend the next skill: `clarify` to turn the summary into an approved spec, then `plan`, then `execute`. Do not invoke them.
 
 Never route a small fix through `clarify`, `plan`, or `execute`.
 

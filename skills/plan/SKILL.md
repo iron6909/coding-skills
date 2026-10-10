@@ -86,7 +86,7 @@ A tracer-bullet task is a vertical slice that cuts through all layers to deliver
 
 Tracer-bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
 
-When a task produces an interface another task consumes, declare it explicitly in the task brief's **Produces** and **Consumes** sections. This records the dependencies between tasks.
+When a task produces an interface another task consumes, declare it explicitly in the **Interfaces** section of both task briefs (Consumes in one, Produces in the other), and name it in the plan's Tasks line. This records the dependencies between tasks.
 
 ### Order tasks by dependency
 
@@ -98,7 +98,7 @@ When a task produces an interface another task consumes, declare it explicitly i
 
 Do not make separate tasks for every layer when one slice can prove the behavior.
 
-Each action does one thing and has a checkable result. Use a test-first order when the project supports it:
+Each step does one thing and has a checkable result. Use a test-first order when the project supports it:
 
 1. write the test or verification case
 2. run it and record the expected failure when applicable
@@ -125,14 +125,12 @@ Each brief contains only what that task needs:
 
 **Depends on:** <task numbers or None>
 
-**Produces:** <interface or behavior later tasks use>
-
 ## Steps
 
-- [ ] 1: <one action>
-  - Check: `<command>` → <expected result>
-- [ ] 2: <one action>
-  - Check: `<command>` → <expected result>
+1. <one step>
+   - Check: `<command>` → <expected result>
+2. <one step>
+   - Check: `<command>` → <expected result>
 
 ## Files
 
@@ -180,8 +178,8 @@ After approval, create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a l
 
 ## Final verification
 
-- [ ] Run: `<focused command>` → <expected result>
-- [ ] Run: `<broader command>` → <expected result>
+- Run: `<focused command>` → <expected result>
+- Run: `<broader command>` → <expected result>
 ```
 
 Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
@@ -200,7 +198,7 @@ Before reporting the plan, check it against the spec:
 - error, empty, boundary, and compatibility cases are covered when relevant
 - commands work from the repository root
 - no task contains an unresolved product decision
-- no action is vague or combines unrelated changes
+- no step is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
 
 Fix the plan before presenting it. If a gap requires a product decision, stop and update the spec instead (`clarify` revises an approved spec).
