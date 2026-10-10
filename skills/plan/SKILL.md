@@ -77,7 +77,7 @@ A tracer-bullet task is a vertical slice that cuts through all layers to deliver
 
 Tracer-bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
 
-When a task produces an interface another task consumes, declare it explicitly in the task brief's **Produces** and **Consumes** sections. This forms the dependency graph.
+When a task produces an interface another task consumes, declare it explicitly in the task brief's **Produces** and **Consumes** sections. This records the dependencies between tasks.
 
 ### Order tasks by dependency
 
@@ -168,14 +168,6 @@ Create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index
 1. Task 1: <short name> — depends on: None — produces: <interface>
 2. Task 2: <short name> — depends on: Task 1 — produces: <interface>
 3. Task 3: <short name> — depends on: Task 2 — produces: <interface>
-
-## Dependency graph
-
-```mermaid
-graph TD
-  A[Task 1] --> B[Task 2]
-  B --> C[Task 3]
-```
 
 ## Final verification
 

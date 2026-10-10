@@ -21,7 +21,7 @@ For planned work, create an isolated impl directory:
 .cartoons/YYYY-MM-DD-<semantic-name>/impl/
 ```
 
-`.cartoons/` is temporary and gitignored. It holds only `impl/` (the ledger and task briefs) for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
+`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 
@@ -33,7 +33,9 @@ If the ledger exists and its first line names this plan, tasks with `Task <N>: c
 
 For a small change, keep ledger facts in conversation. Do not create impl or ledger files.
 
-Read `impl/task-N.md` briefs for task details. The plan.md file is a lightweight index.
+Read `impl/task-N.md` for task details. `plan.md` is a lightweight index.
+
+If `impl/task-N.md` is missing (a new clone, a lost session, or a deleted `.cartoons/`), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`.
 
 ## Preconditions
 
@@ -42,6 +44,7 @@ Before changing code:
 - read `GLOSSARY.md` (if it exists) to use project terms from the glossary in all code and commit messages
 - read applicable `AGENTS.md` files
 - read the execution input
+- check the current branch: if it is the default branch (main or master), get the user's consent to work there or create `feature/YYYY-MM-DD-<semantic-name>` first
 - check for existing ledger and resume state
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
@@ -56,7 +59,7 @@ Keep the review base unchanged across tasks and resumed sessions. Preserve initi
 
 ## Pre-flight scan
 
-Before Task 1, read plan.md for the dependency graph and final verification commands. Then scan task briefs for interface conflicts:
+Before Task 1, read plan.md for the task dependencies and final verification commands. Then scan task briefs for interface conflicts:
 
 - For each task that consumes what an earlier task produces, check the interface match
 - Record one ledger row per shared interface: task numbers, what is produced vs consumed, finding
@@ -77,7 +80,7 @@ Work through planned tasks in dependency order. For a small change, apply the sa
 
 For each task:
 
-1. Write `Task <N>: started (base <commit7>)` to ledger.
+1. Write the task-start ledger entry.
 2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies.
 3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
@@ -87,11 +90,11 @@ For each task:
 8. Run the task review below.
 9. Fix every valid review finding and repeat the affected checks.
 10. Commit the task only after review passes and checks are fresh.
-11. Write `Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
+11. Write the task-complete ledger entry.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Task <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
+If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue.
 
 ## Ledger entries
 
@@ -111,6 +114,11 @@ Task <N>: started (base <commit7>)
 **Ruling:**
 ```text
 Task <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
+```
+
+**Brief rebuilt:**
+```text
+Task <N>: brief rebuilt from plan.md
 ```
 
 **Task complete:**
@@ -174,7 +182,7 @@ A review passes only when every blocking finding is fixed, explicitly ruled out,
 After the review passes and fresh checks succeed:
 
 - inspect `git diff --check` and `git status`
-- commit only the task files and tests
+- commit only the task files and tests, with the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits (`type(scope): subject`)
 - keep unrelated user changes out of the commit
 - record the commit identifier and check results in the execution report
 
@@ -182,20 +190,20 @@ Do not push or publish. The user controls integration and release.
 
 ## Final whole-change review
 
-Runs ONCE after all tasks pass task review and have commits. Reviews the complete change: `git diff <review-base> HEAD` plus uncommitted task changes. Exclude recorded initial user changes.
+Runs ONCE after all tasks pass task review and have commits. A small change is one task, so its task review is the final review: skip this section. Reviews the complete change: `git diff <review-base> HEAD` plus uncommitted task changes. Exclude recorded initial user changes.
 
 Final review checks cross-task integration, interfaces, and acceptance conditions that individual task reviews cannot see.
 
 1. Run the full test, lint, build, and type-check commands named in `plan.md` Final verification (for a small change, the checks the request names).
-2. Use a fresh read-only reviewer for the complete change. The reviewer checks the spec, the plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
+2. Use a fresh read-only reviewer for the complete change. Give it the plan's Review focus. The reviewer checks the spec, the plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
 3. Classify findings as **Blocking**, **Important**, or **Minor**.
 4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the spec.
 5. Run the affected checks and the full suite again after the fix group.
 6. Perform exactly one scoped re-review of the final review fix group.
-7. If Blocking or Important findings remain, do not start another fix wave. Report each finding, its impact, and the decision needed from the user. Do not publish.
+7. If Blocking or Important findings remain, do not start another fix wave. Report each finding, its impact, and the decision needed from the user.
 8. If no Blocking or Important finding remains, run `git diff --check`, inspect `git status`, and commit final review fixes separately.
 
-The final review does not replace task review. It checks integration defects that individual task reviews cannot see. It has one fix wave and one scoped re-review. Do not publish or invoke a separate review skill.
+The final review does not replace task review. It checks integration defects that individual task reviews cannot see. It has one fix wave and one scoped re-review. Do not invoke a separate review skill.
 
 ## Tests and verification
 
@@ -210,7 +218,7 @@ Before claiming completion:
 - check the full diff and status
 - confirm each acceptance condition
 - confirm every task passed review and has a commit
-- confirm the final whole-change review passed and its fixes have a commit
+- confirm the final whole-change review passed and its fixes have a commit (a small change skips it)
 - confirm no task exceeded 5 review-fix rounds
 - report failures by command and exact error
 
@@ -235,7 +243,7 @@ Report:
 ```text
 Implemented: <plan path or small-change request>
 Tasks: <task count>, each reviewed and committed
-Final review: <passed, with review-fix commit if needed>
+Final review: <passed, with review-fix commit if needed; "n/a" for a small change>
 Checks: <commands and results>
 Changed: <short file list>
 
@@ -249,4 +257,4 @@ Remaining: <known gaps, or None>
 Next: integration or release decision
 ```
 
-Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate review skill or publish changes.
+Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate review skill.
