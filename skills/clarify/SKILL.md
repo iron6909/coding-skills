@@ -10,6 +10,16 @@ Turn an unclear development request into an approved spec. Save it in `docs/feat
 
 Do not write product code, create `plan.md`, or start implementation.
 
+## The project's specification system
+
+Check `AGENTS.md` and `CLAUDE.md` before choosing a path. If either names a specification system this project already uses (OpenSpec, Spec Kit, Specify, or similar), write to that system's artifact format and storage conventions and do not create a second `spec.md` beside it.
+
+The split is fixed: this skill owns the clarification, the content of the spec, and the approval gate; the external system owns how the approved spec is represented and where it lives.
+
+When no such system is named, use the default format under Save.
+
+If the project's system cannot express something the approval gate requires — observable acceptance conditions, or the testing boundary — say so and settle it in the conversation rather than dropping it.
+
 ## Choose a path
 
 Pick the smallest path that fits. The path decides what you produce and how much ceremony you use.
@@ -255,5 +265,7 @@ Next: plan
 ```
 
 For a revised spec, report `Spec updated: <path>` and use the `Next:` rule above. For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
+
+When the project uses another specification system, report its artifact path instead of the default one, and commit through that system's own flow rather than the `docs(spec):` subjects below.
 
 Stop after saving. Do not automatically invoke `plan` or `execute`.

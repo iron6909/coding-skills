@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Plan
 
-Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an implementation plan.
+Turn an approved spec into an implementation plan. The default spec path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`; when the project uses another specification system, plan from that artifact instead.
 
 Do not write product code or start implementation.
 
@@ -33,7 +33,7 @@ Read `output-tier.md` for the floors, the "no behavior change" test, and the cho
 Find the approved spec before planning.
 
 - Read the applicable `AGENTS.md` files.
-- Read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` in full.
+- Read the approved spec in full. The default path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
 - Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
 - If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
 
