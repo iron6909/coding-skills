@@ -10,6 +10,8 @@ Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an impl
 
 Do not write product code or start implementation. Commit only `plan.md`.
 
+**Load the Definition of Done**: read `./references/definition-of-done.md`. The plan must name, in its Final verification section, the commands that decide each DoD item — the plan is where those commands are chosen, so a DoD item with no command behind it becomes an untestable task.
+
 ## Preconditions
 
 Find the approved spec before planning.
@@ -200,8 +202,32 @@ Before reporting the plan, check it against the spec:
 - no task contains an unresolved product decision
 - no step is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
+- every applicable Definition of Done item has a command in Final verification that decides it
 
 Fix the plan before presenting it. If a gap requires a product decision, stop and update the spec instead (`clarify` revises an approved spec).
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The tasks are obvious, I'll skip the briefs" | Briefs are what `execute` reads instead of the whole plan. Without them it rebuilds them from a thin plan. |
+| "I'll decide this detail during implementation" | An unresolved product decision in a task is what stalls `execute` mid-task. Settle it or send it back to `clarify`. |
+| "One big task is simpler than five" | A task is one independently testable unit. One big task cannot be reviewed, committed, or reverted on its own. |
+| "I'll add the refactor while planning this" | Unrequested scope. The plan covers what the spec asks for. |
+| "The spec says it, so I don't need to check the code" | The spec says what should happen; the code says what does. A plan that ignores the code is wrong about the files. |
+| "Approval of the spec covers the plan" | It does not. The plan needs its own approval before anything is written. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- planning from a draft spec, or one with unresolved decisions
+- a task with no check that could fail
+- a task that cannot be committed on its own
+- interfaces named differently in two briefs
+- a horizontal task ("all models", "all routes") replacing a tracer bullet
+- `plan.md` past 100 lines, or carrying task detail that belongs in a brief
+- writing `plan.md` or briefs before the user approved the draft
 
 ## Approval gate
 

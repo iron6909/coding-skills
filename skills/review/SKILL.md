@@ -20,6 +20,8 @@ Two-axis review of the diff between HEAD and a review base.
 
 Both axes run in parallel when subagents are available.
 
+**Load the Definition of Done**: read `./references/definition-of-done.md`. A DoD item the diff breaks is a finding, even when no documented standard names it explicitly. State at the end of the report which DoD applied.
+
 ## Pin the review base
 
 Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
@@ -120,6 +122,40 @@ Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md`
 ```
 
 Present the two axes separately. Do not merge or reorder them.
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The diff is small, it doesn't need a review" | Small diffs still carry the exact bugs a review catches, and they are cheap to read. |
+| "The tests pass, so the code is correct" | Tests check the behavior someone thought to write. The Spec axis checks the rest. |
+| "I wrote it, I know it's fine" | That is exactly the reviewer's blind spot. Use a fresh read-only reviewer. |
+| "No documented standards, so anything goes" | Then the smell baseline applies. Standalone code is not exempt. |
+| "The spec is old, the code has moved on" | A mismatch is the finding. Report it; do not silently prefer the code. |
+| "I'll fix these findings while I'm here" | This skill reviews. Fixes are a separate, user-approved step. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- a review base that does not resolve, or a diff that is empty
+- findings reported without a file and line where one applies
+- the two axes merged into one list
+- the reviewer's severity label accepted without re-grading
+- a report overwritten instead of suffixed
+- code changed during the review, before the user approved fixes
+- a Standard cited that the repository does not actually document
+
+## Verification
+
+Confirm the Definition of Done loaded above, then check the review itself:
+
+- [ ] the review base resolves and the diff is non-empty
+- [ ] both axes ran, or the Spec axis is explicitly marked unavailable
+- [ ] every finding carries a severity you assigned, not the reviewer's
+- [ ] every finding that points at code names a file, and a line where one applies
+- [ ] the report was written to `.cartoons/`, never to the repository root
+- [ ] no code changed unless the user asked for fixes
 
 ## Fixes
 

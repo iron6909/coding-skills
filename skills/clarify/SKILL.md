@@ -97,6 +97,40 @@ A spec is ready when it states:
 
 The user approves the test entry points together with the spec. Later skills test only through approved entry points.
 
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The request is clear, skip the questions" | A clear request still hides scope, non-goals, and acceptance conditions. One question is cheap; a wrong spec is not. |
+| "I'll write the spec and fix the details during implementation" | Unsettled detail becomes an unresolved decision that stalls `execute` mid-task. |
+| "Approval of the idea is approval of the spec" | The user approves text they have seen. Write nothing before they see the draft. |
+| "This is obviously one path, skip the choice" | Picking the path decides the ceremony. Take the heavier path when unsure. |
+| "I'll record this guess as a decision for now" | A guess recorded as a decision is what a later reader trusts. Leave it unresolved and ask. |
+| "There's no need for a testing boundary, it's small" | The testing boundary names the entry points later skills must test through. It is what makes the spec testable. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- writing `spec.md` before the user approved the draft
+- asking more than one question per message
+- asking for a repository fact instead of reading the code
+- a Spike that does not name the specific feature it unblocks
+- two specs for the same work, or a second directory for a continued feature
+- implementation steps or a file-by-file task list in the spec (that is `plan`'s)
+- the draft check running after approval instead of before
+
+## Verification
+
+Confirm before saving:
+
+- [ ] the chosen path matches the request — Bounded for local, Architectural for cross-module, Spike only when feasibility blocks the spec
+- [ ] the draft check ran before approval, not after
+- [ ] the user approved the exact text being saved
+- [ ] the content list under Approval gate is satisfied
+- [ ] experiment code stayed outside the project, for a Spike
+- [ ] the commit stages only what this skill produced
+
 ## Save
 
 After approval, create the directory and write the file:

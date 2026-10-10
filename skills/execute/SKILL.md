@@ -54,6 +54,8 @@ Before changing code:
 
 **Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the test entry points the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
 
+**Load the Definition of Done**: read `./references/definition-of-done.md` before declaring any task complete. Every task must satisfy both the project-wide DoD and its own acceptance conditions.
+
 Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
 
 Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
@@ -216,16 +218,13 @@ Use the repository's existing test tools. Prefer standard library and existing d
 
 For each behavior change: the TDD loop (loaded above), then the affected checks, then the full suite.
 
-Before claiming completion:
+Before claiming completion, confirm the Definition of Done loaded above, then confirm the execution-specific conditions:
 
-- run every final verification command (plan.md Final verification, or the checks a small-change request names)
-- read the command output and exit status
-- check the full diff and status
-- confirm each acceptance condition
-- confirm every task passed review and has a commit
-- confirm the final whole-change review passed and its fixes have a commit (a small change skips it)
-- confirm no task exceeded 5 review-fix rounds
-- report failures by command and exact error
+- every task passed review and has a commit
+- the final whole-change review passed and its fixes have a commit (a small change skips it)
+- no task exceeded 5 review-fix rounds
+
+Report each Final verification command with its result, and report failures by command and exact error.
 
 Do not claim a test, build, review, or fix passed from an earlier run or an agent report. Fresh evidence is required.
 
@@ -238,6 +237,30 @@ When output is large, save it to a temporary report and read only the relevant t
 If an agent fails, inspect any partial report. Continue in the main process or reassign the narrow read-only task. Check all findings against repository evidence.
 
 Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, or publish unless the user explicitly asks.
+
+## Common rationalizations
+
+These are the reasons to skip a step. Every one of them is wrong here.
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The change is too small to need a test" | Small changes break things too. The TDD loop is cheapest on small changes. |
+| "I'll commit these tasks together, they're related" | One commit per task is what makes a task revertable. Squashing loses the boundary. |
+| "The check passed a minute ago, it still passes" | Fresh evidence only. Re-run it after the last edit. |
+| "The review is just me checking my own work" | That is what the reviewer is for. Use one when the task is large enough. |
+| "This extra fix is obviously right, I'll fold it in" | Unrequested scope. Record it and leave it. |
+| "The test is wrong, the code is right" | Fix the code or record a ruling. Never weaken a test to match behavior. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- writing implementation before a failing test
+- editing a file the task brief does not name
+- committing with a failing or unread check
+- a task accumulating fixes beyond 5 review-fix rounds
+- describing work as done without a command and its output behind it
+- losing the review base, or reviewing against a moving base
 
 ## Completion report
 
