@@ -43,6 +43,7 @@ Before changing code:
 
 - read `GLOSSARY.md` (if it exists) to use project terms from the glossary in all code and commit messages
 - read applicable `AGENTS.md` files
+- read the ADRs under `docs/adr/` that touch the modules in scope; a recorded decision is a constraint, not a suggestion
 - read the execution input
 - check the current branch: if it is the default branch (main or master), get the user's consent to work there or create `feature/YYYY-MM-DD-<semantic-name>` first
 - check for existing ledger and resume state

@@ -4,17 +4,11 @@ Three kinds of long-lived project documents. `survey` creates and maintains the 
 
 ## AGENTS.md
 
-Project facts and rules that every skill respects:
-
-- Tech stack (languages, frameworks, tools)
-- Commands (build, test, lint, run)
-- Conventions (directory structure, naming, test locations)
-- Protected zones (files that cannot be changed, patterns that cannot be used)
-- Known issues and limits. Add this section only when the repository documents them; do not invent one.
+Project facts and rules that every skill respects. `survey`'s SKILL.md holds the section template; this file only says what belongs in it: facts the repository supports, never generic engineering advice.
 
 ## GLOSSARY.md
 
-Project terminology. Once a term is defined, use the same name everywhere. Removes ambiguity (for example "User" vs "Account") and avoids re-explaining the same concept. Created lazily, when the first project-specific term is settled. Format: `./glossary-format.md`. Read by `clarify`, `plan`, `execute`, `wayfinder`, `debug`, and `architecture`.
+Project terminology. Once a term is defined, use the same name everywhere. Removes ambiguity (for example "User" vs "Account") and avoids re-explaining the same concept. Created lazily, when the first project-specific term is settled. Format: `./glossary-format.md`. Every skill that writes code, plans, or documents reads it first and uses its terms; `clarify` also updates it.
 
 ## ADRs (Architecture Decision Records)
 

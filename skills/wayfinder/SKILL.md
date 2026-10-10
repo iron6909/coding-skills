@@ -152,7 +152,15 @@ After writing the initiative and feature stubs:
 2. Wait for the user to pick a feature.
 3. When the user says "work on feature-N", read that stub and `index.md`, then use `clarify` to write that feature's spec. The spec records `**Initiative stub:**` under its title, and the stub's `## Spec` section gets the spec path.
 
-Do not start work until the user picks a feature.
+```text
+Initiative saved: docs/initiatives/YYYY-MM-DD-<initiative-name>/
+Features: <N> stubs written
+Commit: <short hash>
+Start with feature-1 (or the first unblocked feature).
+Next: clarify (for the feature the user picks)
+```
+
+Stop and wait. Do not start work until the user picks a feature.
 
 ## Mid-flight updates
 

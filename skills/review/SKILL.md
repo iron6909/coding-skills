@@ -56,6 +56,8 @@ Read repo files that document how code should be written:
 - `AGENTS.md` conventions section
 - `.editorconfig`, linter configs
 
+Also read `GLOSSARY.md` and the ADRs touching the changed modules: a change that contradicts a settled term or a recorded decision is a finding on the Standards axis.
+
 When no documented standards exist, use the **smell baseline**: Fowler code smells from _Refactoring_ ch.3.
 
 **The repo overrides**: where documented standards endorse something the baseline flags, suppress the smell.
@@ -100,7 +102,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 ## Write the report
 
-Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
+Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
 ```markdown
 # Review — <review-base>...HEAD

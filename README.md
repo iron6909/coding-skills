@@ -47,6 +47,7 @@ graph TD
     K -->|选定 feature| E
     M -->|选定候选| E
     H -->|大型修复| E
+    L -->|答案要变成功能| E
 
     style B fill:#e1f5ff
     style G fill:#d4edda
@@ -89,12 +90,14 @@ graph TD
 │   ├── research/                        # 调研报告(永久,research 产出)
 │   └── adr/                             # 架构决策记录(惰性创建)
 ├── .cartoons/                           # 临时,不提交
-│   └── 2025-01-15-user-auth/
-│       ├── impl/
-│       │   ├── progress.md             # 执行账本
-│       │   ├── task-1.md               # 任务详细说明
-│       │   └── task-2.md
-│       └── review-a1b2c3d.md           # review 报告
+│   ├── 2025-01-15-user-auth/
+│   │   ├── impl/
+│   │   │   ├── progress.md             # 执行账本
+│   │   │   ├── task-1.md               # 任务详细说明
+│   │   │   └── task-2.md
+│   │   └── review-a1b2c3d.md           # review 报告
+│   └── architecture/
+│       └── architecture-2025-01-15-billing.md  # architecture 报告
 ├── GLOSSARY.md                          # 术语表(惰性创建)
 └── AGENTS.md                            # 项目事实
 ```

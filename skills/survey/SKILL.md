@@ -163,4 +163,11 @@ Report:
 - unknowns or conflicts
 - whether subagents were used for read-only exploration
 
+```text
+Survey complete.
+Files: <AGENTS.md path, GLOSSARY.md path if created> — <commit short hash>
+Unknowns: <list, or None>
+Next: clarify (or execute for a ready small change)
+```
+
 Stop after the survey. Let `clarify`, `plan`, `execute`, or `debug` handle the next development step.

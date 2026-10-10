@@ -32,7 +32,7 @@ If `plan.md` already exists in the spec's directory, this is a revision, usually
 
 ## Explore
 
-Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts.
+Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts. Read the ADRs under `docs/adr/` that touch the affected modules: a plan that contradicts a recorded decision needs to say so, not silently undo it.
 
 Read only the code needed to make the plan precise:
 

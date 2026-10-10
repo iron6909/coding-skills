@@ -64,10 +64,10 @@ Rules:
 
 ## 4. Report
 
-Write the candidates to `.cartoons/architecture/review-<YYYY-MM-DD>.md` (temporary and gitignored). Never write an architecture report into the repository. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
+Write the candidates to `.cartoons/architecture/architecture-<YYYY-MM-DD>-<scope-slug>.md` (temporary and gitignored). If the file exists, add a numeric suffix; never overwrite an earlier report. Never write an architecture report into the repository. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
 
 ```text
-Architecture review: .cartoons/architecture/review-<YYYY-MM-DD>.md
+Architecture review: .cartoons/architecture/architecture-<YYYY-MM-DD>-<scope-slug>.md
 Scope: <paths or area>
 Candidates: <N> (Strong: <n>, Worth exploring: <n>, Speculative: <n>)
 Top recommendation: <one line>

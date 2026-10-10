@@ -10,7 +10,7 @@ Fix the root cause, never the symptom. Do not propose fixes before Phase 1 is co
 
 For a clear bug, work from one evidence-based hypothesis. For an unclear bug, rank 3-5 hypotheses before adding probes.
 
-Read `GLOSSARY.md` (if it exists) and the applicable `AGENTS.md` files first, and use their terms in the fix and the commit message.
+Read `GLOSSARY.md` (if it exists), the applicable `AGENTS.md` files, and any ADR touching the failing area first, and use their terms in the fix and the commit message.
 
 ## Phase 1: Root cause investigation
 
