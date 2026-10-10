@@ -14,7 +14,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `clarify`: resolve the request, scope, spec, constraints, and acceptance checks.
 - `plan`: turn an approved spec into small, testable tasks.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
-- `debug`: reproduce, isolate, diagnose, fix, review, commit, and regression-test a failure.
+- `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `review`: independently review another branch, a PR, or historical commits.
 - `wayfinder`: break work that is too large for one session into an initiative of features.
 - `prototype`: build a throwaway prototype to answer a design question.
