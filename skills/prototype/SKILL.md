@@ -27,7 +27,7 @@ Do NOT use it for:
 Confirm with the user:
 1. The design question you are answering
 2. What "good enough" means (rough behavior, not production quality)
-3. Where to save it: a directory outside the project, such as a new folder in the system temp directory. Never inside the repository unless the user chooses it.
+3. Where it lives: a directory outside the project, such as a new folder in the system temp directory. The one exception is a Look prototype that has to change an existing page; it goes on a throwaway branch (see Look form). Never on the user's working branch.
 
 Pick the form by the question:
 - **Logic**: "is this state model or behavior right?" Use for backend modules, algorithms, rules, protocols.
@@ -62,7 +62,7 @@ If the question is ambiguous and the user is not available, choose by the surrou
 
 - Build three variants by default, five at most
 - The variants must differ in structure: layout, information hierarchy, or main affordance. Three tweaks of the same card grid are one variant.
-- Prefer changing an existing page over building a new one
+- Prefer changing an existing page over building a new one, so the variants use the real styles and routes. That needs the repository, so work on a throwaway branch `prototype/<semantic-name>`: start from a clean working tree (stop and ask if it is not), and check out the branch before editing. Commits on it are scratch and never merged. If the page can be rebuilt standalone with little effort, use the temp directory instead.
 - Switch variants with a `?variant=` query parameter and a small floating switcher
 
 ## Run and capture
@@ -78,12 +78,12 @@ If the question is ambiguous and the user is not available, choose by the surrou
 Prototype: <question>
 Answer: <what you learned>
 Evidence: <output/measurement>
-Location: <path> (throwaway, safe to delete)
+Location: <path, or branch prototype/<name>> (throwaway, safe to delete)
 Limitations: <what this prototype does not prove>
 Recommendation: <next step if the user wants to build it for real>
 ```
 
-Do not commit the prototype and do not move it into the project. The user decides whether to keep the answer; if the answer should feed a feature, suggest `clarify` and carry the answer in as evidence. Do not turn it into production code without approval.
+Do not commit the prototype to the user's own branch and do not move it into the project. When a Look prototype used a throwaway branch, switch back to the original branch after the report and leave the throwaway branch in place; delete it only if the user asks. The user decides whether to keep the answer; if the answer should feed a feature, suggest `clarify` and carry the answer in as evidence. Do not turn it into production code without approval.
 
 Stop after the report. Do not invoke `clarify` or `execute`.
 

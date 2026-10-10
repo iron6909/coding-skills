@@ -71,7 +71,7 @@ deleted document is gone for good.
 
 This covers documents only. Scratch that is not a document is still cleaned up:
 throwaway probes and logs, a prototype outside the project, and a branch the
-user explicitly asks to drop.
+user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
 
 ## Output locations skills must use
 
@@ -96,7 +96,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `wayfinder` | the initiative directory |
 | `research` | the report |
 | `execute`, `debug` | code, one commit per task or fix |
-| `prototype` | nothing (throwaway code) |
+| `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
 
 ## Terminology

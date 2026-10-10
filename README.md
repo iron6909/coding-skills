@@ -65,7 +65,7 @@ graph TD
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **review** | 分支/PR 审查 | Standards + Spec 双轴报告(`.cartoons/`) | Fowler smells + spec 对照;修复需你同意 |
 | **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
-| **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外) | 逻辑型 / 外观型 |
+| **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
 
@@ -267,7 +267,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 **文档一律不删**:`spec.md`/`spike.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 与 research 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
 
-**不是文档的临时物照常清理**:调试探针和日志、项目外的抛弃式原型,以及你在 `finish` 里明确选择丢弃的分支。
+**不是文档的临时物照常清理**:调试探针和日志、项目外的抛弃式原型,以及你明确要求丢弃的分支(包括 `prototype/<name>` 一次性分支和 `finish` 里选择丢弃的分支)。
 
 ### design 还是 spec?
 
