@@ -150,4 +150,4 @@ Review and commit: <result>
 Remaining: <known gap or None>
 ```
 
-Do not claim success without fresh test output. If no correct regression-test seam exists, state that limit and the verification used instead.
+Do not claim success without fresh test output. If no correct regression-test seam exists (a seam is the public boundary a test enters through), state that limit and the verification used instead.

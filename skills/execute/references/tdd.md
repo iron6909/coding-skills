@@ -26,7 +26,7 @@ Do not add a test framework or dependency for this workflow. Use standard librar
 
 ## One slice at a time
 
-Work in vertical slices. One test → one implementation → repeat. Each test is a tracer bullet that responds to what the last cycle taught you.
+Work in vertical slices. One test → one implementation → repeat. Each cycle responds to what the last one taught you.
 
 Do not write all tests first, then all implementation. Bulk tests verify imagined behavior. The tests go insensitive to real changes.
 

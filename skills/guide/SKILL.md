@@ -1,14 +1,14 @@
 ---
 name: guide
-description: Route a development request to the smallest suitable top-level skill, then hand off to it.
+description: Route a development request to the smallest suitable skill, then hand off to it.
 disable-model-invocation: true
 ---
 
 # Guide
 
-Choose the smallest suitable top-level skill for the user's current request, then follow that skill immediately.
+Choose the smallest suitable skill for the user's current request, then follow that skill immediately.
 
-## Top-level skills
+## Skills
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `clarify`: resolve the request, scope, spec, constraints, and acceptance checks.
@@ -29,7 +29,7 @@ The underlying mechanisms, such as TDD and subagents, are not routing targets.
 
 Use the first matching rule:
 
-1. If the user explicitly names a top-level skill, use it.
+1. If the user explicitly names a skill, use it.
 2. If the user reports a failure, error, broken behavior, or regression, use `debug`.
 3. If the user asks to review a branch, PR, or past commits that are not part of the current `execute` run (signals: "review this branch", "review PR", "audit these commits"), use `review`.
 4. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.
@@ -56,7 +56,7 @@ After choosing a skill:
 6. Do not stop after printing the route.
 7. Do not invoke `guide` again during handoff.
 
-The selected skill owns the next action and its user checkpoints. `execute` also owns task-level review and commit gates. Do not start another top-level skill after it finishes unless the selected skill explicitly directs that transition and the user has approved it.
+The selected skill owns the next action and its user checkpoints. `execute` also owns task-level review and commit gates. Do not start another skill after it finishes unless the selected skill explicitly directs that transition and the user has approved it.
 
 ## Output before handoff
 

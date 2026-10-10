@@ -108,7 +108,7 @@ Each fix follows TDD: write test that reproduces finding, confirm RED, fix, conf
 
 Write findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
 
-Record in ledger format:
+Record the report in this format:
 
 ```markdown
 # Review — <fixed-point>...HEAD

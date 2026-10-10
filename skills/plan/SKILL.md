@@ -87,7 +87,7 @@ When a task produces an interface another task consumes, declare it explicitly i
 4. error paths and compatibility cases
 5. final verification
 
-Do not make separate steps for every layer when one slice can prove the behavior.
+Do not make separate tasks for every layer when one slice can prove the behavior.
 
 Each action does one thing and has a checkable result. Use a test-first order when the project supports it:
 
@@ -113,8 +113,6 @@ Each brief contains only what that task needs:
 
 ```markdown
 # Task <N>: <short name>
-
-**Base:** <commit that this task branches from>
 
 **Depends on:** <task numbers or None>
 

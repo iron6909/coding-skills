@@ -6,10 +6,10 @@ disable-model-invocation: true
 
 # Execute
 
-Use one of two execution briefs:
+Use one of two execution inputs:
 
-- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior. The plan defines step order.
-- **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No spec or plan file is required.
+- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior. The plan defines task order.
+- **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
 
@@ -41,11 +41,11 @@ Before changing code:
 
 - read `GLOSSARY.md` (if it exists) to use project terms from the glossary in all code and commit messages
 - read applicable `AGENTS.md` files
-- read the execution brief
+- read the execution input
 - check for existing ledger and resume state
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
-- confirm the brief has no unresolved product decisions
+- confirm the execution input has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
 **Load TDD discipline**: If the project supports tests, read `./references/tdd.md` and follow the RED → GREEN → REFACTOR cycle for every behavior change:
@@ -54,7 +54,7 @@ Before changing code:
 2. **GREEN**: Write the minimal code to pass that test
 3. **REFACTOR**: Clean up duplication, improve names, simplify — while tests stay green
 
-Repeat this cycle for each task step that adds or changes behavior. Configuration, documentation, or generated files use the strongest available check instead.
+Repeat this cycle for each step that adds or changes behavior. Configuration, documentation, or generated files use the strongest available check instead.
 
 Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
 
@@ -84,14 +84,14 @@ Work through planned tasks in dependency order. For a small change, apply the sa
 For each task:
 
 1. Write `Task <N>: started (base <commit7>)` to ledger.
-2. Read `impl/task-N.md` for the action list, files, interfaces, checks, and dependencies.
+2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies.
 3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
 5. Write or update the smallest behavior test when the project supports tests.
 6. Run the focused test and confirm the expected failure when adding new behavior.
 7. Implement the smallest change that passes the test.
 8. Run the focused test again.
-9. Run the affected test, lint, build, or type-check command named by the brief.
+9. Run the affected test, lint, build, or type-check command named by the task brief.
 10. Inspect the diff for scope creep, accidental files, and user data loss.
 11. Run the task review below.
 12. Fix every valid review finding and repeat the affected checks.
@@ -100,7 +100,7 @@ For each task:
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Task <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
+If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write `Task <N>: Ruling: <finding> — <decision> — cost if wrong: <cost>` to ledger, and continue.
 
 ## Ledger entries
 
@@ -146,12 +146,12 @@ If a small change loses conversation record, reconstruct boundary from Git and c
 
 Review runs after EACH task, before commit. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
 
-Task review checks ONE task's diff against its brief.
+Task review checks ONE task's diff against its task brief.
 
 Check:
 
-- the task implements the brief and no extra scope
-- changed files match the brief
+- the task implements the task brief and no extra scope
+- changed files match the task brief
 - interfaces, error paths, boundaries, and compatibility behavior are correct
 - tests assert observable behavior and cover the acceptance conditions
 - no security, accessibility, data-loss, or error-handling regression exists
@@ -160,7 +160,7 @@ Check:
 Classify each finding:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
-- **Non-blocking:** useful cleanup that is outside the task. Record it and leave it unchanged.
+- **Minor:** useful cleanup that is outside the task. Record it and leave it unchanged.
 
 If the review finds a blocking issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
 
@@ -195,16 +195,16 @@ Runs ONCE after all tasks pass task review and have commits. Reviews the complet
 
 Final review checks cross-task integration, interfaces, and acceptance conditions that individual task reviews cannot see.
 
-1. Run the full test, lint, build, and type-check commands from the brief.
-2. Use a fresh read-only reviewer for the complete change. The reviewer checks the brief, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
+1. Run the full test, lint, build, and type-check commands named in `plan.md` Final verification (for a small change, the checks the request names).
+2. Use a fresh read-only reviewer for the complete change. The reviewer checks the spec, the plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
 3. Classify findings as **Blocking**, **Important**, or **Minor**.
-4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the brief.
+4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the spec.
 5. Run the affected checks and the full suite again after the fix group.
 6. Perform exactly one scoped re-review of the final review fix group.
 7. If Blocking or Important findings remain, do not start another fix wave. Report each finding, its impact, and the decision needed from the user. Do not publish.
 8. If no Blocking or Important finding remains, run `git diff --check`, inspect `git status`, and commit final review fixes separately.
 
-The final review does not replace task review. It checks integration defects that individual task reviews cannot see. It has one fix wave and one scoped re-review. Do not publish or invoke a separate top-level review skill.
+The final review does not replace task review. It checks integration defects that individual task reviews cannot see. It has one fix wave and one scoped re-review. Do not publish or invoke a separate review skill.
 
 ## Tests and verification
 
@@ -220,7 +220,7 @@ For configuration, documentation, or generated files, use the strongest availabl
 
 Before claiming completion:
 
-- run every final command in the brief
+- run every final verification command (plan.md Final verification, or the checks a small-change request names)
 - read the command output and exit status
 - check the full diff and status
 - confirm each acceptance condition
@@ -264,4 +264,4 @@ Remaining: <known gaps, or None>
 Next: integration or release decision
 ```
 
-Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate top-level review skill or publish changes.
+Delete impl after completion. Stop after implementation, task review, commits, and verification. Do not invoke a separate review skill or publish changes.
