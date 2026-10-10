@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an implementation plan. Save it beside the spec as `plan.md`.
 
-Do not write product code, commit changes, or start implementation.
+Do not write product code or start implementation. Commit only `plan.md`.
 
 ## Preconditions
 
@@ -204,6 +204,10 @@ Before reporting the plan, check it against the spec:
 
 Fix the plan before reporting it. If a gap requires a product decision, stop and update the spec instead.
 
+## Commit
+
+Commit `plan.md`, which is permanent. Task briefs live in gitignored `.cartoons/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
+
 ## Finish
 
 After saving plan and briefs, report:
@@ -211,6 +215,7 @@ After saving plan and briefs, report:
 ```text
 Plan saved: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
 Task briefs: .cartoons/YYYY-MM-DD-<semantic-name>/impl/task-*.md (<N> tasks)
+Commit: <short hash>
 Next: execute
 ```
 

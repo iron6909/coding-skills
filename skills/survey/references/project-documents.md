@@ -25,4 +25,5 @@ Important choices and their reasons, in `docs/adr/`. Prevents re-opening decisio
 - **AGENTS.md / GLOSSARY.md / ADRs**: project-level, long-lived, shared by all features.
 - **`docs/features/`**: per-feature spec and plan. Permanent.
 - **`docs/initiatives/`**: multi-feature initiatives from `wayfinder`. Permanent.
+- **`docs/research/`**: cited research reports from `research`. Permanent.
 - **`.cartoons/`**: per-feature execution ledger and task briefs. Temporary and gitignored; delete after completion.

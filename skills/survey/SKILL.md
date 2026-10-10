@@ -153,11 +153,15 @@ Then write the smallest safe update. Do not overwrite surrounding user content. 
 
 The root `AGENTS.md` contains shared rules. A child `AGENTS.md` contains only that project's differences. `GLOSSARY.md` is always at the root (not per-child-project).
 
+## Commit
+
+Commit what this skill wrote. Stage only the `AGENTS.md` and `GLOSSARY.md` files you created or changed, and check `git diff --staged` before committing. Use `docs: survey project facts`, or the repository's own convention if it sets one. Do not push.
+
 ## Finish
 
 Report:
 
-- files created or updated (AGENTS.md, GLOSSARY.md if created)
+- files created or updated (AGENTS.md, GLOSSARY.md if created) and the commit hash
 - facts recorded
 - terms defined (if GLOSSARY.md was created)
 - unknowns or conflicts

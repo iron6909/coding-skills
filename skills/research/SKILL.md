@@ -133,7 +133,7 @@ For deep research (>3 sources, >15 minutes), suggest running as a background del
 I can run this research in the background while you continue other work. It will take about <estimate>. Want me to do that?
 ```
 
-If yes, delegate the full research brief to a read-only subagent (see `./references/subagent-dispatch.md`). If the harness has no delegation mechanism, tell the user and run it inline.
+If yes, delegate the investigation to a read-only subagent (see `./references/subagent-dispatch.md`). The subagent returns sourced findings; the main process writes and commits the report. If the harness has no delegation mechanism, tell the user and run it inline.
 
 ## Completion report
 
@@ -144,7 +144,9 @@ Sources: <N primary sources>
 Recommendation: <one-line summary>
 ```
 
-Do NOT commit the report automatically. User decides whether to keep it.
+## Commit
+
+Commit the saved report. Stage only the report file, check `git diff --staged`, and use `docs(research): add <topic>` or the repository's own convention. Do not push. Add the commit hash to the completion report.
 
 ## Example
 
