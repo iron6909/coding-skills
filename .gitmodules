@@ -19,3 +19,6 @@
 [submodule "refer/OpenSpec"]
 	path = refer/OpenSpec
 	url = git@github.com:Fission-AI/OpenSpec.git
+[submodule "refer/BMAD-METHOD"]
+	path = refer/BMAD-METHOD
+	url = git@github.com:bmad-code-org/BMAD-METHOD.git
