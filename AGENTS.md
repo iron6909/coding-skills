@@ -30,12 +30,13 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 ## Shared reference files
 
-Two files are used by several skills. The source is `shared/references/`; each consuming skill carries a synced copy.
+Several files are shared. The source is `shared/references/`; each consuming skill carries a synced copy.
 
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute` |
+| `tdd.md` | `execute`, `debug`, `review` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -46,7 +47,6 @@ Other references have one owner:
 |-------|----------------|
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
-| `execute` | `tdd.md` |
 
 ## Skill authoring rules
 

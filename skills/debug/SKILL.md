@@ -79,7 +79,7 @@ Complete this phase before attempting any fix.
 
 ### Small fix workflow
 
-1. **Create a failing test**. Write the simplest possible reproduction. Use the repository's test framework. Confirm the test fails before fixing. Follow red-green loop: failing test → minimal fix → passing test.
+1. **Create a failing test**. Read `./references/tdd.md` and follow it: write the simplest reproduction through a seam, confirm it fails, apply the minimal fix, and confirm it passes. Once it passes, revert the fix briefly to confirm the test fails, then restore the fix.
 
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 

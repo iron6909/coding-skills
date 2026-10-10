@@ -48,13 +48,7 @@ Before changing code:
 - confirm the execution input has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: If the project supports tests, read `./references/tdd.md` and follow the RED → GREEN → REFACTOR cycle for every behavior change:
-
-1. **RED**: Write or update the smallest failing test that proves the missing behavior
-2. **GREEN**: Write the minimal code to pass that test
-3. **REFACTOR**: Clean up duplication, improve names, simplify — while tests stay green
-
-Repeat this cycle for each step that adds or changes behavior. Configuration, documentation, or generated files use the strongest available check instead.
+**Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the seams the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
 
 Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
 
@@ -75,7 +69,7 @@ Before Task 1, read plan.md for the dependency graph and final verification comm
 
 The main process owns all code, test, spec, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
 
-Agents report findings and file paths. They must not edit files, commit, publish changes, or dispatch other agents.
+**Dispatch rules**: read `./references/subagent-dispatch.md`. Agents report findings and file paths only.
 
 ## Task loop
 
@@ -87,16 +81,13 @@ For each task:
 2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies.
 3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
-5. Write or update the smallest behavior test when the project supports tests.
-6. Run the focused test and confirm the expected failure when adding new behavior.
-7. Implement the smallest change that passes the test.
-8. Run the focused test again.
-9. Run the affected test, lint, build, or type-check command named by the task brief.
-10. Inspect the diff for scope creep, accidental files, and user data loss.
-11. Run the task review below.
-12. Fix every valid review finding and repeat the affected checks.
-13. Commit the task only after review passes and checks are fresh.
-14. Write `Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
+5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor.
+6. Run the affected test, lint, build, or type-check command named by the task brief.
+7. Inspect the diff for scope creep, accidental files, and user data loss.
+8. Run the task review below.
+9. Fix every valid review finding and repeat the affected checks.
+10. Commit the task only after review passes and checks are fresh.
+11. Write `Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)` to ledger.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
@@ -210,13 +201,7 @@ The final review does not replace task review. It checks integration defects tha
 
 Use the repository's existing test tools. Prefer standard library and existing dependencies. Do not add a test framework or dependency for this workflow.
 
-For behavior changes, use this order:
-
-```text
-failing test → minimal implementation → focused test → affected checks → full suite
-```
-
-For configuration, documentation, or generated files, use the strongest available check instead of forcing a test.
+Behavior changes follow `./references/tdd.md`, then the affected checks, then the full suite. For configuration, documentation, or generated files, use the strongest available check instead of forcing a test.
 
 Before claiming completion:
 

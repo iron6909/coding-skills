@@ -104,7 +104,7 @@ The reviewer's label is advice. Your grading is the gate.
 - **Blocking and Important**: enter one fix pass
 - **Minor**: record as deferred, do not fix
 
-Each fix follows TDD: write test that reproduces finding, confirm RED, fix, confirm GREEN, run full suite.
+Each fix follows `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite.
 
 Write findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
 

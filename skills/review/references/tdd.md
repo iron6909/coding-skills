@@ -1,3 +1,5 @@
+<!-- synced from shared/references/tdd.md by scripts/sync-references.mjs: do not edit -->
+
 # Test-Driven Development
 
 Load this discipline before changing behavior when the project supports tests.
