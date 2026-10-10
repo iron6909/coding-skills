@@ -8,7 +8,7 @@ Do not start until:
 
 - every task passed review and has a commit
 - the final whole-change review passed (a small change: its task review)
-- every check in `plan.md` Final verification passed on the current commit
+- every check in `plan.md` Final verification passed on the current commit (a small change: the checks the request names)
 
 ## Confirm the base branch
 
@@ -20,7 +20,7 @@ Exactly these three, in this order:
 
 1. **Keep the branch** — leave it as it is for now.
 2. **Merge locally into `<base>`** — merge the branch, then run the checks again on the merged result. If they fail, keep the branch and investigate.
-3. **Discard** — delete the branch and its commits. The branch is scratch, not a document. This is destructive; ask the user to type `discard` to confirm, and require the typed word, not a yes.
+3. **Discard** — delete the branch and its commits. The code on the branch is scratch; documents are not. Before offering this, list the documents the branch added or changed (`git diff --name-only <base>...HEAD` filtered to `docs/`, `GLOSSARY.md`, `AGENTS.md`). If there are any, they must survive: ask the user to keep them (cherry-pick onto `<base>` or copy them out) first, and discard only the code. This is destructive; ask the user to type `discard` to confirm, and require the typed word, not a yes.
 
 Do not push, open a PR, or publish anything. This suite is local-only; the user controls integration and release.
 
