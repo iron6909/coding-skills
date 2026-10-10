@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review changes since a fixed point along two axes - Standards (repo coding standards) and Spec (does it match the request). Use when asked to review a branch, PR, or work-in-progress. NOT for self-review during execute (execute has built-in review).
+description: Review changes since a review base along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch, PR, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -13,40 +13,41 @@ Use `review` when:
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
 
-Two-axis review of the diff between HEAD and a fixed point.
+Two-axis review of the diff between HEAD and a review base.
 
 - **Standards**: does the code follow this repo's documented coding standards?
-- **Spec**: does the code implement the originating issue or spec?
+- **Spec**: does the code implement the originating spec?
 
 Both axes run in parallel when subagents are available.
 
-## Pin the fixed point
+## Pin the review base
 
-Ask for the fixed point if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
+Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
+
+A "PR" here means a local branch: no tracker is involved. Ask the user to fetch or check out the branch first, then review the local commits against the base. Do not attempt to resolve a PR number.
 
 Capture the diff command once:
 
 ```bash
-git diff <fixed-point>...HEAD
+git diff <review-base>...HEAD
 ```
 
 Capture commits:
 
 ```bash
-git log <fixed-point>..HEAD --oneline
+git log <review-base>..HEAD --oneline
 ```
 
-Before continuing, confirm the fixed point resolves and the diff is non-empty.
+Before continuing, confirm the review base resolves and the diff is non-empty.
 
 ## Identify the spec source
 
 Look for the originating spec in this order:
 
-1. Commit messages: issue references (`#123`, `Closes #45`)
-2. `docs/features/YYYY-MM-DD-<semantic-name>/design.md` matching branch name or commit scope
-3. Path the user passed as argument
-4. Another spec file under `docs/` matching branch name
-5. Ask the user. If no spec exists, skip the Spec axis
+1. A path the user passed as an argument
+2. `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` matching the branch name or a commit scope
+3. Another spec-like document under `docs/` matching the branch name
+4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
 
 ## Identify the standards sources
 
@@ -56,6 +57,8 @@ Read repo files that document how code should be written:
 - `CONTRIBUTING.md`
 - `AGENTS.md` conventions section
 - `.editorconfig`, linter configs
+
+Also read `GLOSSARY.md` and the ADRs touching the changed modules: a change that contradicts a settled term or a recorded decision is a finding on the Standards axis.
 
 When no documented standards exist, use the **smell baseline**: Fowler code smells from _Refactoring_ ch.3.
 
@@ -85,7 +88,7 @@ These smells apply when the repo documents no coding standards. Each is a labele
 1. **Standards reviewer**: reads standards docs + diff, reports violations
 2. **Spec reviewer**: reads spec + diff, reports mismatches or missing features
 
-Both reviewers report findings only. Main process owns grading and fixes.
+Both reviewers report findings only. The main process owns grading and the report.
 
 **Without subagents**: perform both reviews inline, Standards first.
 
@@ -99,37 +102,42 @@ Re-grade each finding by effect on a reasonable user:
 
 The reviewer's label is advice. Your grading is the gate.
 
-## Fix or defer
+## Write the report
 
-- **Blocking and Important**: enter one fix pass
-- **Minor**: record as deferred, do not fix
-
-Each fix follows TDD: write test that reproduces finding, confirm RED, fix, confirm GREEN, run full suite.
-
-Write findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. Never write to the repository root.
-
-Record in ledger format:
+Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
 ```markdown
-# Review — <fixed-point>...HEAD
+# Review — <review-base>...HEAD
 
-## Fixed
-- <finding> — <test name> RED→GREEN, suite <N>/<N>
+## Standards
+- [Blocking|Important|Minor] <file>:<line> — <finding>
 
-## Deferred (minor)
-- <one-liner>
+## Spec
+- [Blocking|Important|Minor] <finding>
+
+## Verdict
+<one line: what must change before this can merge>
 ```
 
-Do not dispatch a re-review. The tests prove addressed.
+Present the two axes separately. Do not merge or reorder them.
+
+## Fixes
+
+This skill reviews; it does not change the code. After the report, list Blocking and Important findings and ask the user whether to fix them.
+
+If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Then fix each finding following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks.
+
+When the fixes are done, run one scoped re-check of the changed lines against the original findings.
 
 ## Completion report
 
 ```text
-Review: <fixed-point>...HEAD
+Review: <review-base>...HEAD
 Report: <path of the review file written above>
 Standards: <N findings, M fixed>
-Spec: <match | N gaps fixed | no spec available>
+Spec: <match | N gaps | no spec available>
 Deferred: <N minors>
+Next: <fixes the user chose, or None>
 ```
 
-List deferred minors for user decision.
+List deferred minors for the user's decision.

@@ -30,12 +30,13 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 ## Shared reference files
 
-Two files are used by several skills. The source is `shared/references/`; each consuming skill carries a synced copy.
+Several files are shared. The source is `shared/references/`; each consuming skill carries a synced copy.
 
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute`, `architecture` |
+| `tdd.md` | `execute`, `debug`, `review` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -46,7 +47,8 @@ Other references have one owner:
 |-------|----------------|
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
-| `execute` | `tdd.md` |
+| `execute` | `finish.md` |
+| `architecture` | `vocabulary.md` |
 
 ## Skill authoring rules
 
@@ -57,19 +59,50 @@ Other references have one owner:
 - One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
 - A skill ends where its output is saved and says what comes next. It does not auto-invoke the next skill; `guide` is the one skill that hands off, by design.
 
+## Documents are never deleted
+
+No skill deletes a document: not `spec.md` or `spike.md`, not `plan.md`, not
+`AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under
+`.cartoons/`, not a review report or a research report. A document that looks
+obsolete is superseded or left in place; the user decides what leaves the disk.
+
+The reason is that these skills run in other people's repositories, where a
+deleted document is gone for good.
+
+This covers documents only. Scratch that is not a document is still cleaned up:
+throwaway probes and logs, a prototype outside the project, and a branch the
+user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
+
 ## Output locations skills must use
 
 These are the paths skills create in a project they run on.
 
-- `docs/features/YYYY-MM-DD-<name>/` holds `design.md` and `plan.md`.
+- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`.
 - `docs/initiatives/YYYY-MM-DD-<name>/` holds `index.md` and `feature-N-<name>.md`.
+- `docs/research/<topic>.md` holds research reports.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, and review reports. Never put anything there that must be committed, and never put `design.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), and architecture reports (`.cartoons/architecture/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
+
+## Who commits what
+
+The skill that writes a project document commits it, staging only its own files. No skill pushes.
+
+| Skill | Commits |
+|-------|---------|
+| `survey` | `AGENTS.md`, `GLOSSARY.md` |
+| `clarify` | `spec.md` or `spike.md`, plus glossary and ADR changes from the session |
+| `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
+| `wayfinder` | the initiative directory |
+| `research` | the report |
+| `execute`, `debug` | code, one commit per task or fix |
+| `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
+| `review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
+| `architecture` | nothing (reports live in `.cartoons/`); it never changes code |
 
 ## Terminology
 
-- **design**, **plan**: the approved design and its task index.
+- **spec**, **plan**: the approved spec and its task index.
 - **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. Keep them distinct: a review, commit, or ledger entry belongs to a task, never a step.
 - **tracer bullet**: a vertical-slice task. **blocking edge**: a dependency between tasks.
 - **initiative**: a multi-feature plan from `wayfinder`. **feature stub**: one feature in it.

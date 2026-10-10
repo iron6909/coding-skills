@@ -1,6 +1,6 @@
 ---
 name: prototype
-description: Build a throwaway prototype to answer a design question. Use when validating feasibility, comparing approaches, or exploring uncertain behavior before committing to a design. NOT for production code.
+description: Build a throwaway prototype to answer a design question, either a logic/state question or a how-should-it-look question. Use for a standalone question that running code can answer (does X work, which of these behaves better, how should this look). Saves nothing in the project. NOT for production code and NOT for feasibility that blocks one specific feature (use clarify's Spike path).
 disable-model-invocation: true
 ---
 
@@ -10,46 +10,67 @@ Build a throwaway prototype to answer a design question. The output is an answer
 
 ## When to use
 
-Use prototype when:
+Use prototype for a standalone question that running code can answer:
 - Testing feasibility ("can we X?")
 - Comparing two approaches before choosing
 - Exploring uncertain behavior (API limits, performance, edge cases)
-- User explicitly asks for a quick prototype or throwaway experiment
+- Showing what a screen or flow could look like
 
-Do NOT use for:
+Do NOT use it for:
 - Production features (use clarify → plan → execute)
 - Code that will be kept (use execute)
-- Refactoring existing code (use clarify if scope unclear, then execute)
+- A feasibility unknown that blocks one specific feature (use `clarify`, Spike path)
+- Refactoring existing code (use clarify if scope is unclear, then execute)
 
 ## Before starting
 
-Confirm with user:
+Confirm with the user:
 1. The design question you are answering
-2. What "good enough" means for this prototype (rough behavior, not production quality)
-3. Where to save it (suggest `/tmp/prototype-<name>/`)
+2. What "good enough" means (rough behavior, not production quality)
+3. Where it lives: a directory outside the project, such as a new folder in the system temp directory. The one exception is a Look prototype that has to change an existing page; it goes on a throwaway branch (see Look form). Never on the user's working branch.
 
-## Build
+Pick the form by the question:
+- **Logic**: "is this state model or behavior right?" Use for backend modules, algorithms, rules, protocols.
+- **Look**: "how should this look or flow?" Use for pages, components, interactions.
 
-Keep it minimal:
-- Use standard library and installed dependencies only
-- No new dependencies
-- No tests (this is throwaway)
-- No error handling beyond what proves the question
+If the question is ambiguous and the user is not available, choose by the surrounding code (modules → logic, pages → look) and state the assumption at the top of the prototype.
+
+## Rules for every prototype
+
+- Mark it as throwaway at the top of the file, near what it uses
+- One command or one double-click runs it
+- Standard library and installed dependencies only; no new dependencies
+- No persistence by default. If real data is unavoidable, use a scratch database or file whose name says "PROTOTYPE, wipe me"
+- No tests, no error handling beyond what proves the question, no abstractions
+- Show the full state after every action or variant switch
 - Hard-code values if it saves time
-- One file if possible
-
-Mark the file clearly:
 
 ```
 // PROTOTYPE: <question this answers>
 // NOT FOR PRODUCTION - throwaway experiment
 ```
 
+## Logic form
+
+- One self-contained file, no framework, no build step
+- Keep the logic in a pure module (a reducer, state machine, or set of pure functions) with no DOM access, so the answer can be lifted into real code later
+- Label controls in the project's domain language (see `GLOSSARY.md`, if it exists)
+- Layout: the question, the current state, free-play controls, and guided scenarios as steps that reset to a known state
+- Scenarios cover the happy path, tricky boundaries, and actions that should be illegal
+
+## Look form
+
+- Build three variants by default, five at most
+- The variants must differ in structure: layout, information hierarchy, or main affordance. Three tweaks of the same card grid are one variant.
+- Prefer changing an existing page over building a new one, so the variants use the real styles and routes. That needs the repository, so work on a throwaway branch `prototype/<semantic-name>`: start from a clean working tree (stop and ask if it is not), and check out the branch before editing. Commits on it are scratch and never merged. If the page can be rebuilt standalone with little effort, use the temp directory instead.
+- Switch variants with a `?variant=` query parameter and a small floating switcher
+
 ## Run and capture
 
 1. Run the prototype
 2. Capture the output (screenshot, log, measurement)
 3. Note what worked and what did not
+4. Capture the answer separately from the prototype: the answer goes in the report; the prototype stays throwaway
 
 ## Report
 
@@ -57,28 +78,28 @@ Mark the file clearly:
 Prototype: <question>
 Answer: <what you learned>
 Evidence: <output/measurement>
-Location: <path> (throwaway, safe to delete)
+Location: <path, or branch prototype/<name>> (throwaway, safe to delete)
 Limitations: <what this prototype does not prove>
-Recommendation: <next step if user wants to keep this>
+Recommendation: <next step if the user wants to build it for real>
 ```
 
-Do NOT commit the prototype. Do NOT move it into the project. The user decides whether to keep it.
+Do not commit the prototype to the user's own branch and do not move it into the project. When a Look prototype used a throwaway branch, switch back to the original branch after the report and leave the throwaway branch in place; delete it only if the user asks. The user decides whether to keep the answer; if the answer should feed a feature, suggest `clarify` and carry the answer in as evidence. Do not turn it into production code without approval.
+
+Stop after the report. Do not invoke `clarify` or `execute`.
 
 ## Example
 
 User asks: "Can we use Web Workers for the parsing?"
 
-1. Confirm question: "Test if Web Workers can parse the 50MB JSON without blocking UI?"
-2. Build `/tmp/prototype-worker-parser/test.html` with minimal worker + UI
-3. Run, measure parse time and UI responsiveness
+1. Confirm the question: "Can Web Workers parse the 50MB JSON without blocking the UI?"
+2. Build `<temp>/prototype-worker-parser/test.html` with a minimal worker and UI (logic form)
+3. Run it; measure parse time and UI responsiveness
 4. Report:
    ```
    Prototype: Web Worker parsing feasibility
-   Answer: Yes. 50MB JSON parses in 340ms, UI stays responsive.
-   Evidence: Console shows parse time, button clicks respond during parse.
-   Location: /tmp/prototype-worker-parser/ (throwaway)
-   Limitations: Did not test >100MB, did not handle parse errors.
-   Recommendation: If keeping, add error handling and test large files.
+   Answer: <result from the run>
+   Evidence: <measured parse time, UI responsiveness>
+   Location: <temp>/prototype-worker-parser/ (throwaway)
+   Limitations: <what was not tested>
+   Recommendation: <next step>
    ```
-
-Do NOT turn this into production code without user approval.
