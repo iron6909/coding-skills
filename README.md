@@ -63,6 +63,7 @@ graph TD
 | **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
 | **prototype** | 探索可行性 | 抛弃式原型 | 快速验证设计假设 |
 | **research** | 调研外部知识 | 带引用研究报告 | 库对比/最佳实践 |
+| **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
 
 ## 关键概念
 

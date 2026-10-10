@@ -35,7 +35,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute`, `architecture` |
 | `tdd.md` | `execute`, `debug`, `review` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
@@ -48,6 +48,7 @@ Other references have one owner:
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
 | `execute` | `finish.md` |
+| `architecture` | `vocabulary.md` |
 
 ## Skill authoring rules
 
