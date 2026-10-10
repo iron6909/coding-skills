@@ -37,6 +37,7 @@ graph TD
     C -->|工作量过大| K[wayfinder]
     C -->|独立问题| L[prototype / research]
     C -->|代码结构问题| M[architecture]
+    C -->|沉淀推理| N[capture]
 
     D --> E
     E --> F
@@ -48,6 +49,8 @@ graph TD
     M -->|选定候选| E
     H -->|大型修复| E
     L -->|答案要变成功能| E
+    G -->|可选| N
+    H -->|可选| N
 
     style B fill:#e1f5ff
     style G fill:#d4edda
@@ -61,14 +64,15 @@ graph TD
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **clarify** | 需求不明 | spec.md(Spike 路径为 spike.md) | Spike/Bounded/Architectural 三路径 |
-| **plan** | spec 已批准 | plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
+| **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
+| **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **review** | 分支审查（本地） | Standards + Spec 双轴报告(`.cartoons/`) | Fowler smells + spec 对照;修复需你同意 |
+| **review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
+| **capture** | 功能/修复/原型刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
 
 ## 关键概念
 
@@ -88,6 +92,7 @@ graph TD
 │   │       └── plan.md
 │   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出)
 │   ├── research/                        # 调研报告(永久,research 产出)
+│   ├── learnings/                       # 会话推理沉淀(永久,capture 产出)
 │   └── adr/                             # 架构决策记录(惰性创建)
 ├── .cartoons/                           # 临时,不提交
 │   ├── 2025-01-15-user-auth/
@@ -150,13 +155,18 @@ graph TD
     → Architectural: 跨模块/接口
 
 多步骤工作
-  → plan → execute
+  → plan (按体量选输出档)
+    → Direct: 1-2 文件、无行为变更 → 只写在会话里,同一会话内接 execute
+    → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同上
+    → Full: 其它 → plan.md + task briefs
+  → execute (逐任务停下确认)
+    → 传 auto: 单次批准跑完所有任务(遇测试失败/规格歧义/高风险仍自动停下)
 
 有 bug
   → debug (4 阶段循环)
 
 需要审查他人改动
-  → review (Standards + Spec)
+  → review (Standards + Spec + Learnings)
 
 大型工作(跨多模块)
   → wayfinder (拆分 initiative)
@@ -169,6 +179,9 @@ graph TD
 
 改动完成
   → finish(保留 / 本地合并 / 丢弃)
+
+改动结束后,想留下推理过程
+  → capture (docs/learnings/,可选)
 ```
 
 ## 示例场景

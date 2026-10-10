@@ -12,6 +12,8 @@ For a clear bug, work from one evidence-based hypothesis. For an unclear bug, ra
 
 Read `GLOSSARY.md` (if it exists), the applicable `AGENTS.md` files, and any ADR touching the failing area first, and use their terms in the fix and the commit message.
 
+**Load the Definition of Done**: read `./references/definition-of-done.md` before declaring the fix complete. The fix must satisfy both the project-wide DoD and the reproduction it set out to kill.
+
 ## Phase 1: Root cause investigation
 
 Complete this phase before attempting any fix.
@@ -75,7 +77,7 @@ Never route a small fix through `clarify`, `plan`, or `execute`.
 
 Before changing code, check the current branch. If it is the default branch (main or master), get the user's consent to fix there or create `feature/YYYY-MM-DD-<semantic-name>` first.
 
-1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow it: write the simplest reproduction through a test entry point (the public interface a test calls into), confirm it fails, apply the minimal fix, and confirm it passes. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
+1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 3. **Verify the fix**. Run the regression test, the original reproduction, and the affected checks (test suite, lint, type-check). Confirm no other tests broke.
 4. **Inspect the diff**. Check for scope creep and accidental files. Remove the temporary probes, logs, and throwaway files (scratch, not documents); every `[DEBUG-...]` line is gone.
@@ -93,12 +95,12 @@ Patterns that mean the architecture is wrong rather than the last hypothesis:
 
 Discuss with the user: is the pattern sound, are we keeping it through inertia, and should we refactor the architecture instead of continuing to patch symptoms?
 
-## Red flags
+## Common rationalizations
 
 If you catch yourself thinking any of these, stop and return to Phase 1:
 
-| Thought | Why it fails |
-|---------|--------------|
+| Rationalization | Reality |
+|-----------------|---------|
 | "Quick fix for now, investigate later" / "Just try changing X" | The first fix sets the pattern, and a guess teaches nothing. |
 | "Issue is simple, skip the process" / "Emergency, no time" | Simple bugs have root causes too, and guess-and-check is slower than the process. |
 | "Add multiple changes, run tests" / "Multiple fixes save time" | You cannot isolate what worked, and stacked fixes cause new bugs. |
@@ -107,6 +109,28 @@ If you catch yourself thinking any of these, stop and return to Phase 1:
 | "I do not fully understand but this might work" | Say "I do not understand X" and investigate. |
 | "One more fix attempt" after 2+ failures | Three failures point at the architecture, not the last hypothesis. |
 | Each fix reveals a new problem elsewhere | Same signal: the architecture is wrong. |
+| "It's a flaky test, not a real bug" | Flakiness is a finding. Measure the rate before dismissing it. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- proposing a fix before Phase 1 produced a reproduction
+- more than one variable changed between test runs
+- a `[DEBUG-...]` probe still present in the diff
+- the reproduction weakened so the failure stops appearing
+- three failed fix attempts without questioning the architecture
+- a root cause asserted without evidence from the loop
+
+## Verification
+
+Confirm the Definition of Done loaded above, and specifically:
+
+- [ ] the reproduction now passes, and its output was read
+- [ ] the test fails again when the fix is temporarily reverted (the test guards the fix)
+- [ ] the affected checks and the full suite ran
+- [ ] every `[DEBUG-...]` probe and throwaway file is gone
+- [ ] the commit carries the root cause and the test in its body
 
 ## If no reproduction is possible
 
@@ -129,3 +153,5 @@ Next: <for a large fix, the recommended skill; otherwise None>
 ```
 
 Do not claim success without fresh output from the failing test and the affected checks. If no suitable regression test entry point exists, state that limit, name `architecture` as the skill that can create one, and say what verification was used instead.
+
+When the investigation turned on something the code does not explain — a trap, a misleading signal, a boundary this fix does not cover — say so in one line and offer `capture` as an optional next step. Do not invoke it. A bug whose root cause surprised you is exactly what `capture` is for; a typo fix is not.

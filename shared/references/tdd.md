@@ -29,9 +29,19 @@ Test behavior through public interfaces, not implementation details. A good test
 - **Asserting on mock behavior**: mock only at the edge of the process (network, clock, third-party services), and understand what the real dependency does before replacing it.
 - **Horizontal slicing**: all tests first, then all code. Bulk tests verify imagined behavior and go insensitive to real changes. Work one vertical slice at a time: one test, one implementation, repeat. Each cycle responds to what the last one taught you.
 
-## Bug fixes and regressions
+## Bug fixes and regressions: the Prove-It pattern
 
-The failing test reproduces the bug first. After it goes green, prove it guards the fix: revert the fix temporarily, confirm the test fails, restore the fix, and confirm it passes.
+Follow these five steps in order:
+
+1. **Prove** — write a test that reproduces the bug. It must fail.
+2. **Confirm** — read the failure and confirm it fails for the right reason: the bug itself, not a typo or a broken setup.
+3. **Fix** — apply the minimal change that addresses the root cause.
+4. **Verify** — run the test and confirm it passes.
+5. **Guard** — run the affected checks and the full suite. Confirm no regression.
+
+Then prove the test guards the fix: revert the fix temporarily, confirm the test fails, restore the fix, and confirm it passes again.
+
+A fix that skips steps 1 and 2 is a guess. A fix that skips step 5 is unverified.
 
 ## Configuration and documentation
 

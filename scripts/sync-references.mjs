@@ -19,6 +19,7 @@ const MAP = {
   "glossary-format.md": ["survey", "clarify"],
   "subagent-dispatch.md": ["survey", "clarify", "plan", "review", "research", "execute", "architecture", "wayfinder"],
   "tdd.md": ["execute", "debug", "review"],
+  "definition-of-done.md": ["plan", "execute", "review", "debug"],
 };
 
 const HEADER =

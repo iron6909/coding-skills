@@ -1,17 +1,36 @@
 ---
 name: execute
-description: Implement an approved plan or a small, clear change, review each task, commit checked changes, report evidence, and hand the integration decision to the user. Use when a plan is ready or a small change has clear scope and acceptance checks.
+description: Implement an approved plan or a small, clear change, review each task, commit checked changes, report evidence, and hand the integration decision to the user. Use when a plan is ready or a small change has clear scope and acceptance checks. Pass "auto" to run every task after a single approval gate instead of stopping after each one.
 disable-model-invocation: true
 ---
 
 # Execute
 
-Use one of two execution inputs:
+Use one of three execution inputs:
 
-- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior. The plan defines task order.
+- **Planned work:** read the approved spec and `plan.md` in full. The spec defines behavior. The plan defines task order. The default spec path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`; when the project uses another specification system, the plan or the user names the artifact path instead.
+- **Session plan:** a Direct or Brief tier plan from `plan`, held in this conversation rather than on disk. The task list is the plan; the spec path, if any, still governs behavior.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
+
+A session plan exists only in the conversation that produced it. If you cannot find one — a new session, or a compressed context — stop and ask the user to rerun `plan` at the Full tier. Do not reconstruct tasks from memory, and do not infer them from the diff.
+
+## Execution modes
+
+Two modes. Everything below applies to both; the mode only decides where the human checkpoints sit.
+
+- **Default** (no argument): implement one task, then stop and hand back. The user starts the next task.
+- **Autonomous** (`auto`): one approval gate covers the whole run. After the user approves, work through every task without stopping between them. Each task still keeps its full TDD loop, its review, and its own commit.
+
+Autonomous mode removes the between-task pause, not any other gate. It stops early, and hands back to the user, when any of these happens:
+
+- a check fails and no fix within the approved scope is clear
+- the task needs a decision the spec and brief do not settle
+- a doubt-driven trigger applies (see below)
+- a task exceeds its 5 review-fix rounds without passing
+
+Say which mode you are in before starting, and name the reason for any early stop. Do not switch to autonomous mode mid-run on your own initiative: the user asks for it. Do not treat autonomous mode as permission to widen scope, skip a review, or batch commits — the run is longer, not looser.
 
 ## Workspace and ledger
 
@@ -31,11 +50,11 @@ Create `progress.md` ledger inside with the first line:
 
 If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. Resume from the first task without one. After context compression, trust the ledger and `git log`, not memory.
 
-For a small change, keep ledger facts in conversation. Do not create impl or ledger files.
+For a session plan or a small change, keep ledger facts in conversation. Do not create impl or ledger files: a session plan already lives only in this conversation, and writing a ledger for it would imply a persistence it does not have.
 
-Read `impl/task-N.md` for task details. `plan.md` is a lightweight index.
+Read `impl/task-N.md` for task details. `plan.md` is a lightweight index. For a session plan, the task list in the conversation holds the same detail, and no brief is read.
 
-If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`.
+If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`. This rebuild applies to Full tier work only: there is no brief to rebuild for a session plan.
 
 ## Preconditions
 
@@ -54,13 +73,15 @@ Before changing code:
 
 **Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the test entry points the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
 
-Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
+**Load the Definition of Done**: read `./references/definition-of-done.md` before declaring any task complete. Every task must satisfy both the project-wide DoD and its own acceptance conditions.
+
+Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path. For a session plan, stop and report that it could not be found in the conversation.
 
 Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
 
 ## Pre-flight scan
 
-Before Task 1, read plan.md for the task dependencies and final verification commands. Then scan task briefs for interface conflicts:
+Before Task 1, read plan.md for the task dependencies and final verification commands. For a session plan, the task list in the conversation holds both. Then scan task briefs for interface conflicts:
 
 - For each task that consumes what an earlier task produces, check the interface match
 - Record one ledger row per shared interface: task numbers, what is produced vs consumed, finding
@@ -77,25 +98,45 @@ The main process owns all code, test, spec, plan, and Git writes. Use read-only 
 
 ## Task loop
 
-Work through planned tasks in dependency order. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
+Work through planned tasks in dependency order. For a session plan, use its task list. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
 
 For each task:
 
 1. Write the task-start ledger entry.
-2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies.
+2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies. For a session plan, use the task as stated in the conversation.
 3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
 5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor.
 6. Run the affected test, lint, build, or type-check command named by the task brief.
 7. Inspect the diff for scope creep, accidental files, and user data loss.
-8. Run the task review below.
-9. Fix every valid review finding and repeat the affected checks.
-10. Commit the task only after review passes and checks are fresh.
-11. Write the task-complete ledger entry.
+8. Check the doubt-driven triggers (see Doubt-driven checkpoints below). If one applies, record the risk and get explicit sign-off before continuing.
+9. Run the task review below.
+10. Fix every valid review finding and repeat the affected checks.
+11. Commit the task only after review passes and checks are fresh.
+12. Write the task-complete ledger entry.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
 If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue. If the spec itself must change, stop and tell the user to revise it with `clarify`, then the plan with `plan`; the completed tasks stay as they are.
+
+## Doubt-driven checkpoints
+
+Four triggers. Check them at step 8 of every task, in both modes:
+
+- **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
+- **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
+- **Unexplained**: a decision you cannot justify from the spec, the task brief, or repository evidence.
+- **Repeated failure**: a task has failed 3 or more fix attempts. The pattern points at the design, not the last hypothesis. This fires before the 5-round review cap, so the user decides rather than the loop running out.
+
+When a trigger applies:
+
+1. Do not commit the task.
+2. Write a ledger `Ruling:` entry naming the trigger, the risk, and what you need decided.
+3. Stop and ask the user for explicit sign-off on that specific risk.
+
+An open doubt outranks the task loop and outranks autonomous mode. A green suite does not clear it: passing tests say the code does what you told it, not that the operation was safe to perform. Continue only after the user answers, and record their answer in the ledger.
+
+The repeated-failure trigger fires earlier than the review-fix cap on purpose: three failed attempts are a signal about the design, and that call belongs to the user, not to the loop counter.
 
 ## Ledger entries
 
@@ -139,11 +180,13 @@ Final: minor (deferred): <one-liner>
 Final: Ruling: <finding> — <decision> — cost if wrong: <cost>
 ```
 
-For a small change, keep the same structure in conversation.
+For a session plan or a small change, keep the same structure in conversation. A session plan writes no ledger, so its entries live here and are lost with the context.
 
 ## Resume
 
 On resume, read ledger first. Compare recorded commits and task state with working tree and Git history. Keep original review base. Continue from first task without `complete`. After a `Plan revised` entry, re-read `plan.md` and the changed briefs, and run the pre-flight scan again for the unfinished tasks. Do not trust old check results. Run required checks again.
+
+A session plan has no ledger to resume from. After context compression, its task list is gone: stop and ask the user to rerun `plan` at the Full tier or restate the remaining tasks, then confirm the review base from Git before editing.
 
 If a small change loses conversation record, reconstruct boundary from Git and confirm unknown facts with user before editing.
 
@@ -199,7 +242,7 @@ Runs ONCE after all tasks pass task review and have commits. A small change is o
 
 Final review checks cross-task integration, interfaces, and acceptance conditions that individual task reviews cannot see.
 
-1. Run the full test, lint, build, and type-check commands named in `plan.md` Final verification (for a small change, the checks the request names).
+1. Run the full test, lint, build, and type-check commands named in `plan.md` Final verification (for a session plan, the checks the task list named; for a small change, the checks the request names).
 2. Use a fresh read-only reviewer for the complete change. Give it the plan's Review focus. The reviewer checks the spec, the plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
 3. Classify findings as **Blocking**, **Important**, or **Minor**.
 4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the spec.
@@ -216,16 +259,13 @@ Use the repository's existing test tools. Prefer standard library and existing d
 
 For each behavior change: the TDD loop (loaded above), then the affected checks, then the full suite.
 
-Before claiming completion:
+Before claiming completion, confirm the Definition of Done loaded above, then confirm the execution-specific conditions:
 
-- run every final verification command (plan.md Final verification, or the checks a small-change request names)
-- read the command output and exit status
-- check the full diff and status
-- confirm each acceptance condition
-- confirm every task passed review and has a commit
-- confirm the final whole-change review passed and its fixes have a commit (a small change skips it)
-- confirm no task exceeded 5 review-fix rounds
-- report failures by command and exact error
+- every task passed review and has a commit
+- the final whole-change review passed and its fixes have a commit (a small change skips it)
+- no task exceeded 5 review-fix rounds
+
+Report each Final verification command with its result, and report failures by command and exact error.
 
 Do not claim a test, build, review, or fix passed from an earlier run or an agent report. Fresh evidence is required.
 
@@ -239,6 +279,36 @@ If an agent fails, inspect any partial report. Continue in the main process or r
 
 Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, or publish unless the user explicitly asks.
 
+## Common rationalizations
+
+These are the reasons to skip a step. Every one of them is wrong here.
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The change is too small to need a test" | Small changes break things too. The TDD loop is cheapest on small changes. |
+| "I'll commit these tasks together, they're related" | One commit per task is what makes a task revertable. Squashing loses the boundary. |
+| "The check passed a minute ago, it still passes" | Fresh evidence only. Re-run it after the last edit. |
+| "The review is just me checking my own work" | That is what the reviewer is for. Use one when the task is large enough. |
+| "This extra fix is obviously right, I'll fold it in" | Unrequested scope. Record it and leave it. |
+| "The test is wrong, the code is right" | Fix the code or record a ruling. Never weaken a test to match behavior. |
+| "Auto mode means I don't need to stop and ask" | It removes the between-task pause, nothing else. Doubts, ambiguities, and failed checks still stop the run. |
+| "This task is risky but the tests are green" | Green tests say the code does what you told it, not that the operation is safe. That is what the doubt triggers are for. |
+| "I'll note the risk in the completion report instead of asking" | A risk reported after the commit is a risk already taken. Ask before. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- writing implementation before a failing test
+- editing a file the task brief does not name
+- committing with a failing or unread check
+- a task accumulating fixes beyond 5 review-fix rounds
+- committing a task while a doubt trigger is open
+- committing a destructive operation without sign-off
+- describing work as done without a command and its output behind it
+- losing the review base, or reviewing against a moving base
+- in autonomous mode: batching commits, skipping a review, or widening scope
+
 ## Completion report
 
 After all tasks pass, collect every ledger `Ruling:` line into the report under "Rulings made", in order, each with cost if wrong. Collect every `minor (deferred)` line under "Deferred minors". Both lists are exhaustive.
@@ -246,7 +316,8 @@ After all tasks pass, collect every ledger `Ruling:` line into the report under 
 Report:
 
 ```text
-Implemented: <plan path or small-change request>
+Implemented: <plan path, session plan, or small-change request>
+Mode: <default | autonomous>
 Tasks: <task count>, each reviewed and committed
 Final review: <passed, with review-fix commit if needed; "n/a" for a small change>
 Checks: <commands and results>
@@ -255,6 +326,9 @@ Changed: <short file list>
 Rulings made:
 - Task <N>: <ruling> — cost if wrong: <cost>
 
+Doubt checkpoints cleared:
+- Task <N>: <trigger> — <what the user decided>
+
 Deferred minors:
 - <one-liner>
 
@@ -262,7 +336,11 @@ Remaining: <known gaps, or None>
 Next: finish (keep, merge locally, or discard)
 ```
 
+Omit "Doubt checkpoints cleared" when no trigger fired. In autonomous mode also report where the run stopped, if it stopped early.
+
 Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
+
+When this run involved a trade-off, a trap, or a discovered boundary condition that the spec and plan do not record, say so in one line and offer `capture` as an optional next step. Do not invoke it. Do not offer it when the run held no such reasoning.
 
 If the spec carries an `**Initiative stub:**` line, say so and name the stub and its `index.md`: once the user confirms the feature shipped, `wayfinder` checks it off. Do not edit the initiative from here.
 

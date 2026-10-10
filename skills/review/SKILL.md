@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review changes since a review base along two axes, Standards (the repo's coding standards) and Spec (does it match the spec), and write a report to .cartoons. Use when asked to review a branch or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review changes since a review base along three axes — Standards (the repo's coding standards), Spec (does it match the spec), and Learnings (does it repeat a trap already recorded) — and write a report to .cartoons. Use when asked to review a branch or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -13,12 +13,15 @@ Use `review` when:
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
 
-Two-axis review of the diff between HEAD and a review base.
+Three-axis review of the diff between HEAD and a review base.
 
 - **Standards**: does the code follow this repo's documented coding standards?
 - **Spec**: does the code implement the originating spec?
+- **Learnings**: does the code repeat a trap this project already recorded?
 
-Both axes run in parallel when subagents are available.
+The axes run in parallel when subagents are available. The Learnings axis is skipped when `docs/learnings/` does not exist — say so in the report rather than treating it as a pass.
+
+**Load the Definition of Done**: read `./references/definition-of-done.md`. A DoD item the diff breaks is a finding, even when no documented standard names it explicitly. State at the end of the report which DoD applied.
 
 ## Pin the review base
 
@@ -81,16 +84,27 @@ These smells apply when the repo documents no coding standards. Each is a labele
 - **Middle Man**: class/function mostly just delegates onward → cut it, call the real target direct
 - **Refused Bequest**: subclass/implementer ignores or overrides most of what it inherits → drop the inheritance, use composition
 
-## Run both axes
+## Identify the learnings source
 
-**With subagents**: dispatch two read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
+Read `docs/learnings/` when it exists. It holds traps, trade-offs, and boundary conditions recorded from earlier sessions.
+
+Match files to this diff by tag and by subject: the modules, tools, and concepts the changed files touch. A learning about a module this diff does not touch is not relevant, however interesting.
+
+This axis asks one question: does the diff repeat a trap the project already paid for, or cross a boundary condition a learning says not to cross? Keep it to that. A learning that merely describes a past decision is not a finding.
+
+If `docs/learnings/` does not exist, record `Learnings: none recorded` and skip the axis. Never invent a standard from a learning.
+
+## Run all axes
+
+**With subagents**: dispatch read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
 
 1. **Standards reviewer**: reads standards docs + diff, reports violations
 2. **Spec reviewer**: reads spec + diff, reports mismatches or missing features
+3. **Learnings reviewer**: reads matching `docs/learnings/` files + diff, reports repeated traps (skip when no learnings exist)
 
-Both reviewers report findings only. The main process owns grading and the report.
+Every reviewer reports findings only. The main process owns grading and the report.
 
-**Without subagents**: perform both reviews inline, Standards first.
+**Without subagents**: perform the reviews inline, Standards first, Learnings last.
 
 ## Grade findings
 
@@ -115,11 +129,51 @@ Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md`
 ## Spec
 - [Blocking|Important|Minor] <finding>
 
+## Learnings
+- [Blocking|Important|Minor] <finding, naming the learning file it comes from>
+- or: `none recorded` / `none matched`
+
 ## Verdict
 <one line: what must change before this can merge>
 ```
 
-Present the two axes separately. Do not merge or reorder them.
+Present the axes separately. Do not merge or reorder them. A Learnings finding always names the file it came from, so the reader can check the reasoning behind it.
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The diff is small, it doesn't need a review" | Small diffs still carry the exact bugs a review catches, and they are cheap to read. |
+| "The tests pass, so the code is correct" | Tests check the behavior someone thought to write. The Spec axis checks the rest. |
+| "I wrote it, I know it's fine" | That is exactly the reviewer's blind spot. Use a fresh read-only reviewer. |
+| "No documented standards, so anything goes" | Then the smell baseline applies. Standalone code is not exempt. |
+| "No learnings file, so this diff is clean" | That is an absent axis, not a passing one. Say `none recorded`; do not score it as a pass. |
+| "I grepped the learnings and found nothing relevant" | Check by tag and by subject before concluding. A trap recorded under another module's tag still applies if it is the same trap. |
+| "The spec is old, the code has moved on" | A mismatch is the finding. Report it; do not silently prefer the code. |
+| "I'll fix these findings while I'm here" | This skill reviews. Fixes are a separate, user-approved step. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- a review base that does not resolve, or a diff that is empty
+- findings reported without a file and line where one applies
+- the two axes merged into one list
+- the reviewer's severity label accepted without re-grading
+- a report overwritten instead of suffixed
+- code changed during the review, before the user approved fixes
+- a Standard cited that the repository does not actually document
+
+## Verification
+
+Confirm the Definition of Done loaded above, then check the review itself:
+
+- [ ] the review base resolves and the diff is non-empty
+- [ ] both axes ran, or the Spec axis is explicitly marked unavailable
+- [ ] every finding carries a severity you assigned, not the reviewer's
+- [ ] every finding that points at code names a file, and a line where one applies
+- [ ] the report was written to `.cartoons/`, never to the repository root
+- [ ] no code changed unless the user asked for fixes
 
 ## Fixes
 
@@ -136,6 +190,7 @@ Review: <review-base>...HEAD
 Report: <path of the review file written above>
 Standards: <N findings, M fixed>
 Spec: <match | N gaps | no spec available>
+Learnings: <N findings, M fixed | none recorded | none matched>
 Deferred: <N minors>
 Next: <fixes the user chose, or None>
 ```

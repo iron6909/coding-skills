@@ -10,6 +10,16 @@ Turn an unclear development request into an approved spec. Save it in `docs/feat
 
 Do not write product code, create `plan.md`, or start implementation.
 
+## The project's specification system
+
+Check `AGENTS.md` and `CLAUDE.md` before choosing a path. If either names a specification system this project already uses (OpenSpec, Spec Kit, Specify, or similar), write to that system's artifact format and storage conventions and do not create a second `spec.md` beside it.
+
+The split is fixed: this skill owns the clarification, the content of the spec, and the approval gate; the external system owns how the approved spec is represented and where it lives.
+
+When no such system is named, use the default format under Save.
+
+If the project's system cannot express something the approval gate requires — observable acceptance conditions, or the testing boundary — say so and settle it in the conversation rather than dropping it.
+
 ## Choose a path
 
 Pick the smallest path that fits. The path decides what you produce and how much ceremony you use.
@@ -96,6 +106,40 @@ A spec is ready when it states:
 - the testing boundary, including the test entry points to test through
 
 The user approves the test entry points together with the spec. Later skills test only through approved entry points.
+
+## Common rationalizations
+
+| Rationalization | Reality |
+|-----------------|---------|
+| "The request is clear, skip the questions" | A clear request still hides scope, non-goals, and acceptance conditions. One question is cheap; a wrong spec is not. |
+| "I'll write the spec and fix the details during implementation" | Unsettled detail becomes an unresolved decision that stalls `execute` mid-task. |
+| "Approval of the idea is approval of the spec" | The user approves text they have seen. Write nothing before they see the draft. |
+| "This is obviously one path, skip the choice" | Picking the path decides the ceremony. Take the heavier path when unsure. |
+| "I'll record this guess as a decision for now" | A guess recorded as a decision is what a later reader trusts. Leave it unresolved and ask. |
+| "There's no need for a testing boundary, it's small" | The testing boundary names the entry points later skills must test through. It is what makes the spec testable. |
+
+## Red flags
+
+Stop and fix the process when you notice:
+
+- writing `spec.md` before the user approved the draft
+- asking more than one question per message
+- asking for a repository fact instead of reading the code
+- a Spike that does not name the specific feature it unblocks
+- two specs for the same work, or a second directory for a continued feature
+- implementation steps or a file-by-file task list in the spec (that is `plan`'s)
+- the draft check running after approval instead of before
+
+## Verification
+
+Confirm before saving:
+
+- [ ] the chosen path matches the request — Bounded for local, Architectural for cross-module, Spike only when feasibility blocks the spec
+- [ ] the draft check ran before approval, not after
+- [ ] the user approved the exact text being saved
+- [ ] the content list under Approval gate is satisfied
+- [ ] experiment code stayed outside the project, for a Spike
+- [ ] the commit stages only what this skill produced
 
 ## Save
 
@@ -221,5 +265,7 @@ Next: plan
 ```
 
 For a revised spec, report `Spec updated: <path>` and use the `Next:` rule above. For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
+
+When the project uses another specification system, report its artifact path instead of the default one, and commit through that system's own flow rather than the `docs(spec):` subjects below.
 
 Stop after saving. Do not automatically invoke `plan` or `execute`.
