@@ -13,7 +13,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `clarify`: resolve the request, scope, spec, constraints, and acceptance checks.
 - `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
-- `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
+- `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `review`: independently review another branch or historical commits.
 - `wayfinder`: break work that is too large for one session into an initiative of features.

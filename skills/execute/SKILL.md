@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Implement an approved plan or a small, clear change, review each task, commit checked changes, report evidence, and hand the integration decision to the user. Use when a plan is ready or a small change has clear scope and acceptance checks.
+description: Implement an approved plan or a small, clear change, review each task, commit checked changes, report evidence, and hand the integration decision to the user. Use when a plan is ready or a small change has clear scope and acceptance checks. Pass "auto" to run every task after a single approval gate instead of stopping after each one.
 disable-model-invocation: true
 ---
 
@@ -15,6 +15,22 @@ Use one of three execution inputs:
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
 
 A session plan exists only in the conversation that produced it. If you cannot find one — a new session, or a compressed context — stop and ask the user to rerun `plan` at the Full tier. Do not reconstruct tasks from memory, and do not infer them from the diff.
+
+## Execution modes
+
+Two modes. Everything below applies to both; the mode only decides where the human checkpoints sit.
+
+- **Default** (no argument): implement one task, then stop and hand back. The user starts the next task.
+- **Autonomous** (`auto`): one approval gate covers the whole run. After the user approves, work through every task without stopping between them. Each task still keeps its full TDD loop, its review, and its own commit.
+
+Autonomous mode removes the between-task pause, not any other gate. It stops early, and hands back to the user, when any of these happens:
+
+- a check fails and no fix within the approved scope is clear
+- the task needs a decision the spec and brief do not settle
+- a doubt-driven trigger applies (see below)
+- a task exceeds its 5 review-fix rounds without passing
+
+Say which mode you are in before starting, and name the reason for any early stop. Do not switch to autonomous mode mid-run on your own initiative: the user asks for it. Do not treat autonomous mode as permission to widen scope, skip a review, or batch commits — the run is longer, not looser.
 
 ## Workspace and ledger
 
@@ -93,14 +109,34 @@ For each task:
 5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor.
 6. Run the affected test, lint, build, or type-check command named by the task brief.
 7. Inspect the diff for scope creep, accidental files, and user data loss.
-8. Run the task review below.
-9. Fix every valid review finding and repeat the affected checks.
-10. Commit the task only after review passes and checks are fresh.
-11. Write the task-complete ledger entry.
+8. Check the doubt-driven triggers (see Doubt-driven checkpoints below). If one applies, record the risk and get explicit sign-off before continuing.
+9. Run the task review below.
+10. Fix every valid review finding and repeat the affected checks.
+11. Commit the task only after review passes and checks are fresh.
+12. Write the task-complete ledger entry.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
 If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue. If the spec itself must change, stop and tell the user to revise it with `clarify`, then the plan with `plan`; the completed tasks stay as they are.
+
+## Doubt-driven checkpoints
+
+Four triggers. Check them at step 8 of every task, in both modes:
+
+- **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
+- **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
+- **Unexplained**: a decision you cannot justify from the spec, the task brief, or repository evidence.
+- **Repeated failure**: a task has failed 3 or more fix attempts. The pattern points at the design, not the last hypothesis. This fires before the 5-round review cap, so the user decides rather than the loop running out.
+
+When a trigger applies:
+
+1. Do not commit the task.
+2. Write a ledger `Ruling:` entry naming the trigger, the risk, and what you need decided.
+3. Stop and ask the user for explicit sign-off on that specific risk.
+
+An open doubt outranks the task loop and outranks autonomous mode. A green suite does not clear it: passing tests say the code does what you told it, not that the operation was safe to perform. Continue only after the user answers, and record their answer in the ledger.
+
+The repeated-failure trigger fires earlier than the review-fix cap on purpose: three failed attempts are a signal about the design, and that call belongs to the user, not to the loop counter.
 
 ## Ledger entries
 
@@ -255,6 +291,9 @@ These are the reasons to skip a step. Every one of them is wrong here.
 | "The review is just me checking my own work" | That is what the reviewer is for. Use one when the task is large enough. |
 | "This extra fix is obviously right, I'll fold it in" | Unrequested scope. Record it and leave it. |
 | "The test is wrong, the code is right" | Fix the code or record a ruling. Never weaken a test to match behavior. |
+| "Auto mode means I don't need to stop and ask" | It removes the between-task pause, nothing else. Doubts, ambiguities, and failed checks still stop the run. |
+| "This task is risky but the tests are green" | Green tests say the code does what you told it, not that the operation is safe. That is what the doubt triggers are for. |
+| "I'll note the risk in the completion report instead of asking" | A risk reported after the commit is a risk already taken. Ask before. |
 
 ## Red flags
 
@@ -264,8 +303,11 @@ Stop and fix the process when you notice:
 - editing a file the task brief does not name
 - committing with a failing or unread check
 - a task accumulating fixes beyond 5 review-fix rounds
+- committing a task while a doubt trigger is open
+- committing a destructive operation without sign-off
 - describing work as done without a command and its output behind it
 - losing the review base, or reviewing against a moving base
+- in autonomous mode: batching commits, skipping a review, or widening scope
 
 ## Completion report
 
@@ -275,6 +317,7 @@ Report:
 
 ```text
 Implemented: <plan path, session plan, or small-change request>
+Mode: <default | autonomous>
 Tasks: <task count>, each reviewed and committed
 Final review: <passed, with review-fix commit if needed; "n/a" for a small change>
 Checks: <commands and results>
@@ -283,12 +326,17 @@ Changed: <short file list>
 Rulings made:
 - Task <N>: <ruling> — cost if wrong: <cost>
 
+Doubt checkpoints cleared:
+- Task <N>: <trigger> — <what the user decided>
+
 Deferred minors:
 - <one-liner>
 
 Remaining: <known gaps, or None>
 Next: finish (keep, merge locally, or discard)
 ```
+
+Omit "Doubt checkpoints cleared" when no trigger fired. In autonomous mode also report where the run stopped, if it stopped early.
 
 Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
 

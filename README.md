@@ -65,7 +65,7 @@ graph TD
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **clarify** | 需求不明 | spec.md(Spike 路径为 spike.md) | Spike/Bounded/Architectural 三路径 |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
+| **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **wayfinder** | 大型跨模块工作 | initiative + feature stubs | 多会话协作 |
@@ -159,7 +159,8 @@ graph TD
     → Direct: 1-2 文件、无行为变更 → 只写在会话里,同一会话内接 execute
     → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同上
     → Full: 其它 → plan.md + task briefs
-  → execute
+  → execute (逐任务停下确认)
+    → 传 auto: 单次批准跑完所有任务(遇测试失败/规格歧义/高风险仍自动停下)
 
 有 bug
   → debug (4 阶段循环)
