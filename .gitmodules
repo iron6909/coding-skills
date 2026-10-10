@@ -10,3 +10,6 @@
 [submodule "refer/spec-kit"]
 	path = refer/spec-kit
 	url = git@github.com:github/spec-kit.git
+[submodule "refer/ECC"]
+	path = refer/ECC
+	url = git@github.com:affaan-m/ECC.git
