@@ -142,10 +142,7 @@ This is an index only. List features in dependency order; do not invent dates or
 
 ### 6. Commit the initiative
 
-```bash
-git add docs/initiatives/YYYY-MM-DD-<initiative-name>/
-git commit -m "docs(initiative): add <initiative-name>"
-```
+Stage only `docs/initiatives/YYYY-MM-DD-<initiative-name>/`, check `git diff --staged`, and commit as `docs(initiative): add <initiative-name>` (or the repository's own convention if `AGENTS.md` or `CLAUDE.md` sets one). Do not push. Every later commit in this skill follows the same rules.
 
 ## Execution
 

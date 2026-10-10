@@ -73,11 +73,13 @@ Never route a small fix through `clarify`, `plan`, or `execute`.
 
 ### Small fix workflow
 
+Before changing code, check the current branch. If it is the default branch (main or master), get the user's consent to fix there or create `feature/YYYY-MM-DD-<semantic-name>` first.
+
 1. **Create a failing test**. Read `./references/tdd.md` and follow it: write the simplest reproduction through a test entry point (the public interface a test calls into), confirm it fails, apply the minimal fix, and confirm it passes. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 3. **Verify the fix**. Run the regression test, the original reproduction, and the affected checks (test suite, lint, type-check). Confirm no other tests broke.
 4. **Inspect the diff**. Check for scope creep, accidental files, and leftover probes. Every `[DEBUG-...]` line is gone.
-5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Do not commit unrelated user changes.
+5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Check `git diff --staged` before committing. Do not commit unrelated user changes. Do not push.
 
 ### If the fix fails
 

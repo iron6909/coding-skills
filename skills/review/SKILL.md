@@ -121,7 +121,7 @@ Present the two axes separately. Do not merge or reorder them.
 
 This skill reviews; it does not change the code. After the report, list Blocking and Important findings and ask the user whether to fix them.
 
-If the user agrees, fix each one following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, using the repository's commit convention. Minor findings stay deferred unless the user asks.
+If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Then fix each finding following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks.
 
 When the fixes are done, run one scoped re-check of the changed lines against the original findings.
 
