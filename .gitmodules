@@ -7,3 +7,6 @@
 [submodule "refer/agent-skills"]
 	path = refer/agent-skills
 	url = git@github.com:addyosmani/agent-skills.git
+[submodule "refer/spec-kit"]
+	path = refer/spec-kit
+	url = git@github.com:github/spec-kit.git
