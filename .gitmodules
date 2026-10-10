@@ -22,3 +22,6 @@
 [submodule "refer/BMAD-METHOD"]
 	path = refer/BMAD-METHOD
 	url = git@github.com:bmad-code-org/BMAD-METHOD.git
+[submodule "refer/oh-my-claudecode"]
+	path = refer/oh-my-claudecode
+	url = git@github.com:Yeachan-Heo/oh-my-claudecode.git
