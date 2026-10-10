@@ -1,6 +1,6 @@
 ---
 name: guide
-description: Route a development request to the smallest suitable skill, then hand off to it.
+description: Route a development request to the smallest suitable skill, then hand off to it. Use when the request does not name a skill.
 disable-model-invocation: true
 ---
 
@@ -70,3 +70,5 @@ Reason: <one short reason>
 ```
 
 Do not print a full workflow or recommend several skills.
+
+`guide` ends here: the selected skill owns everything after the route.

@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn an approved spec into a small, ordered implementation plan saved beside the spec in docs/features, with task briefs in .cartoons.
+description: Turn an approved spec into a small, ordered implementation plan saved and committed beside the spec in docs/features, with task briefs in .cartoons. Use when a spec is approved and the work has more than one step.
 disable-model-invocation: true
 ---
 

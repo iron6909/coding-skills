@@ -142,6 +142,8 @@ Research saved: <path>
 Question: <question>
 Sources: <N primary sources>
 Recommendation: <one-line summary>
+Commit: <short hash>
+Next: clarify (if the answer feeds a feature) or None
 ```
 
 ## Commit

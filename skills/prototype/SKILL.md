@@ -85,6 +85,8 @@ Recommendation: <next step if the user wants to build it for real>
 
 Do not commit the prototype and do not move it into the project. The user decides whether to keep the answer; if the answer should feed a feature, suggest `clarify` and carry the answer in as evidence. Do not turn it into production code without approval.
 
+Stop after the report. Do not invoke `clarify` or `execute`.
+
 ## Example
 
 User asks: "Can we use Web Workers for the parsing?"

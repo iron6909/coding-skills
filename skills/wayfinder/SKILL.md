@@ -1,6 +1,6 @@
 ---
 name: wayfinder
-description: Multi-session planning for work too large for one session. Create an initiative with a feature breakdown saved in docs/initiatives. Use when the user says the work is huge, spans many independent modules, or needs a multi-feature plan.
+description: Multi-session planning for work too large for one session. Create an initiative with a feature breakdown saved and committed in docs/initiatives, and mark features shipped as they land. Use when the user says the work is huge, spans many independent modules, or needs a multi-feature plan.
 disable-model-invocation: true
 ---
 
@@ -182,4 +182,4 @@ Initiative complete.
 Initiative: docs/initiatives/YYYY-MM-DD-<initiative-name>/
 ```
 
-The directory stays in `docs/initiatives/` as a permanent record. Do not delete or move it.
+The directory stays in `docs/initiatives/` as a permanent record. Do not delete or move it. Stop there. Each feature's work runs through `clarify` → `plan` → `execute`, which the user starts.
