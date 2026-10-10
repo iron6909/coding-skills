@@ -79,7 +79,7 @@ user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
 These are the paths skills create in a project they run on.
 
 - `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`.
-- `docs/initiatives/YYYY-MM-DD-<name>/` holds `index.md` and `feature-N-<name>.md`.
+- `docs/initiatives/YYYY-MM-DD-<name>/` holds `charter.md` (the initiative's problem, goal, scope, constraints, evidence, and open questions), `index.md` (feature list and dependencies), and `feature-N-<name>.md` stubs.
 - `docs/research/<topic>.md` holds research reports.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
