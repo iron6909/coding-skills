@@ -208,6 +208,6 @@ Commit: <short hash>
 Next: plan
 ```
 
-For a Spike, report `Spike saved: .../spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
+For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
 
 Stop after saving. Do not automatically invoke `plan` or `execute`.
