@@ -94,7 +94,7 @@ For each task:
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
-If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue.
+If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue. If the spec itself must change, stop and tell the user to revise it with `clarify`, then the plan with `plan`; the completed tasks stay as they are.
 
 ## Ledger entries
 
@@ -121,6 +121,11 @@ Task <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
 Task <N>: brief rebuilt from plan.md
 ```
 
+**Plan revised** (written by `plan` when it revises a plan mid-run):
+```text
+Plan revised: <reason>
+```
+
 **Task complete:**
 ```text
 Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
@@ -137,7 +142,7 @@ For a small change, keep the same structure in conversation.
 
 ## Resume
 
-On resume, read ledger first. Compare recorded commits and task state with working tree and Git history. Keep original review base. Continue from first task without `complete`. Do not trust old check results. Run required checks again.
+On resume, read ledger first. Compare recorded commits and task state with working tree and Git history. Keep original review base. Continue from first task without `complete`. After a `Plan revised` entry, re-read `plan.md` and the changed briefs, and run the pre-flight scan again for the unfinished tasks. Do not trust old check results. Run required checks again.
 
 If a small change loses conversation record, reconstruct boundary from Git and confirm unknown facts with user before editing.
 

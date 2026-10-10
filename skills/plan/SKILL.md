@@ -21,6 +21,15 @@ Find the approved spec before planning.
 
 The spec is the authority. Do not add new product decisions silently. Record a needed change in the spec first, then plan from the updated spec.
 
+## Revising an existing plan
+
+If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/YYYY-MM-DD-<semantic-name>/impl/progress.md` (if present), and `git log`.
+
+- Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
+- Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
+- Present the revision as a draft (what changed and why) and get approval before overwriting `plan.md` or any brief.
+- After writing, append `Plan revised: <one-line reason>` to the ledger and commit as `docs(plan): update <name>`.
+
 ## Explore
 
 Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts.

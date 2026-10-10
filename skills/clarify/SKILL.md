@@ -185,12 +185,24 @@ Do not write unresolved questions, guesses, or agent recommendations as confirme
 
 Experiments are throwaway: do not commit them or move them into the project. After the user approves the findings, continue on the Bounded or Architectural path and write `spec.md` in the same directory.
 
+## Revise an approved spec
+
+When planning or execution found the spec wrong or incomplete, or the user changes scope after approval, reopen the same `spec.md`. Do not create a second spec.
+
+1. Show the change as a draft against the approved text: what changes and why.
+2. Run the draft check and the approval gate again for the changed parts.
+3. Edit `spec.md` in place. For a changed decision, update **Decisions** with the reason; do not rewrite the earlier text silently.
+4. Commit it as an update (below).
+
+If `plan.md` already exists for this spec, `Next:` is `plan` (revise the existing plan), not a new plan.
+
 ## Commit
 
 Commit what this skill produced: the spec (or spike), plus any `GLOSSARY.md` and ADR files created or changed during the session. Stage only those files and check `git diff --staged` before committing.
 
 ```text
 docs(spec): add <name>        # spec.md
+docs(spec): update <name>     # revised spec.md
 docs(spike): add <name>       # spike.md
 ```
 
@@ -208,6 +220,6 @@ Commit: <short hash>
 Next: plan
 ```
 
-For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
+For a revised spec, report `Spec updated: <path>` and use the `Next:` rule above. For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
 
 Stop after saving. Do not automatically invoke `plan` or `execute`.
