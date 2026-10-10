@@ -19,7 +19,7 @@
 `guide` 把请求路由到合适的技能;每个技能产出文档或代码后停下,等你确认再进入下一步:
 
 1. `clarify` 澄清需求,批准后保存并提交 `spec.md`
-2. `plan` 拆分任务,保存并提交 `plan.md`
+2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
 3. `execute` 按 TDD 逐个任务实现、评审、提交,最后由你决定合并还是保留分支
 
 ## 核心流程
@@ -184,6 +184,7 @@ graph TD
   1. 上传 API endpoint
   2. 图片处理和存储
   3. 前端表单集成
+→ 呈现计划草稿,用户批准
 → 保存并提交 plan.md,task briefs 写入 impl/(不提交),停下
 → 用户确认后调用 execute
 → 依次完成 3 个 task,每个 TDD + review + commit
@@ -214,7 +215,7 @@ graph TD
 
 → guide 路由到 wayfinder
 → 识别边界: frontend app, backend API, CI pipeline
-→ 定义 3 个 features,创建 initiative + stubs
+→ 定义 3 个 features,呈现草稿,用户批准后创建 initiative + stubs
 → 用户选 feature-1: frontend
 → 读 feature-1 stub,调用 clarify 写出该 feature 的 spec(stub 里回填 spec 路径)
 → 然后 plan → execute

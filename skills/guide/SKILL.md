@@ -39,7 +39,7 @@ Use the first matching rule:
 7. If the user asks a standalone question that sources can answer (signals: "research", "investigate", "how does X work", "what are the options for Y"), use `research`. If it only matters for one feature they want to build, use `clarify` (Spike path) instead.
 8. If the user asks where the structure of existing code is hurting (signals: "architecture review", "modules too shallow", "hard to test", "where should we refactor"), use `architecture`. A refactor whose target is already chosen goes to `clarify`.
 9. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
-10. If an approved plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md`, use `execute`.
+10. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
 11. If the spec is approved and the work has multiple steps but no plan exists, use `plan`.
 12. If the approved work is clear and ready for code changes, use `execute`.
 13. If no rule matches, use `clarify` instead of guessing.

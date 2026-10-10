@@ -61,7 +61,13 @@ Group boundaries into shippable features. Each feature:
 
 Order features by dependency and risk. Ship risky or blocking work early.
 
-### 3. Write feature stubs
+### 3. Confirm the breakdown
+
+Show the user the initiative goal and the proposed features as a draft: each feature's name and outcome, the dependencies, and the order. Write no file yet. The split and the order are the decisions this skill exists to make, so the user approves them before they are committed.
+
+Wait for approval. If the user asks for changes, revise the draft and ask again.
+
+### 4. Write feature stubs
 
 Write one stub per feature at `docs/initiatives/YYYY-MM-DD-<initiative-name>/feature-<N>-<semantic-name>.md`. Each stub:
 
@@ -111,7 +117,7 @@ Use this structure:
 <Optional: constraints, risks, open questions>
 ```
 
-### 4. Create the initiative index
+### 5. Create the initiative index
 
 Write `docs/initiatives/YYYY-MM-DD-<initiative-name>/index.md`:
 
@@ -134,7 +140,7 @@ feature-1 → feature-2 (auth blocks billing)
 
 This is an index only. List features in dependency order; do not invent dates or timelines. Each feature gets a full spec when the user starts work on it.
 
-### 5. Commit the initiative
+### 6. Commit the initiative
 
 ```bash
 git add docs/initiatives/YYYY-MM-DD-<initiative-name>/

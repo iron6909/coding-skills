@@ -101,7 +101,7 @@ Do not require a failing test when the repository has no test harness or when th
 
 ## Task briefs
 
-After writing `plan.md`, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the spec directory:
+After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the spec directory:
 
 ```bash
 DIR=".cartoons/YYYY-MM-DD-<semantic-name>/impl"
@@ -144,7 +144,7 @@ Briefs let execute read task context without loading the full plan.
 
 ## Plan format
 
-Create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index:
+After approval, create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index:
 
 ```markdown
 # <Feature name> Implementation Plan
@@ -194,7 +194,13 @@ Before reporting the plan, check it against the spec:
 - no action is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
 
-Fix the plan before reporting it. If a gap requires a product decision, stop and update the spec instead.
+Fix the plan before presenting it. If a gap requires a product decision, stop and update the spec instead (`clarify` revises an approved spec).
+
+## Approval gate
+
+Present the plan as a draft in the conversation: goal, approach, the task list with dependencies, final verification, and review focus. Write no file yet. Approval of the spec does not approve the plan.
+
+Wait for the user to approve. If they ask for changes, revise the draft and ask again. Only then write `plan.md` and the task briefs. A committed `plan.md` therefore means an approved plan, which is what `execute` relies on.
 
 ## Commit
 
@@ -202,7 +208,7 @@ Commit `plan.md`, which is permanent. Task briefs live in gitignored `.cartoons/
 
 ## Finish
 
-After saving plan and briefs, report:
+After approval, saving, and committing, report:
 
 ```text
 Plan saved: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
