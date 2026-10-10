@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Plan work that spans multiple sessions or independent modules. Create an initiative (a multi-feature plan) that breaks down into individual features, saved under `docs/initiatives/`.
 
-Do not write product code, create `design.md` or `plan.md` for a feature, or start implementation. Each feature gets its own design later, through `clarify`.
+Do not write product code, create `spec.md` or `plan.md` for a feature, or start implementation. Each feature gets its own spec later, through `clarify`.
 
 ## When to use
 
@@ -126,7 +126,7 @@ Write `docs/initiatives/YYYY-MM-DD-<initiative-name>/index.md`:
 feature-1 → feature-2 (auth blocks billing)
 ```
 
-This is an index only. List features in dependency order; do not invent dates or timelines. Each feature gets a full design when the user starts work on it.
+This is an index only. List features in dependency order; do not invent dates or timelines. Each feature gets a full spec when the user starts work on it.
 
 ### 5. Commit the initiative
 
@@ -141,7 +141,7 @@ After writing the initiative and feature stubs:
 
 1. Tell the user: "Initiative saved to `docs/initiatives/<dir>/`. [N] feature stubs created. Start with feature-1."
 2. Wait for the user to pick a feature.
-3. When the user says "work on feature-N", read that stub and `index.md`, then use `clarify` to create a full design for that feature.
+3. When the user says "work on feature-N", read that stub and `index.md`, then use `clarify` to create a full spec for that feature.
 
 Do not start work until the user picks a feature.
 

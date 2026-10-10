@@ -43,7 +43,7 @@ Before continuing, confirm the fixed point resolves and the diff is non-empty.
 Look for the originating spec in this order:
 
 1. Commit messages: issue references (`#123`, `Closes #45`)
-2. `docs/features/YYYY-MM-DD-<semantic-name>/design.md` matching branch name or commit scope
+2. `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` matching branch name or commit scope
 3. Path the user passed as argument
 4. Another spec file under `docs/` matching branch name
 5. Ask the user. If no spec exists, skip the Spec axis

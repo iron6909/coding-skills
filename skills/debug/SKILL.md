@@ -72,8 +72,8 @@ Complete this phase before attempting any fix.
 
 **Large fix** (multiple files, interface changes, or unclear scope):
 - Stop Phase 4
-- Create a simplified design (brief note: problem, approach, affected files)
-- Route to `clarify` if design needs approval
+- Create a simplified spec (brief note: problem, approach, affected files)
+- Route to `clarify` if spec needs approval
 - Route to `plan` if multi-step
 - Route to `execute` to implement
 

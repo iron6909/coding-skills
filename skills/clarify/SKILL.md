@@ -1,12 +1,12 @@
 ---
 name: clarify
-description: Clarify a development request, confirm its design, and save the approved design to docs/features.
+description: Clarify a development request, confirm its spec, and save the approved spec to docs/features.
 disable-model-invocation: true
 ---
 
 # Clarify
 
-Turn an unclear development request into an approved design. Save the design in `docs/features/YYYY-MM-DD-<semantic-name>/design.md`.
+Turn an unclear development request into an approved spec. Save the spec in `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`.
 
 Do not write product code, create `plan.md`, or start implementation.
 
@@ -28,7 +28,7 @@ Use Spike when:
 - The request asks to "explore", "investigate", or "see if X works"
 - High technical uncertainty blocks starting implementation
 
-Spike output is a findings document, not production code. After approval, the findings feed into a Bounded or Architectural design.
+Spike output is a findings document, not production code. After approval, the findings feed into a Bounded or Architectural spec.
 
 ### Bounded path
 
@@ -84,16 +84,16 @@ Wait for the answer.
 **Rules for exploratory rounds:**
 
 - One question per round. Wait for answer before next question.
-- Ask only what changes the design. Skip questions whose answers do not affect implementation.
+- Ask only what changes the spec. Skip questions whose answers do not affect implementation.
 - Do not ask for repository facts (use tools to find them).
-- Stop when you have enough to write a clear design.
+- Stop when you have enough to write a clear spec.
 - For clear requests, skip directly to code exploration.
 
 **After dialogue rounds, proceed to code exploration below.**
 
 ## Explore code
 
-Read `GLOSSARY.md` (if it exists) before exploring code. Use project terms from the glossary in all design artifacts.
+Read `GLOSSARY.md` (if it exists) before exploring code. Use project terms from the glossary in all spec artifacts.
 
 Read the minimum project context needed to clarify the request:
 
@@ -111,13 +111,13 @@ Read directly for small requests. Use read-only subagents for large exploration 
 
 **When and how to use subagents**: read `./references/subagent-dispatch.md` for dispatch rules.
 
-Main process owns all design decisions and writes.
+Main process owns all spec decisions and writes.
 
 **Domain model**: while exploring and clarifying, read `./references/domain-modeling.md`. Apply that discipline: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. When a decision passes the three-condition test, offer an ADR using `./references/adr-format.md`.
 
 ## Clarify remaining decisions
 
-After exploratory rounds (if any) and code exploration, ask only questions that change the design. One question per message.
+After exploratory rounds (if any) and code exploration, ask only questions that change the spec. One question per message.
 
 **Format:**
 
@@ -144,23 +144,23 @@ Reason: <short reason if not obvious>
 - Acceptance conditions
 - Testing boundary
 
-Small requests with clear intent may need no clarification questions. Present short design and ask approval.
+Small requests with clear intent may need no clarification questions. Present short spec and ask approval.
 
-## Design options
+## Spec options
 
-For a normal request, present one recommended design and its necessary trade-offs.
+For a normal request, present one recommended spec and its necessary trade-offs.
 
-For a complex request, present two or three viable designs. Compare them by complexity, fit with the current code, risk, and testability. Recommend one. Do not create speculative alternatives for a clear small change.
+For a complex request, present two or three viable specs. Compare them by complexity, fit with the current code, risk, and testability. Recommend one. Do not create speculative alternatives for a clear small change.
 
 Prefer deletion, existing project patterns, standard library features, native platform features, and installed dependencies before adding code or dependencies.
 
 ## Approval gate
 
-Before approval, label the design as a draft. Do not write product code or invoke `plan` or `execute`.
+Before approval, label the spec as a draft. Do not write product code or invoke `plan` or `execute`.
 
-The user must approve the design before it becomes final. Approval of the request does not approve an unshown design. If the user requests changes, update the draft and ask again.
+The user must approve the spec before it becomes final. Approval of the request does not approve an unshown spec. If the user requests changes, update the draft and ask again.
 
-A design is ready when it states:
+A spec is ready when it states:
 
 - the problem and goal
 - the included and excluded scope
@@ -169,17 +169,17 @@ A design is ready when it states:
 - observable acceptance conditions
 - testing boundaries
 
-## Save the design
+## Save the spec
 
 After approval, generate a date-prefixed directory name and write:
 
 ```bash
 DIR="docs/features/$(date +%Y-%m-%d)-<semantic-name>"
 mkdir -p "$DIR"
-# Write to $DIR/design.md
+# Write to $DIR/spec.md
 ```
 
-Use format `YYYY-MM-DD-<semantic-name>` where semantic-name is short lowercase kebab-case (2-4 words). Reuse an existing directory when the user is continuing that feature. Do not create a second design file for the same work.
+Use format `YYYY-MM-DD-<semantic-name>` where semantic-name is short lowercase kebab-case (2-4 words). Reuse an existing directory when the user is continuing that feature. Do not create a second spec file for the same work.
 
 Use this structure and omit empty sections:
 
@@ -202,7 +202,7 @@ Use this structure and omit empty sections:
 
 <What this work does not include.>
 
-## Design
+## Solution
 
 <The selected approach, flow, and affected module responsibilities.>
 
@@ -227,13 +227,13 @@ Do not write unresolved questions, guesses, or agent recommendations as confirme
 
 ## Review the document
 
-Before reporting completion, check the design for:
+Before reporting completion, check the spec for:
 
 - unresolved placeholders or decisions
 - contradictions between sections
 - scope that is too large for one plan
 - acceptance conditions that cannot be checked
-- requirements missing from the selected design
+- requirements missing from the selected spec
 
 Fix the document before reporting it. Do not start implementation during this check.
 
@@ -242,10 +242,10 @@ Fix the document before reporting it. Do not start implementation during this ch
 Report:
 
 ```text
-Design saved: docs/features/YYYY-MM-DD-<semantic-name>/design.md
+Spec saved: docs/features/YYYY-MM-DD-<semantic-name>/spec.md
 Glossary: <terms added or changed, or None>
 ADRs: <paths created, or None>
 Next: plan
 ```
 
-Stop after saving the approved design. Do not automatically invoke `plan` or `execute`.
+Stop after saving the approved spec. Do not automatically invoke `plan` or `execute`.

@@ -1,25 +1,25 @@
 ---
 name: plan
-description: Turn an approved design into a small, ordered implementation plan saved beside the design in docs/features, with task briefs in .cartoons.
+description: Turn an approved spec into a small, ordered implementation plan saved beside the spec in docs/features, with task briefs in .cartoons.
 disable-model-invocation: true
 ---
 
 # Plan
 
-Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/design.md` into an implementation plan. Save it beside the design as `plan.md`.
+Turn an approved `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` into an implementation plan. Save it beside the spec as `plan.md`.
 
 Do not write product code, commit changes, or start implementation.
 
 ## Preconditions
 
-Find the approved design before planning.
+Find the approved spec before planning.
 
 - Read the applicable `AGENTS.md` files.
-- Read `docs/features/YYYY-MM-DD-<semantic-name>/design.md` in full.
-- Confirm that the design states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
-- If the design is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
+- Read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` in full.
+- Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
+- If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
 
-The design is the authority. Do not add new product decisions silently. Record a needed change in the design first, then plan from the updated design.
+The spec is the authority. Do not add new product decisions silently. Record a needed change in the spec first, then plan from the updated spec.
 
 ## Explore
 
@@ -44,11 +44,11 @@ Read directly for small changes. Dispatch read-only subagents when the plan need
 Main process owns decomposition and all writes. Keep these categories separate:
 
 - repository fact
-- design decision
+- spec decision
 - plan choice
 - unresolved question
 
-Treat conflicting findings as unresolved until repository evidence or an updated design settles them.
+Treat conflicting findings as unresolved until repository evidence or an updated spec settles them.
 
 ## Map the change
 
@@ -60,9 +60,9 @@ Before writing tasks, list the change map in working notes:
 - tests that prove each acceptance condition
 - commands that verify the affected area
 
-Follow existing project boundaries. Do not include a refactor only because it looks cleaner. Include a refactor only when the design requires it or it makes the requested change safe.
+Follow existing project boundaries. Do not include a refactor only because it looks cleaner. Include a refactor only when the spec requires it or it makes the requested change safe.
 
-If the design covers independent subsystems, split it into separate plans or state the dependency clearly. Each plan should produce a testable result.
+If the spec covers independent subsystems, split it into separate plans or state the dependency clearly. Each plan should produce a testable result.
 
 ## Task design
 
@@ -101,7 +101,7 @@ Do not require a failing test when the repository has no test harness or when th
 
 ## Task briefs
 
-After writing `plan.md`, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the design directory:
+After writing `plan.md`, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the spec directory:
 
 ```bash
 DIR=".cartoons/YYYY-MM-DD-<semantic-name>/impl"
@@ -153,7 +153,7 @@ Create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index
 
 **Goal:** <one sentence>
 
-**Design:** `docs/features/YYYY-MM-DD-<semantic-name>/design.md`
+**Spec:** `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`
 
 **Approach:** <two or three sentences>
 
@@ -191,9 +191,9 @@ plan.md is an index. Task details live in `impl/task-N.md` files. Keep plan.md u
 
 ## Self-review
 
-Before reporting the plan, check it against the design:
+Before reporting the plan, check it against the spec:
 
-- every design requirement maps to a task or final check
+- every spec requirement maps to a task or final check
 - every task has one clear deliverable
 - task order respects dependencies
 - shared interfaces use the same names and types everywhere
@@ -204,7 +204,7 @@ Before reporting the plan, check it against the design:
 - no action is vague or combines unrelated changes
 - the plan does not add unrequested work, dependencies, or refactors
 
-Fix the plan before reporting it. If a gap requires a product decision, stop and update the design instead.
+Fix the plan before reporting it. If a gap requires a product decision, stop and update the spec instead.
 
 ## Finish
 

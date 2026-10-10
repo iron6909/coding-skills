@@ -11,8 +11,8 @@ Choose the smallest suitable top-level skill for the user's current request, the
 ## Top-level skills
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
-- `clarify`: resolve the request, scope, design, constraints, and acceptance checks.
-- `plan`: turn an approved design into small, testable tasks.
+- `clarify`: resolve the request, scope, spec, constraints, and acceptance checks.
+- `plan`: turn an approved spec into small, testable tasks.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task.
 - `debug`: reproduce, isolate, diagnose, fix, review, commit, and regression-test a failure.
 - `review`: independently review another branch, a PR, or historical commits.
@@ -36,9 +36,9 @@ Use the first matching rule:
 5. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
 6. If the user asks to prototype, spike, or build a throwaway proof-of-concept (signals: "prototype", "spike", "quick proof", "see if X works"), use `prototype`.
 7. If the user asks to research, investigate, or explore unfamiliar territory without writing code (signals: "research", "investigate", "explore", "how does X work", "what are the options for Y"), use `research`.
-8. If the request has unresolved scope, design, constraints, or acceptance checks, use `clarify`.
+8. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
 9. If an approved plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md`, use `execute`.
-10. If the design is approved and the work has multiple steps but no plan exists, use `plan`.
+10. If the spec is approved and the work has multiple steps but no plan exists, use `plan`.
 11. If the approved work is clear and ready for code changes, use `execute`.
 12. If no rule matches, use `clarify` instead of guessing.
 

@@ -55,7 +55,7 @@ graph TD
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
-| **clarify** | 需求不明 | design.md | Spike/Bounded/Architectural 三路径 |
+| **clarify** | 需求不明 | spec.md | Spike/Bounded/Architectural 三路径 |
 | **plan** | 设计已批准 | plan.md + task briefs | 拆分为 tracer-bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环 |
 | **debug** | 报告故障 | 诊断 + 修复 | 4 阶段:重现→诊断→假设→修复 |
@@ -75,10 +75,10 @@ graph TD
 ├── docs/
 │   ├── features/                        # 功能设计(永久)
 │   │   ├── 2025-01-15-user-auth/
-│   │   │   ├── design.md               # 批准的设计
+│   │   │   ├── spec.md                 # 批准的规格
 │   │   │   └── plan.md                 # 任务索引
 │   │   └── 2025-01-20-cart-checkout/
-│   │       ├── design.md
+│   │       ├── spec.md
 │   │       └── plan.md
 │   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出)
 │   └── adr/                             # 架构决策记录(惰性创建)
@@ -94,7 +94,7 @@ graph TD
 
 ### 三层结构
 
-1. **design** — 问题/目标/范围/方案/约束/验收条件
+1. **spec** — 问题/目标/范围/方案/约束/验收条件
 2. **plan** — 有序任务列表,每个任务有依赖声明
 3. **task** — 独立可测试单元,有:
    - 明确交付物
@@ -158,7 +158,7 @@ execute 强制:
 → guide 路由到 clarify
 → clarify 问 2-3 个问题(格式?存储?尺寸限制?)
 → 呈现设计,用户批准
-→ 保存 docs/features/2025-01-20-avatar-upload/design.md,停下
+→ 保存 docs/features/2025-01-20-avatar-upload/spec.md,停下
 → 用户确认后调用 plan
 → 拆分为 3 个 task:
   1. 上传 API endpoint
@@ -197,7 +197,7 @@ execute 强制:
 → 识别边界: frontend app, backend API, CI pipeline
 → 定义 3 个 features,创建 initiative + stubs
 → 用户选 feature-1: frontend
-→ 读 feature-1 stub,调用 clarify 创建完整 design
+→ 读 feature-1 stub,调用 clarify 创建完整 spec
 → 然后 plan → execute
 → 重复,直到 3 个 features 都完成
 ```

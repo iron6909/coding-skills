@@ -61,15 +61,15 @@ Other references have one owner:
 
 These are the paths skills create in a project they run on.
 
-- `docs/features/YYYY-MM-DD-<name>/` holds `design.md` and `plan.md`.
+- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` and `plan.md`.
 - `docs/initiatives/YYYY-MM-DD-<name>/` holds `index.md` and `feature-N-<name>.md`.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, and review reports. Never put anything there that must be committed, and never put `design.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, and review reports. Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Terminology
 
-- **design**, **plan**: the approved design and its task index.
+- **spec**, **plan**: the approved spec and its task index.
 - **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. Keep them distinct: a review, commit, or ledger entry belongs to a task, never a step.
 - **tracer bullet**: a vertical-slice task. **blocking edge**: a dependency between tasks.
 - **initiative**: a multi-feature plan from `wayfinder`. **feature stub**: one feature in it.

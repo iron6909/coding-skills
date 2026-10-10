@@ -8,8 +8,8 @@ disable-model-invocation: true
 
 Use one of two execution briefs:
 
-- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/design.md` and `plan.md` in full. The design defines behavior. The plan defines step order.
-- **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No design or plan file is required.
+- **Planned work:** read `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior. The plan defines step order.
+- **Small change:** use the approved request as one step when its scope and acceptance checks are clear. No spec or plan file is required.
 
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.
 
@@ -21,7 +21,7 @@ For planned work, create an isolated impl directory:
 .cartoons/YYYY-MM-DD-<semantic-name>/impl/
 ```
 
-`.cartoons/` is temporary and gitignored. It holds only `impl/` (the ledger and task briefs) for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Design and plan live under `docs/features/`, never here.
+`.cartoons/` is temporary and gitignored. It holds only `impl/` (the ledger and task briefs) for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 
@@ -56,7 +56,7 @@ Before changing code:
 
 Repeat this cycle for each task step that adds or changes behavior. Configuration, documentation, or generated files use the strongest available check instead.
 
-Do not implement an unapproved draft. For planned work, stop and report a missing design or plan path.
+Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
 
 Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
 
@@ -68,12 +68,12 @@ Before Task 1, read plan.md for the dependency graph and final verification comm
 - Record one ledger row per shared interface: task numbers, what is produced vs consumed, finding
 - Tasks sharing nothing get no row
 - If no shared interfaces exist, write `Pre-flight: no shared interfaces`
-- Rule on each conflict with the design as authority
+- Rule on each conflict with the spec as authority
 - Record ruling beside its row
 
 ## Execution ownership
 
-The main process owns all code, test, design, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
+The main process owns all code, test, spec, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
 
 Agents report findings and file paths. They must not edit files, commit, publish changes, or dispatch other agents.
 
