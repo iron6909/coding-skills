@@ -93,9 +93,9 @@ A spec is ready when it states:
 - the selected approach
 - important decisions and constraints
 - observable acceptance conditions
-- the testing boundary, including the seams to test through
+- the testing boundary, including the test entry points to test through
 
-The user approves the seams together with the spec. Later skills test only through approved seams.
+The user approves the test entry points together with the spec. Later skills test only through approved entry points.
 
 ## Save
 
@@ -150,7 +150,7 @@ Omit empty sections.
 
 ## Testing
 
-<Behaviors to test, the seams (public boundaries) to test through, and the relevant test boundary.>
+<Behaviors to test, the test entry points (public interfaces) to test through, and the relevant test boundary.>
 ```
 
 If the request came from a `wayfinder` feature stub, add `**Initiative stub:** <stub path>` under the title.

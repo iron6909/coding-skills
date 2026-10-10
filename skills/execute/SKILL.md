@@ -51,7 +51,7 @@ Before changing code:
 - confirm the execution input has no unresolved product decisions
 - record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the seams the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
+**Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the test entry points the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
 
 Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path.
 

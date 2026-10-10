@@ -4,7 +4,7 @@ Load this discipline before changing behavior when the project supports tests.
 
 ## Red-green-refactor loop
 
-1. **RED**: write the smallest test that exposes the needed behavior, through an approved seam.
+1. **RED**: write the smallest test that exposes the needed behavior, through an approved test entry point.
 2. **Run it** and confirm it fails for the right reason: the behavior is missing, not a typo or a setup error. A test that passes before the implementation exists proves nothing.
 3. **GREEN**: write only enough code to pass the test.
 4. **Run it again** and confirm it passes.
@@ -15,8 +15,7 @@ Do not skip step 2.
 
 ## Where to test
 
-A **seam** is the public boundary a test enters through. Test through the seams the spec's Testing section lists; the user approved them with the spec. When there is no spec (a small change or a fix), name the seam in one line before writing the test, and ask if it is unclear.
-
+A **test entry point** is the public interface a test calls into: a function, endpoint, command, or UI action. Test through the entry points the spec's Testing section lists; the user approved them with the spec. When there is no spec (a small change or a fix), name the entry point in one line before writing the test, and ask if it is unclear.
 Use the repository's existing test tools. Do not add a test framework or dependency for this workflow.
 
 ## What to test

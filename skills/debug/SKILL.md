@@ -73,7 +73,7 @@ Never route a small fix through `clarify`, `plan`, or `execute`.
 
 ### Small fix workflow
 
-1. **Create a failing test**. Read `./references/tdd.md` and follow it: write the simplest reproduction through a seam (the public boundary a test enters through), confirm it fails, apply the minimal fix, and confirm it passes. If no correct seam exists, say so: that is a design finding, and `architecture` is the skill that handles it.
+1. **Create a failing test**. Read `./references/tdd.md` and follow it: write the simplest reproduction through a test entry point (the public interface a test calls into), confirm it fails, apply the minimal fix, and confirm it passes. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
 3. **Verify the fix**. Run the regression test, the original reproduction, and the affected checks (test suite, lint, type-check). Confirm no other tests broke.
 4. **Inspect the diff**. Check for scope creep, accidental files, and leftover probes. Every `[DEBUG-...]` line is gone.
@@ -130,4 +130,4 @@ Remaining: <known gap, or None>
 Next: <for a large fix, the recommended skill; otherwise None>
 ```
 
-Do not claim success without fresh output from the failing test and the affected checks. If no correct regression seam exists, state that limit, name `architecture` as the skill that can create one, and say what verification was used instead.
+Do not claim success without fresh output from the failing test and the affected checks. If no suitable regression test entry point exists, state that limit, name `architecture` as the skill that can create one, and say what verification was used instead.
