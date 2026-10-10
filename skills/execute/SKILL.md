@@ -266,4 +266,6 @@ Next: finish (keep, merge locally, or discard)
 
 Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
 
+If the spec carries an `**Initiative stub:**` line, say so and name the stub and its `index.md`: once the user confirms the feature shipped, `wayfinder` checks it off. Do not edit the initiative from here.
+
 Stop after implementation, task review, commits, verification, and the finish decision. Do not invoke a separate review skill.

@@ -37,6 +37,12 @@ docs/initiatives/YYYY-MM-DD-<initiative-name>/
 
 Read `GLOSSARY.md` (if it exists) first and use its terms in every initiative file.
 
+## Explore before splitting
+
+A boundary you cannot point at in the repository is a guess. Read the applicable `AGENTS.md` files, the top-level structure, and the manifests (`package.json`, `go.work`, workspace config) before naming any boundary, and cite the paths you found. For a large repository, dispatch read-only subagents (see `./references/subagent-dispatch.md`); the main process owns the breakdown.
+
+Ask the user only about what the code cannot answer: which outcome matters most, and any deadline or constraint that orders the work.
+
 ## Breakdown process
 
 ### 1. Identify boundaries
@@ -175,7 +181,7 @@ Do not update the initiative without the user asking.
 
 ## Mark a feature shipped
 
-When a feature's work lands and its acceptance conditions hold, check it off in `index.md` and keep the spec path next to the entry, so the initiative points at the work that closed it:
+This skill owns the update, but it is the user who decides the feature shipped: `execute` reports the finish decision and then hands back here. When the user confirms, check the feature off in `index.md` and keep the spec path next to the entry, so the initiative points at the work that closed it:
 
 ```markdown
 - [x] [feature-1: Auth with JWT](feature-1-auth.md) — docs/features/2026-10-15-auth/spec.md

@@ -24,6 +24,8 @@ Both axes run in parallel when subagents are available.
 
 Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
 
+A "PR" here means a local branch: no tracker is involved. Ask the user to fetch or check out the branch first, then review the local commits against the base. Do not attempt to resolve a PR number.
+
 Capture the diff command once:
 
 ```bash
