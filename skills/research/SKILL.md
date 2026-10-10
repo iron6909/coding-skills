@@ -1,6 +1,6 @@
 ---
 name: research
-description: Investigate a technical question against primary sources and capture findings as a cited Markdown file. Use for library comparison, best practice research, API exploration, or design decision support. NOT for quick lookups.
+description: Investigate a standalone technical question against primary sources, save a cited report to docs/research, and commit it. Use for library comparison, best-practice research, API exploration, or decision support. NOT for quick lookups, and NOT for a feasibility unknown that blocks one specific feature (use clarify's Spike path).
 disable-model-invocation: true
 ---
 
@@ -150,23 +150,9 @@ Commit the saved report. Stage only the report file, check `git diff --staged`, 
 
 ## Example
 
-User asks: "Which state library should we use — Zustand or Jotai?"
+User asks: "Which state library should we use, Zustand or Jotai?"
 
 1. Confirm: "Research Zustand vs Jotai for state management. Save to `docs/research/state-library.md`?"
-2. Gather:
-   - Zustand GitHub, docs
-   - Jotai GitHub, docs
-   - Bundle size comparison (Bundlephobia)
-   - Community usage (npm trends)
-3. Investigate:
-   - API surface (Zustand: store-based, Jotai: atom-based)
-   - Bundle size (Zustand 1.2KB, Jotai 3.1KB)
-   - React integration patterns
-   - TypeScript support
-4. Write report with:
-   - Comparison table (bundle size, API style, TypeScript, devtools)
-   - Evidence for each claim
-   - Recommendation: "Zustand for simple stores, Jotai for derived state"
-5. Report path to user
-
-Do NOT turn research into code changes without user approval.
+2. Gather primary sources for each option: documentation, repository, release notes, and measured bundle size from the official package page or the build output.
+3. Compare the criteria that matter for this project (API style, TypeScript support, devtools, bundle size), quoting each source for each cell.
+4. Write the report, commit it, and give the user the path and the one-line recommendation.
