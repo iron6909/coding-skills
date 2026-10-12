@@ -16,9 +16,10 @@ Execute the full development workflow with minimal human intervention:
 3. Execute all tasks
 4. Review code
 5. Open PR
-6. Watch PR to merge-ready
 
 This skill coordinates other skills autonomously, stopping only at critical decision points or when errors cannot be auto-resolved.
+
+**Note**: After opening PR, autoflow stops. PR management (handling review feedback, CI failures, conflicts) is done manually or through `execute` when feedback arrives.
 
 ## When to use
 
@@ -168,24 +169,7 @@ gh pr create --title "<title>" --body "<description>" --base <default-branch>
 
 **Output**: PR URL
 
-### Phase 6: Watch (optional)
-
-**Goal**: Monitor PR to merge-ready
-
-**Autonomous decisions**:
-- Conflict resolution: auto-resolve using spec context
-- CI failures: auto-fix and push
-- Review feedback: auto-implement if convergent (matches spec intent)
-- Sync with base: auto-rebase when behind
-
-**Stop conditions**:
-- Review feedback is divergent (contradicts spec)
-- Architectural conflict in merge
-- PR approved and merge-ready (success)
-
-**Invoke**: `pr-watch` in autonomous mode
-
-**Output**: PR merge-ready or stopped at manual decision point
+**Stop here**: autoflow completes after opening PR. User handles PR management manually or uses `execute` to respond to feedback.
 
 ## Checkpoints
 
@@ -218,32 +202,29 @@ Even in full auto mode, stop at:
 Show phase transitions:
 
 ```
-[autoflow] Phase 1/6: Clarify
+[autoflow] Phase 1/5: Clarify
 → Generated spec: docs/features/2026-10-12-user-login/spec.md
 → Committed: docs(spec): add user-login
 
-[autoflow] Phase 2/6: Plan
+[autoflow] Phase 2/5: Plan
 → Generated plan: 3 tasks (tracer bullet + 2 horizontal)
 → Committed: docs(plan): add user-login implementation plan
 
-[autoflow] Phase 3/6: Execute
+[autoflow] Phase 3/5: Execute
 → Task 1: Create login endpoint (✓ tests passing)
 → Task 2: Add UI form (✓ tests passing)
 → Task 3: Connect auth flow (✓ tests passing)
 → Committed: 3 commits
 
-[autoflow] Phase 4/6: Review
+[autoflow] Phase 4/5: Review
 → Standards: 2 findings (fixed)
 → Spec: matches requirements
 → Learnings: no issues
 → Security: 1 finding (fixed)
 
-[autoflow] Phase 5/6: PR
+[autoflow] Phase 5/5: PR
 → Opened: https://github.com/user/repo/pull/123
 → Title: feat: add user login with JWT
-
-[autoflow] Phase 6/6: Watch PR
-→ Monitoring until merge-ready...
 ```
 
 ### Final report
@@ -253,7 +234,7 @@ Show phase transitions:
 
 Feature: User login with JWT
 Branch: feature/2026-10-12-user-login
-PR: #123 (merge-ready)
+PR: #123 (opened)
 
 Timeline:
 - Spec: 2 minutes
@@ -261,16 +242,15 @@ Timeline:
 - Execute: 18 minutes (3 tasks)
 - Review: 4 minutes (3 findings fixed)
 - PR: 1 minute
-- Watch: 12 minutes (resolved 1 CI failure)
-Total: 40 minutes
+Total: 28 minutes
 
 Output:
 - Spec: docs/features/2026-10-12-user-login/spec.md
 - Plan: docs/features/2026-10-12-user-login/plan.md
-- Commits: 7 (3 tasks + 3 fixes + 1 CI)
+- Commits: 7 (3 tasks + 3 fixes + 1 doc)
 - PR: https://github.com/user/repo/pull/123
 
-Next: Merge PR or continue watching
+Next: Handle PR feedback manually or use `execute` when feedback arrives
 ```
 
 ## Configuration
@@ -280,7 +260,6 @@ Optional configuration in `.cartoons/autoflow-config.toml`:
 ```toml
 [autoflow]
 mode = "full-auto"  # full-auto | checkpointed | dry-run
-enable_pr_watch = true  # continue to pr-watch after PR open
 auto_approve_minor = true  # auto-fix minor review findings
 max_tasks = 10  # stop if plan exceeds N tasks
 
@@ -350,7 +329,6 @@ Autoflow invokes other skills with specific flags:
 | `execute` | With `auto` flag | Run all tasks without stopping |
 | `code-review` | With auto-fix | Fix Blocking/Important findings |
 | git/gh | Shell commands | Create branch, push, open PR |
-| `pr-watch` | Direct call | Autonomous mode |
 
 ## Integration with guide
 
@@ -373,7 +351,7 @@ Autoflow invokes other skills with specific flags:
 | Execution | User starts each task | Runs all tasks |
 | Review | User decides fixes | Auto-fixes Blocking/Important |
 | PR | User creates PR | Auto-created |
-| Speed | ~60 min for 3 tasks | ~40 min for 3 tasks |
+| Speed | ~60 min for 3 tasks | ~30 min for 3 tasks |
 | Oversight | Full visibility | Minimal stops |
 
 ## Error handling
@@ -423,8 +401,8 @@ After autoflow completes, report:
 
 ```
 Next actions:
-- Merge PR: `gh pr merge <number>`
-- Make changes: Resume watching or manual edits
+- Handle PR feedback: Wait for reviews, use `execute` to respond to feedback
+- Merge PR: `gh pr merge <number>` (when approved)
 - New feature: Start another autoflow
 ```
 

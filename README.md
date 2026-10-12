@@ -83,7 +83,6 @@ graph TD
 | **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
 | **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/charter 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
-| **pr-watch** | PR 需要持续管理 | 冲突解决 + CI 修复 + 审查反馈响应 | 监控 PR 直到 merge-ready |
 
 ## 关键概念
 
