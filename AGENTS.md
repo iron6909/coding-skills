@@ -114,7 +114,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `learning-refresh` | updated, consolidated, or deleted learnings |
 | `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
 | `simplify` | simplified code |
-| `autoflow` | full feature delivery: spec, plan, commits, review fixes, PR (commits to feature branch) |
+| `autoflow` | full feature delivery: spec, plan, commits, review fixes (all on feature branch) |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |

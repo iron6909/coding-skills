@@ -14,12 +14,11 @@ Execute the full development workflow with minimal human intervention:
 1. Clarify requirements (if needed)
 2. Plan implementation
 3. Execute all tasks
-4. Review code
-5. Open PR
+4. Review code and apply fixes
 
 This skill coordinates other skills autonomously, stopping only at critical decision points or when errors cannot be auto-resolved.
 
-**Note**: After opening PR, autoflow stops. PR management (handling review feedback, CI failures, conflicts) is done manually or through `execute` when feedback arrives.
+**Note**: autoflow stops after code review and fixes are complete. All code is committed to the feature branch. What you do next (merge to main, open PR, deploy) is up to you.
 
 ## When to use
 
@@ -150,26 +149,7 @@ Show what would be done at each phase without executing:
 
 **Output**: Review report + fix commits
 
-### Phase 5: PR (auto)
-
-**Goal**: Open PR with well-structured description
-
-**Autonomous decisions**:
-- PR title: derive from spec title (≤70 chars)
-- PR description: generate from spec + plan + commits
-- Target branch: default branch (main/master)
-- Draft status: false (ready for review)
-- Reviewers: use CODEOWNERS if exists, else leave empty
-
-**Commands**:
-```bash
-git push -u origin <feature-branch>
-gh pr create --title "<title>" --body "<description>" --base <default-branch>
-```
-
-**Output**: PR URL
-
-**Stop here**: autoflow completes after opening PR. User handles PR management manually or uses `execute` to respond to feedback.
+**Stop here**: autoflow completes after review and fixes. Feature branch is ready. User decides next steps (merge, push, etc.).
 
 ## Checkpoints
 
@@ -202,29 +182,26 @@ Even in full auto mode, stop at:
 Show phase transitions:
 
 ```
-[autoflow] Phase 1/5: Clarify
+[autoflow] Phase 1/4: Clarify
 → Generated spec: docs/features/2026-10-12-user-login/spec.md
 → Committed: docs(spec): add user-login
 
-[autoflow] Phase 2/5: Plan
+[autoflow] Phase 2/4: Plan
 → Generated plan: 3 tasks (tracer bullet + 2 horizontal)
 → Committed: docs(plan): add user-login implementation plan
 
-[autoflow] Phase 3/5: Execute
+[autoflow] Phase 3/4: Execute
 → Task 1: Create login endpoint (✓ tests passing)
 → Task 2: Add UI form (✓ tests passing)
 → Task 3: Connect auth flow (✓ tests passing)
 → Committed: 3 commits
 
-[autoflow] Phase 4/5: Review
+[autoflow] Phase 4/4: Review
 → Standards: 2 findings (fixed)
 → Spec: matches requirements
 → Learnings: no issues
 → Security: 1 finding (fixed)
-
-[autoflow] Phase 5/5: PR
-→ Opened: https://github.com/user/repo/pull/123
-→ Title: feat: add user login with JWT
+→ Committed: 2 fix commits
 ```
 
 ### Final report
@@ -234,23 +211,21 @@ Show phase transitions:
 
 Feature: User login with JWT
 Branch: feature/2026-10-12-user-login
-PR: #123 (opened)
 
 Timeline:
 - Spec: 2 minutes
 - Plan: 3 minutes
 - Execute: 18 minutes (3 tasks)
 - Review: 4 minutes (3 findings fixed)
-- PR: 1 minute
-Total: 28 minutes
+Total: 27 minutes
 
 Output:
 - Spec: docs/features/2026-10-12-user-login/spec.md
 - Plan: docs/features/2026-10-12-user-login/plan.md
-- Commits: 7 (3 tasks + 3 fixes + 1 doc)
-- PR: https://github.com/user/repo/pull/123
+- Commits: 7 (3 tasks + 2 doc + 2 fixes)
+- Branch: feature/2026-10-12-user-login (all changes committed)
 
-Next: Handle PR feedback manually or use `execute` when feedback arrives
+Next: Merge to main, push to remote, or continue developing
 ```
 
 ## Configuration
@@ -269,10 +244,6 @@ infer_acceptance = true  # generate acceptance criteria from request
 
 [autoflow.execute]
 review_between_tasks = false  # review each task vs review all at end
-
-[autoflow.pr]
-draft = false  # open as draft PR
-auto_assign_reviewers = true  # use CODEOWNERS
 ```
 
 ## Safety
@@ -328,7 +299,7 @@ Autoflow invokes other skills with specific flags:
 | `plan` | Direct call | Always Full tier |
 | `execute` | With `auto` flag | Run all tasks without stopping |
 | `code-review` | With auto-fix | Fix Blocking/Important findings |
-| git/gh | Shell commands | Create branch, push, open PR |
+| git | Shell commands | Create branch, commits |
 
 ## Integration with guide
 
@@ -350,7 +321,7 @@ Autoflow invokes other skills with specific flags:
 | Planning | User approves plan | Auto-approved |
 | Execution | User starts each task | Runs all tasks |
 | Review | User decides fixes | Auto-fixes Blocking/Important |
-| PR | User creates PR | Auto-created |
+| Outcome | User merges when ready | Feature branch ready |
 | Speed | ~60 min for 3 tasks | ~30 min for 3 tasks |
 | Oversight | Full visibility | Minimal stops |
 
@@ -401,8 +372,9 @@ After autoflow completes, report:
 
 ```
 Next actions:
-- Handle PR feedback: Wait for reviews, use `execute` to respond to feedback
-- Merge PR: `gh pr merge <number>` (when approved)
+- Merge to main: `git checkout main && git merge <feature-branch>`
+- Push branch: `git push origin <feature-branch>` (if collaborating)
+- Continue work: Stay on branch and keep developing
 - New feature: Start another autoflow
 ```
 
