@@ -60,7 +60,10 @@ Other references have one owner:
 | `doc-review` | `review-lenses.md` |
 | `simplify` | `simplify-dimensions.md` |
 | `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
+| `pr-watch` | `conflict-resolution.md` |
 | `capture` | `counterfactual-test.md` |
+| `learning-refresh` | `drift-detection.md` |
+| `autoflow` | `state-management.md` |
 
 ## Skill authoring rules
 
@@ -112,6 +115,8 @@ The skill that writes a project document commits it, staging only its own files.
 | `learning-refresh` | updated, consolidated, or deleted learnings |
 | `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
 | `simplify` | simplified code |
+| `pr-watch` | conflict resolutions, CI fixes, review feedback responses (commits to PR branch) |
+| `autoflow` | full feature delivery: spec, plan, commits, review fixes, PR (commits to feature branch) |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |

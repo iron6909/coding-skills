@@ -47,10 +47,15 @@ List all files in `docs/learnings/`. For each file, extract:
 ### 3. Verify against codebase
 
 For each learning:
-- Check if cited files/functions still exist
-- Verify the claim still holds (grep for patterns, read relevant code)
-- Check if the trap was fixed (search for counter-examples)
+- **Detect drift**: Apply systematic drift detection (see `./references/drift-detection.md`)
+  - Check if cited files/functions still exist
+  - Verify the claim still holds (grep for patterns, read relevant code)
+  - Check if the trap was fixed (search for counter-examples)
+  - Measure staleness (commits since learning, time elapsed)
+  - Detect architectural changes that invalidate learning
 - Look for overlapping learnings (same tags + similar claims)
+
+Use drift signals to inform classification but verify manually before deciding outcome.
 
 ### 4. Classify outcome
 
