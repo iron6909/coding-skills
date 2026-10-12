@@ -352,8 +352,6 @@ If any phase exceeds expected duration:
 - Plan: 10 minutes
 - Execute: 30 minutes (or 10 min per task)
 - Review: 10 minutes
-- PR: 2 minutes
-- Watch: 2 hours
 
 Report timeout and offer:
 1. Continue waiting
