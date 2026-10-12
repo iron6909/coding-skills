@@ -1,18 +1,28 @@
 ---
-name: architecture
-description: Review the shape of existing code and propose structural improvements. Use when the codebase is hard to change, modules feel shallow, tests need internals, understanding one concept means jumping between many files, or the user asks for an architecture review or a refactor direction. Produces candidates in a temporary report, not code.
+name: refactor
+description: Review the shape of existing code and propose structural improvements for an already-chosen target. Use when the user names a specific area to refactor, or when the codebase is hard to change in a known area. For greenfield architecture, use clarify's Architectural path. For bug fixes, use debug. Produces candidates in a temporary report, not code.
 disable-model-invocation: true
 ---
 
-# Architecture
+# Refactor
 
-Find structural problems in existing code and propose improvements. The output is a ranked set of candidates, not code.
+Find structural problems in existing code and propose improvements. The output is a ranked set of candidates for a **specific target area**, not code.
+
+**Scope**: reviews the structure of a chosen target area (module, subsystem, or hot-spot code changed frequently). This is structural review, not diff review (use `review` for that).
 
 Read `GLOSSARY.md` and the relevant `docs/adr/` records first, and use the project's own terms throughout. Use the vocabulary in `./references/vocabulary.md`; each candidate is described only with those terms.
 
 ## When to use
 
-Use `architecture` for an existing codebase whose shape is getting in the way. Do not use it for new design work (`clarify` owns design for work not yet built) and do not use it to fix a specific bug (`debug`).
+Use `refactor` when:
+- The user names a specific area to improve (e.g., "refactor the auth module")
+- An area is hard to change and the user asks for structural options
+- Code works but feels brittle, shallow, or scattered
+
+**Not** for:
+- Greenfield architecture (new modules, new projects) → use `clarify`'s Architectural path
+- Bug fixes → use `debug`
+- General code cleanup → use `simplify`
 
 ## 1. Pick the scope
 
@@ -64,10 +74,12 @@ Rules:
 
 ## 4. Report
 
-Write the candidates to `.cartoons/architecture/architecture-<YYYY-MM-DD>-<scope-slug>.md` (temporary and gitignored). If the file exists, add a numeric suffix; never overwrite an earlier report. Never write an architecture report into the repository. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
+Write the candidates to `.cartoons/refactor/refactor-<YYYY-MM-DD>-<scope-slug>.md` (temporary and gitignored). If the file exists, add a numeric suffix; never overwrite an earlier report. Never write a refactor report into the repository. 
+
+The report is for the user to read. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
 
 ```text
-Architecture review: .cartoons/architecture/architecture-<YYYY-MM-DD>-<scope-slug>.md
+Refactor review: .cartoons/refactor/refactor-<YYYY-MM-DD>-<scope-slug>.md
 Scope: <paths or area>
 Candidates: <N> (Strong: <n>, Worth exploring: <n>, Speculative: <n>)
 Top recommendation: <one line>

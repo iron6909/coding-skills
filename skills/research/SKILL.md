@@ -150,6 +150,8 @@ Next: clarify (if the answer feeds a feature) or None
 
 Commit the saved report. Stage only the report file, check `git diff --staged`, and use `docs(research): add <topic>` or the repository's own convention. Do not push. Add the commit hash to the completion report.
 
+Read `./references/git-commit.md` for commit rules.
+
 ## Example
 
 User asks: "Which state library should we use, Zustand or Jotai?"

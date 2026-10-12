@@ -245,6 +245,8 @@ As work progresses, the initiative may change. When the user asks to update it:
 5. Show the changed text as a draft and get approval before writing, the same as for a first breakdown.
 6. Commit with `docs(initiative): update <initiative-name>`.
 
+Read `./references/git-commit.md` for commit rules.
+
 Do not update the initiative without the user asking.
 
 If the directory has no `charter.md` — an initiative written before this skill recorded one — draft a charter from `index.md`, the stubs, and the conversation, present it for approval, and write it before making any other change. Do not fail for the missing file, and do not treat the reconstruction as already approved.

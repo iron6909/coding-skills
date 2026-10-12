@@ -205,7 +205,7 @@ Check:
 - no security, accessibility, data-loss, or error-handling regression exists
 - the diff has no dead code, accidental files, debug output, or unrequested dependency
 
-Classify each finding:
+Classify each finding using `./references/severity.md`:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
 - **Important:** a usability issue, poor error handling, an accessibility gap, or a significant performance hit inside the task. Fix it before commit.
@@ -336,9 +336,11 @@ Remaining: <known gaps, or None>
 Next: finish (keep, merge locally, or discard)
 ```
 
+Read `./references/git-commit.md` for commit rules.
+
 Omit "Doubt checkpoints cleared" when no trigger fired. In autonomous mode also report where the run stopped, if it stopped early.
 
-Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place.
+Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place. If any Minor findings were recorded, option 3 in `finish.md` routes them to `simplify`.
 
 When this run involved a trade-off, a trap, or a discovered boundary condition that the spec and plan do not record, say so in one line and offer `capture` as an optional next step. Do not invoke it. Do not offer it when the run held no such reasoning.
 

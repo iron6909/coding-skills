@@ -19,8 +19,11 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `wayfinder`: break work that is too large for one session into an initiative of features.
 - `prototype`: build a throwaway prototype to answer a design question.
 - `research`: investigate unfamiliar territory and write a cited report.
-- `architecture`: review the structure of existing code and propose ranked improvement candidates.
+- `refactor`: review the structure of existing code and propose ranked improvement candidates for a chosen target.
 - `capture`: record the non-obvious reasoning, traps, and boundary conditions from a finished session into `docs/learnings`.
+- `learning-refresh`: audit and refresh the learnings store in `docs/learnings/` for staleness.
+- `doc-review`: review planning documents (spec, plan, charter) for coherence, feasibility, completeness, and clarity.
+- `simplify`: simplify settled, recently changed code for clarity, reuse, quality, and efficiency.
 - `guide`: route only. Do not select it again during handoff.
 
 `guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
@@ -38,13 +41,16 @@ Use the first matching rule:
 5. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
 6. If the user asks a standalone question that code can answer (signals: "prototype", "throwaway", "quick proof", "does X work"), use `prototype`. If the unknown only matters for one feature they want to build, use `clarify` (Spike path) instead.
 7. If the user asks a standalone question that sources can answer (signals: "research", "investigate", "how does X work", "what are the options for Y"), use `research`. If it only matters for one feature they want to build, use `clarify` (Spike path) instead.
-8. If the user asks where the structure of existing code is hurting (signals: "architecture review", "modules too shallow", "hard to test", "where should we refactor"), use `architecture`. A refactor whose target is already chosen goes to `clarify`.
+8. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `clarify`.
 9. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
-10. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
-11. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-12. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
-13. If the approved work is clear and ready for code changes, use `execute`.
-14. If no rule matches, use `clarify` instead of guessing.
+10. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
+11. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
+12. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
+13. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
+14. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+15. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
+16. If the approved work is clear and ready for code changes, use `execute`.
+17. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `survey`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its execution input.
 

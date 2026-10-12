@@ -60,6 +60,8 @@ If the session is not visible — a fresh context, or work done elsewhere — st
 
 ## File format
 
+Read `./references/learnings-format.md` for the format, tags, and matching rules.
+
 ```markdown
 ---
 tags: [<3-6 lowercase tags: modules, tools, concepts>]
@@ -121,7 +123,7 @@ Confirm before committing:
 
 ## Commit
 
-Commit the learning file. Stage only it, check `git diff --staged`, and use `docs(learnings): add <topic>` or the repository's own convention. Do not push.
+Read `./references/git-commit.md` for commit rules. Commit the learning file with `docs(learnings): add <topic>` or the repository's own convention.
 
 ## Finish
 

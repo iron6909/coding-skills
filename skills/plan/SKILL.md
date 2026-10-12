@@ -50,7 +50,7 @@ If `plan.md` already exists in the spec's directory, this is a revision, usually
 
 ## Explore
 
-Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts. Read the ADRs under `docs/adr/` that touch the affected modules: a plan that contradicts a recorded decision needs to say so, not silently undo it.
+Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts. Read the ADRs under `docs/adr/` that touch the affected modules: a plan that contradicts a recorded decision needs to say so, not silently undo it. Read `docs/research/` reports that relate to the spec's approach: prior investigation of alternatives, library comparisons, or best practices are constraints on the tasks.
 
 Read `docs/learnings/` (if it exists) and match entries to this work by tag and by subject. A recorded trap that this plan would walk into is a constraint on the tasks; a recorded trade-off is worth knowing before choosing an approach again. Cite the file when a learning shapes a task. Skip the directory when it does not exist — do not treat its absence as a blocker.
 
@@ -272,6 +272,8 @@ On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is
 ## Commit (Full tier only)
 
 Commit `plan.md`, which is permanent. Task briefs live in gitignored `.cartoons/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
+
+Read `./references/git-commit.md` for commit rules.
 
 Direct and Brief commit nothing here: they write no plan document. Their commits are the code commits `execute` makes.
 

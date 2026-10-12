@@ -36,8 +36,11 @@ graph TD
     C -->|审查他人改动| I[review]
     C -->|工作量过大| K[wayfinder]
     C -->|独立问题| L[prototype / research]
-    C -->|代码结构问题| M[architecture]
+    C -->|代码结构问题| M[refactor]
     C -->|沉淀推理| N[capture]
+    C -->|learnings 陈旧| O[learning-refresh]
+    C -->|审查文档| P[doc-review]
+    C -->|清理代码| Q[simplify]
 
     D --> E
     E --> F
@@ -51,6 +54,10 @@ graph TD
     L -->|答案要变成功能| E
     G -->|可选| N
     H -->|可选| N
+    G -->|可选| Q
+    O --> J
+    P --> J
+    Q --> J
 
     style B fill:#e1f5ff
     style G fill:#d4edda
@@ -71,8 +78,11 @@ graph TD
 | **wayfinder** | 大型跨模块工作 | initiative(charter + index + feature stubs) | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
-| **architecture** | 代码结构拖累修改、模块过浅、难测试 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
+| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
 | **capture** | 功能/修复/原型刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
+| **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
+| **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/charter 完整性/可行性检查 |
+| **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
 
 ## 关键概念
 
@@ -175,13 +185,22 @@ graph TD
   → prototype(用代码回答)/ research(用资料回答)
 
 代码结构拖累修改
-  → architecture (改进候选)
+  → refactor (改进候选)
 
 改动完成
   → finish(保留 / 本地合并 / 丢弃)
 
 改动结束后,想留下推理过程
   → capture (docs/learnings/,可选)
+
+learnings 与代码库漂移
+  → learning-refresh (审计并刷新 docs/learnings/)
+
+审查规划文档
+  → doc-review (spec/plan/charter 完整性检查)
+
+代码能跑但该清理
+  → simplify (提取重复、改进命名、优化效率)
 ```
 
 ## 示例场景

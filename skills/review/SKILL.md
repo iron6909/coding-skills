@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Independent review of changes on another branch, a PR, or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
 
+**Scope**: reviews the diff between HEAD and a review base. This is diff-scoped review for spec conformance, not structural review of the codebase (use `refactor` for that).
+
 Use `review` when:
 - Reviewing someone else's branch
 - Auditing historical commits after the fact
@@ -108,7 +110,7 @@ Every reviewer reports findings only. The main process owns grading and the repo
 
 ## Grade findings
 
-Re-grade each finding by effect on a reasonable user:
+Re-grade each finding by effect on a reasonable user, using `./references/severity.md`:
 
 - **Blocking**: correctness, security, data loss, broken functionality, missed acceptance condition
 - **Important**: usability issue, poor error handling, accessibility gap, significant performance hit
@@ -181,6 +183,8 @@ This skill reviews; it does not change the code. After the report, list Blocking
 
 If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Then fix each finding following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks.
 
+Read `./references/git-commit.md` for commit rules.
+
 When the fixes are done, run one scoped re-check of the changed lines against the original findings.
 
 ## Completion report
@@ -195,4 +199,4 @@ Deferred: <N minors>
 Next: <fixes the user chose, or None>
 ```
 
-List deferred minors for the user's decision.
+The report written to `.cartoons/` is for the user to read. List deferred minors here for their decision. If Blocking findings remain and the user wants to capture them for future reference, offer to route them to `capture`.

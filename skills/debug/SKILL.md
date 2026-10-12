@@ -132,6 +132,8 @@ Confirm the Definition of Done loaded above, and specifically:
 - [ ] every `[DEBUG-...]` probe and throwaway file is gone
 - [ ] the commit carries the root cause and the test in its body
 
+Read `./references/git-commit.md` for commit rules.
+
 ## If no reproduction is possible
 
 Stop before code changes. Report:

@@ -147,6 +147,8 @@ The root `AGENTS.md` contains shared rules. A child `AGENTS.md` contains only th
 
 Commit what this skill wrote. Stage only the `AGENTS.md` and `GLOSSARY.md` files you created or changed, and check `git diff --staged` before committing. Use `docs(survey): record project facts`, or the repository's own convention if it sets one. Do not push.
 
+Read `./references/git-commit.md` for commit rules.
+
 ## Finish
 
 Report:

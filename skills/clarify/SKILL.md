@@ -250,7 +250,7 @@ docs(spec): update <name>     # revised spec.md
 docs(spike): add <name>       # spike.md
 ```
 
-Follow the repository's own commit convention if `AGENTS.md` or `CLAUDE.md` sets one. Do not push.
+Read `./references/git-commit.md` for commit rules.
 
 ## Finish
 

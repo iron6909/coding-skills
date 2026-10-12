@@ -35,9 +35,12 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute`, `architecture`, `wayfinder` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute`, `refactor`, `wayfinder`, `simplify` |
 | `tdd.md` | `execute`, `debug`, `review` |
 | `definition-of-done.md` | `plan`, `execute`, `review`, `debug` |
+| `severity.md` | `execute`, `review`, `simplify` |
+| `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `review`, `learning-refresh`, `doc-review` |
+| `learnings-format.md` | `plan`, `review`, `capture`, `learning-refresh` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -48,8 +51,12 @@ Other references have one owner:
 |-------|----------------|
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
+| `plan` | `output-tier.md` |
 | `execute` | `finish.md` |
-| `architecture` | `vocabulary.md` |
+| `refactor` | `vocabulary.md` |
+| `learning-refresh` | none (uses only shared `learnings-format.md` and `git-commit.md`) |
+| `doc-review` | `review-lenses.md` |
+| `simplify` | `simplify-dimensions.md` |
 
 ## Skill authoring rules
 
@@ -83,7 +90,7 @@ These are the paths skills create in a project they run on.
 - `docs/research/<topic>.md` holds research reports.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), and architecture reports (`.cartoons/architecture/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), and refactor reports (`.cartoons/refactor/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Who commits what
@@ -92,16 +99,19 @@ The skill that writes a project document commits it, staging only its own files.
 
 | Skill | Commits |
 |-------|---------|
-| `survey` | `AGENTS.md`, `GLOSSARY.md` |
-| `clarify` | `spec.md` or `spike.md`, plus glossary and ADR changes from the session |
+| `survey` | `AGENTS.md`; creates `GLOSSARY.md` if it does not exist |
+| `clarify` | `spec.md` or `spike.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
 | `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
 | `wayfinder` | the initiative directory |
 | `research` | the report |
 | `capture` | the learning file |
+| `learning-refresh` | updated, consolidated, or deleted learnings |
+| `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
+| `simplify` | simplified code |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
-| `architecture` | nothing (reports live in `.cartoons/`); it never changes code |
+| `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
 
 ## Terminology
 
