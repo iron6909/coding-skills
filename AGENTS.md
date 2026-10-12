@@ -35,12 +35,12 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `review`, `research`, `execute`, `refactor`, `wayfinder`, `simplify` |
-| `tdd.md` | `execute`, `debug`, `review` |
-| `definition-of-done.md` | `plan`, `execute`, `review`, `debug` |
-| `severity.md` | `execute`, `review`, `simplify` |
-| `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `review`, `learning-refresh`, `doc-review` |
-| `learnings-format.md` | `plan`, `review`, `capture`, `learning-refresh` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `wayfinder`, `simplify` |
+| `tdd.md` | `execute`, `debug`, `code-review` |
+| `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
+| `severity.md` | `execute`, `code-review`, `simplify` |
+| `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review` |
+| `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -110,7 +110,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `simplify` | simplified code |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
-| `review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
+| `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
 | `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
 
 ## Terminology

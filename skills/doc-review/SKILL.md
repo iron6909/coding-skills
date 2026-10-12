@@ -1,6 +1,6 @@
 ---
 name: doc-review
-description: Review planning documents (spec.md, plan.md, charter.md) for completeness, feasibility, consistency, and clarity. Use when asked to review, audit, or improve an existing planning document, or when a document is suspected to have gaps or contradictions. Not for code review—use review for that.
+description: Review planning documents (spec.md, plan.md, charter.md) for completeness, feasibility, consistency, and clarity. Use when asked to review, audit, or improve an existing planning document, or when a document is suspected to have gaps or contradictions. Not for code review—use code-review for that.
 disable-model-invocation: true
 ---
 
@@ -15,7 +15,7 @@ Review requirements, plans, or initiative charters to find and fix gaps, contrad
 - When a document is suspected to have inconsistencies
 
 **Not** for:
-- Reviewing code → use `review`
+- Reviewing code → use `code-review`
 - Creating a new spec → use `clarify`
 - Creating a new plan → use `plan`
 

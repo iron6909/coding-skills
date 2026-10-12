@@ -16,7 +16,7 @@ Audit `docs/learnings/` against the current codebase and refresh entries that ha
 
 **Not** for:
 - Creating new learnings from a completed session → use `capture`
-- General code review → use `review`
+- General code review → use `code-review`
 - Reading learnings during planning → `plan` and `review` already do this
 
 ## Scope

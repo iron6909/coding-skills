@@ -17,9 +17,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 // source file -> skill directories that ship a copy
 const MAP = {
   "glossary-format.md": ["survey", "clarify"],
-  "subagent-dispatch.md": ["survey", "clarify", "plan", "review", "research", "execute", "architecture", "wayfinder"],
-  "tdd.md": ["execute", "debug", "review"],
-  "definition-of-done.md": ["plan", "execute", "review", "debug"],
+  "subagent-dispatch.md": ["survey", "clarify", "plan", "code-review", "research", "execute", "refactor", "wayfinder", "simplify"],
+  "tdd.md": ["execute", "debug", "code-review"],
+  "definition-of-done.md": ["plan", "execute", "code-review", "debug"],
+  "severity.md": ["execute", "code-review", "simplify"],
+  "git-commit.md": ["survey", "clarify", "plan", "wayfinder", "research", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review"],
+  "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
 };
 
 const HEADER =

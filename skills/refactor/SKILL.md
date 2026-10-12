@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Find structural problems in existing code and propose improvements. The output is a ranked set of candidates for a **specific target area**, not code.
 
-**Scope**: reviews the structure of a chosen target area (module, subsystem, or hot-spot code changed frequently). This is structural review, not diff review (use `review` for that).
+**Scope**: reviews the structure of a chosen target area (module, subsystem, or hot-spot code changed frequently). This is structural review, not diff review (use `code-review` for that).
 
 Read `GLOSSARY.md` and the relevant `docs/adr/` records first, and use the project's own terms throughout. Use the vocabulary in `./references/vocabulary.md`; each candidate is described only with those terms.
 

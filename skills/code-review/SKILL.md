@@ -1,6 +1,6 @@
 ---
-name: review
-description: Review changes since a review base along three axes — Standards (the repo's coding standards), Spec (does it match the spec), and Learnings (does it repeat a trap already recorded) — and write a report to .cartoons. Use when asked to review a branch or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+name: code-review
+description: Review code changes since a review base along three axes — Standards (the repo's coding standards), Spec (does it match the spec), and Learnings (does it repeat a trap already recorded) — and write a report to .cartoons. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 

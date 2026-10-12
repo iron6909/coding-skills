@@ -33,7 +33,7 @@ graph TD
     C -->|已有 spec| F[plan]
     C -->|已有计划| G[execute]
     C -->|故障| H[debug]
-    C -->|审查他人改动| I[review]
+    C -->|审查他人改动| I[code-review]
     C -->|工作量过大| K[wayfinder]
     C -->|独立问题| L[prototype / research]
     C -->|代码结构问题| M[refactor]
@@ -74,7 +74,7 @@ graph TD
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
+| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **wayfinder** | 大型跨模块工作 | initiative(charter + index + feature stubs) | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
@@ -110,7 +110,7 @@ graph TD
 │   │   │   ├── progress.md             # 执行账本
 │   │   │   ├── task-1.md               # 任务详细说明
 │   │   │   └── task-2.md
-│   │   └── review-a1b2c3d.md           # review 报告
+│   │   └── code-review-a1b2c3d.md      # code-review 报告
 │   └── architecture/
 │       └── architecture-2025-01-15-billing.md  # architecture 报告
 ├── GLOSSARY.md                          # 术语表(惰性创建)
@@ -129,7 +129,7 @@ graph TD
 
 ### TDD 红-绿-重构循环
 
-`execute`、`debug`、`review` 共用一份 `tdd.md`:
+`execute`、`debug`、`code-review` 共用一份 `tdd.md`:
 1. **RED** — 写失败测试
 2. **GREEN** — 最小代码通过
 3. **REFACTOR** — 清理重复
@@ -150,7 +150,7 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike)、plan(plan.md)、wayfinder(charter/index/stubs)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,review 报告留在 `.cartoons/`。
+写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike)、plan(plan.md)、wayfinder(charter/index/stubs)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/`。
 
 ## 何时用什么
 
@@ -176,7 +176,7 @@ graph TD
   → debug (4 阶段循环)
 
 需要审查他人改动
-  → review (Standards + Spec + Learnings)
+  → code-review (Standards + Spec + Learnings)
 
 大型工作(跨多模块)
   → wayfinder (拆分 initiative)
@@ -222,7 +222,7 @@ learnings 与代码库漂移
 → 呈现计划草稿,用户批准
 → 保存并提交 plan.md,task briefs 写入 impl/(不提交),停下
 → 用户确认后调用 execute
-→ 依次完成 3 个 task,每个 TDD + review + commit
+→ 依次完成 3 个 task,每个 TDD + code-review + commit
 → 完成,报告证据,由你决定保留分支还是本地合并
 ```
 
@@ -268,7 +268,7 @@ learnings 与代码库漂移
 | issue tracker | 无,全部用本地文件 | 无;收尾阶段可推送并创建 PR | 支持 GitHub/GitLab/本地,其他以自由文本记录 |
 | worktree | 不使用 | 核心机制,开工前隔离工作区 | 仅 `implement-spec` 每个 ticket 一个 worktree |
 | 流程 | 按需路由,逐步确认 | brainstorm → worktree → plan → 执行 → 收尾 | grill → spec → ticket → implement |
-| TDD | 有测试工具时强制 RED-GREEN-REFACTOR;`execute`/`debug`/`review` 共用一份 reference | 强制(无失败测试不写生产代码) | `tdd` 作为参考技能,由 `implement` 驱动 |
+| TDD | 有测试工具时强制 RED-GREEN-REFACTOR;`execute`/`debug`/`code-review` 共用一份 reference | 强制(无失败测试不写生产代码) | `tdd` 作为参考技能,由 `implement` 驱动 |
 | 提交 | 产出文档的技能自己提交,不 push | 收尾阶段由用户决定推送/PR | 由 tracker 与 `/pr` 决定 |
 | 收尾 | `execute/finish.md`:保留 / 本地合并 / 丢弃 | worktree + 三种选项 + PR | draft PR 转 ready |
 | domain modeling | `clarify` 的 reference:术语表 + ADR | 无 | 核心技能 `domain-modeling` |

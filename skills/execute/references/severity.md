@@ -1,7 +1,7 @@
 <!-- synced from shared/references/severity.md by scripts/sync-references.mjs: do not edit -->
 
 <!-- DO NOT EDIT: This file is synced from shared/references/severity.md -->
-<!-- Copied into: execute, review -->
+<!-- Copied into: execute, code-review -->
 <!-- Last synced: 2026-10-12 -->
 
 # Severity levels

@@ -1,7 +1,7 @@
 <!-- synced from shared/references/learnings-format.md by scripts/sync-references.mjs: do not edit -->
 
 <!-- DO NOT EDIT: This file is synced from shared/references/learnings-format.md -->
-<!-- Copied into: plan, review, capture, learning-refresh -->
+<!-- Copied into: plan, code-review, capture, learning-refresh -->
 <!-- Last synced: 2026-10-12 -->
 
 # Learnings format and lifecycle
@@ -60,7 +60,7 @@ Keep it short. A learning is a pointer to reasoning, not a tutorial.
 
 ## Matching and reading learnings
 
-**When to read**: during `plan` (task selection) and `review` (Learnings axis).
+**When to read**: during `plan` (task selection) and `code-review` (Learnings axis).
 
 **Match by**:
 1. **Tags**: exact match or substring (e.g., tag `auth` matches `authentication`)
