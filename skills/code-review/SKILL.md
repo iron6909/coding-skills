@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review code changes since a review base along three axes — Standards (the repo's coding standards), Spec (does it match the spec), and Learnings (does it repeat a trap already recorded) — and write a report to .cartoons. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review code changes since a review base using configurable lenses — Standards (repo coding standards), Spec (spec conformance), Learnings (recorded traps), and optional lenses (Security, Performance, Accessibility, I18n) — and write a report to .cartoons. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -15,13 +15,24 @@ Use `review` when:
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
 
-Three-axis review of the diff between HEAD and a review base.
+**Read `./references/review-lenses.md` for the lens system architecture, configuration, and dispatch rules.**
 
+## Review lenses
+
+Multi-perspective review using independent lenses. Each lens examines the diff from one focused angle.
+
+**Default lenses** (always enabled):
 - **Standards**: does the code follow this repo's documented coding standards?
 - **Spec**: does the code implement the originating spec?
 - **Learnings**: does the code repeat a trap this project already recorded?
 
-The axes run in parallel when subagents are available. The Learnings axis is skipped when `docs/learnings/` does not exist — say so in the report rather than treating it as a pass.
+**Optional lenses** (enable per-project):
+- **Security**: security vulnerabilities (see `./references/lens-security.md`)
+- **Performance**: performance anti-patterns (see `./references/lens-performance.md`)
+- **Accessibility**: WCAG compliance (see `./references/lens-accessibility.md`)
+- **I18n**: internationalization readiness (see `./references/lens-i18n.md`)
+
+Lenses run in parallel when subagents are available. The Learnings lens is skipped when `docs/learnings/` does not exist — say so in the report rather than treating it as a pass.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. A DoD item the diff breaks is a finding, even when no documented standard names it explicitly. State at the end of the report which DoD applied.
 
@@ -98,17 +109,68 @@ If `docs/learnings/` does not exist, record `Learnings: none recorded` and skip 
 
 Read `./references/learnings-format.md` to understand the format and structure of learning files when matching them to this diff.
 
-## Run all axes
+## Read lens configuration
+
+Check for enabled optional lenses in this order:
+
+1. `.claude/review-lenses.toml` in project root
+2. CLAUDE.md section "Code Review Configuration"
+3. Default: only Standards, Spec, Learnings (no optional lenses)
+
+**Example CLAUDE.md configuration**:
+```markdown
+## Code Review Configuration
+
+Enabled lenses: standards, spec, learnings, security, performance
+```
+
+**Example .claude/review-lenses.toml**:
+```toml
+[review]
+enabled = ["standards", "spec", "learnings", "security", "performance"]
+
+[review.lens.security]
+priority = "high"
+focus = ["authentication", "authorization", "input-validation"]
+
+[review.lens.performance]
+priority = "medium"
+focus = ["database-queries", "caching"]
+```
+
+When no configuration exists, use defaults only. Do not enable optional lenses without explicit configuration.
+
+## Run enabled lenses
 
 **With subagents**: dispatch read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
 
+**Default lenses** (always run):
 1. **Standards reviewer**: reads standards docs + diff, reports violations
 2. **Spec reviewer**: reads spec + diff, reports mismatches or missing features
 3. **Learnings reviewer**: reads matching `docs/learnings/` files + diff, reports repeated traps (skip when no learnings exist)
 
+**Optional lenses** (run if enabled in configuration):
+4. **Security reviewer**: reads `./references/lens-security.md` + diff, reports vulnerabilities
+5. **Performance reviewer**: reads `./references/lens-performance.md` + diff, reports anti-patterns
+6. **Accessibility reviewer**: reads `./references/lens-accessibility.md` + diff, reports WCAG violations
+7. **I18n reviewer**: reads `./references/lens-i18n.md` + diff, reports i18n issues
+
+Each reviewer returns findings as JSON array:
+```json
+[
+  {
+    "file": "src/auth.ts",
+    "line": 42,
+    "severity": "blocking",
+    "description": "SQL injection: user input concatenated into query",
+    "evidence": "Query uses string concatenation on line 42"
+  }
+]
+```
+
 Every reviewer reports findings only. The main process owns grading and the report.
 
-**Without subagents**: perform the reviews inline, Standards first, Learnings last.
+**Without subagents**: perform the reviews inline. Run default lenses first (Standards, Spec, Learnings), then optional lenses in priority order (high → medium → low).
 
 ## Grade findings
 
@@ -127,6 +189,12 @@ Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md`
 ```markdown
 # Review — <review-base>...HEAD
 
+**Review base:** <commit or branch>
+**Commits reviewed:** <count>
+**Lenses enabled:** standards, spec, learnings[, security, performance, ...]
+
+---
+
 ## Standards
 - [Blocking|Important|Minor] <file>:<line> — <finding>
 
@@ -137,24 +205,61 @@ Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md`
 - [Blocking|Important|Minor] <finding, naming the learning file it comes from>
 - or: `none recorded` / `none matched`
 
+## Security
+- [Blocking|Important|Minor] <file>:<line> — <finding>
+- or: `lens not enabled`
+
+## Performance
+- [Important|Minor] <file>:<line> — <finding>
+- or: `lens not enabled`
+
+## Accessibility
+- [Important|Minor] <file>:<line> — <finding>
+- or: `lens not enabled`
+
+## I18n
+- [Important|Minor] <file>:<line> — <finding>
+- or: `lens not enabled`
+
+---
+
+## Summary
+
+**Findings by severity:**
+- Blocking: <count>
+- Important: <count>
+- Minor: <count>
+
+**Coverage by lens:**
+- Standards: <count> findings
+- Spec: <count> findings / no spec available
+- Learnings: <count> findings / none recorded / none matched
+- Security: <count> findings / lens not enabled
+- Performance: <count> findings / lens not enabled
+- Accessibility: <count> findings / lens not enabled
+- I18n: <count> findings / lens not enabled
+
+**Definition of Done applied:** <which DoD checklist was used>
+
 ## Verdict
 <one line: what must change before this can merge>
 ```
 
-Present the axes separately. Do not merge or reorder them. A Learnings finding always names the file it came from, so the reader can check the reasoning behind it.
+Present each lens separately. Do not merge or reorder them. A Learnings finding always names the file it came from. Optional lenses show "lens not enabled" when not configured.
 
 ## Common rationalizations
 
 | Rationalization | Reality |
 |-----------------|---------|
 | "The diff is small, it doesn't need a review" | Small diffs still carry the exact bugs a review catches, and they are cheap to read. |
-| "The tests pass, so the code is correct" | Tests check the behavior someone thought to write. The Spec axis checks the rest. |
+| "The tests pass, so the code is correct" | Tests check the behavior someone thought to write. The Spec lens checks the rest. |
 | "I wrote it, I know it's fine" | That is exactly the reviewer's blind spot. Use a fresh read-only reviewer. |
 | "No documented standards, so anything goes" | Then the smell baseline applies. Standalone code is not exempt. |
-| "No learnings file, so this diff is clean" | That is an absent axis, not a passing one. Say `none recorded`; do not score it as a pass. |
+| "No learnings file, so this diff is clean" | That is an absent lens, not a passing one. Say `none recorded`; do not score it as a pass. |
 | "I grepped the learnings and found nothing relevant" | Check by tag and by subject before concluding. A trap recorded under another module's tag still applies if it is the same trap. |
 | "The spec is old, the code has moved on" | A mismatch is the finding. Report it; do not silently prefer the code. |
 | "I'll fix these findings while I'm here" | This skill reviews. Fixes are a separate, user-approved step. |
+| "Security/performance lenses aren't enabled, so skip them" | Correct. Only run enabled lenses; never invent findings from disabled lenses. |
 
 ## Red flags
 
@@ -173,11 +278,12 @@ Stop and fix the process when you notice:
 Confirm the Definition of Done loaded above, then check the review itself:
 
 - [ ] the review base resolves and the diff is non-empty
-- [ ] both axes ran, or the Spec axis is explicitly marked unavailable
+- [ ] all enabled lenses ran, or unavailable lenses are explicitly marked
 - [ ] every finding carries a severity you assigned, not the reviewer's
 - [ ] every finding that points at code names a file, and a line where one applies
 - [ ] the report was written to `.cartoons/`, never to the repository root
 - [ ] no code changed unless the user asked for fixes
+- [ ] optional lenses only ran if explicitly enabled in configuration
 
 ## Fixes
 
@@ -194,9 +300,16 @@ When the fixes are done, run one scoped re-check of the changed lines against th
 ```text
 Review: <review-base>...HEAD
 Report: <path of the review file written above>
+Lenses enabled: standards, spec, learnings[, security, performance, ...]
 Standards: <N findings, M fixed>
 Spec: <match | N gaps | no spec available>
 Learnings: <N findings, M fixed | none recorded | none matched>
+Security: <N findings, M fixed | lens not enabled>
+Performance: <N findings, M fixed | lens not enabled>
+Accessibility: <N findings, M fixed | lens not enabled>
+I18n: <N findings, M fixed | lens not enabled>
+Next: <user reviews findings, or requests fixes, or merge ready>
+```
 Deferred: <N minors>
 Next: <fixes the user chose, or None>
 ```

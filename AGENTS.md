@@ -58,6 +58,8 @@ Other references have one owner:
 | `learning-refresh` | none (uses only shared `learnings-format.md` and `git-commit.md`) |
 | `doc-review` | `review-lenses.md` |
 | `simplify` | `simplify-dimensions.md` |
+| `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
+| `capture` | `counterfactual-test.md` |
 
 ## Skill authoring rules
 
