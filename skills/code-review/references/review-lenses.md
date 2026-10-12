@@ -31,27 +31,27 @@ Each lens returns:
 
 ## Configuration
 
-### Project-level (CLAUDE.md)
+### Project-level (.cartoons/review-lenses.md)
 
 ```markdown
-## Code Review Configuration
+# Review Configuration
 
 Enabled lenses: standards, spec, learnings, security, performance
 
-### Security lens focus
+## Security lens focus
 - authentication flows
 - authorization checks
 - input validation
 - SQL injection patterns
 - XSS vulnerabilities
 
-### Performance lens focus
+## Performance lens focus
 - N+1 database queries
 - memory leaks
 - unnecessary re-renders
 ```
 
-### File-based (.claude/review-lenses.toml)
+### File-based (.cartoons/review-lenses.toml)
 
 ```toml
 [review]
@@ -340,8 +340,8 @@ Each lens must be independent:
 
 ## Configuration resolution
 
-1. Check for `.claude/review-lenses.toml` in project root
-2. If not found, check CLAUDE.md for "Code Review Configuration" section
+1. Check for `.cartoons/review-lenses.toml` in project root
+2. If not found, check for `.cartoons/review-lenses.md` in project root
 3. If not found, use defaults (standards, spec, learnings only)
 
 ## Backward compatibility

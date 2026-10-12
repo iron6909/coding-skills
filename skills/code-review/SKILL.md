@@ -113,18 +113,11 @@ Read `./references/learnings-format.md` to understand the format and structure o
 
 Check for enabled optional lenses in this order:
 
-1. `.claude/review-lenses.toml` in project root
-2. CLAUDE.md section "Code Review Configuration"
+1. `.cartoons/review-lenses.toml` in project root
+2. `.cartoons/review-lenses.md` in project root (markdown format)
 3. Default: only Standards, Spec, Learnings (no optional lenses)
 
-**Example CLAUDE.md configuration**:
-```markdown
-## Code Review Configuration
-
-Enabled lenses: standards, spec, learnings, security, performance
-```
-
-**Example .claude/review-lenses.toml**:
+**Example .cartoons/review-lenses.toml**:
 ```toml
 [review]
 enabled = ["standards", "spec", "learnings", "security", "performance"]
@@ -136,6 +129,22 @@ focus = ["authentication", "authorization", "input-validation"]
 [review.lens.performance]
 priority = "medium"
 focus = ["database-queries", "caching"]
+```
+
+**Example .cartoons/review-lenses.md**:
+```markdown
+# Review Configuration
+
+Enabled lenses: standards, spec, learnings, security, performance
+
+## Security lens focus
+- authentication flows
+- authorization checks
+- input validation
+
+## Performance lens focus
+- database queries
+- caching strategy
 ```
 
 When no configuration exists, use defaults only. Do not enable optional lenses without explicit configuration.
