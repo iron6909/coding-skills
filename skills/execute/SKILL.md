@@ -106,7 +106,7 @@ For each task:
 2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies. For a session plan, use the task as stated in the conversation.
 3. Check that earlier task outputs exist and match the current task.
 4. Read the relevant code before editing.
-5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor.
+5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor. Choose appropriate test level (unit, integration, E2E) using `./references/testing-strategy.md`.
 6. Run the affected test, lint, build, or type-check command named by the task brief.
 7. Inspect the diff for scope creep, accidental files, and user data loss.
 8. Check the doubt-driven triggers (see Doubt-driven checkpoints below). If one applies, record the risk and get explicit sign-off before continuing.

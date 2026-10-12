@@ -108,6 +108,8 @@ A tracer bullet task is a vertical slice that cuts through all layers to deliver
 
 Tracer bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
 
+Read `./references/task-decomposition.md` for detailed strategies on vertical vs horizontal slicing, task granularity, dependency management, and common patterns.
+
 When a task produces an interface another task consumes, declare it explicitly in the **Interfaces** section of both task briefs (Consumes in one, Produces in the other), and name it in the plan's Tasks line. This records the dependencies between tasks.
 
 ### Order tasks by dependency

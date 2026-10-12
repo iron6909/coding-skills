@@ -53,12 +53,12 @@ Other references have one owner:
 |-------|----------------|
 | `survey` | `project-documents.md` |
 | `clarify` | `domain-modeling.md`, `adr-format.md` |
-| `plan` | `output-tier.md` |
-| `execute` | `finish.md` |
+| `plan` | `output-tier.md`, `task-decomposition.md` |
+| `execute` | `finish.md`, `testing-strategy.md` |
 | `refactor` | `vocabulary.md` |
 | `learning-refresh` | none (uses only shared `learnings-format.md`, `counterfactual-test.md`, and `git-commit.md`) |
 | `doc-review` | `review-lenses.md` |
-| `simplify` | `simplify-dimensions.md` |
+| `simplify` | `simplify-dimensions.md`, `complexity-metrics.md` |
 | `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
 | `pr-watch` | `conflict-resolution.md` |
 | `capture` | `counterfactual-test.md` |

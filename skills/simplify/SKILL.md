@@ -66,6 +66,11 @@ For each file in scope, check all three dimensions:
 - Magic numbers or strings
 - Missing or outdated comments
 - Nested conditionals (>3 levels)
+- **High complexity**: Apply complexity metrics (see `./references/complexity-metrics.md`)
+  - Cyclomatic complexity > 20 (too many branches)
+  - Cognitive complexity > 15 (hard to understand)
+  - Nesting depth > 4 (hard to follow)
+  - Function length > 50 lines (multiple responsibilities)
 
 **Efficiency** (optimize when safe):
 - Redundant loops or repeated computation
@@ -73,7 +78,7 @@ For each file in scope, check all three dimensions:
 - Inefficient data structures for the access pattern
 - Premature optimization is a trap—only optimize obvious waste
 
-Classify each finding as **Important** or **Minor** using `severity.md`. (Blocking findings should not exist here—simplify runs on working code.)
+Use complexity metrics to prioritize which functions need simplification most urgently. Classify each finding as **Important** or **Minor** using `severity.md`. (Blocking findings should not exist here—simplify runs on working code.)
 
 ### 5. Apply simplifications
 
