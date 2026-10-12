@@ -43,12 +43,6 @@ This file is written after each phase completes and updated during phase executi
     },
     "review": {
       "status": "pending"
-    },
-    "pr": {
-      "status": "pending"
-    },
-    "watch": {
-      "status": "pending"
     }
   },
   "checkpoints": [
@@ -118,11 +112,6 @@ When `/autoflow --resume` is invoked:
 **Task-level checkpoints** (execute phase only):
 - After each task completes
 - After each task's review-fix cycle
-
-**Action-level checkpoints** (pr-watch only):
-- After resolving conflicts
-- After fixing CI
-- After addressing review feedback
 
 ## Error handling
 
@@ -196,14 +185,14 @@ If any check fails, report inconsistency and ask:
 Use state to estimate remaining time:
 
 ```
-Completed phases: 3/6 (50%)
+Completed phases: 3/4 (75%)
 Current phase: execute (task 2/3)
-Estimated remaining: 20 minutes
+Estimated remaining: 8 minutes
 
 Based on:
 - Avg task time: 6 minutes (from completed tasks)
 - Remaining tasks: 1
-- Review/PR/Watch: ~14 minutes (typical)
+- Review: ~2 minutes (typical)
 ```
 
 ## State file example (complete flow)
@@ -214,8 +203,8 @@ Based on:
   "branch": "feature/2026-10-12-user-login",
   "mode": "full-auto",
   "started_at": "2026-10-12T14:23:00Z",
-  "completed_at": "2026-10-12T15:03:00Z",
-  "phase": 6,
+  "completed_at": "2026-10-12T14:50:00Z",
+  "phase": 4,
   "phases": {
     "clarify": {
       "status": "complete",
@@ -254,37 +243,10 @@ Based on:
       },
       "fixes_applied": 2,
       "commits": ["pqr1234"]
-    },
-    "pr": {
-      "status": "complete",
-      "started_at": "2026-10-12T14:50:00Z",
-      "completed_at": "2026-10-12T14:51:00Z",
-      "duration_seconds": 60,
-      "pr_number": 123,
-      "pr_url": "https://github.com/user/repo/pull/123"
-    },
-    "watch": {
-      "status": "complete",
-      "started_at": "2026-10-12T14:51:00Z",
-      "completed_at": "2026-10-12T15:03:00Z",
-      "duration_seconds": 720,
-      "actions": [
-        {
-          "type": "ci_fix",
-          "timestamp": "2026-10-12T14:55:00Z",
-          "commit": "stu5678"
-        },
-        {
-          "type": "merge_ready",
-          "timestamp": "2026-10-12T15:03:00Z"
-        }
-      ]
     }
   },
-  "total_duration_seconds": 2400,
-  "pr_number": 123,
-  "pr_url": "https://github.com/user/repo/pull/123",
-  "final_status": "merge_ready"
+  "total_duration_seconds": 1620,
+  "final_status": "complete"
 }
 ```
 
@@ -340,5 +302,4 @@ Removes:
 
 Keeps:
 - Committed spec/plan files
-- Pushed commits
-- Opened PRs
+- Feature branch commits

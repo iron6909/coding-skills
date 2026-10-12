@@ -40,7 +40,7 @@ Lenses run in parallel when subagents are available. The Learnings lens is skipp
 
 Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
 
-Note: "PR" in this context means a local branch — this skill suite is local-only and does not integrate with GitHub/GitLab PRs. Ask the user to fetch or check out the branch first, then review the local commits against the base.
+Note: This skill is local-only and does not integrate with remote Git hosting services. Ask the user to fetch or check out the branch first if reviewing remote work, then review the local commits against the base.
 
 Capture the diff command once:
 

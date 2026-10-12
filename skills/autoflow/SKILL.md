@@ -37,7 +37,6 @@ This skill coordinates other skills autonomously, stopping only at critical deci
 Stop only at:
 - Requirement ambiguities that cannot be inferred
 - Review findings that are blocking
-- PR conflicts that are architectural
 - User explicitly pauses or stops
 
 ### Checkpointed
@@ -169,11 +168,6 @@ Even in full auto mode, stop at:
 **Example**: Code touches authentication flow
 - High risk: Could affect all users
 - Stop: Show changes, confirm security approach
-
-### PR divergence
-**Example**: Reviewer requests removing a spec feature
-- Divergent: Contradicts approved spec
-- Stop: Report conflict, ask to proceed or revise spec
 
 ## Reporting
 
