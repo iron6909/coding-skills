@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Code Review
 
-Independent review of changes on another branch, a PR, or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
+Independent review of changes on another branch or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
 
 **Scope**: reviews the diff between HEAD and a review base. This is diff-scoped review for spec conformance, not structural review of the codebase (use `refactor` for that).
 
