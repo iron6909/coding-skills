@@ -123,7 +123,30 @@ Confirm before committing:
 
 ## Commit
 
-Read `./references/git-commit.md` for commit rules. Commit the learning file with `docs(learnings): add <topic>` or the repository's own convention.
+Read `./references/git-commit.md` for commit rules.
+
+Stage only the learning file you just created:
+
+```bash
+git add docs/learnings/YYYY-MM-DD-<topic>.md
+```
+
+Check what you staged:
+
+```bash
+git diff --staged
+```
+
+Commit with a conventional commit message:
+
+```bash
+git commit -m "docs(learnings): add <topic>
+
+- <one-line summary of key entries>
+- <another key entry if applicable>"
+```
+
+Use the repository's own commit convention from `AGENTS.md` or `CLAUDE.md` if one is documented. Do not push.
 
 ## Finish
 

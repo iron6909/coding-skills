@@ -54,6 +54,8 @@ Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms fro
 
 Read `docs/learnings/` (if it exists) and match entries to this work by tag and by subject. A recorded trap that this plan would walk into is a constraint on the tasks; a recorded trade-off is worth knowing before choosing an approach again. Cite the file when a learning shapes a task. Skip the directory when it does not exist — do not treat its absence as a blocker.
 
+Read `./references/learnings-format.md` to understand the format and structure when matching learnings to this plan.
+
 Read only the code needed to make the plan precise:
 
 - affected modules and their callers

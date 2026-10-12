@@ -35,7 +35,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `wayfinder`, `simplify` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `wayfinder` |
 | `tdd.md` | `execute`, `debug`, `code-review` |
 | `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
 | `severity.md` | `execute`, `code-review`, `simplify` |

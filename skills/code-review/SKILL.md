@@ -96,6 +96,8 @@ This axis asks one question: does the diff repeat a trap the project already pai
 
 If `docs/learnings/` does not exist, record `Learnings: none recorded` and skip the axis. Never invent a standard from a learning.
 
+Read `./references/learnings-format.md` to understand the format and structure of learning files when matching them to this diff.
+
 ## Run all axes
 
 **With subagents**: dispatch read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
