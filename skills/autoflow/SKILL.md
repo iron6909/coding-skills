@@ -1,6 +1,6 @@
 ---
 name: autoflow
-description: Orchestrate end-to-end feature delivery from request to merge-ready PR. Automatically routes through clarify → plan → execute → review → PR with minimal human checkpoints. Use when user wants autonomous execution, says "just do it", "full auto", or explicitly invokes autoflow.
+description: Orchestrate end-to-end feature delivery with minimal human checkpoints. Automatically routes through clarify → plan → execute → review, applying fixes autonomously. Use when user wants autonomous execution, says "just do it", "full auto", or explicitly invokes autoflow.
 disable-model-invocation: true
 ---
 
@@ -18,7 +18,7 @@ Execute the full development workflow with minimal human intervention:
 
 This skill coordinates other skills autonomously, stopping only at critical decision points or when errors cannot be auto-resolved.
 
-**Note**: autoflow stops after code review and fixes are complete. All code is committed to the feature branch. What you do next (merge to main, open PR, deploy) is up to you.
+**Note**: autoflow stops after code review and fixes are complete. All code is committed to the feature branch. What you do next (merge to main, push to remote, deploy) is up to you.
 
 ## When to use
 
@@ -44,7 +44,7 @@ Stop only at:
 Stop at phase boundaries for quick approval:
 - After clarify: "Spec looks good?"
 - After plan: "Plan approved?"
-- After execute: "Ready to review and PR?"
+- After execute: "Ready to review?"
 
 ### Dry-run
 Show what would be done at each phase without executing:
@@ -52,7 +52,7 @@ Show what would be done at each phase without executing:
 - Generate plan draft
 - Show task breakdown
 - Report would-be review findings
-- Don't open PR
+- Don't create feature branch
 
 **Invoke**: `/autoflow` (full auto) or `/autoflow --checkpointed` or `/autoflow --dry-run`
 
