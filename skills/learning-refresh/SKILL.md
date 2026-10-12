@@ -35,6 +35,8 @@ Read every file in `docs/learnings/`, compare against current codebase, and dete
 
 Read `./references/learnings-format.md` for the structure, matching rules, and refresh criteria.
 
+Read `./references/counterfactual-test.md` to apply the same quality gate used during capture. A learning that doesn't pass the counterfactual test should be downgraded or deleted, even if technically accurate.
+
 ### 2. Inventory
 
 List all files in `docs/learnings/`. For each file, extract:
@@ -53,11 +55,23 @@ For each learning:
 ### 4. Classify outcome
 
 Per learning, pick one:
-- **Keep** if evidence checks out and claim is current
-- **Update** if the claim is still valid but evidence needs correction (file moved, function renamed)
+- **Keep** if evidence checks out, claim is current, and passes counterfactual test
+- **Update** if the claim is still valid, passes counterfactual test, but evidence needs correction (file moved, function renamed)
 - **Consolidate** if 2+ learnings cover the same ground (merge into one, keep best-written version)
 - **Supersede** if the understanding evolved (write new learning, reference old one for history)
+- **Downgrade** if technically accurate but fails counterfactual test (would not prevent repeated mistake) - move to `_archived/` with note
 - **Delete** if the claim is false now, or the context no longer exists (ask user to confirm deletion of each file individually)
+
+Apply the counterfactual test from `./references/counterfactual-test.md`:
+> If this line were deleted, would a competent engineer working here later repeat the mistake?
+
+If no, the learning should be **Downgraded** or **Deleted** even if technically accurate.
+
+**Examples**:
+- "Array.includes(NaN) fails with JSON-parsed values" → **Keep** (non-obvious trap with specific symptom)
+- "We use PostgreSQL for the database" → **Delete** (diary entry, belongs in AGENTS.md)
+- "Async functions return Promises" → **Downgrade** (obvious language feature, documented everywhere)
+- "Image uploads fail above 4.5MB due to Nginx payload limit" → **Keep** (non-derivable boundary condition)
 
 ### 5. Execute changes
 
@@ -65,6 +79,7 @@ Per learning, pick one:
 - **Update**: edit in place, update frontmatter `last_verified` date
 - **Consolidate**: merge content into primary file, delete or archive others (ask user which to keep as primary)
 - **Supersede**: write new file, add `supersedes: old-filename.md` in frontmatter, move old to `docs/learnings/_archived/`
+- **Downgrade**: move to `_archived/` with frontmatter note: `reason: failed counterfactual test - <brief explanation>`
 - **Delete**: move to `_archived/` with frontmatter note (ask confirmation: "Delete learning X? It claims Y but Z is true now.")
 
 ### 6. Commit
@@ -75,24 +90,37 @@ Read `./references/git-commit.md` for commit rules. Stage only `docs/learnings/`
 git add docs/learnings/*.md docs/learnings/_archived/*.md
 git commit -m "docs(learnings): refresh against current codebase
 
-- Kept: <count>
+- Kept: <count> (passed counterfactual test)
 - Updated: <count> (<list filenames>)
 - Consolidated: <count>
 - Superseded: <count>
-- Deleted: <count>"
+- Downgraded/Deleted: <count> (failed counterfactual test)"
 ```
 
 Do not push.
 
 ### 7. Report
 
-Present a summary table:
+Present a summary table with quality assessment:
 
-| File | Outcome | Reason |
-|------|---------|--------|
-| 2025-01-15-auth-jwt.md | Keep | Evidence current |
-| 2025-02-03-db-transaction.md | Update | Function renamed |
-| 2025-03-10-cache-invalidation.md | Delete | Feature removed in refactor |
+| File | Outcome | Quality | Reason |
+|------|---------|---------|--------|
+| 2025-01-15-auth-jwt.md | Keep | Strong | Evidence current, non-obvious trap with specific symptoms |
+| 2025-02-03-db-transaction.md | Update | Strong | Function renamed (updateUser → saveUser) but trap still valid |
+| 2025-03-10-cache-invalidation.md | Downgrade | Weak | Technically correct but inferable from error message |
+| 2024-12-20-refactor-pattern.md | Delete | Diary | Just describes what we did, no trap or boundary condition |
+| 2025-01-22-feature-removed.md | Supersede | N/A | Feature removed in refactor, archived for history |
+
+**Quality ratings**:
+- **Strong**: Passes counterfactual test (would prevent repeated mistake)
+- **Weak**: Fails counterfactual test (obvious or inferable)
+- **Diary**: Not a learning (just project history)
+- **N/A**: Not applicable (superseded or consolidated)
+
+**Counterfactual test summary**:
+- Passed: <N> learnings clearly prevent repeated mistakes
+- Failed: <N> learnings downgraded or deleted (obvious/inferable/diary)
+- Updated: <N> learnings refreshed with current details
 
 ## Next
 

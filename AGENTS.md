@@ -42,6 +42,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review` |
 | `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
 | `stable-ids.md` | `clarify`, `plan`, `execute` |
+| `counterfactual-test.md` | `capture`, `learning-refresh` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -55,7 +56,7 @@ Other references have one owner:
 | `plan` | `output-tier.md` |
 | `execute` | `finish.md` |
 | `refactor` | `vocabulary.md` |
-| `learning-refresh` | none (uses only shared `learnings-format.md` and `git-commit.md`) |
+| `learning-refresh` | none (uses only shared `learnings-format.md`, `counterfactual-test.md`, and `git-commit.md`) |
 | `doc-review` | `review-lenses.md` |
 | `simplify` | `simplify-dimensions.md` |
 | `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
