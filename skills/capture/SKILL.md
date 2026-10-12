@@ -46,6 +46,8 @@ This gate is the only thing keeping `docs/learnings/` from becoming a diary. A f
 
 One to five entries per session is the normal range. A session that yields none is a normal outcome — say so and stop.
 
+**Read `./references/counterfactual-test.md` for detailed evaluation criteria, examples of entries that pass vs fail, and the double-check questions to apply before writing each entry.**
+
 ## Read the session before writing
 
 Look for evidence, not impressions:
@@ -82,11 +84,21 @@ Add entries to the existing file for the same topic rather than creating a secon
 
 ## Check before saving
 
-- every entry passed the counterfactual gate
-- no entry restates a fact from `AGENTS.md`, `GLOSSARY.md`, an ADR, or the spec
-- every entry names something concrete — a file, a command, a symptom, a condition — not a generality
-- the tags name what a later search would actually use
-- the file is under `docs/learnings/`, never the repository root
+Apply the double-check questions from `./references/counterfactual-test.md` to each entry:
+
+1. **What would break if a reader didn't know this?** — If "nothing" or "they'd figure it out in 5 minutes", fail it.
+2. **Can this be derived from the code or docs in under 2 minutes?** — If yes, fail it.
+3. **Does this entry name a specific file, symptom, command, or condition?** — If no, fail it.
+4. **If I deleted this line, would a smart reader working here later make the same mistake?** — If no, fail it.
+5. **Is this already documented elsewhere?** — If yes, fail it (unless you're adding the "why the alternative lost" part).
+
+Then verify:
+
+- [ ] every entry passed the counterfactual gate
+- [ ] no entry restates a fact from `AGENTS.md`, `GLOSSARY.md`, an ADR, or the spec
+- [ ] every entry names something concrete — a file, a command, a symptom, a condition — not a generality
+- [ ] the tags name what a later search would actually use
+- [ ] the file is under `docs/learnings/`, never the repository root
 
 ## Common rationalizations
 
@@ -150,16 +162,36 @@ Use the repository's own commit convention from `AGENTS.md` or `CLAUDE.md` if on
 
 ## Finish
 
-Report:
+Report the outcome with evaluation transparency:
 
+**When entries were saved:**
 ```text
 Learnings saved: <path>
 Entries: <N>
 Skipped: <N> candidates that failed the counterfactual gate
+
+Counterfactual evaluation:
+- <candidate 1 title>: PASS — <one-line reason why it passes>
+- <candidate 2 title>: FAIL — <one-line reason why it fails>
+- <candidate 3 title>: PASS — <one-line reason why it passes>
+
 Commit: <short hash>
 Next: None
 ```
 
-When the session produced nothing that passed the gate, report `Learnings: none worth recording` with a one-line reason, and stop without writing a file.
+**When nothing passed the gate:**
+```text
+Learnings: none worth recording
 
-Stop after saving. Do not automatically invoke another skill.
+Reason: <one line, e.g. "all candidates were spec decisions" or "traps were obvious from error messages">
+
+Evaluated candidates:
+- <candidate 1 title>: FAIL — <reason>
+- <candidate 2 title>: FAIL — <reason>
+
+Next: None
+```
+
+The evaluation transparency helps the user understand what was considered and why certain entries were filtered out. This builds trust in the gate mechanism and helps calibrate future sessions.
+
+Stop after reporting. Do not automatically invoke another skill.

@@ -147,7 +147,18 @@ Each brief contains only what that task needs:
 ```markdown
 # Task <N>: <short name>
 
+**Covers requirements:** REQ-1, REQ-4
+
 **Depends on:** <task numbers or None>
+
+## Goal
+
+<What this task delivers and which requirements it satisfies.>
+
+## Acceptance
+
+- REQ-1: <requirement text from spec> → verify with <check>
+- REQ-4: <requirement text from spec> → verify with <check>
 
 ## Steps
 
@@ -171,7 +182,7 @@ Each brief contains only what that task needs:
 - <interface or value>
 ```
 
-Briefs let execute read task context without loading the full plan.
+Briefs let execute read task context without loading the full plan. Each brief explicitly lists the REQ-N IDs it covers, linking the task back to the spec's acceptance conditions (see `./references/stable-ids.md`).
 
 ## Plan format (Full tier only)
 
@@ -198,9 +209,9 @@ After approval, create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a l
 
 ## Tasks
 
-1. Task 1: <short name> — depends on: None — produces: <interface>
-2. Task 2: <short name> — depends on: Task 1 — produces: <interface>
-3. Task 3: <short name> — depends on: Task 2 — produces: <interface>
+1. Task 1: <short name> — **Covers:** REQ-1, REQ-4 — depends on: None — produces: <interface>
+2. Task 2: <short name> — **Covers:** REQ-2, REQ-3 — depends on: Task 1 — produces: <interface>
+3. Task 3: <short name> — **Covers:** REQ-5 — depends on: Task 2 — produces: <interface>
 
 ## Final verification
 

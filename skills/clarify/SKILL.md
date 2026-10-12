@@ -190,7 +190,13 @@ Omit empty sections.
 
 ## Acceptance
 
-<Observable conditions that show the work is complete.>
+<Observable conditions that show the work is complete. Each condition gets a stable requirement ID (REQ-N) for traceability.>
+
+- REQ-1: <First acceptance condition>
+- REQ-2: <Second acceptance condition>
+- REQ-3: <Third acceptance condition>
+
+**Read `./references/stable-ids.md` for REQ-N assignment rules. IDs start at REQ-1, increment sequentially, and are never reused or renumbered.**
 
 ## Testing
 
@@ -200,6 +206,8 @@ Omit empty sections.
 If the request came from a `wayfinder` feature stub, add `**Initiative stub:** <stub path>` under the title, and use the stub as the primary input. The stub carries everything this feature needs on its own; read the initiative's `charter.md` only when the stub's `**Charter:**` line names a section that affects this spec, and read that section only. Do not read the charter as a whole, and do not widen the spec to other features in the initiative.
 
 Do not write unresolved questions, guesses, or agent recommendations as confirmed decisions. Do not add implementation steps or a file-by-file task list; `plan` owns those.
+
+**Requirement IDs**: Assign REQ-N IDs to each acceptance condition for traceability (see `./references/stable-ids.md`). Start at REQ-1 for new specs. For revised specs, add new IDs sequentially without renumbering existing ones.
 
 ### spike.md
 

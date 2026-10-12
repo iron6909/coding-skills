@@ -113,6 +113,16 @@ For each task:
 9. Run the task review below.
 10. Fix every valid review finding and repeat the affected checks.
 11. Commit the task only after review passes and checks are fresh.
+    - Stage only files this task touched: `git add <file1> <file2>...`
+    - Check staged changes: `git diff --staged`
+    - Write a conventional commit message referencing the REQ-N IDs this task implements (see `./references/stable-ids.md`):
+      ```
+      feat(scope): implement REQ-1 and REQ-4
+      
+      - <what was added/changed>
+      - <verification command and result>
+      ```
+    - Do not push. Record the commit to the ledger.
 12. Write the task-complete ledger entry.
 
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.

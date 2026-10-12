@@ -41,6 +41,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | `severity.md` | `execute`, `code-review`, `simplify` |
 | `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review` |
 | `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
+| `stable-ids.md` | `clarify`, `plan`, `execute` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
