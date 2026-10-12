@@ -34,7 +34,7 @@ Exactly these, in this order:
 3. **Address Minor findings** — if any Minor findings were recorded during this run, offer to address them now via `simplify`. This is code-level cleanup of working code (extract duplication, improve naming, simplify logic). Skip this option if no Minor findings exist.
 4. **Discard** — delete the branch and its commits. The code on the branch is scratch; documents are not. Before offering this, list the documents the branch added or changed (`git diff --name-only <base>...HEAD` filtered to `docs/`, `GLOSSARY.md`, `AGENTS.md`). If there are any, they must survive: ask the user to keep them (cherry-pick onto `<base>` or copy them out) first, and discard only the code. This is destructive; ask the user to type `discard` to confirm, and require the typed word, not a yes.
 
-Do not push, open a PR, or publish anything. This suite is local-only; the user controls integration and release.
+Do not push or publish anything. This suite is local-only; the user controls integration and release.
 
 ## Clean up
 

@@ -16,7 +16,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `code-review`: independently review another branch or historical commits.
-- `autoflow`: orchestrate end-to-end feature delivery from request to merge-ready PR with minimal checkpoints.
+- `autoflow`: orchestrate end-to-end feature delivery with minimal checkpoints.
 - `wayfinder`: break work that is too large for one session into an initiative of features.
 - `prototype`: build a throwaway prototype to answer a design question.
 - `research`: investigate unfamiliar territory and write a cited report.
