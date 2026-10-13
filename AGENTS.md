@@ -35,7 +35,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `ideate` |
 | `tdd.md` | `execute`, `debug`, `code-review` |
 | `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
 | `severity.md` | `execute`, `code-review`, `simplify` |
@@ -95,7 +95,7 @@ These are the paths skills create in a project they run on.
 - `docs/research/<topic>.md` holds research reports.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), and optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`), and ideation results (`.cartoons/ideation/<topic>-YYYYMMDD.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Who commits what
@@ -120,6 +120,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
 | `commit` | user-directed ad-hoc changes (does not push) |
 | `handoff` | nothing (handoff files are temporary and gitignored) |
+| `ideate` | nothing (ideation results are temporary in `.cartoons/ideation/`) |
 
 ## Terminology
 

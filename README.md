@@ -70,6 +70,7 @@ graph TD
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
+| **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/` 带权衡的排序选项 | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/spike.md/capability-map.md | 四路径:Spike/Bounded/Architectural/Initiative |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
@@ -115,6 +116,8 @@ graph TD
 │   │   │   ├── task-1.md               # 任务详细说明
 │   │   │   └── task-2.md
 │   │   └── code-review-a1b2c3d.md      # code-review 报告
+│   ├── ideation/                        # 想法生成（ideate 产出）
+│   │   └── realtime-sync-20250120.md   # 排序的技术方案
 │   ├── optimize-20250115-1430/         # 性能优化实验日志（optimize 产出）
 │   │   ├── baseline.md                 # 基线 profile
 │   │   ├── variant-1.md                # 变体测试结果
