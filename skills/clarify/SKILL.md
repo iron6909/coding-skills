@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically detects if decomposition into multiple capabilities is needed; if so, creates capability-map.md. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYY-MM-DD-name/spec.md.
+description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYY-MM-DD-name/spec.md.
 disable-model-invocation: true
 ---
 
@@ -23,9 +23,9 @@ Pick the smallest path that fits. When unsure, take the heavier path.
 | Path | Use when | Produces | Phases |
 |------|----------|----------|--------|
 | **Bounded** | Local change: one module, clear behavior, no new interface | short spec.md | Phase 0 + 1 |
-| **Architectural** | New module, cross-project, interface change, frontend+backend+infra, or work that may need decomposition | full spec.md with options (auto-detects multi-capability work) | Phase 0 + 1 + optional decomposition |
+| **Architectural** | New module, cross-project, interface change, frontend+backend+infra, or work that may bundle multiple capabilities | full spec.md with options (auto-assesses multi-capability work) | Phase 0 + 1 + optional decomposition |
 
-**Decomposition Detection:** If after exploring the codebase I detect that work requires breaking into multiple independent capabilities (each with own interfaces/consumers/data), I will automatically generate a capability-map.md for your approval before specifying each module.
+**Decomposition Assessment:** After exploring the codebase in Phase 1, I will automatically assess whether work bundles multiple independently testable capabilities (distinct consumers/data, independently shippable, independently deletable). If so, I generate a capability-map.md showing module boundaries, dependencies, and build order — you review the map, not the decision to decompose.
 
 If feasibility is unknown and blocks the spec, use Phase 1 Spike step to validate first, then continue writing the spec.
 
@@ -101,13 +101,12 @@ Read `GLOSSARY.md`, `AGENTS.md`, relevant code, tests, configuration, existing f
 
 ### Step 1.5: Decomposition Check (Architectural path only)
 
-After exploring the codebase, assess whether this work requires decomposition into multiple independent capabilities:
+After exploring the codebase, assess whether this work bundles several independently testable capabilities:
 
-**Detection signals**: Does the request contain capabilities that are:
-- Independently deliverable and testable?
-- Each with distinct consumers or data models?
-- Each could be cut or replaced without rewriting the others?
-- Spanning frontend + backend + infrastructure separately?
+**Detection criteria**:
+- Named capabilities with distinct consumers or data models
+- Acceptance criteria cluster into independently shippable groups
+- One capability could be cut or replaced without rewriting others
 
 **If decomposition is needed:**
 
@@ -135,10 +134,9 @@ After exploring the codebase, assess whether this work requires decomposition in
 [Cross-cutting concerns, constraints]
 ```
 
-3. Present to user with recommendation on module order
-4. **Wait for user approval** before proceeding
-5. After approval, hand off: "I'll now clarify each module with its own spec. Which module should we start with?"
-6. For each module, invoke clarify (Bounded or Architectural) recursively
+3. **Present the map for approval** (review module boundaries, dependency direction, build order)
+4. After approval, hand off: "I'll now clarify each module with its own spec. Which module should we start with?"
+5. For each module, invoke clarify (Bounded or Architectural) recursively
 
 **If decomposition is not needed:** Continue directly to Step 2.
 
