@@ -67,7 +67,7 @@ graph TD
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/` 带权衡的排序选项 | 生成2-3个方案,压力测试,推荐 |
-| **clarify** | 需求不明 | spec.md/capability-map.md | 三路径:Bounded/Architectural/Initiative;Phase 1 可选 research/spike |
+| **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
@@ -99,7 +99,7 @@ graph TD
 │   │   │   ├── spec.md
 │   │   │   └── plan.md
 │   │   └── 2025-01-25-platform-refactor/
-│   │       └── capability-map.md       # 多模块拆分（clarify Initiative path）
+│   │       └── capability-map.md       # 多模块拆分（clarify 自动检测生成）
 │   ├── research/                        # 调研报告（永久，research 产出）
 │   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
 │   └── adr/                             # 架构决策记录（惰性创建）
@@ -185,7 +185,7 @@ graph TD
   → code-review (Standards + Spec + Learnings)
 
 多模块大型工作
-  → clarify (Initiative 路径 → capability-map.md)
+  → clarify (自动检测并生成 capability-map.md)
 
 独立问题(不阻塞某个功能)
   → prototype(用代码回答)/ research(用资料回答)
@@ -254,9 +254,14 @@ learnings 与代码库漂移
 ```
 用户: "这个工作太大,跨前端、后端、CI"
 
-→ guide 路由到 clarify (Initiative 路径)
-→ 识别多模块边界: frontend app, backend API, CI pipeline
-→ 创建 capability-map.md (定义模块、依赖、构建顺序),用户批准
+→ guide 路由到 clarify (Bounded/Architectural 中选一个)
+→ 选 Architectural（跨多模块）
+→ Phase 1 Step 1: 读代码、read GLOSSARY/AGENTS
+→ Phase 1 Step 1.5 [自动检测]: 发现需要拆分成 3 个独立能力
+  - frontend app
+  - backend API  
+  - CI pipeline
+→ 生成 capability-map.md,用户批准
 → 用户选第一个模块: frontend
 → 为该模块调用 clarify (Bounded 或 Architectural) 写出 spec.md
 → 然后 plan → execute

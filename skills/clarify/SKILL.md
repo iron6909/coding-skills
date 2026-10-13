@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports three paths - Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Phase 1 includes optional research and spike steps when needed. Saves to docs/features or capability-map.md for initiatives.
+description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically detects if decomposition into multiple capabilities is needed; if so, creates capability-map.md. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYY-MM-DD-name/spec.md.
 disable-model-invocation: true
 ---
 
@@ -23,80 +23,11 @@ Pick the smallest path that fits. When unsure, take the heavier path.
 | Path | Use when | Produces | Phases |
 |------|----------|----------|--------|
 | **Bounded** | Local change: one module, clear behavior, no new interface | short spec.md | Phase 0 + 1 |
-| **Architectural** | New module, cross-project, interface change, or frontend+backend+infra | full spec.md with options | Phase 0 + 1 |
-| **Initiative** | Multi-feature work, 3+ independent capabilities, cross-subsystem | capability-map.md + feature stubs | Phase -1 → Bounded/Architectural per module |
+| **Architectural** | New module, cross-project, interface change, frontend+backend+infra, or work that may need decomposition | full spec.md with options (auto-detects multi-capability work) | Phase 0 + 1 + optional decomposition |
+
+**Decomposition Detection:** If after exploring the codebase I detect that work requires breaking into multiple independent capabilities (each with own interfaces/consumers/data), I will automatically generate a capability-map.md for your approval before specifying each module.
 
 If feasibility is unknown and blocks the spec, use Phase 1 Spike step to validate first, then continue writing the spec.
-
----
-
-## Phase -1: Scale Detection (Initiative path only)
-
-### When to use Initiative path
-
-- User explicitly says "multiple features", "roadmap", or "multi-module"
-- Request contains 3+ independently deliverable capabilities
-- Crosses frontend + backend + infrastructure
-- User says "huge" or "too large for one session"
-
-### Process
-
-1. **Identify modules/capabilities**: Read the request and identify independent deliverable units
-2. **Map dependencies**: Which modules depend on others?
-3. **Determine build order**: What's the sequence based on dependencies?
-
-### Output: Capability Map
-
-Create `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`:
-
-```markdown
-# Capability Map: [Initiative Name]
-
-**Created**: YYYY-MM-DD
-
-## Modules
-
-| Module | Responsibility | Depends on | Priority |
-|--------|----------------|------------|----------|
-| auth   | User accounts, sessions | - | P0 |
-| billing| Payment processing | auth | P1 |
-| analytics | Usage tracking | auth | P2 |
-
-## Build Order
-
-1. auth (P0, no dependencies)
-2. billing (P1, depends on auth)
-3. analytics (P2, depends on auth)
-
-## Notes
-
-[Any cross-cutting concerns, shared infrastructure, or constraints]
-
-## Next Steps
-
-Each module gets its own clarify (Bounded or Architectural path).
-Start with: [highest priority module with no dependencies]
-```
-
-### Commit
-
-Stage and commit:
-```bash
-git add docs/features/YYYY-MM-DD-<initiative>/
-git commit -m "docs(initiative): add capability map for <initiative>"
-```
-
-Reference `./references/git-commit.md` for commit conventions.
-
-### Hand off
-
-Tell user: "This looks like a multi-module initiative. I've created a Capability Map showing [N] modules: [list]. We'll now clarify each module independently.
-
-Which module should we start with? I recommend starting with **[module]** (highest priority, no dependencies)."
-
-Wait for user to choose, then invoke clarify (Bounded or Architectural) for the selected module, passing the Capability Map as context.
-
-**Stop here**. Do not automatically proceed to the next module.
 
 ---
 
@@ -167,6 +98,49 @@ Wait for user approval before proceeding to Phase 1.
 Read `GLOSSARY.md`, `AGENTS.md`, relevant code, tests, configuration, existing features. Use search tools to locate relevant modules.
 
 **For high-risk scenarios** (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes.
+
+### Step 1.5: Decomposition Check (Architectural path only)
+
+After exploring the codebase, assess whether this work requires decomposition into multiple independent capabilities:
+
+**Detection signals**: Does the request contain capabilities that are:
+- Independently deliverable and testable?
+- Each with distinct consumers or data models?
+- Each could be cut or replaced without rewriting the others?
+- Spanning frontend + backend + infrastructure separately?
+
+**If decomposition is needed:**
+
+1. Identify the independent capabilities and their dependencies
+2. Create `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`:
+
+```markdown
+# Capability Map: [Initiative Name]
+
+**Created**: YYYY-MM-DD
+
+## Modules
+
+| Module | Responsibility | Depends on |
+|--------|----------------|------------|
+| [id] | [what it does] | [list or -] |
+
+## Build Order
+
+1. [module] (no dependencies)
+2. [module] (depends on...)
+
+## Notes
+
+[Cross-cutting concerns, constraints]
+```
+
+3. Present to user with recommendation on module order
+4. **Wait for user approval** before proceeding
+5. After approval, hand off: "I'll now clarify each module with its own spec. Which module should we start with?"
+6. For each module, invoke clarify (Bounded or Architectural) recursively
+
+**If decomposition is not needed:** Continue directly to Step 2.
 
 ### Step 2: Domain modeling
 
@@ -294,6 +268,8 @@ Wait for user approval.
 
 ## Phase 2: Save spec
 
+### For Bounded or Architectural (single-module work)
+
 Save to `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`.
 
 Include both:
@@ -303,6 +279,10 @@ Include both:
 For Architectural path, include the full comparison but mark the selected option clearly.
 
 If a spike was run, include the "Feasibility Validation" section with findings.
+
+### For multi-capability work (after decomposition approval)
+
+The approved `capability-map.md` is already saved at `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`. Each module then gets its own spec saved alongside it (e.g., `SPEC-auth.md`, `SPEC-billing.md`).
 
 ### Commit
 
@@ -327,8 +307,8 @@ Reference `./references/git-commit.md` for commit conventions.
 ### Hand off
 
 Tell user:
-- **Bounded/Architectural**: "Spec saved to `docs/features/.../spec.md`. Ready for `plan` to break this into tasks."
-- **Initiative**: "Module spec saved. [X] modules remaining in this initiative. Continue with next module, or proceed to plan for this one?"
+- **Bounded/Architectural (single module)**: "Spec saved to `docs/features/.../spec.md`. Ready for `plan` to break this into tasks."
+- **Multi-capability work**: "Capability map saved at `docs/features/.../capability-map.md`. Module [X] spec ready; [Y] modules remaining. Continue with next module, or proceed to plan for this one?"
 
 Do not automatically invoke `plan`. Wait for user decision.
 
