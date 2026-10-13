@@ -20,8 +20,8 @@ Generate and evaluate technical ideas when the solution space is large or unclea
 
 - **Problem unclear** → use `clarify` Phase 0 (product understanding) first
 - **Only one obvious approach** → skip to `clarify` directly
-- **Pure research without idea generation** → use `research` for investigation
-- **Need to validate one specific approach** → use `prototype` for feasibility
+- **Pure research without idea generation** → use `clarify` with research step
+- **Need to validate one specific approach** → use `clarify` with spike step
 
 ## Process
 
@@ -216,7 +216,7 @@ Then invoke `clarify`, passing the selected approach as context.
 - **The selected approach gets formalized** in `clarify` → `spec.md`
 - **Keep ideation focused**: 30-60 minutes, not exhaustive exploration
 - **Use read-only subagents** for code/web exploration when needed
-- **Do not build prototypes** during ideation - that's validation (prototype skill)
+- **Do not build prototypes** during ideation - that's validation (clarify's spike step)
 
 ---
 
@@ -224,7 +224,7 @@ Then invoke `clarify`, passing the selected approach as context.
 
 - **Before ideate**: If problem is unclear, use `clarify` Phase 0 (product understanding) first
 - **After ideate**: User selects option → route to `clarify` for specification
-- **Parallel to ideate**: User may call `research` independently for deep investigation, then reference findings in ideation
+- **Parallel to ideate**: User may investigate topics independently, then reference findings in ideation
 
 ---
 

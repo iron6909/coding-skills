@@ -1,6 +1,6 @@
 ---
 name: capture
-description: Capture the non-obvious reasoning, traps, and boundary conditions from a finished session into docs/learnings, one file per topic. Use when a feature, fix, or prototype has just finished and its reasoning would otherwise be lost.
+description: Capture the non-obvious reasoning, traps, and boundary conditions from a finished session into docs/learnings, one file per topic. Use when a feature or fix has just finished and its reasoning would otherwise be lost.
 disable-model-invocation: true
 ---
 

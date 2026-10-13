@@ -94,6 +94,6 @@ Recommend the next skill and let the user invoke it. Do not invoke it yourself.
 
 - A structural change that needs design work → `clarify`. Carry the candidate's problem, evidence, and proposal in as input.
 - A change small enough to describe in one message → `execute`.
-- A change whose shape is still unclear (which interface, which seam) → offer `prototype` to try two shapes, then `clarify`.
+- A change whose shape is still unclear (which interface, which seam) → offer `clarify` with spike to try two shapes.
 
 Never start the work in this skill. Structure findings are cheap to produce and expensive to act on; the user decides.

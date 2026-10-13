@@ -35,14 +35,13 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `ideate` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `execute`, `refactor`, `ideate` |
 | `tdd.md` | `execute`, `debug`, `code-review` |
 | `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
 | `severity.md` | `execute`, `code-review`, `simplify` |
-| `git-commit.md` | `survey`, `clarify`, `plan`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review`, `commit`, `optimize` |
+| `git-commit.md` | `survey`, `clarify`, `plan`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review`, `commit`, `optimize` |
 | `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
 | `stable-ids.md` | `clarify`, `plan`, `execute` |
-| `counterfactual-test.md` | `capture`, `learning-refresh` |
 | `counterfactual-test.md` | `capture`, `learning-refresh` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
@@ -76,7 +75,7 @@ Other references have one owner:
 
 ## Documents are never deleted
 
-No skill deletes a document: not `spec.md` or `spike.md`, not `plan.md`, not
+No skill deletes a document: not `spec.md`, not `plan.md`, not
 `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under
 `.cartoons/`, not a review report or a research report. A document that looks
 obsolete is superseded or left in place; the user decides what leaves the disk.
@@ -92,8 +91,7 @@ user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
 
 These are the paths skills create in a project they run on.
 
-- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
-- `docs/research/<topic>.md` holds research reports.
+- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
 - `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`), and ideation results (`.cartoons/ideation/<topic>-YYYYMMDD.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
@@ -106,9 +104,8 @@ The skill that writes a project document commits it, staging only its own files.
 | Skill | Commits |
 |-------|---------|
 | `survey` | `AGENTS.md`; creates `GLOSSARY.md` if it does not exist |
-| `clarify` | `spec.md`, `spike.md`, or `capability-map.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
+| `clarify` | `spec.md` or `capability-map.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
 | `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
-| `research` | the report |
 | `capture` | the learning file |
 | `learning-refresh` | updated, consolidated, or deleted learnings |
 | `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
@@ -116,7 +113,6 @@ The skill that writes a project document commits it, staging only its own files.
 | `optimize` | optimization code changes (not the `.cartoons/optimize-*/` experiment logs) |
 | `autoflow` | full feature delivery: spec, plan, commits, review fixes (all on feature branch) |
 | `execute`, `debug` | code, one commit per task or fix |
-| `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |
 | `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
 | `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
 | `commit` | user-directed ad-hoc changes (does not push) |

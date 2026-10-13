@@ -1,6 +1,6 @@
 ---
 name: doc-review
-description: Review planning documents (spec.md, plan.md, charter.md) for completeness, feasibility, consistency, and clarity. Use when asked to review, audit, or improve an existing planning document, or when a document is suspected to have gaps or contradictions. Not for code review—use code-review for that.
+description: Review planning documents (spec.md, plan.md, capability-map.md) for completeness, feasibility, consistency, and clarity. Use when asked to review, audit, or improve an existing planning document, or when a document is suspected to have gaps or contradictions. Not for code review—use code-review for that.
 disable-model-invocation: true
 ---
 
@@ -22,7 +22,7 @@ Review requirements, plans, or initiative charters to find and fix gaps, contrad
 ## Scope
 
 Review one document at a time. Supported types:
-- `spec.md` or `spike.md` (from `clarify`)
+- `spec.md` (from `clarify`)
 - `plan.md` (from `plan`)
 - `capability-map.md` (from `clarify` Initiative path)
 
@@ -32,7 +32,7 @@ Output: edit the document in place to fix minor issues, report blocking/importan
 
 ### 1. Identify document type
 
-Ask user for the document path, or find the most recent one matching the requested type in `docs/features/` or `docs/initiatives/`.
+Ask user for the document path, or find the most recent one matching the requested type in `docs/features/`.
 
 ### 2. Read review lenses
 

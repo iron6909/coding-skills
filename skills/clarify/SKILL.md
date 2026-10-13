@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports four paths - Spike (feasibility), Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Saves to docs/features or capability-map.md for initiatives.
+description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports three paths - Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Phase 1 includes optional research and spike steps when needed. Saves to docs/features or capability-map.md for initiatives.
 disable-model-invocation: true
 ---
 
@@ -22,12 +22,11 @@ Pick the smallest path that fits. When unsure, take the heavier path.
 
 | Path | Use when | Produces | Phases |
 |------|----------|----------|--------|
-| **Spike** | Feasibility unknown, blocks spec | spike.md (findings + recommendation) | Phase 1 only |
 | **Bounded** | Local change: one module, clear behavior, no new interface | short spec.md | Phase 0 + 1 |
 | **Architectural** | New module, cross-project, interface change, or frontend+backend+infra | full spec.md with options | Phase 0 + 1 |
 | **Initiative** | Multi-feature work, 3+ independent capabilities, cross-subsystem | capability-map.md + feature stubs | Phase -1 → Bounded/Architectural per module |
 
-A Spike belongs here only when the unknown blocks one specific feature. A standalone question that is not tied to a feature goes to `prototype` (does it work?) or `research` (what do sources say?).
+If feasibility is unknown and blocks the spec, use Phase 1 Spike step to validate first, then continue writing the spec.
 
 ---
 
@@ -103,8 +102,6 @@ Wait for user to choose, then invoke clarify (Bounded or Architectural) for the 
 
 ## Phase 0: Product Understanding (Bounded & Architectural paths)
 
-**Skip for Spike path** - go directly to Phase 1.
-
 This phase clarifies the product-level problem, goals, and success criteria before diving into technical details.
 
 ### Ask questions
@@ -165,13 +162,13 @@ Wait for user approval before proceeding to Phase 1.
 
 ## Phase 1: Technical Specification
 
-### Explore code
+### Step 1: Explore code
 
 Read `GLOSSARY.md`, `AGENTS.md`, relevant code, tests, configuration, existing features. Use search tools to locate relevant modules.
 
 **For high-risk scenarios** (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes.
 
-### Domain modeling
+### Step 2: Domain modeling
 
 While exploring and clarifying, read `./references/domain-modeling.md` and apply it: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. 
 
@@ -179,9 +176,40 @@ When a term settles, update `GLOSSARY.md` inline using `./references/glossary-fo
 
 When a decision passes the three-condition test (hard to reverse + surprising choice + meaningful trade-offs), offer an ADR using `./references/adr-format.md`.
 
-### Ask technical questions
+### Step 3: Research (optional, if needed)
 
-After exploring code, ask what remains:
+**When to use**: You need external information that is not in the codebase:
+- Best practices for a new technology
+- Comparison of framework options
+- Industry standards or compliance requirements
+- Current state of an external API or service
+
+**Process**:
+1. Use web search or documentation tools to gather information
+2. Focus on how findings influence technical decisions
+3. Write conclusions directly into the spec (Solution section)
+
+**Do not** create a separate research document. Findings land in decisions, not appendices.
+
+### Step 4: Spike (optional, if needed)
+
+**When to use**: Feasibility is uncertain and you need to write minimal code to validate:
+- "Can this API handle our use case?"
+- "Will this library work with our stack?"
+- "Can we achieve acceptable performance?"
+- "Does this integration pattern work?"
+
+**Process**:
+1. Write the smallest code needed to answer the question
+2. Run it and observe the result
+3. Delete the spike code (or save to `.cartoons/` if user wants to reference it)
+4. Write conclusions into the spec (Solution section or new "Feasibility Validation" section)
+
+**Do not** create `spike.md`. Validation findings go into `spec.md`.
+
+### Step 5: Ask technical questions
+
+After exploring code (and running research/spike if needed), ask what remains:
 - Scope and non-goals
 - Affected behavior and interfaces
 - Constraints and compatibility
@@ -191,15 +219,7 @@ After exploring code, ask what remains:
 
 For **Architectural path**: If competing approaches exist, identify 2-3 viable options.
 
-### Draft technical spec
-
-#### Spike path
-
-Present experiments to run:
-- What question each experiment answers
-- How to run it
-- What each outcome would mean
-- Recommendation after experiments
+### Step 6: Draft technical spec
 
 #### Bounded path
 
@@ -221,14 +241,13 @@ Recommend one with clear reasoning.
 
 ```markdown
 ## Problem
-[From Phase 0, or brief description for Spike]
+[From Phase 0 product understanding]
 
 ## Goal
-[From Phase 0, or what we're trying to learn for Spike]
+[From Phase 0, what we want to achieve]
 
 ## Solution
 
-[Spike: experiments to run]
 [Bounded: the approach]
 [Architectural: comparison of 2-3 options]
 
@@ -243,6 +262,12 @@ Recommend one with clear reasoning.
 ...
 
 **Recommendation**: Option X, because [clear reasoning]
+
+## Feasibility Validation (if spike was run)
+**Question**: [What we needed to validate]
+**Approach**: [Minimal code/experiment run]
+**Result**: [What we learned]
+**Conclusion**: [How this affects the solution]
 
 ## Interfaces
 [APIs, contracts, data structures that other modules depend on]
@@ -269,8 +294,6 @@ Wait for user approval.
 
 ## Phase 2: Save spec
 
-### Bounded/Architectural paths
-
 Save to `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`.
 
 Include both:
@@ -279,15 +302,7 @@ Include both:
 
 For Architectural path, include the full comparison but mark the selected option clearly.
 
-### Spike path
-
-Save to `docs/features/YYYY-MM-DD-<semantic-name>/spike.md`.
-
-Include only:
-- Brief problem context
-- Experiments run
-- Findings
-- Recommendation
+If a spike was run, include the "Feasibility Validation" section with findings.
 
 ### Commit
 
@@ -304,7 +319,7 @@ docs(spec): add specification for <feature-name>
 
 [One-line summary of what we're building]
 
-Path: [Spike/Bounded/Architectural]
+Path: [Bounded/Architectural]
 ```
 
 Reference `./references/git-commit.md` for commit conventions.
@@ -313,7 +328,6 @@ Reference `./references/git-commit.md` for commit conventions.
 
 Tell user:
 - **Bounded/Architectural**: "Spec saved to `docs/features/.../spec.md`. Ready for `plan` to break this into tasks."
-- **Spike**: "Spike findings saved to `docs/features/.../spike.md`. [Recommendation based on findings]."
 - **Initiative**: "Module spec saved. [X] modules remaining in this initiative. Continue with next module, or proceed to plan for this one?"
 
 Do not automatically invoke `plan`. Wait for user decision.
@@ -322,7 +336,7 @@ Do not automatically invoke `plan`. Wait for user decision.
 
 ## Spec options (deprecated - now part of path selection)
 
-The path selection (Spike/Bounded/Architectural) replaces the old spec options. This section exists only for reference.
+The path selection (Bounded/Architectural) replaces the old spec options. This section exists only for reference.
 
 ---
 
@@ -341,11 +355,10 @@ Prefer deletion, existing project patterns, standard library features, native pl
 
 ## Integration with other skills
 
-- **Before clarify**: User may have called `research` (investigation) or `prototype` (throwaway validation) independently. Reference their findings if provided.
 - **After clarify**: Route to `plan` for task breakdown
 - **During clarify**: Focus on understanding and specification. Do not start implementation.
 
-For questions about "how to do X", explore existing code patterns first. If still unclear, clarify can recommend calling `prototype` or `research` as separate activities, then resuming clarify afterward.
+Research and spike validation are embedded in Phase 1 as optional steps, not separate skills.
 
 ---
 

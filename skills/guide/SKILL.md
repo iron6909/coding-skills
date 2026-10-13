@@ -12,7 +12,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `ideate`: generate and evaluate grounded technical ideas when solution space is large. Use when user says "not sure how to implement" with clear problem. Output: ranked options with trade-offs.
-- `clarify`: resolve the request, scope, spec, constraints, and acceptance checks. Handles product understanding (problem, goals, users) and technical specification. Supports four paths: Spike (feasibility), Bounded (local change), Architectural (cross-module), Initiative (multi-feature).
+- `clarify`: resolve the request, scope, spec, constraints, and acceptance checks. Handles product understanding (problem, goals, users) and technical specification. Supports three paths: Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Phase 1 includes optional research and spike steps when needed.
 - `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
@@ -20,8 +20,6 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `code-review`: independently review another branch or historical commits.
 - `commit`: create high-quality commits for ad-hoc changes, detecting project conventions and staging only specified files.
 - `autoflow`: orchestrate end-to-end feature delivery with minimal checkpoints.
-- `prototype`: build a throwaway prototype to answer a design question.
-- `research`: investigate unfamiliar territory and write a cited report.
 - `refactor`: review the structure of existing code and propose ranked improvement candidates for a chosen target.
 - `capture`: record the non-obvious reasoning, traps, and boundary conditions from a finished session into `docs/learnings`.
 - `learning-refresh`: audit and refresh the learnings store in `docs/learnings/` for staleness.
@@ -47,18 +45,16 @@ Use the first matching rule:
 7. If the user asks to review a branch or past commits that are not part of the current `execute` run (signals: "review this branch", "audit these commits"), use `code-review`.
 8. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.
 9. If the user says "not sure how to implement" or "explore options" with a clear problem, or needs to compare multiple technical approaches, use `ideate`. If problem itself is unclear, use `clarify` first.
-10. If the user asks a standalone question that code can answer (signals: "prototype", "throwaway", "quick proof", "does X work"), use `prototype`. If the unknown only matters for one feature they want to build, use `clarify` (Spike path) instead.
-11. If the user asks a standalone question that sources can answer (signals: "research", "investigate", "how does X work", "what are the options for Y"), use `research`. If it only matters for one feature they want to build, use `clarify` (Spike path) instead.
-12. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `clarify`.
-13. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
-14. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
-15. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
-16. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
-17. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work).
-18. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-19. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
-20. If the approved work is clear and ready for code changes, use `execute`.
-21. If no rule matches, use `clarify` instead of guessing.
+10. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `clarify`.
+11. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
+12. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
+13. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
+14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
+15. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work). Research and feasibility validation are embedded in clarify's Phase 1.
+16. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+17. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
+18. If the approved work is clear and ready for code changes, use `execute`.
+19. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `survey`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its execution input.
 

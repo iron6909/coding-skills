@@ -320,7 +320,7 @@ Reference `./references/git-commit.md` for commit conventions.
 - **Before optimize**: Use `debug` if it's a regression (performance used to be better)
 - **Before optimize**: Use `execute` if it's a simple known fix (add an index, fix N+1 query)
 - **After optimize**: Use `capture` to record non-obvious optimization insights
-- **During optimize**: May use `prototype` to test a risky optimization approach before committing
+- **During optimize**: May use clarify's spike step to test a risky optimization approach before committing
 
 ## Notes
 

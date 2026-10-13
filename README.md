@@ -34,7 +34,6 @@ graph TD
     C -->|已有计划| G[execute]
     C -->|故障| H[debug]
     C -->|审查他人改动| I[code-review]
-    C -->|独立问题| L[prototype / research]
     C -->|代码结构问题| M[refactor]
     C -->|沉淀推理| N[capture]
     C -->|learnings 陈旧| O[learning-refresh]
@@ -49,7 +48,6 @@ graph TD
     I --> J
     M -->|选定候选| E
     H -->|大型修复| E
-    L -->|答案要变成功能| E
     G -->|可选| N
     H -->|可选| N
     G -->|可选| Q
@@ -69,7 +67,7 @@ graph TD
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/` 带权衡的排序选项 | 生成2-3个方案,压力测试,推荐 |
-| **clarify** | 需求不明 | spec.md/spike.md/capability-map.md | 四路径:Spike/Bounded/Architectural/Initiative |
+| **clarify** | 需求不明 | spec.md/capability-map.md | 三路径:Bounded/Architectural/Initiative;Phase 1 可选 research/spike |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
@@ -77,12 +75,10 @@ graph TD
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
-| **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
-| **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
-| **capture** | 功能/修复/原型刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
+| **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
 | **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
-| **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/charter 完整性/可行性检查 |
+| **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/capability-map 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
 | **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff-YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
 
