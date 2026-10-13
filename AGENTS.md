@@ -35,11 +35,11 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | Shared file | Copied into |
 |-------------|-------------|
 | `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor`, `wayfinder` |
+| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `research`, `execute`, `refactor` |
 | `tdd.md` | `execute`, `debug`, `code-review` |
 | `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
 | `severity.md` | `execute`, `code-review`, `simplify` |
-| `git-commit.md` | `survey`, `clarify`, `plan`, `wayfinder`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review`, `brief`, `commit` |
+| `git-commit.md` | `survey`, `clarify`, `plan`, `research`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review`, `commit`, `optimize` |
 | `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
 | `stable-ids.md` | `clarify`, `plan`, `execute` |
 | `counterfactual-test.md` | `capture`, `learning-refresh` |
@@ -91,9 +91,7 @@ user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
 
 These are the paths skills create in a project they run on.
 
-- `docs/briefs/YYYY-MM-DD-<name>/` holds `brief.md` (product brief: problem, goals, success criteria, non-goals).
-- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`.
-- `docs/initiatives/YYYY-MM-DD-<name>/` holds `charter.md` (the initiative's problem, goal, scope, constraints, evidence, and open questions), `index.md` (feature list and dependencies), and `feature-N-<name>.md` stubs.
+- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` (or `spike.md`) and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
 - `docs/research/<topic>.md` holds research reports.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
@@ -107,10 +105,8 @@ The skill that writes a project document commits it, staging only its own files.
 | Skill | Commits |
 |-------|---------|
 | `survey` | `AGENTS.md`; creates `GLOSSARY.md` if it does not exist |
-| `brief` | `brief.md` |
-| `clarify` | `spec.md` or `spike.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
+| `clarify` | `spec.md`, `spike.md`, or `capability-map.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
 | `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
-| `wayfinder` | the initiative directory |
 | `research` | the report |
 | `capture` | the learning file |
 | `learning-refresh` | updated, consolidated, or deleted learnings |
@@ -130,7 +126,7 @@ The skill that writes a project document commits it, staging only its own files.
 - **spec**, **plan**: the approved spec and its task index.
 - **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. Keep them distinct: a review, commit, or ledger entry belongs to a task, never a step.
 - **tracer bullet**: a vertical-slice task.
-- **initiative**: a multi-feature plan from `wayfinder`. **feature stub**: one feature in it.
+- **capability map**: multi-module breakdown from `clarify` Initiative path, showing modules and dependencies.
 - **reference**: a doc under `skills/<skill>/references/` read on demand. It is not a skill.
 
 ## Adding, renaming, or removing a skill

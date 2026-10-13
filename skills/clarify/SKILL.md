@@ -1,12 +1,12 @@
 ---
 name: clarify
-description: Clarify a development request, confirm the spec, and save the approved spec (or spike findings) to docs/features, committing it. Use when scope, behavior, constraints, or feasibility are not settled yet. Also records settled terms in GLOSSARY.md and ADRs.
+description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports four paths - Spike (feasibility), Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Saves to docs/features or capability-map.md for initiatives.
 disable-model-invocation: true
 ---
 
 # Clarify
 
-Turn an unclear development request into an approved spec. Save it in `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`, or `spike.md` on the Spike path.
+Turn an unclear development request into an approved spec, from product understanding to technical design.
 
 Do not write product code, create `plan.md`, or start implementation.
 
@@ -14,27 +14,107 @@ Do not write product code, create `plan.md`, or start implementation.
 
 Check `AGENTS.md` and `CLAUDE.md` before choosing a path. If either names a specification system this project already uses (OpenSpec, Spec Kit, Specify, or similar), write to that system's artifact format and storage conventions and do not create a second `spec.md` beside it.
 
-The split is fixed: this skill owns the clarification, the content of the spec, and the approval gate; the external system owns how the approved spec is represented and where it lives.
-
-When no such system is named, use the default format under Save.
-
-If the project's system cannot express something the approval gate requires — observable acceptance conditions, or the testing boundary — say so and settle it in the conversation rather than dropping it.
+The split is fixed: this skill owns the clarification, the content of the spec, and the approval gate; the chosen system supplies only the directory structure and file naming. The spec is a deliverable you produce for that system, not something the system produces for you.
 
 ## Choose a path
 
-Pick the smallest path that fits. The path decides what you produce and how much ceremony you use.
+Pick the smallest path that fits. When unsure, take the heavier path.
 
-| Path | Use when | Produces | Ceremony |
-|------|----------|----------|----------|
-| **Spike** | Whether the feature is feasible, or which approach works, is unknown and blocks writing a spec | `spike.md` (findings and a recommendation) | Run small throwaway experiments, then recommend a path |
-| **Bounded** | A local change: one module or a few related files, clear behavior, no new interface or cross-module contract | short `spec.md` | One recommended approach, no alternatives, an ADR only if all three conditions hold |
-| **Architectural** | A new module, a cross-project change, an interface or contract change, or frontend + backend + infrastructure work | full `spec.md` | Two or three options compared, domain modeling, ADRs when warranted |
-
-When unsure, take the heavier path. When hidden complexity appears, move up a path; never move down to skip a needed decision.
+| Path | Use when | Produces | Phases |
+|------|----------|----------|--------|
+| **Spike** | Feasibility unknown, blocks spec | spike.md (findings + recommendation) | Phase 1 only |
+| **Bounded** | Local change: one module, clear behavior, no new interface | short spec.md | Phase 0 + 1 |
+| **Architectural** | New module, cross-project, interface change, or frontend+backend+infra | full spec.md with options | Phase 0 + 1 |
+| **Initiative** | Multi-feature work, 3+ independent capabilities, cross-subsystem | capability-map.md + feature stubs | Phase -1 → Bounded/Architectural per module |
 
 A Spike belongs here only when the unknown blocks one specific feature. A standalone question that is not tied to a feature goes to `prototype` (does it work?) or `research` (what do sources say?).
 
-## Ask questions
+---
+
+## Phase -1: Scale Detection (Initiative path only)
+
+### When to use Initiative path
+
+- User explicitly says "multiple features", "roadmap", or "multi-module"
+- Request contains 3+ independently deliverable capabilities
+- Crosses frontend + backend + infrastructure
+- User says "huge" or "too large for one session"
+
+### Process
+
+1. **Identify modules/capabilities**: Read the request and identify independent deliverable units
+2. **Map dependencies**: Which modules depend on others?
+3. **Determine build order**: What's the sequence based on dependencies?
+
+### Output: Capability Map
+
+Create `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`:
+
+```markdown
+# Capability Map: [Initiative Name]
+
+**Created**: YYYY-MM-DD
+
+## Modules
+
+| Module | Responsibility | Depends on | Priority |
+|--------|----------------|------------|----------|
+| auth   | User accounts, sessions | - | P0 |
+| billing| Payment processing | auth | P1 |
+| analytics | Usage tracking | auth | P2 |
+
+## Build Order
+
+1. auth (P0, no dependencies)
+2. billing (P1, depends on auth)
+3. analytics (P2, depends on auth)
+
+## Notes
+
+[Any cross-cutting concerns, shared infrastructure, or constraints]
+
+## Next Steps
+
+Each module gets its own clarify (Bounded or Architectural path).
+Start with: [highest priority module with no dependencies]
+```
+
+### Commit
+
+Stage and commit:
+```bash
+git add docs/features/YYYY-MM-DD-<initiative>/
+git commit -m "docs(initiative): add capability map for <initiative>"
+```
+
+Reference `./references/git-commit.md` for commit conventions.
+
+### Hand off
+
+Tell user: "This looks like a multi-module initiative. I've created a Capability Map showing [N] modules: [list]. We'll now clarify each module independently.
+
+Which module should we start with? I recommend starting with **[module]** (highest priority, no dependencies)."
+
+Wait for user to choose, then invoke clarify (Bounded or Architectural) for the selected module, passing the Capability Map as context.
+
+**Stop here**. Do not automatically proceed to the next module.
+
+---
+
+## Phase 0: Product Understanding (Bounded & Architectural paths)
+
+**Skip for Spike path** - go directly to Phase 1.
+
+This phase clarifies the product-level problem, goals, and success criteria before diving into technical details.
+
+### Ask questions
+
+Focus on product concerns, not technical implementation:
+- What problem are we solving? (root cause, not symptoms)
+- Who are the users? (primary and secondary)
+- What does success look like? (measurable outcomes)
+- What are we explicitly NOT doing? (scope boundaries)
+- What are the constraints? (budget, timeline, compliance, compatibility)
 
 Ask one question per message, then wait. Ask only what changes the spec. Never ask for repository facts; read the code.
 
@@ -47,256 +127,234 @@ Recommendation: <answer>
 Reason: <short reason if not obvious>
 ```
 
-- **Vague request:** before reading code, ask about purpose and the user-visible result, then scope and hard constraints. Skip anything the request already answers.
-- **After exploring code:** ask what remains: scope and non-goals, affected behavior and interfaces, constraints and compatibility, error and edge cases, acceptance conditions, and the testing boundary.
-- **Architectural path with competing approaches:** present the options (see Spec options) and ask which fits.
-- **Clear small request:** it may need no questions. Present a short spec and ask for approval.
+Stop asking once you understand the product direction.
 
-Stop asking once you can write a clear spec.
+### Draft product brief (in conversation)
 
-### High-risk scenarios: Use elicitation techniques
-
-For high-risk specifications, apply deeper questioning to reveal hidden assumptions, edge cases, and failure modes. **When to use**: read `./references/elicitation.md` if any of these conditions apply:
-
-- **Architectural path** (cross-module changes, new integrations, framework choices)
-- **Security-sensitive** (auth, permissions, data access, encryption)
-- **Data handling** (migrations, transformations, deletions, PII)
-- **Critical business logic** (payments, compliance, auditing, financial calculations)
-- **High uncertainty** (novel approaches, first-time implementation, user expresses doubt)
-
-**Techniques available** (detailed in elicitation.md):
-- Pre-mortem: imagine failure scenarios and work backward
-- Socratic questioning: layer "why" to reveal real requirements
-- First principles: strip assumptions and rebuild from fundamentals
-- Edge case exploration: probe boundaries systematically
-- Failure mode analysis: enumerate what can go wrong
-
-**Skip for**: Simple local changes, well-understood patterns, bounded modifications.
-
-The reference provides specific techniques and examples. Apply 2-3 most relevant for the situation; don't over-engineer simple features.
-
-## Explore code
-
-Read `GLOSSARY.md` (if it exists) before exploring code, and use its terms in every artifact.
-
-Read the minimum project context needed:
-
-- applicable `AGENTS.md` files
-- the relevant README or project documentation
-- the current flow, module, and callers
-- related tests and test conventions
-- relevant configuration and interfaces
-
-Read directly for small requests. For large exploration that could overflow the main context, use read-only subagents. **When and how**: read `./references/subagent-dispatch.md`. The main process owns all spec decisions and all writes.
-
-**Domain model**: while exploring and clarifying, read `./references/domain-modeling.md` and apply it: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. When a decision passes the three-condition test, offer an ADR using `./references/adr-format.md`.
-
-**Elicitation techniques**: for high-risk scenarios (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes before drafting the spec.
-
-## Spec options
-
-- **Bounded:** present one recommended approach and its necessary trade-offs.
-- **Architectural:** present two or three viable approaches. Compare them by complexity, fit with the current code, risk, and testability. Recommend one.
-- **Spike:** present the experiments you will run and what each would show.
-
-Prefer deletion, existing project patterns, standard library features, native platform features, and installed dependencies before adding code or dependencies. Do not invent alternatives for a clear small change.
-
-## Review the draft
-
-Before presenting the draft, check it for:
-
-- unresolved placeholders or decisions
-- contradictions between sections
-- scope that is too large for one plan
-- acceptance conditions that cannot be checked
-- requirements missing from the selected approach
-
-Fix the draft first. Do not start implementation during this check. The user must approve the text you will save, so the check happens before approval, not after.
-
-## Approval gate
-
-Label the spec (or spike) a draft until the user approves it. Do not write product code or invoke `plan` or `execute`.
-
-Approval of the request does not approve an unshown spec. If the user asks for changes, update the draft, check it again, and ask again. After approval, change nothing but typos; any substantive edit goes back to the user.
-
-A spec is ready when it states:
-
-- the problem and goal
-- the included and excluded scope
-- the selected approach
-- important decisions and constraints
-- observable acceptance conditions
-- the testing boundary, including the test entry points to test through
-
-The user approves the test entry points together with the spec. Later skills test only through approved entry points.
-
-## Common rationalizations
-
-| Rationalization | Reality |
-|-----------------|---------|
-| "The request is clear, skip the questions" | A clear request still hides scope, non-goals, and acceptance conditions. One question is cheap; a wrong spec is not. |
-| "I'll write the spec and fix the details during implementation" | Unsettled detail becomes an unresolved decision that stalls `execute` mid-task. |
-| "Approval of the idea is approval of the spec" | The user approves text they have seen. Write nothing before they see the draft. |
-| "This is obviously one path, skip the choice" | Picking the path decides the ceremony. Take the heavier path when unsure. |
-| "I'll record this guess as a decision for now" | A guess recorded as a decision is what a later reader trusts. Leave it unresolved and ask. |
-| "There's no need for a testing boundary, it's small" | The testing boundary names the entry points later skills must test through. It is what makes the spec testable. |
-
-## Red flags
-
-Stop and fix the process when you notice:
-
-- writing `spec.md` before the user approved the draft
-- asking more than one question per message
-- asking for a repository fact instead of reading the code
-- a Spike that does not name the specific feature it unblocks
-- two specs for the same work, or a second directory for a continued feature
-- implementation steps or a file-by-file task list in the spec (that is `plan`'s)
-- the draft check running after approval instead of before
-
-## Verification
-
-Confirm before saving:
-
-- [ ] the chosen path matches the request — Bounded for local, Architectural for cross-module, Spike only when feasibility blocks the spec
-- [ ] the draft check ran before approval, not after
-- [ ] the user approved the exact text being saved
-- [ ] the content list under Approval gate is satisfied
-- [ ] experiment code stayed outside the project, for a Spike
-- [ ] the commit stages only what this skill produced
-
-## Save
-
-After approval, create the directory and write the file:
-
-```bash
-DIR="docs/features/$(date +%Y-%m-%d)-<semantic-name>"
-mkdir -p "$DIR"
-# Write to $DIR/spec.md (or $DIR/spike.md)
-```
-
-The name is `YYYY-MM-DD-<semantic-name>`: short lowercase kebab-case, 2-4 words. Reuse an existing directory when the user continues that feature. Do not create a second spec for the same work. A spike and the spec that follows it share one directory.
-
-### spec.md
-
-Omit empty sections.
+Present to user:
 
 ```markdown
-# <Feature name>
+## Product Understanding
 
+**Problem**: [2-3 sentences describing the pain point]
+
+**Goal**: [1-2 sentences: what we want to achieve]
+
+**Users**:
+- **Primary**: [who benefits most]
+- **Secondary**: [other affected users, if any]
+
+**Success Criteria** (measurable):
+- [Observable outcome 1]
+- [Observable outcome 2]
+- [Observable outcome 3]
+
+**Non-Goals** (explicit scope boundaries):
+- [What we won't do in this effort]
+- [Prevents feature creep]
+
+**Constraints** (hard limits):
+- [Time, budget, compatibility, regulations]
+```
+
+**Approval Point 1**: "Does this capture the product direction correctly?"
+
+Wait for user approval before proceeding to Phase 1.
+
+---
+
+## Phase 1: Technical Specification
+
+### Explore code
+
+Read `GLOSSARY.md`, `AGENTS.md`, relevant code, tests, configuration, existing features. Use search tools to locate relevant modules.
+
+**For high-risk scenarios** (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes.
+
+### Domain modeling
+
+While exploring and clarifying, read `./references/domain-modeling.md` and apply it: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. 
+
+When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. 
+
+When a decision passes the three-condition test (hard to reverse + surprising choice + meaningful trade-offs), offer an ADR using `./references/adr-format.md`.
+
+### Ask technical questions
+
+After exploring code, ask what remains:
+- Scope and non-goals
+- Affected behavior and interfaces
+- Constraints and compatibility
+- Error and edge cases
+- Acceptance conditions
+- Testing boundary
+
+For **Architectural path**: If competing approaches exist, identify 2-3 viable options.
+
+### Draft technical spec
+
+#### Spike path
+
+Present experiments to run:
+- What question each experiment answers
+- How to run it
+- What each outcome would mean
+- Recommendation after experiments
+
+#### Bounded path
+
+Present one recommended approach with necessary trade-offs.
+
+#### Architectural path
+
+Present 2-3 viable approaches. Compare by:
+- Complexity
+- Fit with current code
+- Risk
+- Testability
+
+Recommend one with clear reasoning.
+
+### Spec structure
+
+**All paths include**:
+
+```markdown
 ## Problem
-
-<The problem from the user's view.>
+[From Phase 0, or brief description for Spike]
 
 ## Goal
-
-<The user-visible result.>
-
-## Scope
-
-<What this work includes.>
-
-## Out of scope
-
-<What this work does not include.>
+[From Phase 0, or what we're trying to learn for Spike]
 
 ## Solution
 
-<The selected approach, flow, and affected module responsibilities.>
+[Spike: experiments to run]
+[Bounded: the approach]
+[Architectural: comparison of 2-3 options]
 
-## Decisions
+### [For Architectural] Option 1: [Name]
+**Approach**: [description]
+**Pros**: [benefits]
+**Cons**: [drawbacks]
+**Fit**: [how well it matches existing patterns]
+**Risk**: [what could go wrong]
 
-<Confirmed decisions and short reasons. Link any ADR created for a decision, for example `docs/adr/0003-slug.md`.>
+### [For Architectural] Option 2: [Name]
+...
+
+**Recommendation**: Option X, because [clear reasoning]
+
+## Interfaces
+[APIs, contracts, data structures that other modules depend on]
+[Omit if no external dependencies]
 
 ## Constraints
-
-<Project rules, compatibility needs, and limits.>
+[Technical constraints: performance, compatibility, dependencies]
 
 ## Acceptance
+[Observable, testable conditions that define "done"]
+[Format: "Given X, when Y, then Z" or "System should..."]
 
-<Observable conditions that show the work is complete. Each condition gets a stable requirement ID (REQ-N) for traceability.>
-
-- REQ-1: <First acceptance condition>
-- REQ-2: <Second acceptance condition>
-- REQ-3: <Third acceptance condition>
-
-**Read `./references/stable-ids.md` for REQ-N assignment rules. IDs start at REQ-1, increment sequentially, and are never reused or renumbered.**
-
-## Testing
-
-<Behaviors to test, the test entry points (public interfaces) to test through, and the relevant test boundary.>
+## Testing Boundary
+[Where tests will be written]
+[Test entry points]
+[What gets mocked vs real]
 ```
 
-If the request came from a `wayfinder` feature stub, add `**Initiative stub:** <stub path>` under the title, and use the stub as the primary input. The stub carries everything this feature needs on its own; read the initiative's `charter.md` only when the stub's `**Charter:**` line names a section that affects this spec, and read that section only. Do not read the charter as a whole, and do not widen the spec to other features in the initiative.
+**Approval Point 2**: "Does this technical approach work?"
 
-Do not write unresolved questions, guesses, or agent recommendations as confirmed decisions. Do not add implementation steps or a file-by-file task list; `plan` owns those.
+Wait for user approval.
 
-**Requirement IDs**: Assign REQ-N IDs to each acceptance condition for traceability (see `./references/stable-ids.md`). Start at REQ-1 for new specs. For revised specs, add new IDs sequentially without renumbering existing ones.
+---
 
-### spike.md
+## Phase 2: Save spec
 
-```markdown
-# Spike: <question>
+### Bounded/Architectural paths
 
-## Question
+Save to `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`.
 
-<The feasibility or approach question and why it blocks the feature.>
+Include both:
+- Phase 0 content (Product Understanding)
+- Phase 1 content (Technical Specification)
 
-## Experiments
+For Architectural path, include the full comparison but mark the selected option clearly.
 
-<What was tried, where the throwaway code lives (a system temp directory, never the project), and the exact result of each.>
+### Spike path
 
-## Findings
+Save to `docs/features/YYYY-MM-DD-<semantic-name>/spike.md`.
 
-<What is now known, with evidence.>
+Include only:
+- Brief problem context
+- Experiments run
+- Findings
+- Recommendation
 
-## Recommendation
+### Commit
 
-<The chosen approach, or that the feature should not proceed, with reasons.>
-
-## Next path
-
-<Bounded or Architectural, and what the spec must settle.>
+Stage only the spec:
+```bash
+git add docs/features/YYYY-MM-DD-<semantic-name>/
 ```
 
-Experiments are throwaway: do not commit them or move them into the project. After the user approves the findings, continue on the Bounded or Architectural path and write `spec.md` in the same directory.
+Also stage `GLOSSARY.md` if updated, and any new ADRs.
 
-## Revise an approved spec
+Commit message:
+```
+docs(spec): add specification for <feature-name>
 
-When planning or execution found the spec wrong or incomplete, or the user changes scope after approval, reopen the same `spec.md`. Do not create a second spec.
+[One-line summary of what we're building]
 
-1. Show the change as a draft against the approved text: what changes and why.
-2. Run the draft check and the approval gate again for the changed parts.
-3. Edit `spec.md` in place. For a changed decision, update **Decisions** with the reason; do not rewrite the earlier text silently.
-4. Commit it as an update (below).
-
-If `plan.md` already exists for this spec, `Next:` is `plan` (revise the existing plan), not a new plan.
-
-## Commit
-
-Commit what this skill produced: the spec (or spike), plus any `GLOSSARY.md` and ADR files created or changed during the session. Stage only those files and check `git diff --staged` before committing.
-
-```text
-docs(spec): add <name>        # spec.md
-docs(spec): update <name>     # revised spec.md
-docs(spike): add <name>       # spike.md
+Path: [Spike/Bounded/Architectural]
 ```
 
-Read `./references/git-commit.md` for commit rules.
+Reference `./references/git-commit.md` for commit conventions.
 
-## Finish
+### Hand off
 
-Report:
+Tell user:
+- **Bounded/Architectural**: "Spec saved to `docs/features/.../spec.md`. Ready for `plan` to break this into tasks."
+- **Spike**: "Spike findings saved to `docs/features/.../spike.md`. [Recommendation based on findings]."
+- **Initiative**: "Module spec saved. [X] modules remaining in this initiative. Continue with next module, or proceed to plan for this one?"
 
-```text
-Spec saved: docs/features/YYYY-MM-DD-<semantic-name>/spec.md
-Glossary: <terms added or changed, or None>
-ADRs: <paths created, or None>
-Commit: <short hash>
-Next: plan
-```
+Do not automatically invoke `plan`. Wait for user decision.
 
-For a revised spec, report `Spec updated: <path>` and use the `Next:` rule above. For a Spike, report `Spike saved: docs/features/YYYY-MM-DD-<semantic-name>/spike.md` and `Next: clarify (write the spec)`, or stop if the recommendation is not to proceed.
+---
 
-When the project uses another specification system, report its artifact path instead of the default one, and commit through that system's own flow rather than the `docs(spec):` subjects below.
+## Spec options (deprecated - now part of path selection)
 
-Stop after saving. Do not automatically invoke `plan` or `execute`.
+The path selection (Spike/Bounded/Architectural) replaces the old spec options. This section exists only for reference.
+
+---
+
+## Review the draft
+
+Before presenting any draft (Phase 0 or Phase 1), check it for:
+- **Completeness**: Does it answer the path's required questions?
+- **Clarity**: Can someone else read and implement this?
+- **Testability**: Are acceptance criteria observable?
+- **Constraints**: Are hard limits explicit?
+- **Trade-offs**: For Architectural, are pros/cons balanced?
+
+Prefer deletion, existing project patterns, standard library features, native platform features, and installed dependencies before adding code or dependencies. Do not invent alternatives for a clear small change.
+
+---
+
+## Integration with other skills
+
+- **Before clarify**: User may have called `research` (investigation) or `prototype` (throwaway validation) independently. Reference their findings if provided.
+- **After clarify**: Route to `plan` for task breakdown
+- **During clarify**: Focus on understanding and specification. Do not start implementation.
+
+For questions about "how to do X", explore existing code patterns first. If still unclear, clarify can recommend calling `prototype` or `research` as separate activities, then resuming clarify afterward.
+
+---
+
+## References
+
+- `./references/domain-modeling.md` - Domain modeling, GLOSSARY updates, ADR criteria
+- `./references/glossary-format.md` - GLOSSARY.md format
+- `./references/adr-format.md` - ADR template and when to create
+- `./references/elicitation.md` - Advanced questioning for high-risk specs
+- `./references/stable-ids.md` - REQ-N ID format for requirements
+- `./references/git-commit.md` - Commit message conventions
+- `./references/subagent-dispatch.md` - When and how to dispatch subagents for large codebases

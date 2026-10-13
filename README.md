@@ -70,8 +70,7 @@ graph TD
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
-| **brief** | 想法模糊,需产品层面澄清 | `docs/briefs/`目录,brief.md | 问题/目标/成功标准/非目标 |
-| **clarify** | 需求不明 | spec.md(Spike 路径为 spike.md) | Spike/Bounded/Architectural 三路径 |
+| **clarify** | 需求不明 | spec.md/spike.md/capability-map.md | 四路径:Spike/Bounded/Architectural/Initiative |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
@@ -79,7 +78,6 @@ graph TD
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
-| **wayfinder** | 大型跨模块工作 | initiative(charter + index + feature stubs) | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
 | **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
@@ -98,17 +96,15 @@ graph TD
 ```
 /
 ├── docs/
-│   ├── briefs/                          # 产品简介（永久，brief 产出）
-│   │   └── 2025-01-15-user-auth/
-│   │       └── brief.md                 # 产品目标/范围/成功标准
 │   ├── features/                        # 功能规格与计划（永久）
 │   │   ├── 2025-01-15-user-auth/
 │   │   │   ├── spec.md                 # 批准的规格
 │   │   │   └── plan.md                 # 任务索引
-│   │   └── 2025-01-20-cart-checkout/
-│   │       ├── spec.md
-│   │       └── plan.md
-│   ├── initiatives/                     # 多功能规划（永久，wayfinder 产出：charter 总纲 + index 索引 + feature stubs）
+│   │   ├── 2025-01-20-cart-checkout/
+│   │   │   ├── spec.md
+│   │   │   └── plan.md
+│   │   └── 2025-01-25-platform-refactor/
+│   │       └── capability-map.md       # 多模块拆分（clarify Initiative path）
 │   ├── research/                        # 调研报告（永久，research 产出）
 │   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
 │   └── adr/                             # 架构决策记录（惰性创建）
@@ -124,8 +120,8 @@ graph TD
 │   │   ├── variant-1.md                # 变体测试结果
 │   │   └── summary.md                  # 最终报告
 │   ├── handoff-20250115-1430.md        # 会话交接（handoff 产出）
-│   └── architecture/
-│       └── architecture-2025-01-15-billing.md  # architecture 报告
+│   └── refactor/
+│       └── refactor-2025-01-15-billing.md  # refactor 报告
 ├── GLOSSARY.md                          # 术语表（惰性创建）
 └── AGENTS.md                            # 项目事实
 ```
