@@ -1,0 +1,33 @@
+{
+  "name": "@tszhang/coding-skills",
+  "version": "1.0.0",
+  "description": "极简 coding agent 技能集，专注清晰流程和本地化开发",
+  "keywords": [
+    "claude",
+    "ai",
+    "agent",
+    "skills",
+    "coding",
+    "tdd",
+    "local-first",
+    "chinese"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tszhang/Skills.git"
+  },
+  "author": "夏目 (tszhang)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tszhang/Skills/issues"
+  },
+  "homepage": "https://github.com/tszhang/Skills#readme",
+  "files": [
+    "skills",
+    "README.md",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

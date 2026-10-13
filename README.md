@@ -1,8 +1,24 @@
 # Coding Skills
 
+[![skills.sh](https://skills.sh/b/tszhang/skills)](https://skills.sh/tszhang/skills)
+
 极简 coding agent 技能集,专注清晰流程和本地化开发。基于 Superpowers 和 Matt Pocock Skills 提炼。
 
 **核心原则**: 完全本地化开发,不依赖 issue tracker (GitHub/Linear/Jira)。所有设计、计划、任务管理使用本地文件。
+
+## 安装
+
+### 通过 skills.sh 安装（推荐）
+
+```bash
+npx skills@latest add tszhang/skills
+```
+
+选择你需要的技能，安装器会将它们复制到项目的 `.claude/skills/` 目录。
+
+### 手动安装
+
+克隆此仓库，将 `skills/` 目录下的技能复制到你的项目 `.claude/skills/` 目录。
 
 ## 快速开始
 
