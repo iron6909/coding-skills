@@ -70,11 +70,14 @@ graph TD
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
+| **brief** | 想法模糊,需产品层面澄清 | `docs/briefs/`目录,brief.md | 问题/目标/成功标准/非目标 |
 | **clarify** | 需求不明 | spec.md(Spike 路径为 spike.md) | Spike/Bounded/Architectural 三路径 |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
+| **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
+| **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
 | **wayfinder** | 大型跨模块工作 | initiative(charter + index + feature stubs) | 多会话协作 |
 | **prototype** | 独立问题用代码回答 | 抛弃式原型(项目外;外观型改现有页面时用一次性分支) | 逻辑型 / 外观型 |
 | **research** | 独立问题用资料回答 | `docs/research/` 带引用报告 | 库对比/最佳实践 |
@@ -83,6 +86,7 @@ graph TD
 | **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
 | **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/charter 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
+| **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff-YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
 
 ## 关键概念
 
@@ -93,27 +97,31 @@ graph TD
 ```
 /
 ├── docs/
-│   ├── features/                        # 功能规格与计划(永久)
+│   ├── briefs/                          # 产品简介（永久，brief 产出）
+│   │   └── 2025-01-15-user-auth/
+│   │       └── brief.md                 # 产品目标/范围/成功标准
+│   ├── features/                        # 功能规格与计划（永久）
 │   │   ├── 2025-01-15-user-auth/
 │   │   │   ├── spec.md                 # 批准的规格
 │   │   │   └── plan.md                 # 任务索引
 │   │   └── 2025-01-20-cart-checkout/
 │   │       ├── spec.md
 │   │       └── plan.md
-│   ├── initiatives/                     # 多功能规划(永久,wayfinder 产出:charter 总纲 + index 索引 + feature stubs)
-│   ├── research/                        # 调研报告(永久,research 产出)
-│   ├── learnings/                       # 会话推理沉淀(永久,capture 产出)
-│   └── adr/                             # 架构决策记录(惰性创建)
-├── .cartoons/                           # 临时,不提交
+│   ├── initiatives/                     # 多功能规划（永久，wayfinder 产出：charter 总纲 + index 索引 + feature stubs）
+│   ├── research/                        # 调研报告（永久，research 产出）
+│   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
+│   └── adr/                             # 架构决策记录（惰性创建）
+├── .cartoons/                           # 临时，不提交
 │   ├── 2025-01-15-user-auth/
 │   │   ├── impl/
 │   │   │   ├── progress.md             # 执行账本
 │   │   │   ├── task-1.md               # 任务详细说明
 │   │   │   └── task-2.md
 │   │   └── code-review-a1b2c3d.md      # code-review 报告
+│   ├── handoff-20250115-1430.md        # 会话交接（handoff 产出）
 │   └── architecture/
 │       └── architecture-2025-01-15-billing.md  # architecture 报告
-├── GLOSSARY.md                          # 术语表(惰性创建)
+├── GLOSSARY.md                          # 术语表（惰性创建）
 └── AGENTS.md                            # 项目事实
 ```
 
