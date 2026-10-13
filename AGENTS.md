@@ -52,7 +52,7 @@ Other references have one owner:
 | Skill | Own references |
 |-------|----------------|
 | `survey` | `project-documents.md` |
-| `clarify` | `domain-modeling.md`, `adr-format.md` |
+| `clarify` | `domain-modeling.md`, `adr-format.md`, `elicitation.md` |
 | `plan` | `output-tier.md`, `task-decomposition.md` |
 | `execute` | `finish.md`, `testing-strategy.md` |
 | `refactor` | `vocabulary.md` |

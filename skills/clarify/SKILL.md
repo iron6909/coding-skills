@@ -54,6 +54,27 @@ Reason: <short reason if not obvious>
 
 Stop asking once you can write a clear spec.
 
+### High-risk scenarios: Use elicitation techniques
+
+For high-risk specifications, apply deeper questioning to reveal hidden assumptions, edge cases, and failure modes. **When to use**: read `./references/elicitation.md` if any of these conditions apply:
+
+- **Architectural path** (cross-module changes, new integrations, framework choices)
+- **Security-sensitive** (auth, permissions, data access, encryption)
+- **Data handling** (migrations, transformations, deletions, PII)
+- **Critical business logic** (payments, compliance, auditing, financial calculations)
+- **High uncertainty** (novel approaches, first-time implementation, user expresses doubt)
+
+**Techniques available** (detailed in elicitation.md):
+- Pre-mortem: imagine failure scenarios and work backward
+- Socratic questioning: layer "why" to reveal real requirements
+- First principles: strip assumptions and rebuild from fundamentals
+- Edge case exploration: probe boundaries systematically
+- Failure mode analysis: enumerate what can go wrong
+
+**Skip for**: Simple local changes, well-understood patterns, bounded modifications.
+
+The reference provides specific techniques and examples. Apply 2-3 most relevant for the situation; don't over-engineer simple features.
+
 ## Explore code
 
 Read `GLOSSARY.md` (if it exists) before exploring code, and use its terms in every artifact.
@@ -69,6 +90,8 @@ Read the minimum project context needed:
 Read directly for small requests. For large exploration that could overflow the main context, use read-only subagents. **When and how**: read `./references/subagent-dispatch.md`. The main process owns all spec decisions and all writes.
 
 **Domain model**: while exploring and clarifying, read `./references/domain-modeling.md` and apply it: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. When a decision passes the three-condition test, offer an ADR using `./references/adr-format.md`.
+
+**Elicitation techniques**: for high-risk scenarios (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes before drafting the spec.
 
 ## Spec options
 
