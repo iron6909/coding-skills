@@ -97,7 +97,7 @@ These are the paths skills create in a project they run on.
 - `docs/research/<topic>.md` holds research reports.
 - `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), and handoff files (`handoff-YYYYMMDD-HHMM.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), and optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Who commits what
@@ -116,6 +116,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `learning-refresh` | updated, consolidated, or deleted learnings |
 | `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
 | `simplify` | simplified code |
+| `optimize` | optimization code changes (not the `.cartoons/optimize-*/` experiment logs) |
 | `autoflow` | full feature delivery: spec, plan, commits, review fixes (all on feature branch) |
 | `execute`, `debug` | code, one commit per task or fix |
 | `prototype` | nothing of value (throwaway code; a Look prototype may sit on a `prototype/<name>` branch that is never merged) |

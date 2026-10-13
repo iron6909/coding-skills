@@ -21,7 +21,7 @@ const MAP = {
   "tdd.md": ["execute", "debug", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "debug"],
   "severity.md": ["execute", "code-review", "simplify"],
-  "git-commit.md": ["survey", "clarify", "plan", "wayfinder", "research", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review", "brief", "commit"],
+  "git-commit.md": ["survey", "clarify", "plan", "wayfinder", "research", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review", "brief", "commit", "optimize"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
 };
 

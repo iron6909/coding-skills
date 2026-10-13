@@ -16,6 +16,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
+- `optimize`: systematic performance optimization with measurement-driven iteration (profile, attribute, test variants, stopping criteria).
 - `code-review`: independently review another branch or historical commits.
 - `commit`: create high-quality commits for ad-hoc changes, detecting project conventions and staging only specified files.
 - `autoflow`: orchestrate end-to-end feature delivery with minimal checkpoints.
@@ -41,24 +42,25 @@ Use the first matching rule:
 1. If the user explicitly names a skill, use it.
 2. If the user asks to pause work and save state (signals: "create a handoff", "save state", "I need to stop here", "hand this off"), use `handoff`.
 3. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
-4. If the user reports a failure, error, broken behavior, or regression, use `debug`.
-5. If the user asks for autonomous end-to-end execution (signals: "just do it", "full auto", "automate this", "end-to-end"), use `autoflow`.
-6. If the user asks to review a branch or past commits that are not part of the current `execute` run (signals: "review this branch", "audit these commits"), use `code-review`.
-7. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.
-8. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
-9. If the user presents a vague idea or problem statement needing product clarity before technical design (signals: "I have an idea for", "we should build", "users need", but unclear on goals/scope/success), use `brief`.
-10. If the user asks a standalone question that code can answer (signals: "prototype", "throwaway", "quick proof", "does X work"), use `prototype`. If the unknown only matters for one feature they want to build, use `clarify` (Spike path) instead.
-11. If the user asks a standalone question that sources can answer (signals: "research", "investigate", "how does X work", "what are the options for Y"), use `research`. If it only matters for one feature they want to build, use `clarify` (Spike path) instead.
-12. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `clarify`.
-13. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
-14. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
-15. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
-16. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
-17. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
-18. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-19. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
-20. If the approved work is clear and ready for code changes, use `execute`.
-21. If no rule matches, use `clarify` instead of guessing.
+4. If the user asks for systematic performance optimization with measurement (signals: "optimize performance", "improve latency", "reduce memory usage", and mentions profiling or targets), use `optimize`.
+5. If the user reports a failure, error, broken behavior, or regression, use `debug`.
+6. If the user asks for autonomous end-to-end execution (signals: "just do it", "full auto", "automate this", "end-to-end"), use `autoflow`.
+7. If the user asks to review a branch or past commits that are not part of the current `execute` run (signals: "review this branch", "audit these commits"), use `code-review`.
+8. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.
+9. If the work is too large for one session (spans many independent modules, needs exploration across frontend + backend + infrastructure, or user says "this is huge"), use `wayfinder`.
+10. If the user presents a vague idea or problem statement needing product clarity before technical design (signals: "I have an idea for", "we should build", "users need", but unclear on goals/scope/success), use `brief`.
+11. If the user asks a standalone question that code can answer (signals: "prototype", "throwaway", "quick proof", "does X work"), use `prototype`. If the unknown only matters for one feature they want to build, use `clarify` (Spike path) instead.
+12. If the user asks a standalone question that sources can answer (signals: "research", "investigate", "how does X work", "what are the options for Y"), use `research`. If it only matters for one feature they want to build, use `clarify` (Spike path) instead.
+13. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `clarify`.
+14. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
+15. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
+16. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
+17. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
+18. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
+19. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+20. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
+21. If the approved work is clear and ready for code changes, use `execute`.
+22. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `survey`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its execution input.
 

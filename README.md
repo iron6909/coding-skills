@@ -75,6 +75,7 @@ graph TD
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
+| **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize-*/` 实验日志 | Profile→归因→测试变体→停止标准 |
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
@@ -118,6 +119,10 @@ graph TD
 │   │   │   ├── task-1.md               # 任务详细说明
 │   │   │   └── task-2.md
 │   │   └── code-review-a1b2c3d.md      # code-review 报告
+│   ├── optimize-20250115-1430/         # 性能优化实验日志（optimize 产出）
+│   │   ├── baseline.md                 # 基线 profile
+│   │   ├── variant-1.md                # 变体测试结果
+│   │   └── summary.md                  # 最终报告
 │   ├── handoff-20250115-1430.md        # 会话交接（handoff 产出）
 │   └── architecture/
 │       └── architecture-2025-01-15-billing.md  # architecture 报告
