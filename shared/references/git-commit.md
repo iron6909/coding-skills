@@ -1,6 +1,6 @@
 <!-- DO NOT EDIT: This file is synced from shared/references/git-commit.md -->
-<!-- Copied into: survey, clarify, plan, wayfinder, research, capture, execute, debug, code-review -->
-<!-- Last synced: 2026-10-12 -->
+<!-- Copied into: survey, clarify, plan, research, capture, execute, debug, code-review, learning-refresh, doc-review, commit, optimize -->
+<!-- Last synced: 2026-10-13 -->
 
 # Git commit rules
 
