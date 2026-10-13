@@ -219,7 +219,7 @@ Classify each finding using `./references/severity.md`:
 
 - **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
 - **Important:** a usability issue, poor error handling, an accessibility gap, or a significant performance hit inside the task. Fix it before commit.
-- **Minor:** useful cleanup that is outside the task. Record it and leave it unchanged.
+- **Minor:** useful cleanup that is outside the task. Record it and leave it unchanged. When you accumulate 3+ minor findings related to reuse, naming, or complexity, note that the user can run `/simplify` after this feature ships to address them systematically.
 
 If the review finds a Blocking or Important issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
 

@@ -6,11 +6,11 @@ disable-model-invocation: true
 
 # doc-review
 
-Review requirements, plans, or initiative charters to find and fix gaps, contradictions, and feasibility issues before implementation.
+Review requirements, plans, or initiative capability maps to find and fix gaps, contradictions, and feasibility issues before implementation.
 
 ## When to use
 
-- User asks to "review this spec", "audit the plan", "check the charter"
+- User asks to "review this spec", "audit the plan", "check the capability map"
 - Before starting implementation on a complex or old document
 - When a document is suspected to have inconsistencies
 
@@ -51,7 +51,7 @@ Read the full document. Note:
 
 - For spec: read any cited ADRs, learnings, GLOSSARY.md
 - For plan: read the corresponding spec.md
-- For charter: read any linked feature stubs
+- For capability-map: read any linked feature specs
 
 ### 5. Classify findings
 
