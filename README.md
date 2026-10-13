@@ -306,7 +306,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 ### 会不会自动删东西?
 
-**文档一律不删**:`spec.md`/`spike.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 与 research 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
+**文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
 
 **不是文档的临时物照常清理**:调试探针和日志、项目外的抛弃式原型,以及你明确要求丢弃的分支(包括 `prototype/<name>` 一次性分支和 `finish` 里选择丢弃的分支)。
 
