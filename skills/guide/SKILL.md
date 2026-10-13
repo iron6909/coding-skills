@@ -12,7 +12,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `ideate`: generate and evaluate grounded technical ideas when solution space is large. Use when user says "not sure how to implement" with clear problem. Output: ranked options with trade-offs.
-- `clarify`: resolve the request, scope, spec, constraints, and acceptance checks. Handles product understanding (problem, goals, users) and technical specification. Supports three paths: Bounded (local change), Architectural (cross-module), Initiative (multi-feature). Phase 1 includes optional research and spike steps when needed.
+- `clarify`: resolve the request, scope, spec, constraints, and acceptance checks. Handles product understanding (problem, goals, users) and technical specification. Supports two paths: Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed.
 - `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
@@ -26,7 +26,6 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `doc-review`: review planning documents (spec, plan, charter) for coherence, feasibility, completeness, and clarity.
 - `simplify`: simplify settled, recently changed code for clarity, reuse, quality, and efficiency.
 - `handoff`: create a lightweight session handoff for multi-session continuity, capturing current phase and next steps.
-- `guide`: route only. Do not select it again during handoff.
 
 `guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
 

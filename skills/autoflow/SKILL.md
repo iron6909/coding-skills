@@ -272,6 +272,8 @@ If autoflow stopped, resume from last successful phase:
 /autoflow --resume
 ```
 
+For detailed state schema and management, read `./references/state-management.md`.
+
 Reads state from `.cartoons/autoflow-state.json`:
 ```json
 {
