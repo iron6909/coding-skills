@@ -85,35 +85,35 @@ Checks to apply when reviewing planning documents, organized by document type.
 - Each brief has: Objective, Deliverable, Dependencies, Interfaces (Produces/Consumes), Files
 - Interfaces are consistent (task-2 Consumes what task-1 Produces)
 
-## charter.md (from wayfinder)
+## capability-map.md (from clarify Initiative path)
 
 ### Required sections
-- Problem: the initiative's why
-- Goal: the outcome
-- Scope: boundaries of the whole initiative
-- Constraints: limits across all features
-- Evidence: what grounds this initiative
-- Open questions: unresolved before starting
-- Features: list with status (link to index.md)
+- Problem: why this multi-module work exists
+- Modules: list of capabilities/components to build
+- Dependencies: which modules depend on which
+- Build order: sequence that respects dependencies
+- Notes: cross-module considerations
 
 ### Specific checks
 
 **Problem**:
-- Describes a multi-feature challenge (not solvable in one spec)
+- Describes a multi-module challenge (not solvable in one spec)
 - Clear why this needs coordination
 
-**Scope**:
-- Names the modules/systems affected
-- Clear what's out of scope for the whole initiative
+**Modules**:
+- Each module has: Name, Outcome, Scope, Acceptance criteria
+- Clear boundaries between modules
+- No overlapping responsibilities
 
-**Features** (check index.md):
-- Each feature has a stub with Outcome/Scope/Dependencies/Acceptance
-- Feature stubs are independent or dependencies declared
-- No circular feature dependencies
+**Dependencies**:
+- Valid (no circular, no missing prerequisites)
+- Match the Scope statements (if module-A depends on module-B, module-A's Scope should mention using module-B's output)
 
-**Open questions**:
-- Listed questions block some feature, not all
-- If all features are blocked, the charter isn't ready
+**Build order**:
+- Respects dependencies (no module comes before its prerequisite)
+- Ideally has some parallel tracks (not purely serial)
+- Foundation modules come first
+
 
 ## Feasibility checks (all types)
 

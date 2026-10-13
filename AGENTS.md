@@ -43,6 +43,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 | `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
 | `stable-ids.md` | `clarify`, `plan`, `execute` |
 | `counterfactual-test.md` | `capture`, `learning-refresh` |
+| `counterfactual-test.md` | `capture`, `learning-refresh` |
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
 - To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
@@ -152,7 +153,7 @@ Also confirm every `./references/*.md` named in a `SKILL.md` exists, and every f
 
 ## Conventions
 
-- **Commits**: Conventional Commits with a scope, for example `fix(wayfinder): save initiatives under docs/initiatives`. One logical change per commit.
+- **Commits**: Conventional Commits with a scope, for example `docs(clarify): add capability map for multi-module initiative`. One logical change per commit.
 - **Branches**: `feature/YYYY-MM-DD-<semantic-name>`.
 - **Testing**: this repository has no test suite. Verify with the checks above.
 - **Linting**: respect existing config. No new linter rules without approval.

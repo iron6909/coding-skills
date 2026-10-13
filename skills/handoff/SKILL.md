@@ -205,7 +205,7 @@ Current state:
 - **After clarify**: Handoff before approval if user needs time to review
 - **During execute**: Handoff between tasks or mid-task if work pauses
 - **After debug**: Handoff if root cause is found but fix needs approval
-- **With wayfinder**: Handoff after each feature in an initiative
+- **Multi-module work**: Handoff after completing each module in a capability-map
 
 ## Principles
 

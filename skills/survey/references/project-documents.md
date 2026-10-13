@@ -17,7 +17,6 @@ Important choices and their reasons, in `docs/adr/`. Prevents re-opening decisio
 ## Relationship with feature work
 
 - **AGENTS.md / GLOSSARY.md / ADRs**: project-level, long-lived, shared by all features.
-- **`docs/features/`**: per-feature spec and plan. Permanent.
-- **`docs/initiatives/`**: multi-feature initiatives from `wayfinder`. Permanent.
+- **`docs/features/`**: per-feature spec and plan. For multi-module work, also holds `capability-map.md`. Permanent.
 - **`docs/research/`**: cited research reports from `research`. Permanent.
 - **`.cartoons/`**: per-feature execution ledger and task briefs. Temporary in the sense that it is gitignored, never deleted: it is the local record of how the work was done.

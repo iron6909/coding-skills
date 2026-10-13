@@ -24,7 +24,7 @@ Review requirements, plans, or initiative charters to find and fix gaps, contrad
 Review one document at a time. Supported types:
 - `spec.md` or `spike.md` (from `clarify`)
 - `plan.md` (from `plan`)
-- `charter.md` (from `wayfinder`)
+- `capability-map.md` (from `clarify` Initiative path)
 
 Output: edit the document in place to fix minor issues, report blocking/important issues for user decision.
 

@@ -34,7 +34,6 @@ graph TD
     C -->|已有计划| G[execute]
     C -->|故障| H[debug]
     C -->|审查他人改动| I[code-review]
-    C -->|工作量过大| K[wayfinder]
     C -->|独立问题| L[prototype / research]
     C -->|代码结构问题| M[refactor]
     C -->|沉淀推理| N[capture]
@@ -48,7 +47,6 @@ graph TD
     G --> J[完成]
     H --> J
     I --> J
-    K -->|选定 feature| E
     M -->|选定候选| E
     H -->|大型修复| E
     L -->|答案要变成功能| E
@@ -162,7 +160,7 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike)、plan(plan.md)、wayfinder(charter/index/stubs)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/`。
+写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/`。
 
 ## 何时用什么
 
@@ -190,8 +188,8 @@ graph TD
 需要审查他人改动
   → code-review (Standards + Spec + Learnings)
 
-大型工作(跨多模块)
-  → wayfinder (拆分 initiative)
+多模块大型工作
+  → clarify (Initiative 路径 → capability-map.md)
 
 独立问题(不阻塞某个功能)
   → prototype(用代码回答)/ research(用资料回答)
@@ -260,14 +258,13 @@ learnings 与代码库漂移
 ```
 用户: "这个工作太大,跨前端、后端、CI"
 
-→ guide 路由到 wayfinder
-→ 识别边界: frontend app, backend API, CI pipeline
-→ 起草 charter(问题/目标/范围/约束/证据),用户批准
-→ 定义 3 个 features,呈现草稿,用户批准后创建 charter + index + stubs
-→ 用户选 feature-1: frontend
-→ 读 feature-1 stub,调用 clarify 写出该 feature 的 spec(stub 里回填 spec 路径)
+→ guide 路由到 clarify (Initiative 路径)
+→ 识别多模块边界: frontend app, backend API, CI pipeline
+→ 创建 capability-map.md (定义模块、依赖、构建顺序),用户批准
+→ 用户选第一个模块: frontend
+→ 为该模块调用 clarify (Bounded 或 Architectural) 写出 spec.md
 → 然后 plan → execute
-→ 重复,直到 3 个 features 都完成
+→ 重复,直到所有模块都完成
 ```
 
 ## 与参考材料的差异
