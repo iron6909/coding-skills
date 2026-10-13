@@ -23,6 +23,8 @@ const MAP = {
   "severity.md": ["execute", "code-review", "simplify"],
   "git-commit.md": ["survey", "clarify", "plan", "research", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review", "commit", "optimize"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
+  "stable-ids.md": ["clarify", "plan", "execute"],
+  "counterfactual-test.md": ["capture", "learning-refresh"],
 };
 
 const HEADER =

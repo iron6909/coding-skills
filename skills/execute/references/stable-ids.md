@@ -1,3 +1,5 @@
+<!-- synced from shared/references/stable-ids.md by scripts/sync-references.mjs: do not edit -->
+
 # Stable Requirement IDs (REQ-N)
 
 Stable requirement IDs enable traceability from spec through plan to code and tests. Each requirement gets a permanent, unique identifier that never changes.
@@ -6,7 +8,7 @@ Stable requirement IDs enable traceability from spec through plan to code and te
 
 - **Traceability**: answer "which requirement does this code implement?" and "which code implements this requirement?"
 - **Stability**: requirement IDs persist across spec revisions, plan updates, and code changes
-- **Communication**: unambiguous reference in commits, code comments, and discussions
+- **Communication**: unambiguous reference in commits, PRs, code comments, and discussions
 
 ## ID format
 
@@ -213,7 +215,7 @@ When changing REQ-2:
 3. Search codebase for "REQ-2" → 2 files + 1 test
 
 ### Review efficiency
-Reviewer sees commit: "feat(avatar): implement REQ-2 and REQ-3"
+PR reviewer sees commit: "feat(avatar): implement REQ-2 and REQ-3"
 - Open spec.md, read REQ-2 and REQ-3
 - Verify code matches those requirements
 - No need to read the entire spec
