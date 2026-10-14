@@ -82,21 +82,21 @@ graph TD
 |------|---------|------|------|
 | **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
-| **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/` 带权衡的排序选项 | 生成2-3个方案,压力测试,推荐 |
+| **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize-*/` 实验日志 | Profile→归因→测试变体→停止标准 |
-| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
+| **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
+| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
-| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/` 临时报告) | 删除测试判断深/浅模块 |
-| **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/` 单主题文件 | 反事实门槛筛掉可推断的内容 |
+| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
+| **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/YYYYMMDD-<topic>.md` | 反事实门槛筛掉可推断的内容 |
 | **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
 | **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/capability-map 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
-| **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff-YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
+| **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff/YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
 
 ## 关键概念
 
@@ -108,33 +108,40 @@ graph TD
 /
 ├── docs/
 │   ├── features/                        # 功能规格与计划（永久）
-│   │   ├── 2025-01-15-user-auth/
+│   │   ├── 20250115-user-auth/
 │   │   │   ├── spec.md                 # 批准的规格
 │   │   │   └── plan.md                 # 任务索引
-│   │   ├── 2025-01-20-cart-checkout/
+│   │   ├── 20250120-cart-checkout/
 │   │   │   ├── spec.md
 │   │   │   └── plan.md
-│   │   └── 2025-01-25-platform-refactor/
+│   │   └── 20250125-platform-refactor/
 │   │       └── capability-map.md       # 多模块拆分（clarify 自动检测生成）
 │   ├── research/                        # 调研报告（永久，research 产出）
 │   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
+│   │   └── 20250115-jwt-security.md    # 单主题学习文档
 │   └── adr/                             # 架构决策记录（惰性创建）
-├── .cartoons/                           # 临时，不提交
-│   ├── 2025-01-15-user-auth/
-│   │   ├── impl/
-│   │   │   ├── progress.md             # 执行账本
-│   │   │   ├── task-1.md               # 任务详细说明
-│   │   │   └── task-2.md
-│   │   └── code-review-a1b2c3d.md      # code-review 报告
-│   ├── ideation/                        # 想法生成（ideate 产出）
-│   │   └── realtime-sync-20250120.md   # 排序的技术方案
-│   ├── optimize-20250115-1430/         # 性能优化实验日志（optimize 产出）
-│   │   ├── baseline.md                 # 基线 profile
-│   │   ├── variant-1.md                # 变体测试结果
-│   │   └── summary.md                  # 最终报告
-│   ├── handoff-20250115-1430.md        # 会话交接（handoff 产出）
-│   └── refactor/
-│       └── refactor-2025-01-15-billing.md  # refactor 报告
+├── .cartoons/                           # 临时，不提交（按技能组织）
+│   ├── features/                        # feature 相关
+│   │   └── 20250115-user-auth/
+│   │       ├── impl/
+│   │       │   ├── progress.md         # 执行账本
+│   │       │   ├── task-1.md           # 任务详细说明
+│   │       │   └── task-2.md
+│   │       └── review-20250115-1430.md # feature 内的 code-review
+│   ├── handoff/                         # 会话交接
+│   │   ├── 20250115-1430.md            # 通用交接
+│   │   └── 20250115-1430-user-auth.md  # 带主题的交接
+│   ├── ideation/                        # 想法生成
+│   │   └── 20250120-1530-realtime-sync.md
+│   ├── optimize/                        # 性能优化实验
+│   │   └── 20250115-1430/
+│   │       ├── baseline.md             # 基线 profile
+│   │       ├── variant-1.md            # 变体测试结果
+│   │       └── summary.md              # 最终报告
+│   ├── refactor/                        # 重构报告
+│   │   └── 20250115-billing.md
+│   └── review/                          # 独立 code-review
+│       └── 20250115-1430-security.md
 ├── GLOSSARY.md                          # 术语表（惰性创建）
 └── AGENTS.md                            # 项目事实
 ```
@@ -172,7 +179,7 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/`。
+写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/review/`。
 
 ## 何时用什么
 
