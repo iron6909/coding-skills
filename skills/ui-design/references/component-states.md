@@ -1,0 +1,646 @@
+# Component States Reference
+
+Standard states for common UI components. Use these to ensure consistent, predictable behavior across the interface.
+
+## Why States Matter
+
+Every interactive component exists in multiple states. Users expect consistent feedback:
+- **Visual feedback**: I can see what's happening
+- **Predictable behavior**: Same component acts the same everywhere
+- **Accessibility**: Screen readers announce state changes
+
+Missing states = confused users = poor experience.
+
+---
+
+## Universal States
+
+These apply to almost all interactive components:
+
+### default
+The normal, resting state. How it looks when nothing is happening.
+
+### hover
+Desktop only. Mouse cursor over the element, but not clicked yet.
+
+**Rules:**
+- Don't use on mobile (touch has no hover)
+- Should be subtle but noticeable
+- Indicates "this is interactive"
+- Change cursor to `pointer` for clickable elements
+
+**Common changes:**
+- Slightly darker background
+- Border appears or changes color
+- Slight scale increase (1.02x)
+- Underline appears (links)
+
+### focus
+Keyboard focus. User tabbed to this element.
+
+**Rules:**
+- **Must be visible** (WCAG requirement)
+- Different from hover (keyboard ≠ mouse)
+- Usually outline or ring around element
+- Minimum 2px solid outline or 3px contrast
+
+**Common styles:**
+- `outline: 2px solid primary-color`
+- `box-shadow: 0 0 0 3px rgba(primary, 0.2)` (focus ring)
+- `outline-offset: 2px` (space between element and outline)
+
+### active
+Being clicked or pressed right now. Finger/cursor down, not yet released.
+
+**Rules:**
+- Brief moment between mousedown and mouseup
+- Should feel "pressed"
+- Often darker or slightly smaller
+
+**Common changes:**
+- Darker background than hover
+- `transform: scale(0.98)` (pressed effect)
+- Inset shadow (`box-shadow: inset ...`)
+
+### disabled
+Non-interactive, cannot be used right now.
+
+**Rules:**
+- Visually distinct (clearly not usable)
+- `cursor: not-allowed`
+- Often grayed out
+- Don't hide (user needs to know it exists)
+- Should convey "not now" not "doesn't exist"
+
+**Common styles:**
+- `opacity: 0.5` or `opacity: 0.6`
+- Gray background and text
+- `pointer-events: none` (prevents interaction)
+
+---
+
+## Button States
+
+Buttons are the most common interactive component.
+
+### Primary Button
+
+```
+default:
+  - Background: primary-500
+  - Text: white
+  - Border: none
+  - Cursor: pointer
+
+hover:
+  - Background: primary-600 (slightly darker)
+  - Cursor: pointer
+
+focus:
+  - Background: primary-500
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+active:
+  - Background: primary-700 (darker)
+  - Transform: scale(0.98)
+
+disabled:
+  - Background: gray-200
+  - Text: gray-400
+  - Cursor: not-allowed
+  - No hover/active effects
+
+loading:
+  - Background: primary-500
+  - Text: invisible or pushed right
+  - Spinner visible (usually white)
+  - Cursor: not-allowed
+  - Disabled state (can't click again)
+```
+
+### Secondary Button
+
+```
+default:
+  - Background: transparent or gray-100
+  - Text: primary-600
+  - Border: 1px solid gray-300
+  - Cursor: pointer
+
+hover:
+  - Background: gray-100 or gray-200
+  - Border: 1px solid gray-400
+
+focus:
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+active:
+  - Background: gray-200
+  - Border: 1px solid gray-500
+  - Transform: scale(0.98)
+
+disabled:
+  - Background: transparent
+  - Text: gray-300
+  - Border: 1px solid gray-200
+  - Cursor: not-allowed
+```
+
+### Ghost/Text Button
+
+```
+default:
+  - Background: transparent
+  - Text: primary-600
+  - Border: none
+  - Cursor: pointer
+
+hover:
+  - Background: primary-50
+  - Text: primary-700
+
+focus:
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+active:
+  - Background: primary-100
+  - Text: primary-800
+
+disabled:
+  - Background: transparent
+  - Text: gray-300
+  - Cursor: not-allowed
+```
+
+### Icon-Only Button
+
+Same as above, but:
+- Add `aria-label` attribute (accessibility)
+- Ensure ≥44×44px hit area (even if icon is smaller)
+- Focus ring should encompass entire hit area
+
+---
+
+## Input Field States
+
+Text inputs, textareas, select dropdowns.
+
+```
+default:
+  - Background: white
+  - Border: 1px solid gray-300
+  - Text: gray-900
+  - Placeholder: gray-400
+
+focus:
+  - Border: 1px solid primary-500
+  - Ring: 0 0 0 3px rgba(primary, 0.1)
+  - Placeholder: disappears or gray-300
+
+hover:
+  - Border: 1px solid gray-400 (optional, subtle)
+
+error:
+  - Border: 1px solid red-500
+  - Ring: 0 0 0 3px rgba(red, 0.1)
+  - Helper text: red-600, below input
+  - Icon: red warning/error icon (optional)
+  - aria-invalid="true"
+
+success:
+  - Border: 1px solid green-500 (optional)
+  - Icon: green checkmark (optional)
+  - Keep subtle (don't overdo)
+
+disabled:
+  - Background: gray-50
+  - Border: 1px solid gray-200
+  - Text: gray-400
+  - Cursor: not-allowed
+  - Placeholder: gray-300
+
+readonly:
+  - Background: gray-50 (lighter than disabled)
+  - Border: 1px solid gray-200
+  - Text: gray-900 (readable, not dimmed)
+  - Cursor: default (not text cursor, not not-allowed)
+```
+
+**Helper text states:**
+```
+default:
+  - Color: gray-600
+  - Text: "Hint text here"
+
+error:
+  - Color: red-600
+  - Text: "Specific error message"
+  - Icon: error icon before text
+
+success:
+  - Color: green-600
+  - Text: "Success message"
+```
+
+---
+
+## Checkbox States
+
+```
+unchecked (default):
+  - Background: white
+  - Border: 2px solid gray-300
+  - No checkmark
+
+unchecked:hover:
+  - Border: 2px solid gray-400
+
+unchecked:focus:
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+checked:
+  - Background: primary-500
+  - Border: 2px solid primary-500
+  - Checkmark: white, visible
+
+checked:hover:
+  - Background: primary-600
+
+checked:focus:
+  - Background: primary-500
+  - Outline: 2px solid primary-500
+
+indeterminate:
+  - Background: primary-500
+  - Border: 2px solid primary-500
+  - Dash: white, horizontal line (not checkmark)
+
+disabled:
+  - Background: gray-100
+  - Border: 2px solid gray-200
+  - Checkmark: gray-300 (if checked)
+  - Cursor: not-allowed
+```
+
+**Size:** Minimum 24×24px hit area (or 44×44px on mobile).
+
+---
+
+## Radio Button States
+
+Same as checkbox, but:
+- Round instead of square
+- Dot instead of checkmark when selected
+- No indeterminate state (doesn't make sense for radio)
+
+```
+unselected (default):
+  - Background: white
+  - Border: 2px solid gray-300
+  - Border-radius: 50%
+
+selected:
+  - Background: white
+  - Border: 2px solid primary-500
+  - Inner dot: primary-500, 10px diameter (centered)
+
+disabled:
+  - Background: gray-100
+  - Border: 2px solid gray-200
+  - Inner dot: gray-300 (if selected)
+```
+
+---
+
+## Toggle Switch States
+
+```
+off (default):
+  - Track: gray-200
+  - Thumb: white
+  - Position: left
+
+off:hover:
+  - Track: gray-300
+
+on:
+  - Track: primary-500
+  - Thumb: white
+  - Position: right
+
+on:hover:
+  - Track: primary-600
+
+focus:
+  - Outline: 2px solid primary-500 (around entire switch)
+
+disabled:
+  - Track: gray-100
+  - Thumb: gray-200
+  - Cursor: not-allowed
+```
+
+---
+
+## Link States
+
+```
+default:
+  - Color: primary-600
+  - Text-decoration: underline (always, for accessibility)
+  - Cursor: pointer
+
+hover:
+  - Color: primary-700
+  - Text-decoration: underline (remains)
+
+focus:
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+active:
+  - Color: primary-800
+
+visited:
+  - Color: purple-600 (optional, often skipped in apps)
+
+disabled:
+  - Color: gray-400
+  - Cursor: not-allowed
+  - Text-decoration: underline (remains for recognizability)
+```
+
+**Note:** Always underline links in body text. In navigation menus, underline can be optional if context is clear.
+
+---
+
+## Card/Panel States
+
+Cards can be interactive (clickable) or static.
+
+### Interactive Card
+
+```
+default:
+  - Background: white
+  - Border: 1px solid gray-200
+  - Shadow: subtle (0 1px 3px rgba(0,0,0,0.1))
+  - Cursor: pointer
+
+hover:
+  - Border: 1px solid gray-300
+  - Shadow: medium (0 4px 6px rgba(0,0,0,0.1))
+  - Transform: translateY(-2px) (optional lift)
+  - Cursor: pointer
+
+focus:
+  - Outline: 2px solid primary-500
+  - Outline-offset: 2px
+
+active:
+  - Transform: translateY(0) (back to original)
+  - Shadow: subtle (pressed feel)
+
+selected:
+  - Border: 2px solid primary-500
+  - Background: primary-50 (optional)
+```
+
+### Static Card
+
+```
+default:
+  - Background: white
+  - Border: 1px solid gray-200
+  - Shadow: subtle
+  - Cursor: default (not pointer)
+
+(no hover/focus/active, it's not interactive)
+```
+
+---
+
+## Dropdown/Select States
+
+```
+closed (default):
+  - Looks like input field
+  - Chevron/arrow icon pointing down
+
+closed:hover:
+  - Border: 1px solid gray-400
+
+closed:focus:
+  - Border: 1px solid primary-500
+  - Ring: 0 0 0 3px rgba(primary, 0.1)
+
+open:
+  - Border: 1px solid primary-500
+  - Chevron/arrow pointing up
+  - Dropdown menu visible below (or above if no space)
+
+option:default:
+  - Background: white
+  - Text: gray-900
+
+option:hover:
+  - Background: gray-100
+  - Cursor: pointer
+
+option:focus:
+  - Background: primary-100 (keyboard navigation)
+
+option:selected:
+  - Background: primary-50
+  - Checkmark or bold text
+```
+
+---
+
+## Modal/Dialog States
+
+```
+open:
+  - Visible
+  - Backdrop: rgba(0, 0, 0, 0.5)
+  - Content: centered, white background
+  - Focus: trapped inside modal
+  - Body scroll: disabled
+
+closed:
+  - Hidden (display: none or visibility: hidden)
+  - Backdrop: not visible
+  - Focus: returned to trigger element
+
+transition:
+  - Fade in: opacity 0 → 1 (200ms)
+  - Fade out: opacity 1 → 0 (200ms)
+  - Scale: scale(0.95) → scale(1) (optional)
+```
+
+---
+
+## Loading States
+
+### Button Loading
+
+```
+loading:
+  - Spinner visible (inside button)
+  - Button text: hidden or pushed to side
+  - Cursor: not-allowed
+  - Disabled: true (can't click again)
+```
+
+### Skeleton Loading
+
+For cards, lists, content:
+```
+loading:
+  - Gray placeholder rectangles
+  - Subtle animation: shimmer/pulse
+  - Same layout as real content
+```
+
+### Spinner Loading
+
+For full-page or section loading:
+```
+loading:
+  - Centered spinner
+  - Optional text: "Loading..."
+  - Background: semi-transparent (if overlay)
+```
+
+---
+
+## Empty States
+
+When there's no data to display:
+
+```
+empty:
+  - Illustration or icon (optional)
+  - Heading: "No items yet"
+  - Description: Why it's empty
+  - CTA button: "Add first item"
+```
+
+**Example:**
+```
+[📦 Icon]
+No projects yet
+Create your first project to get started
+[+ Create Project]
+```
+
+---
+
+## Error States
+
+When something goes wrong:
+
+```
+error:
+  - Icon: error/warning icon (red or orange)
+  - Heading: "Something went wrong"
+  - Description: What happened (specific)
+  - Action: "Try again" button or link
+```
+
+**Example:**
+```
+[⚠️ Icon]
+Failed to load projects
+We couldn't connect to the server. Please check your connection.
+[Try Again]
+```
+
+---
+
+## Tooltip States
+
+```
+hidden (default):
+  - Not visible
+  - Not in DOM or display: none
+
+visible:
+  - Appears on hover (desktop) or focus (keyboard)
+  - Position: above, below, left, or right of trigger
+  - Arrow: points to trigger element
+  - Background: dark gray or black
+  - Text: white
+  - Max-width: 200-300px
+  - Z-index: high (appears above other content)
+
+(no click, closes on mouse leave or focus loss)
+```
+
+---
+
+## Toast/Notification States
+
+```
+appearing:
+  - Slide in from top or bottom
+  - Duration: 200ms
+
+visible:
+  - Stays for 3-5 seconds (configurable)
+  - Can be dismissed early (X button)
+
+disappearing:
+  - Fade out or slide out
+  - Duration: 200ms
+  - Then removed from DOM
+```
+
+**Types:**
+- Success: green background, checkmark icon
+- Error: red background, error icon
+- Warning: yellow/orange background, warning icon
+- Info: blue background, info icon
+
+---
+
+## Quick Reference Table
+
+| Component | Default | Hover | Focus | Active | Disabled |
+|-----------|---------|-------|-------|--------|----------|
+| Button | solid bg | darker | outline | pressed | grayed |
+| Input | border | darker | ring | - | grayed bg |
+| Checkbox | empty | border | outline | - | grayed |
+| Link | underline | darker | outline | darker | grayed |
+| Card | subtle | lifted | outline | pressed | - |
+
+---
+
+## Design Checklist
+
+Before finalizing component specs, verify:
+
+- [ ] All 5 universal states defined (default, hover, focus, active, disabled)
+- [ ] Focus state visible and distinct (≥2px outline)
+- [ ] Disabled state clearly non-interactive
+- [ ] Loading state prevents double-clicks
+- [ ] Error state provides actionable message
+- [ ] Empty state guides next action
+- [ ] Hover states desktop-only (not on touch)
+- [ ] Touch targets ≥44×44px
+- [ ] State changes have visual feedback
+- [ ] Screen reader announcements considered (aria-live, aria-invalid)
+
+---
+
+## Notes
+
+- **Hover ≠ Focus**: Hover is mouse-only, focus is keyboard-only. They should look different.
+- **Active is brief**: The moment between mousedown and mouseup. Often darker or smaller.
+- **Disabled vs Hidden**: Show disabled (user knows it exists), hide if not relevant.
+- **Loading prevents double-submit**: Crucial for forms and async actions.
+- **Transitions help**: 200ms ease makes state changes feel smooth, not jarring.

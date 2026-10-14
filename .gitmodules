@@ -28,3 +28,6 @@
 [submodule "refer/compound-engineering-plugin"]
 	path = refer/compound-engineering-plugin
 	url = git@github.com:EveryInc/compound-engineering-plugin.git
+[submodule "refer/impeccable"]
+	path = refer/impeccable
+	url = git@github.com:pbakaus/impeccable.git
