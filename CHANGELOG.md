@@ -7,15 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-14
+
 ### Changed
 
-- **[重大重构] 文档命名规范完整统一** (2026-10-14)
+- **[重大重构] 文档命名规范完整统一**
   - 时间戳格式：统一为 `YYYYMMDD`（8位紧凑格式）
   - 目录结构：`.cartoons/` 按技能组织子目录，避免根目录混乱
   - 命名顺序：统一为日期在前，语义在后（如 `20261014-1530-auth-flow.md`）
   - 影响：所有技能的输出路径和文档命名
   - 优势：自然时间排序、快速定位、完全一致
   - 详见：commit 9982cd4, 4ba4816, 9b6a3af
+
+### Added
+
+- **版本管理规范** 添加到 `AGENTS.md`
+  - 语义化版本规则（patch/minor/major）
+  - `npm version` 工作流程
+  - Git tag 自动创建和同步
 
 ### 路径映射对照
 
@@ -44,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/iron6909/coding-skills/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/iron6909/coding-skills/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/iron6909/coding-skills/releases/tag/v1.0.0

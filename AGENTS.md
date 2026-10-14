@@ -162,3 +162,56 @@ Also confirm every `./references/*.md` named in a `SKILL.md` exists, and every f
 - **Branches**: `feature/YYYYMMDD-<name>`.
 - **Testing**: this repository has no test suite. Verify with the checks above.
 - **Linting**: respect existing config. No new linter rules without approval.
+
+## Version Management
+
+This repository uses [Semantic Versioning](https://semver.org/):
+
+- **Patch** (x.y.Z): Bug fixes, documentation updates, no behavior change
+- **Minor** (x.Y.0): New skills, backward-compatible features
+- **Major** (X.0.0): Breaking changes (path changes, skill removal, incompatible refactors)
+
+Version is tracked in two places that must stay in sync:
+- `package.json` - `version` field
+- Git tags - `vX.Y.Z` format
+
+### Release Workflow
+
+When ready to release (after commits are ready but before push):
+
+1. **Update version** in `package.json`:
+   ```bash
+   # For patch (bug fixes, docs)
+   npm version patch -m "chore(release): bump version to %s"
+   
+   # For minor (new skills, features)
+   npm version minor -m "chore(release): bump version to %s"
+   
+   # For major (breaking changes)
+   npm version major -m "chore(release): bump version to %s"
+   ```
+   
+   This updates `package.json`, commits the change, and creates a git tag automatically.
+
+2. **Update CHANGELOG.md** with the new version and changes
+
+3. **Push with tags**:
+   ```bash
+   git push origin master --tags
+   ```
+
+The `npm version` command handles version bumping, commit, and tag creation in one atomic operation. Never manually edit version numbers or create tags separately.
+
+### Quick Reference
+
+```bash
+# After feature commits are ready
+npm version patch              # 1.1.0 → 1.1.1
+npm version minor              # 1.1.0 → 1.2.0  
+npm version major              # 1.1.0 → 2.0.0
+
+# Then push everything
+git push origin master --tags
+```
+
+Skills.sh automatically detects new tags and syncs the updated version.
