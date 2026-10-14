@@ -8,7 +8,7 @@ Rules for AI coding agents that develop and maintain this repository. This file 
 skills/    # Shipped. One directory per skill: SKILL.md + references/
 shared/    # NOT shipped. Source of files copied into several skills
 scripts/   # NOT shipped. Maintenance scripts (sync-references.mjs)
-refer/     # NOT shipped. Git submodules of two source projects, read-only
+refer/     # NOT shipped. Git submodules of source projects, read-only
 tmp/       # Gitignored scratch: audit reports, drafts
 ```
 
