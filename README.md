@@ -117,7 +117,8 @@ graph TD
 │   ├── features/                        # 功能规格与计划（永久）
 │   │   ├── 20250115-user-auth/
 │   │   │   ├── spec.md                 # 批准的规格
-│   │   │   └── plan.md                 # 任务索引
+│   │   │   ├── plan.md                 # 任务索引
+│   │   │   └── ui-spec.md              # 界面规格（ui-design 产出）
 │   │   ├── 20250120-cart-checkout/
 │   │   │   ├── spec.md
 │   │   │   └── plan.md
@@ -146,9 +147,12 @@ graph TD
 │   │       └── summary.md              # 最终报告
 │   ├── refactor/                        # 重构报告
 │   │   └── 20250115-billing.md
-│   └── review/                          # 独立 code-review
-│       └── 20250115-1430-security.md
+│   ├── review/                          # 独立 code-review
+│   │   └── 20250115-1430-security.md
+│   └── ui-review/                       # UI 评审报告（ui-review 产出）
+│       └── 20250115-1430.md
 ├── GLOSSARY.md                          # 术语表（惰性创建）
+├── DESIGN.md                            # 设计系统（ui-design 惰性创建）
 └── AGENTS.md                            # 项目事实
 ```
 
@@ -185,7 +189,17 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、capture(learnings)、execute/debug(代码)。都不 push。code-review 报告留在 `.cartoons/review/`。
+写文档的技能自己提交，只 stage 自己的文件，都不 push:
+
+| 技能 | 提交什么 |
+|------|---------|
+| survey、clarify、plan、capture、ui-design | 自己产出的文档:`AGENTS.md`/`GLOSSARY.md`、spec 或 `capability-map.md`、`plan.md`、learnings、`DESIGN.md` + `ui-spec.md` |
+| execute、debug | 每个任务或每次修复一次代码提交 |
+| simplify、optimize | 简化、优化后的代码 |
+| doc-review | 只直接改 Minor；Blocking/Important 等你决定 |
+| autoflow | 整个功能:spec、plan、提交、评审修复（都在 feature 分支上） |
+| commit | 你指定的临时改动（不 push） |
+| code-review、ui-review、refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
 
 ## 何时用什么
 

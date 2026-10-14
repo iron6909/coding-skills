@@ -1,6 +1,8 @@
 # Agents
 
-Rules for AI coding agents that develop and maintain this repository. This file is not part of the skills and is not installed with them. `README.md` is the project introduction and is outside the skill system too.
+Rules for AI coding agents that develop and maintain this repository. This file is not part of the skills and is not installed with them.
+
+`README.md` is the project introduction: what each skill does, the paths it writes, the vocabulary. This file holds only development rules and constraints. A fact that describes the project belongs in `README.md`; a rule for changing the project belongs here.
 
 ## Repository layout
 
@@ -24,120 +26,46 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 `npx skills add` installs skill directories only. A skill must never read a sibling skill's files, `shared/`, or anything outside its own directory.
 
 - Reference files by `./references/<name>.md`, relative to the skill's own `SKILL.md`. Never use `../`.
-- Every file in `references/` must be mentioned in that skill's `SKILL.md`, with a line saying when to read it. A reference nothing points to is dead.
-- A sub-skill idea (for example domain modeling) becomes a **reference** of the skill that needs it, not a new skill. `skills/` holds only skills a user can invoke.
+- Every file in `references/` must be named in that skill's `SKILL.md`, with a line saying when to read it. A reference nothing points to is dead.
 - Depend on another skill by name in prose ("route to `plan`"), never by path.
+- A sub-skill idea (for example domain modeling) becomes a **reference** of the skill that needs it, not a new skill. `skills/` holds only skills a user can invoke.
+
+## Output paths
+
+The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.cartoons/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
+
+- `.cartoons/` is temporary and gitignored: never put `spec.md`, `plan.md`, or anything that must be committed there.
+- Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
+
+## Documents are never deleted
+
+No skill deletes a document: not `spec.md` or `plan.md`, not `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under `.cartoons/`, not a review or research report. A document that looks obsolete is superseded or left in place. These skills run in other people's repositories, where a deleted document is gone for good.
+
+This covers documents only. Scratch that is not a document is still cleaned up: throwaway probes and logs, and a branch the user explicitly asks to drop.
 
 ## Shared reference files
 
-Several files are shared. The source is `shared/references/`; each consuming skill carries a synced copy.
-
-| Shared file | Copied into |
-|-------------|-------------|
-| `glossary-format.md` | `survey`, `clarify` |
-| `subagent-dispatch.md` | `survey`, `clarify`, `plan`, `code-review`, `execute`, `refactor`, `ideate` |
-| `tdd.md` | `execute`, `debug`, `code-review` |
-| `definition-of-done.md` | `plan`, `execute`, `code-review`, `debug` |
-| `severity.md` | `execute`, `code-review`, `simplify` |
-| `git-commit.md` | `survey`, `clarify`, `plan`, `capture`, `execute`, `debug`, `code-review`, `learning-refresh`, `doc-review`, `commit`, `optimize` |
-| `learnings-format.md` | `plan`, `code-review`, `capture`, `learning-refresh` |
-| `stable-ids.md` | `clarify`, `plan`, `execute` |
-| `counterfactual-test.md` | `capture`, `learning-refresh` |
+Several files are shared. The source is `shared/references/`; each consuming skill carries a synced copy. `MAP` in `scripts/sync-references.mjs` holds which file goes to which skills, and is the only copy of that list.
 
 - Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
-- To share another file, add it to `MAP` in `scripts/sync-references.mjs`. Prefer moving a file to its single owner over sharing it.
-
-Other references have one owner:
-
-| Skill | Own references |
-|-------|----------------|
-| `survey` | `project-documents.md` |
-| `clarify` | `domain-modeling.md`, `adr-format.md`, `elicitation.md` |
-| `plan` | `output-tier.md`, `task-decomposition.md` |
-| `execute` | `finish.md`, `testing-strategy.md` |
-| `refactor` | `vocabulary.md` |
-| `learning-refresh` | none (uses only shared `learnings-format.md`, `counterfactual-test.md`, and `git-commit.md`) |
-| `doc-review` | `review-lenses.md` |
-| `simplify` | `simplify-dimensions.md`, `complexity-metrics.md` |
-| `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
-| `ui-design` | `design-principles.md`, `wcag-checklist.md`, `component-states.md` |
-| `ui-review` | `ui-review-checklist.md`, `common-ui-mistakes.md` |
-| `capture` | `counterfactual-test.md` |
-| `learning-refresh` | `drift-detection.md` |
-| `autoflow` | `state-management.md` |
+- To share another file, add it to `MAP`. Prefer moving a file to its single owner over sharing it.
+- `--check` reports a copy that drifted, a missing source, a `references/` file no `SKILL.md` names, and a `./references/<file>` name with no file behind it.
 
 ## Skill authoring rules
 
 - Every skill sets `disable-model-invocation: true`. Skills are user-invoked; `guide` is a router, not the only entry point.
 - `description` frontmatter is the trigger text. It must match the body: name the real output location and the real unit (task, not step).
 - Describe capabilities, not tool names. Write "delegate to a read-only subagent" or "search the web", never a specific harness tool, and say what to do when the capability is missing.
+- The skill that writes a project document commits it, staging only its own files. No skill pushes. README's 提交责任 says which skill commits what.
 - Skill text is English. Leave no authoring markers (`ponytail:`, TODO) in shipped files.
 - One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
 - A skill ends where its output is saved and says what comes next. It does not auto-invoke the next skill; `guide` is the one skill that hands off, by design.
 
-## Documents are never deleted
-
-No skill deletes a document: not `spec.md`, not `plan.md`, not
-`AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under
-`.cartoons/`, not a review report or a research report. A document that looks
-obsolete is superseded or left in place; the user decides what leaves the disk.
-
-The reason is that these skills run in other people's repositories, where a
-deleted document is gone for good.
-
-This covers documents only. Scratch that is not a document is still cleaned up:
-throwaway probes and logs, and a branch the user explicitly asks to drop.
-
-## Output locations skills must use
-
-These are the paths skills create in a project they run on.
-
-- `docs/features/YYYYMMDD-<name>/` holds `spec.md` and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
-- `docs/learnings/YYYYMMDD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
-- `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. Each skill has its own subdirectory:
-  - `.cartoons/features/YYYYMMDD-<name>/impl/` holds ledgers and task briefs for feature work
-  - `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` holds feature-linked review reports
-  - `.cartoons/review/YYYYMMDD-HHMM-<scope>.md` holds standalone review reports
-  - `.cartoons/ui-review/YYYYMMDD-HHMM.md` holds UI review reports
-  - `.cartoons/refactor/YYYYMMDD-<scope>.md` holds refactor reports
-  - `.cartoons/handoff/YYYYMMDD-HHMM.md` or `YYYYMMDD-HHMM-<topic>.md` holds handoff files
-  - `.cartoons/optimize/YYYYMMDD-HHMM/` or `YYYYMMDD-HHMM-<variant>/` holds optimization experiment logs
-  - `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` holds ideation results
-  
-  Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
-- Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
-
-## Who commits what
-
-The skill that writes a project document commits it, staging only its own files. No skill pushes.
-
-| Skill | Commits |
-|-------|---------|
-| `survey` | `AGENTS.md`; creates `GLOSSARY.md` if it does not exist |
-| `clarify` | `spec.md` or `capability-map.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
-| `ui-design` | `DESIGN.md` (if created); `docs/features/YYYYMMDD-<name>/ui-spec.md` |
-| `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
-| `capture` | the learning file |
-| `learning-refresh` | updated, consolidated, or deleted learnings |
-| `doc-review` | the reviewed document (minor fixes only; blocking/important findings wait for user decision) |
-| `simplify` | simplified code |
-| `optimize` | optimization code changes (not the `.cartoons/optimize-*/` experiment logs) |
-| `autoflow` | full feature delivery: spec, plan, commits, review fixes (all on feature branch) |
-| `execute`, `debug` | code, one commit per task or fix |
-| `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
-| `ui-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
-| `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
-| `commit` | user-directed ad-hoc changes (does not push) |
-| `handoff` | nothing (handoff files are temporary and gitignored) |
-| `ideate` | nothing (ideation results are temporary in `.cartoons/ideation/`) |
-
 ## Terminology
 
-- **spec**, **plan**: the approved spec and its task index.
-- **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. Keep them distinct: a review, commit, or ledger entry belongs to a task, never a step.
-- **tracer bullet**: a vertical-slice task.
-- **capability map**: multi-module breakdown from `clarify` Initiative path, showing modules and dependencies.
+Development terms only; user-facing vocabulary is README's 关键概念.
+
+- **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. A review, commit, or ledger entry belongs to a task, never a step.
 - **reference**: a doc under `skills/<skill>/references/` read on demand. It is not a skill.
 
 ## Adding, renaming, or removing a skill
@@ -148,17 +76,14 @@ Update all of these in the same commit:
 2. `skills/guide/SKILL.md`: the skill list and, if it is a routing target, the routing order
 3. `README.md`: the skill table and diagram
 4. `MAP` in `scripts/sync-references.mjs`, if it holds shared files
-5. The shared and owner tables in this file
 
 ## Checks before committing
 
 ```bash
-node scripts/sync-references.mjs --check                # shared copies in sync
-grep -rn '\.\./' skills --include=*.md                  # expect no output
-grep -n 'disable-model-invocation' skills/*/SKILL.md    # all true
+node scripts/sync-references.mjs --check                     # copies in sync, references named, no dead link
+grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
+grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
 ```
-
-Also confirm every `./references/*.md` named in a `SKILL.md` exists, and every file under `references/` is named.
 
 ## Conventions
 
@@ -169,53 +94,20 @@ Also confirm every `./references/*.md` named in a `SKILL.md` exists, and every f
 
 ## Version Management
 
-This repository uses [Semantic Versioning](https://semver.org/):
+Semantic Versioning. The version lives in `package.json` and in a git tag (`vX.Y.Z`); `npm version` keeps both in step, so never edit a version number or create a tag by hand.
 
-- **Patch** (x.y.Z): Bug fixes, documentation updates, no behavior change
-- **Minor** (x.Y.0): New skills, backward-compatible features
-- **Major** (X.0.0): Breaking changes (path changes, skill removal, incompatible refactors)
-
-Version is tracked in two places that must stay in sync:
-- `package.json` - `version` field
-- Git tags - `vX.Y.Z` format
+Which digit moves: **patch** = bug fixes, documentation; **minor** = new skills, backward-compatible features; **major** = breaking changes (path changes, skill removal, incompatible refactors).
 
 ### Release Workflow
 
-When ready to release (after commits are ready but before push):
-
-1. **Update CHANGELOG.md** with the new version and changes, then commit it. Do this first: `npm version` refuses to run on a dirty tree, and the release notes must be inside the tag.
-
-2. **Update version** in `package.json`:
+1. **Update CHANGELOG.md** with the new version and changes, then commit it. First, because `npm version` refuses to run on a dirty tree and the release notes must be inside the tag.
+2. **Bump, commit, and tag** in one atomic step:
    ```bash
-   # For patch (bug fixes, docs)
-   npm version patch -m "chore(release): bump version to %s"
-   
-   # For minor (new skills, features)
-   npm version minor -m "chore(release): bump version to %s"
-   
-   # For major (breaking changes)
-   npm version major -m "chore(release): bump version to %s"
+   npm version patch -m "chore(release): bump version to %s"   # patch | minor | major
    ```
-   
-   This updates `package.json`, commits the change, and creates a git tag automatically.
-
 3. **Push with tags**:
    ```bash
    git push origin master --tags
    ```
 
-The `npm version` command handles version bumping, commit, and tag creation in one atomic operation. Never manually edit version numbers or create tags separately.
-
-### Quick Reference
-
-```bash
-# After feature commits are ready
-npm version patch              # 1.1.0 → 1.1.1
-npm version minor              # 1.1.0 → 1.2.0  
-npm version major              # 1.1.0 → 2.0.0
-
-# Then push everything
-git push origin master --tags
-```
-
-Skills.sh automatically detects new tags and syncs the updated version.
+skills.sh picks up new tags on its own.
