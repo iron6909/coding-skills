@@ -139,7 +139,7 @@ Skip this section on Direct and Brief: those tiers keep tasks in the conversatio
 After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYYMMDD-<semantic-name>` as the spec directory:
 
 ```bash
-DIR=".cartoons/YYYYMMDD-<semantic-name>/impl"
+DIR=".cartoons/features/YYYYMMDD-<semantic-name>/impl"
 mkdir -p "$DIR"
 # Write to $DIR/task-<N>.md
 ```

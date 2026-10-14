@@ -116,7 +116,6 @@ graph TD
 │   │   │   └── plan.md
 │   │   └── 20250125-platform-refactor/
 │   │       └── capability-map.md       # 多模块拆分（clarify 自动检测生成）
-│   ├── research/                        # 调研报告（永久，research 产出）
 │   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
 │   │   └── 20250115-jwt-security.md    # 单主题学习文档
 │   └── adr/                             # 架构决策记录（惰性创建）
@@ -179,7 +178,7 @@ graph TD
 
 ### 提交责任
 
-写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、research(报告)、execute/debug(代码)。都不 push。prototype 不提交,code-review 报告留在 `.cartoons/review/`。
+写文档的技能自己提交:survey(AGENTS/GLOSSARY)、clarify(spec/spike/capability-map)、plan(plan.md)、capture(learnings)、execute/debug(代码)。都不 push。code-review 报告留在 `.cartoons/review/`。
 
 ## 何时用什么
 
@@ -209,9 +208,6 @@ graph TD
 
 多模块大型工作
   → clarify (自动检测并生成 capability-map.md)
-
-独立问题(不阻塞某个功能)
-  → prototype(用代码回答)/ research(用资料回答)
 
 代码结构拖累修改
   → refactor (改进候选)
