@@ -183,7 +183,9 @@ Version is tracked in two places that must stay in sync:
 
 When ready to release (after commits are ready but before push):
 
-1. **Update version** in `package.json`:
+1. **Update CHANGELOG.md** with the new version and changes, then commit it. Do this first: `npm version` refuses to run on a dirty tree, and the release notes must be inside the tag.
+
+2. **Update version** in `package.json`:
    ```bash
    # For patch (bug fixes, docs)
    npm version patch -m "chore(release): bump version to %s"
@@ -196,8 +198,6 @@ When ready to release (after commits are ready but before push):
    ```
    
    This updates `package.json`, commits the change, and creates a git tag automatically.
-
-2. **Update CHANGELOG.md** with the new version and changes
 
 3. **Push with tags**:
    ```bash
