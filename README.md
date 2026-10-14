@@ -1,6 +1,6 @@
 # Coding Skills
 
-[![skills.sh](https://skills.sh/b/tszhang/skills)](https://skills.sh/tszhang/skills)
+[![skills.sh](https://skills.sh/b/iron6909/skills)](https://skills.sh/iron6909/skills)
 
 极简 coding agent 技能集,专注清晰流程和本地化开发。基于 Superpowers 和 Matt Pocock Skills 提炼。
 
@@ -11,7 +11,7 @@
 ### 通过 skills.sh 安装（推荐）
 
 ```bash
-npx skills@latest add tszhang/skills
+npx skills@latest add iron6909/skills
 ```
 
 选择你需要的技能，安装器会将它们复制到项目的 `.claude/skills/` 目录。

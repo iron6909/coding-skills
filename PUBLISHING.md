@@ -17,8 +17,8 @@
 2. 使用 GitHub 账号登录
 3. 点击 "Submit a skill" 或类似按钮
 4. 提交你的仓库信息：
-   - 仓库 URL: `https://github.com/tszhang/Skills`
-   - 用户名: `tszhang`
+   - 仓库 URL: `https://github.com/iron6909/Skills`
+   - 用户名: `iron6909`
    - 技能包名: `skills`
 
 ### 2. 等待审核
@@ -34,7 +34,7 @@ skills.sh 团队会审核你的提交，确保：
 
 ```bash
 # 在测试项目中运行
-npx skills@latest add tszhang/skills
+npx skills@latest add iron6909/skills
 ```
 
 选择要安装的技能，确认它们正确复制到 `.claude/skills/`。
@@ -82,5 +82,5 @@ npx skills@latest update tszhang/skills
 
 ## 联系方式
 
-- GitHub Issues: https://github.com/tszhang/Skills/issues
+- GitHub Issues: https://github.com/iron6909/Skills/issues
 - 邮件: [你的邮箱]

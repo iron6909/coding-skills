@@ -1,5 +1,5 @@
 {
-  "name": "@tszhang/coding-skills",
+  "name": "@iron6909/coding-skills",
   "version": "1.0.0",
   "description": "极简 coding agent 技能集，专注清晰流程和本地化开发",
   "keywords": [
@@ -14,14 +14,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tszhang/Skills.git"
+    "url": "git+https://github.com/iron6909/Skills.git"
   },
-  "author": "夏目 (tszhang)",
+  "author": "iron6909",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tszhang/Skills/issues"
+    "url": "https://github.com/iron6909/Skills/issues"
   },
-  "homepage": "https://github.com/tszhang/Skills#readme",
+  "homepage": "https://github.com/iron6909/Skills#readme",
   "files": [
     "skills",
     "README.md",
