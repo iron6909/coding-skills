@@ -60,6 +60,8 @@ Other references have one owner:
 | `doc-review` | `review-lenses.md` |
 | `simplify` | `simplify-dimensions.md`, `complexity-metrics.md` |
 | `code-review` | `review-lenses.md`, `lens-security.md`, `lens-performance.md`, `lens-accessibility.md`, `lens-i18n.md` |
+| `ui-design` | `design-principles.md`, `wcag-checklist.md`, `component-states.md` |
+| `ui-review` | `ui-review-checklist.md`, `common-ui-mistakes.md` |
 | `capture` | `counterfactual-test.md` |
 | `learning-refresh` | `drift-detection.md` |
 | `autoflow` | `state-management.md` |
@@ -98,6 +100,7 @@ These are the paths skills create in a project they run on.
   - `.cartoons/features/YYYYMMDD-<name>/impl/` holds ledgers and task briefs for feature work
   - `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` holds feature-linked review reports
   - `.cartoons/review/YYYYMMDD-HHMM-<scope>.md` holds standalone review reports
+  - `.cartoons/ui-review/YYYYMMDD-HHMM.md` holds UI review reports
   - `.cartoons/refactor/YYYYMMDD-<scope>.md` holds refactor reports
   - `.cartoons/handoff/YYYYMMDD-HHMM.md` or `YYYYMMDD-HHMM-<topic>.md` holds handoff files
   - `.cartoons/optimize/YYYYMMDD-HHMM/` or `YYYYMMDD-HHMM-<variant>/` holds optimization experiment logs
@@ -114,6 +117,7 @@ The skill that writes a project document commits it, staging only its own files.
 |-------|---------|
 | `survey` | `AGENTS.md`; creates `GLOSSARY.md` if it does not exist |
 | `clarify` | `spec.md` or `capability-map.md`; updates `GLOSSARY.md` and creates or updates ADRs from the session |
+| `ui-design` | `DESIGN.md` (if created); `docs/features/YYYYMMDD-<name>/ui-spec.md` |
 | `plan` | `plan.md` (task briefs stay in `.cartoons/`) |
 | `capture` | the learning file |
 | `learning-refresh` | updated, consolidated, or deleted learnings |
@@ -123,6 +127,7 @@ The skill that writes a project document commits it, staging only its own files.
 | `autoflow` | full feature delivery: spec, plan, commits, review fixes (all on feature branch) |
 | `execute`, `debug` | code, one commit per task or fix |
 | `code-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
+| `ui-review` | nothing by default (reports live in `.cartoons/`); fixes the user asks for are committed as code |
 | `refactor` | nothing (reports live in `.cartoons/`); it never changes code |
 | `commit` | user-directed ad-hoc changes (does not push) |
 | `handoff` | nothing (handoff files are temporary and gitignored) |

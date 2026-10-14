@@ -84,8 +84,10 @@ graph TD
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
+| **ui-design** | spec 涉及前端界面,需设计规格 | DESIGN.md + ui-spec.md | 建立设计系统、线框图、组件状态、交互流程 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
+| **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度:一致性/可用性/可访问性/响应式/性能 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |

@@ -26,6 +26,8 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `doc-review`: review planning documents (spec, plan, charter) for coherence, feasibility, completeness, and clarity.
 - `simplify`: simplify settled, recently changed code for clarity, reuse, quality, and efficiency.
 - `handoff`: create a lightweight session handoff for multi-session continuity, capturing current phase and next steps.
+- `ui-design`: plan UI/UX design before implementation. Creates DESIGN.md (design system) and ui-spec.md (interface specs) based on clarify output.
+- `ui-review`: review implemented frontend UI for design quality, consistency, accessibility, and performance.
 
 `guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
 
@@ -49,11 +51,13 @@ Use the first matching rule:
 12. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
 13. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
 14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
-15. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work). Research and feasibility validation are embedded in clarify's Phase 1.
-16. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-17. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: small single-module changes stay in the conversation instead of producing `plan.md`.
-18. If the approved work is clear and ready for code changes, use `execute`.
-19. If no rule matches, use `clarify` instead of guessing.
+15. If the user asks to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`.
+16. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work). Research and feasibility validation are embedded in clarify's Phase 1.
+17. If a spec from `clarify` involves frontend UI and needs design specifications (signals: layout design, component states, interactions, or DESIGN.md missing), use `ui-design`.
+18. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+19. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: small single-module changes stay in the conversation instead of producing `plan.md`.
+20. If the approved work is clear and ready for code changes, use `execute`.
+21. If no rule matches, use `clarify` instead of guessing.
 
 A clear small change can skip `survey`, `clarify`, and `plan` when its scope and acceptance checks are already known. Route it to `execute`, which uses the request as its execution input.
 
