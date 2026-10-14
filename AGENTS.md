@@ -86,8 +86,7 @@ The reason is that these skills run in other people's repositories, where a
 deleted document is gone for good.
 
 This covers documents only. Scratch that is not a document is still cleaned up:
-throwaway probes and logs, a prototype outside the project, and a branch the
-user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
+throwaway probes and logs, and a branch the user explicitly asks to drop.
 
 ## Output locations skills must use
 
