@@ -97,11 +97,11 @@ These are the paths skills create in a project they run on.
 - `.cartoons/` is temporary and gitignored. Each skill has its own subdirectory:
   - `.cartoons/features/YYYYMMDD-<name>/impl/` holds ledgers and task briefs for feature work
   - `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` holds feature-linked review reports
-  - `.cartoons/review/<scope>-YYYYMMDD-HHMM.md` holds standalone review reports
-  - `.cartoons/refactor/<scope>-YYYYMMDD.md` holds refactor reports
-  - `.cartoons/handoff/YYYYMMDD-HHMM.md` or `<topic>-YYYYMMDD-HHMM.md` holds handoff files
-  - `.cartoons/optimize/YYYYMMDD-HHMM/` or `<variant>-YYYYMMDD-HHMM/` holds optimization experiment logs
-  - `.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md` holds ideation results
+  - `.cartoons/review/YYYYMMDD-HHMM-<scope>.md` holds standalone review reports
+  - `.cartoons/refactor/YYYYMMDD-<scope>.md` holds refactor reports
+  - `.cartoons/handoff/YYYYMMDD-HHMM.md` or `YYYYMMDD-HHMM-<topic>.md` holds handoff files
+  - `.cartoons/optimize/YYYYMMDD-HHMM/` or `YYYYMMDD-HHMM-<variant>/` holds optimization experiment logs
+  - `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` holds ideation results
   
   Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.

@@ -74,12 +74,12 @@ Rules:
 
 ## 4. Report
 
-Write the candidates to `.cartoons/refactor/<scope>-YYYYMMDD.md` (temporary and gitignored). If the file exists, add a numeric suffix; never overwrite an earlier report. Never write a refactor report into the repository. 
+Write the candidates to `.cartoons/refactor/YYYYMMDD-<scope>.md` (temporary and gitignored). If the file exists, add a numeric suffix; never overwrite an earlier report. Never write a refactor report into the repository. 
 
 The report is for the user to read. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
 
 ```text
-Refactor review: .cartoons/refactor/<scope>-YYYYMMDD.md
+Refactor review: .cartoons/refactor/YYYYMMDD-<scope>.md
 Scope: <paths or area>
 Candidates: <N> (Strong: <n>, Worth exploring: <n>, Speculative: <n>)
 Top recommendation: <one line>

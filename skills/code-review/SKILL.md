@@ -193,7 +193,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 ## Write the report
 
-Write the findings to `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.cartoons/review/<scope>-YYYYMMDD-HHMM.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
+Write the findings to `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.cartoons/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
 ```markdown
 # Review — <review-base>...HEAD
