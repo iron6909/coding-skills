@@ -14,14 +14,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iron6909/Skills.git"
+    "url": "git+https://github.com/iron6909/coding-skills.git"
   },
   "author": "iron6909",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/iron6909/Skills/issues"
+    "url": "https://github.com/iron6909/coding-skills/issues"
   },
-  "homepage": "https://github.com/iron6909/Skills#readme",
+  "homepage": "https://github.com/iron6909/coding-skills#readme",
   "files": [
     "skills",
     "README.md",
