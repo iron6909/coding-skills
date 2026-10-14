@@ -61,7 +61,7 @@ Before continuing, confirm the review base resolves and the diff is non-empty.
 Look for the originating spec in this order:
 
 1. A path the user passed as an argument
-2. `docs/features/YYYY-MM-DD-<semantic-name>/spec.md` matching the branch name or a commit scope
+2. `docs/features/YYYYMMDD-<semantic-name>/spec.md` matching the branch name or a commit scope
 3. Another spec-like document under `docs/` matching the branch name
 4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
 
@@ -193,7 +193,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 ## Write the report
 
-Write the findings to `.cartoons/YYYY-MM-DD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
+Write the findings to `.cartoons/YYYYMMDD-<semantic-name>/review-<commit7>.md` when the review matches a feature directory, otherwise to `.cartoons/review/review-<commit7>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
 ```markdown
 # Review — <review-base>...HEAD

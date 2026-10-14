@@ -67,7 +67,7 @@ Create `.cartoons/optimize-YYYYMMDD-HHMM/baseline.md`:
 ```markdown
 # Optimization: [Feature/Component]
 
-## Baseline (YYYY-MM-DD HH:MM)
+## Baseline (YYYYMMDD HH:MM)
 
 **Metric**: [latency / throughput / memory / cost]
 **Current**: [measurement with units]
@@ -190,7 +190,7 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 ```markdown
 # Optimization Summary: [Feature/Component]
 
-**Date**: YYYY-MM-DD
+**Date**: YYYYMMDD
 **Iterations**: [N variants tested]
 
 ## Results

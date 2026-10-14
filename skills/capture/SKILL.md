@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Write down what this session learned that the repository does not already record.
 
-Save to `docs/learnings/YYYY-MM-DD-<topic>.md`. One file per topic, not one per session.
+Save to `docs/learnings/YYYYMMDD-<topic>.md`. One file per topic, not one per session.
 
 Do not capture code, specs, or decisions that already have a home. This skill records reasoning that would otherwise be lost when the conversation ends.
 
@@ -130,7 +130,7 @@ Confirm before committing:
 - [ ] no entry duplicates `AGENTS.md`, `GLOSSARY.md`, an ADR, or a spec decision
 - [ ] every entry names something concrete
 - [ ] the frontmatter carries tags
-- [ ] the file path is `docs/learnings/YYYY-MM-DD-<topic>.md`
+- [ ] the file path is `docs/learnings/YYYYMMDD-<topic>.md`
 - [ ] the commit stages only this file
 
 ## Commit
@@ -140,7 +140,7 @@ Read `./references/git-commit.md` for commit rules.
 Stage only the learning file you just created:
 
 ```bash
-git add docs/learnings/YYYY-MM-DD-<topic>.md
+git add docs/learnings/YYYYMMDD-<topic>.md
 ```
 
 Check what you staged:

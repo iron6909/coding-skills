@@ -22,7 +22,7 @@ Do not capture:
 ## File structure
 
 ```
-docs/learnings/YYYY-MM-DD-<topic>.md
+docs/learnings/YYYYMMDD-<topic>.md
 ```
 
 Name: today's date + short kebab-case topic (2-4 words). One learning per file.
@@ -32,7 +32,7 @@ Template:
 ```markdown
 # <Title: the trap or trade-off>
 
-**Date:** YYYY-MM-DD
+**Date:** YYYYMMDD
 **Area:** <module, subsystem, or domain>
 **Tags:** <keyword>, <keyword>
 
@@ -50,7 +50,7 @@ Template:
 
 ## Related
 
-- `docs/learnings/YYYY-MM-DD-<related>.md`
+- `docs/learnings/YYYYMMDD-<related>.md`
 - `docs/adr/NNNN-<related>.md`
 ```
 

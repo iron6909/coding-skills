@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYY-MM-DD-name/spec.md.
+description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYYMMDD-name/spec.md.
 disable-model-invocation: true
 ---
 
@@ -111,12 +111,12 @@ After exploring the codebase, assess whether this work bundles several independe
 **If decomposition is needed:**
 
 1. Identify the independent capabilities and their dependencies
-2. Create `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`:
+2. Create `docs/features/YYYYMMDD-<initiative>/capability-map.md`:
 
 ```markdown
 # Capability Map: [Initiative Name]
 
-**Created**: YYYY-MM-DD
+**Created**: YYYYMMDD
 
 ## Modules
 
@@ -268,7 +268,7 @@ Wait for user approval.
 
 ### For Bounded or Architectural (single-module work)
 
-Save to `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`.
+Save to `docs/features/YYYYMMDD-<semantic-name>/spec.md`.
 
 Include both:
 - Phase 0 content (Product Understanding)
@@ -280,13 +280,13 @@ If a spike was run, include the "Feasibility Validation" section with findings.
 
 ### For multi-capability work (after decomposition approval)
 
-The approved `capability-map.md` is already saved at `docs/features/YYYY-MM-DD-<initiative>/capability-map.md`. Each module then gets its own spec saved alongside it (e.g., `SPEC-auth.md`, `SPEC-billing.md`).
+The approved `capability-map.md` is already saved at `docs/features/YYYYMMDD-<initiative>/capability-map.md`. Each module then gets its own spec saved alongside it (e.g., `SPEC-auth.md`, `SPEC-billing.md`).
 
 ### Commit
 
 Stage only the spec:
 ```bash
-git add docs/features/YYYY-MM-DD-<semantic-name>/
+git add docs/features/YYYYMMDD-<semantic-name>/
 ```
 
 Also stage `GLOSSARY.md` if updated, and any new ADRs.

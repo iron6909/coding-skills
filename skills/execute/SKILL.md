@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use one of three execution inputs:
 
-- **Planned work:** read the approved spec and `plan.md` in full. The spec defines behavior. The plan defines task order. The default spec path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`; when the project uses another specification system, the plan or the user names the artifact path instead.
+- **Planned work:** read the approved spec and `plan.md` in full. The spec defines behavior. The plan defines task order. The default spec path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`; when the project uses another specification system, the plan or the user names the artifact path instead.
 - **Session plan:** a Direct or Brief tier plan from `plan`, held in this conversation rather than on disk. The task list is the plan; the spec path, if any, still governs behavior.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
@@ -37,15 +37,15 @@ Say which mode you are in before starting, and name the reason for any early sto
 For planned work, create an isolated impl directory:
 
 ```text
-.cartoons/YYYY-MM-DD-<semantic-name>/impl/
+.cartoons/YYYYMMDD-<semantic-name>/impl/
 ```
 
-`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, named to match `docs/features/YYYY-MM-DD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
+`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, named to match `docs/features/YYYYMMDD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 
 ```text
-# Execution ledger — plan: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
+# Execution ledger — plan: docs/features/YYYYMMDD-<semantic-name>/plan.md
 ```
 
 If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. Resume from the first task without one. After context compression, trust the ledger and `git log`, not memory.
@@ -64,7 +64,7 @@ Before changing code:
 - read applicable `AGENTS.md` files
 - read the ADRs under `docs/adr/` that touch the modules in scope; a recorded decision is a constraint, not a suggestion
 - read the execution input
-- check the current branch: if it is the default branch (main or master), get the user's consent to work there or create `feature/YYYY-MM-DD-<semantic-name>` first
+- check the current branch: if it is the default branch (main or master), get the user's consent to work there or create `feature/YYYYMMDD-<semantic-name>` first
 - check for existing ledger and resume state
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands

@@ -78,7 +78,7 @@ Show what would be done at each phase without executing:
 
 ### Phase 1: Clarify (auto)
 
-**Goal**: Produce `docs/features/YYYY-MM-DD-<name>/spec.md`
+**Goal**: Produce `docs/features/YYYYMMDD-<name>/spec.md`
 
 **Autonomous decisions**:
 - Feature naming: derive from request (kebab-case, 2-4 words)
@@ -96,7 +96,7 @@ Show what would be done at each phase without executing:
 
 ### Phase 2: Plan (auto)
 
-**Goal**: Produce `docs/features/YYYY-MM-DD-<name>/plan.md`
+**Goal**: Produce `docs/features/YYYYMMDD-<name>/plan.md`
 
 **Autonomous decisions**:
 - Tier: always use Full tier (generate task briefs)
@@ -260,8 +260,8 @@ git reset --soft <base-commit>  # undo commits but keep changes
 git reset --hard <base-commit>  # undo everything
 
 # Files written
-docs/features/YYYY-MM-DD-<name>/  # keep or delete
-.cartoons/YYYY-MM-DD-<name>/  # always safe to delete
+docs/features/YYYYMMDD-<name>/  # keep or delete
+.cartoons/YYYYMMDD-<name>/  # always safe to delete
 ```
 
 ### Resume

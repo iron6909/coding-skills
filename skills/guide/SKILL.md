@@ -50,7 +50,7 @@ Use the first matching rule:
 13. If the user asks to review a planning document (signals: "review this spec", "check the plan", "is this charter complete"), use `doc-review`.
 14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
 15. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work). Research and feasibility validation are embedded in clarify's Phase 1.
-16. If a committed plan exists in `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+16. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
 17. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
 18. If the approved work is clear and ready for code changes, use `execute`.
 19. If no rule matches, use `clarify` instead of guessing.

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Plan
 
-Turn an approved spec into an implementation plan. The default spec path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`; when the project uses another specification system, plan from that artifact instead.
+Turn an approved spec into an implementation plan. The default spec path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`; when the project uses another specification system, plan from that artifact instead.
 
 Do not write product code or start implementation.
 
@@ -33,7 +33,7 @@ Read `output-tier.md` for the floors, the "no behavior change" test, and the cho
 Find the approved spec before planning.
 
 - Read the applicable `AGENTS.md` files.
-- Read the approved spec in full. The default path is `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
+- Read the approved spec in full. The default path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
 - Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
 - If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
 
@@ -41,7 +41,7 @@ The spec is the authority. Do not add new product decisions silently. Record a n
 
 ## Revising an existing plan
 
-If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/YYYY-MM-DD-<semantic-name>/impl/progress.md` (if present), and `git log`.
+If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/YYYYMMDD-<semantic-name>/impl/progress.md` (if present), and `git log`.
 
 - Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
 - Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
@@ -136,10 +136,10 @@ Do not require a failing test when the repository has no test harness or when th
 
 Skip this section on Direct and Brief: those tiers keep tasks in the conversation and write no briefs.
 
-After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYY-MM-DD-<semantic-name>` as the spec directory:
+After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYYMMDD-<semantic-name>` as the spec directory:
 
 ```bash
-DIR=".cartoons/YYYY-MM-DD-<semantic-name>/impl"
+DIR=".cartoons/YYYYMMDD-<semantic-name>/impl"
 mkdir -p "$DIR"
 # Write to $DIR/task-<N>.md
 ```
@@ -190,14 +190,14 @@ Briefs let execute read task context without loading the full plan. Each brief e
 
 Skip this section on Direct and Brief: those tiers produce no file.
 
-After approval, create `docs/features/YYYY-MM-DD-<semantic-name>/plan.md` as a lightweight index:
+After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lightweight index:
 
 ```markdown
 # <Feature name> Implementation Plan
 
 **Goal:** <one sentence>
 
-**Spec:** `docs/features/YYYY-MM-DD-<semantic-name>/spec.md`
+**Spec:** `docs/features/YYYYMMDD-<semantic-name>/spec.md`
 
 **Approach:** <two or three sentences>
 
@@ -300,8 +300,8 @@ Full, after approval, saving, and committing:
 
 ```text
 Plan tier: full
-Plan saved: docs/features/YYYY-MM-DD-<semantic-name>/plan.md
-Task briefs: .cartoons/YYYY-MM-DD-<semantic-name>/impl/task-*.md (<N> tasks)
+Plan saved: docs/features/YYYYMMDD-<semantic-name>/plan.md
+Task briefs: .cartoons/YYYYMMDD-<semantic-name>/impl/task-*.md (<N> tasks)
 Commit: <short hash>
 Next: execute
 ```

@@ -91,11 +91,11 @@ user explicitly asks to drop (including a `prototype/<name>` throwaway branch).
 
 These are the paths skills create in a project they run on.
 
-- `docs/features/YYYY-MM-DD-<name>/` holds `spec.md` and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
-- `docs/learnings/YYYY-MM-DD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
+- `docs/features/YYYYMMDD-<name>/` holds `spec.md` and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
+- `docs/learnings/YYYYMMDD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `impl/` ledgers and task briefs, review reports (`review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`), and ideation results (`.cartoons/ideation/<topic>-YYYYMMDD.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
-- Directory names are `YYYY-MM-DD-<semantic-name>`: kebab-case, 2-4 words.
+- `.cartoons/` is temporary and gitignored. It holds only `.cartoons/YYYYMMDD-<name>/impl/` ledgers and task briefs, review reports (`.cartoons/YYYYMMDD-<name>/review-<commit7>.md` when matching a feature, otherwise `.cartoons/review/review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`), and ideation results (`.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
+- Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Who commits what
 
@@ -150,6 +150,6 @@ Also confirm every `./references/*.md` named in a `SKILL.md` exists, and every f
 ## Conventions
 
 - **Commits**: Conventional Commits with a scope, for example `docs(clarify): add capability map for multi-module initiative`. One logical change per commit.
-- **Branches**: `feature/YYYY-MM-DD-<semantic-name>`.
+- **Branches**: `feature/YYYYMMDD-<name>`.
 - **Testing**: this repository has no test suite. Verify with the checks above.
 - **Linting**: respect existing config. No new linter rules without approval.

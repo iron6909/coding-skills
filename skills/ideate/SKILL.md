@@ -109,12 +109,12 @@ Compress to 2-3 approaches. Stress-test each one.
 
 ### Phase 3: Output
 
-Save to `.cartoons/ideation/<topic>-YYYYMMDD.md`:
+Save to `.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md`:
 
 ```markdown
 # Ideation: [Topic]
 
-**Date**: YYYY-MM-DD
+**Date**: YYYYMMDD
 **Context**: [One paragraph: problem, constraints, existing patterns]
 
 ---
@@ -198,7 +198,7 @@ Present the saved ideation to user:
 2. **[Option 2 name]**: [One sentence]. Alternative if [condition].
 3. **[Option 3 name]**: [One sentence]. [Why to avoid OR when viable].
 
-Full analysis saved to `.cartoons/ideation/<topic>-YYYYMMDD.md`.
+Full analysis saved to `.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md`.
 
 **Which approach should we pursue?**"
 

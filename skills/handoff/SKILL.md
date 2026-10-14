@@ -48,7 +48,7 @@ Write `.cartoons/handoff-YYYYMMDD-HHMM.md`:
 ```markdown
 # Handoff: [Feature/Task Name]
 
-**Created**: YYYY-MM-DD HH:MM
+**Created**: YYYYMMDD HH:MM
 **Phase**: [survey/clarify/plan/execute/debug/review]
 
 ## Context
