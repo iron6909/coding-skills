@@ -535,12 +535,13 @@ Before shipping, verify you avoided:
 
 ---
 
-## Additional Resources
+## Where these come from
 
-These mistakes are inspired by:
-- Impeccable's 59 detector rules
-- Real code review findings from 100+ projects
-- WCAG common failures
-- Mobile usability research
+Every entry is a pattern that recurs across real frontend code, grouped by the
+kind of harm it does: color and type that read as unfinished, layout that is
+hard to scan, controls that give no feedback, and forms that cannot be
+completed. WCAG AA failures are the source of the rest.
 
-For deeper review, see [ui-review-checklist.md](ui-review-checklist.md).
+The detection patterns in each section are starting points for a grep, not a
+complete audit. A pattern search finds a hardcoded color; it cannot tell
+whether a palette reads as intentional. Treat a match as a prompt to look.
