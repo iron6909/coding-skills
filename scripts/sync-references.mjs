@@ -5,10 +5,13 @@
 //
 // Source of truth: shared/references/
 // Usage:
-//   node scripts/sync-references.mjs           # write copies
-//   node scripts/sync-references.mjs --check   # verify, exit 1 on drift
+//   node scripts/sync-references.mjs           # write copies, then report
+//   node scripts/sync-references.mjs --check   # verify only, exit 1 on drift
+//
+// Both modes also check every skill's own references: each references/*.md is
+// named in that skill's SKILL.md, and each ./references/<file> it names exists.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,7 +23,7 @@ const MAP = {
   "subagent-dispatch.md": ["survey", "clarify", "plan", "code-review", "execute", "refactor", "ideate"],
   "tdd.md": ["execute", "debug", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "debug"],
-  "severity.md": ["execute", "code-review", "simplify"],
+  "severity.md": ["execute", "code-review", "simplify", "doc-review"],
   "git-commit.md": ["survey", "clarify", "plan", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review", "commit", "optimize"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
   "stable-ids.md": ["clarify", "plan", "execute"],
@@ -64,12 +67,30 @@ for (const [file, skills] of Object.entries(MAP)) {
   }
 }
 
-if (check) {
-  if (drift > 0) {
-    console.error(`\n${drift} file(s) out of sync. Run: node scripts/sync-references.mjs`);
-    process.exit(1);
+// Not derived from MAP: each skill's own references. A reference nothing
+// points to is dead, and a name with no file is a broken read.
+for (const skill of readdirSync(join(ROOT, "skills"))) {
+  const dir = join(ROOT, "skills", skill, "references");
+  const skillMd = join(ROOT, "skills", skill, "SKILL.md");
+  if (!existsSync(skillMd)) continue;
+  const text = readFileSync(skillMd, "utf8");
+
+  if (existsSync(dir)) {
+    for (const ref of readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+      if (text.includes(ref)) continue;
+      console.error(`unnamed: skills/${skill}/references/${ref} is not named in skills/${skill}/SKILL.md`);
+      drift++;
+    }
   }
-  console.log("shared references in sync");
-} else {
-  console.log(written > 0 ? `\n${written} file(s) written.` : "already in sync");
+  for (const [, ref] of text.matchAll(/\.\/references\/([\w.-]+\.md)/g)) {
+    if (existsSync(join(dir, ref))) continue;
+    console.error(`missing: skills/${skill}/SKILL.md names ./references/${ref}`);
+    drift++;
+  }
 }
+
+if (drift > 0) {
+  console.error(`\n${drift} problem(s) above.`);
+  process.exit(1);
+}
+console.log(check ? "references in sync" : written > 0 ? `${written} file(s) written.` : "already in sync");

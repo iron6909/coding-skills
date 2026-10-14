@@ -1,54 +1,35 @@
 <!-- synced from shared/references/severity.md by scripts/sync-references.mjs: do not edit -->
 
-# Severity Classification
+# Severity levels
 
-Three-level severity for findings in code review, document review, and simplification:
+Three levels classify findings by urgency and impact. Use these consistently across code review, document review, task evaluation, and finding reports.
 
 ## Blocking
 
-Implementation cannot proceed or will fail without fixing this.
+Must fix before the work can ship. Blocks merge or deployment.
 
-**Examples:**
-- Missing acceptance criteria (spec/plan)
-- Contradictory decisions (spec: "use JWT" vs ADR: "sessions only")
-- Circular task dependencies (plan)
-- Correctness bugs (review)
-- Breaking API changes without migration path (review)
-- Security vulnerabilities (review)
-
-**Action:** Must be fixed before proceeding.
+Examples:
+- Correctness: wrong behavior, data loss, state corruption
+- Security: exposed credentials, SQL injection, XSS, authentication bypass
+- Compatibility: breaks existing API contracts or data formats
+- Test gaps: acceptance conditions with no verification
 
 ## Important
 
-Can proceed, but will likely cause rework, confusion, or technical debt.
+Should fix, but can be deferred if acknowledged. Does not block shipping.
 
-**Examples:**
-- Vague scope boundaries (spec)
-- Untestable acceptance criteria (spec)
-- Missing error handling (review)
-- Significant code duplication (simplify)
-- Performance regression without justification (review)
-- Inconsistent naming across modules (simplify)
-
-**Action:** Strongly recommend fixing. If deferred, document the risk.
+Examples:
+- Performance: noticeable slowdown, inefficient algorithm
+- Maintainability: tight coupling, deep nesting, repeated logic
+- Standards: violates project conventions, missing error handling
+- Documentation: missing or misleading comments in complex code
 
 ## Minor
 
-Polish and cleanup that improves quality but doesn't block or risk rework.
+Nice to have. Record and defer unless trivial to fix now.
 
-**Examples:**
-- Unclear wording (doc-review)
-- Missing inline comments (review)
-- Small refactoring opportunities (simplify)
-- Formatting inconsistencies (simplify)
-- Redundant null checks (simplify)
-- Verbose variable names (simplify)
-
-**Action:** Fix if convenient. Can be batched or deferred.
-
-## When in doubt
-
-Ask: "If we don't fix this, what fails?"
-- Implementation fails or produces wrong results → Blocking
-- We'll need to rewrite parts later → Important
-- Nothing breaks, just less clean → Minor
+Examples:
+- Style: formatting inconsistencies, naming improvements
+- Cleanup: unused imports, commented-out code
+- Refactoring: opportunities to simplify that don't affect current behavior
+- Future work: technical debt that has no current impact

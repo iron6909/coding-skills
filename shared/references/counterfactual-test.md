@@ -1,7 +1,3 @@
-<!-- DO NOT EDIT: This file is synced from shared/references/counterfactual-test.md -->
-<!-- Copied into: capture, learning-refresh -->
-<!-- Last synced: 2026-10-13 -->
-
 # Counterfactual Test for Learnings
 
 The counterfactual gate is the only filter that keeps `docs/learnings/` from becoming a diary. Apply it to every candidate entry before writing.

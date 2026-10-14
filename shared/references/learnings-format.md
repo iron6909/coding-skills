@@ -1,7 +1,3 @@
-<!-- DO NOT EDIT: This file is synced from shared/references/learnings-format.md -->
-<!-- Copied into: plan, code-review, capture, learning-refresh -->
-<!-- Last synced: 2026-10-12 -->
-
 # Learnings format and lifecycle
 
 `docs/learnings/` holds session learnings: trade-offs, traps, and boundary conditions the spec and plan do not record. Each learning is one file.

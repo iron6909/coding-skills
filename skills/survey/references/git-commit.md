@@ -1,9 +1,5 @@
 <!-- synced from shared/references/git-commit.md by scripts/sync-references.mjs: do not edit -->
 
-<!-- DO NOT EDIT: This file is synced from shared/references/git-commit.md -->
-<!-- Copied into: survey, clarify, plan, research, capture, execute, debug, code-review, learning-refresh, doc-review, commit, optimize -->
-<!-- Last synced: 2026-10-13 -->
-
 # Git commit rules
 
 Every skill that commits follows these rules. The skill's own instructions define what files to stage and the commit subject prefix.
