@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-10-14
+
+### Fixed
+
+- **[doc-review] `severity.md` 与共享源不同步**
+  - 该文件带着 `do not edit` 头，内容却是过期的文档版；且 `doc-review` 不在 `MAP` 里，`--check` 永远看不见它
+  - 加入 `MAP` 并重新同步，四个技能共用同一份三级定级说明
+  - 顺带删除共享源里手写的 `Copied into: ...` 过期头（它列着并不存在的 `research`），同步后 40 多份副本一起变干净
+  - 详见：commit ea53493
+- **提交前检查的 `../` grep 误报**
+  - `docs/features/...` 这类省略号被判为上级路径，3 条假命中
+  - 改为排除 `...`
+  - 详见：commit 47d3202
+
+### Changed
+
+- **`AGENTS.md` 只保留开发规则**（221 → 113 行）
+  - 删除两张会漂移的清单表（共享文件归属、各技能自有 reference），清单只保留在 `scripts/sync-references.mjs` 的 `MAP` 和目录本身
+  - 输出路径清单、提交归属表、面向用户的术语移入 `README.md`；通用 semver 科普删除，`Quick Reference` 合并进发布步骤
+- **`README.md` 承接移出的项目事实**
+  - 文档结构树补上 `ui-spec.md`、`DESIGN.md`、`.cartoons/ui-review/`
+  - `提交责任` 由一句话改为表格；删除过时的 `spike` 说明（`clarify` 明确不写 `spike.md`）
+  - 详见：commit 47d3202
+
+### Added
+
+- **`--check` 扩展为全套 reference 检查**
+  - 除共享副本同步外，新增两项：每个 `references/*.md` 都被本技能 `SKILL.md` 提到；每个被提到的 `./references/<file>` 都存在
+  - 详见：commit ea53493
+
 ## [1.3.2] - 2026-10-14
 
 ### Fixed
@@ -131,7 +161,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v1.3.3...HEAD
+[1.3.3]: https://github.com/iron6909/coding-skills/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/iron6909/coding-skills/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/iron6909/coding-skills/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/iron6909/coding-skills/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/iron6909/coding-skills/compare/v1.2.0...v1.2.2
