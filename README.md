@@ -55,9 +55,12 @@ graph TD
     C -->|learnings 陈旧| O[learning-refresh]
     C -->|审查文档| P[doc-review]
     C -->|清理代码| Q[simplify]
+    C -->|审查界面| S[ui-review]
 
     D --> E
-    E --> F
+    E -->|涉及前端界面| R[ui-design]
+    E -->|否则| F
+    R --> F
     F --> G
     G --> J[完成]
     H --> J
@@ -67,9 +70,11 @@ graph TD
     G -->|可选| N
     H -->|可选| N
     G -->|可选| Q
+    G -->|可选| S
     O --> J
     P --> J
     Q --> J
+    S --> J
 
     style B fill:#e1f5ff
     style G fill:#d4edda
