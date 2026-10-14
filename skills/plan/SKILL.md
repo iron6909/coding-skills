@@ -33,6 +33,7 @@ Find the approved spec before planning.
 
 - Read the applicable `AGENTS.md` files.
 - Read the approved spec in full. The default path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
+- When `ui-spec.md` sits beside the spec, read it too. It carries interface decisions the spec leaves open — layout per breakpoint, component states, interaction flows — and tasks that skip it will reinvent those decisions one component at a time. Fold them into the relevant tasks rather than making a task per screen.
 - Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
 - If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
 
