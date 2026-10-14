@@ -43,7 +43,7 @@ Identify:
 
 ### 2. Create Handoff Document
 
-Write `.cartoons/handoff-YYYYMMDD-HHMM.md`:
+Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 
 ```markdown
 # Handoff: [Feature/Task Name]
@@ -110,7 +110,7 @@ Write `.cartoons/handoff-YYYYMMDD-HHMM.md`:
 
 Write the file, then tell the user:
 
-> "Handoff saved to `.cartoons/handoff-YYYYMMDD-HHMM.md`.
+> "Handoff saved to `.cartoons/handoff/YYYYMMDD-HHMM.md`.
 > 
 > **Current phase**: [phase name]
 > **Completed**: [key milestones]
@@ -124,14 +124,14 @@ Provide the exact path so they can read it later.
 
 When the user says "resume from handoff" or provides a handoff file:
 
-1. **Read the handoff**: Load `.cartoons/handoff-YYYYMMDD-HHMM.md`
+1. **Read the handoff**: Load `.cartoons/handoff/YYYYMMDD-HHMM.md`
 2. **Verify artifacts**: Check that referenced files still exist and match expected state
 3. **Confirm next steps**: "It looks like we were in [phase], with [task] next. Continue from here?"
 4. **Invoke next skill**: Once user confirms, call the skill specified in "Next Steps"
 
 ## Handoff Locations
 
-Always write to `.cartoons/handoff-YYYYMMDD-HHMM.md` (gitignored).
+Always write to `.cartoons/handoff/YYYYMMDD-HHMM.md` (gitignored).
 
 Use timestamp format: `handoff-20250120-1430.md` (YYYYMMDD-HHMM)
 

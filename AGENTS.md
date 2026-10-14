@@ -94,7 +94,16 @@ These are the paths skills create in a project they run on.
 - `docs/features/YYYYMMDD-<name>/` holds `spec.md` and `plan.md`. For multi-feature initiatives, also holds `capability-map.md`.
 - `docs/learnings/YYYYMMDD-<topic>.md` holds session learnings: trade-offs, traps, and boundary conditions the spec does not record.
 - `docs/adr/` holds ADRs, created lazily. `GLOSSARY.md` is a single file at the project root, also lazy.
-- `.cartoons/` is temporary and gitignored. It holds only `.cartoons/YYYYMMDD-<name>/impl/` ledgers and task briefs, review reports (`.cartoons/YYYYMMDD-<name>/review-<commit7>.md` when matching a feature, otherwise `.cartoons/review/review-<commit7>.md`), refactor reports (`.cartoons/refactor/`), handoff files (`handoff-YYYYMMDD-HHMM.md`), optimization experiment logs (`.cartoons/optimize-YYYYMMDD-HHMM/`), and ideation results (`.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md`). Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
+- `.cartoons/` is temporary and gitignored. Each skill has its own subdirectory:
+  - `.cartoons/features/YYYYMMDD-<name>/impl/` holds ledgers and task briefs for feature work
+  - `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` holds feature-linked review reports
+  - `.cartoons/review/<scope>-YYYYMMDD-HHMM.md` holds standalone review reports
+  - `.cartoons/refactor/<scope>-YYYYMMDD.md` holds refactor reports
+  - `.cartoons/handoff/YYYYMMDD-HHMM.md` or `<topic>-YYYYMMDD-HHMM.md` holds handoff files
+  - `.cartoons/optimize/YYYYMMDD-HHMM/` or `<variant>-YYYYMMDD-HHMM/` holds optimization experiment logs
+  - `.cartoons/ideation/<topic>-YYYYMMDD-HHMM.md` holds ideation results
+  
+  Never put anything there that must be committed, and never put `spec.md` or `plan.md` there.
 - Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Who commits what

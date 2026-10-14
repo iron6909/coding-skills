@@ -37,10 +37,10 @@ Say which mode you are in before starting, and name the reason for any early sto
 For planned work, create an isolated impl directory:
 
 ```text
-.cartoons/YYYYMMDD-<semantic-name>/impl/
+.cartoons/features/YYYYMMDD-<name>/impl/
 ```
 
-`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, named to match `docs/features/YYYYMMDD-<semantic-name>/`. Spec and plan live under `docs/features/`, never here.
+`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, in `.cartoons/features/` to match `docs/features/YYYYMMDD-<name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 

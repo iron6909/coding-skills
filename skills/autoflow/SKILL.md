@@ -261,7 +261,7 @@ git reset --hard <base-commit>  # undo everything
 
 # Files written
 docs/features/YYYYMMDD-<name>/  # keep or delete
-.cartoons/YYYYMMDD-<name>/  # always safe to delete
+.cartoons/features/YYYYMMDD-<name>/  # always safe to delete
 ```
 
 ### Resume

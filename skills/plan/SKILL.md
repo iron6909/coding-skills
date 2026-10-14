@@ -41,7 +41,7 @@ The spec is the authority. Do not add new product decisions silently. Record a n
 
 ## Revising an existing plan
 
-If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/YYYYMMDD-<semantic-name>/impl/progress.md` (if present), and `git log`.
+If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/features/YYYYMMDD-<name>/impl/progress.md` (if present), and `git log`.
 
 - Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
 - Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
@@ -301,7 +301,7 @@ Full, after approval, saving, and committing:
 ```text
 Plan tier: full
 Plan saved: docs/features/YYYYMMDD-<semantic-name>/plan.md
-Task briefs: .cartoons/YYYYMMDD-<semantic-name>/impl/task-*.md (<N> tasks)
+Task briefs: .cartoons/features/YYYYMMDD-<name>/impl/task-*.md (<N> tasks)
 Commit: <short hash>
 Next: execute
 ```

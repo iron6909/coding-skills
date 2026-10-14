@@ -63,7 +63,7 @@ go tool pprof cpu.prof
 - Are there obvious inefficiencies? (N+1 queries, unnecessary allocations, blocking calls)
 
 **Document baseline**:
-Create `.cartoons/optimize-YYYYMMDD-HHMM/baseline.md`:
+Create `.cartoons/optimize/YYYYMMDD-HHMM/baseline.md`:
 ```markdown
 # Optimization: [Feature/Component]
 
@@ -134,7 +134,7 @@ One variant at a time.
 2. Implement the variant
 3. Run tests (ensure correctness)
 4. Measure performance with same harness as baseline
-5. Document results in `.cartoons/optimize-YYYYMMDD-HHMM/variant-N.md`
+5. Document results in `.cartoons/optimize/YYYYMMDD-HHMM/variant-N.md`
 
 **Variant results template**:
 ```markdown
@@ -186,7 +186,7 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 3. **Budget exhausted**: Time/effort limit reached
 4. **Diminishing returns**: Further optimization requires disproportionate effort
 
-**Final report** in `.cartoons/optimize-YYYYMMDD-HHMM/summary.md`:
+**Final report** in `.cartoons/optimize/YYYYMMDD-HHMM/summary.md`:
 ```markdown
 # Optimization Summary: [Feature/Component]
 
@@ -249,7 +249,7 @@ Reference `./references/git-commit.md` for commit conventions.
 
 ## Output
 
-- **Location**: `.cartoons/optimize-YYYYMMDD-HHMM/`
+- **Location**: `.cartoons/optimize/YYYYMMDD-HHMM/`
   - `baseline.md`: initial profile and attribution
   - `variant-N.md`: each tested variant
   - `summary.md`: final results
