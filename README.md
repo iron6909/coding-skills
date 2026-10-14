@@ -194,8 +194,7 @@ graph TD
 
 多步骤工作
   → plan (按体量选输出档)
-    → Direct: 1-2 文件、无行为变更 → 只写在会话里,同一会话内接 execute
-    → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同上
+    → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同一会话内接 execute
     → Full: 其它 → plan.md + task briefs
   → execute (逐任务停下确认)
     → 传 auto: 单次批准跑完所有任务(遇测试失败/规格歧义/高风险仍自动停下)

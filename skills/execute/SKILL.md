@@ -9,7 +9,7 @@ disable-model-invocation: true
 Use one of three execution inputs:
 
 - **Planned work:** read the approved spec and `plan.md` in full. The spec defines behavior. The plan defines task order. The default spec path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`; when the project uses another specification system, the plan or the user names the artifact path instead.
-- **Session plan:** a Direct or Brief tier plan from `plan`, held in this conversation rather than on disk. The task list is the plan; the spec path, if any, still governs behavior.
+- **Session plan:** a Brief tier plan from `plan`, held in this conversation rather than on disk. The task list is the plan; the spec path, if any, still governs behavior.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
 Do not treat incomplete planned work as a small change. Do not add product scope without approval.

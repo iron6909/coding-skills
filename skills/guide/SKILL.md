@@ -13,7 +13,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
 - `ideate`: generate and evaluate grounded technical ideas when solution space is large. Use when user says "not sure how to implement" with clear problem. Output: ranked options with trade-offs.
 - `clarify`: resolve the request, scope, spec, constraints, and acceptance checks. Handles product understanding (problem, goals, users) and technical specification. Supports two paths: Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed.
-- `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Direct and Brief tiers keep the plan in the conversation.
+- `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
 - `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `optimize`: systematic performance optimization with measurement-driven iteration (profile, attribute, test variants, stopping criteria).
@@ -51,7 +51,7 @@ Use the first matching rule:
 14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
 15. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`. This handles everything from vague ideas to multi-feature initiatives (clarify's Initiative path auto-detects multi-module work). Research and feasibility validation are embedded in clarify's Phase 1.
 16. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-17. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: a two-file change with no behavior change stays in the conversation instead of producing `plan.md`.
+17. If the spec is approved and the work has multiple steps but no plan exists, use `plan`. `plan` then picks its output tier: small single-module changes stay in the conversation instead of producing `plan.md`.
 18. If the approved work is clear and ready for code changes, use `execute`.
 19. If no rule matches, use `clarify` instead of guessing.
 
