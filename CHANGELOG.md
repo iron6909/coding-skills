@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-10-14
+
+### Fixed
+
+- **`README.md` 快速开始** 示例补上 `/guide`,与"由 `guide` 路由"的说明一致
+
+### Changed
+
+- **`README.md` 移除过时章节**
+  - 删除"与参考材料的差异"对比表,参考体系已变化,表格不再准确
+  - 删除"design 还是 spec?"问答,术语已统一为 spec
+- **`README.md` "版本和更新" → "参考项目"**
+  - 标题与内容不符,改为参考项目
+  - 补齐 `refer/` 下全部 11 个参考项目(submodule),并注明只读、不随技能安装、不被技能依赖
+- **清理范围口径修正(`README.md` / `AGENTS.md`)**
+  - 删掉废弃技能残留的"项目外的抛弃式原型"与 `prototype/<name>` 一次性分支描述
+  - 保留调试探针日志与"用户明确要求丢弃的分支",后者对应 `execute/references/finish.md` 的 Discard 选项
+  - 详见:commit 6cfaa0e, 1d23370
+
 ## [1.3.1] - 2026-10-14
 
 ### Fixed
