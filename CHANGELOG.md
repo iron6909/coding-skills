@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-14
+
+### Changed
+
+- **[plan] 简化档位系统**
+  - 移除 Direct 档，合并到 Brief 档
+  - 从三档（Direct/Brief/Full）简化为两档（Brief/Full）
+  - Brief 判据：≤5 文件、单模块、不触及 hard floors
+  - 移除了"无行为变更"和"遵循已有模式"等模糊判据
+  - 影响文件：`skills/plan/SKILL.md`, `skills/plan/references/output-tier.md`, `skills/guide/SKILL.md`, `skills/execute/SKILL.md`, `README.md`
+  - 详见：commit 49e341f, 4831530
+
 ## [1.2.0] - 2026-10-14
 
 ### Changed
