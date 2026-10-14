@@ -29,7 +29,7 @@ npx skills@latest add iron6909/coding-skills
 /survey
 
 # 2. 开始第一个功能
-让我们添加用户登录功能
+/guide 让我们添加用户登录功能
 ```
 
 `guide` 把请求路由到合适的技能;每个技能产出文档或代码后停下,等你确认再进入下一步:
@@ -293,21 +293,6 @@ learnings 与代码库漂移
 → 重复,直到所有模块都完成
 ```
 
-## 与参考材料的差异
-
-| 特性 | 本项目 | Superpowers | Matt Pocock Skills |
-|------|--------|-------------|-------------------|
-| 定位 | 极简本地开发 | 完整开发流程 | 工程基础技能集 |
-| 语言 | 技能英文,README 中文 | 英文 | 英文 |
-| subagent | 只读调研与审查,不并行写代码 | 每个 task 一个实现 subagent,串行,不并行实现 | `implement-spec` 并行实现 ticket |
-| issue tracker | 无,全部用本地文件 | 无;收尾阶段可推送并创建 PR | 支持 GitHub/GitLab/本地,其他以自由文本记录 |
-| worktree | 不使用 | 核心机制,开工前隔离工作区 | 仅 `implement-spec` 每个 ticket 一个 worktree |
-| 流程 | 按需路由,逐步确认 | brainstorm → worktree → plan → 执行 → 收尾 | grill → spec → ticket → implement |
-| TDD | 有测试工具时强制 RED-GREEN-REFACTOR;`execute`/`debug`/`code-review` 共用一份 reference | 强制(无失败测试不写生产代码) | `tdd` 作为参考技能,由 `implement` 驱动 |
-| 提交 | 产出文档的技能自己提交,不 push | 收尾阶段由用户决定推送/PR | 由 tracker 与 `/pr` 决定 |
-| 收尾 | `execute/finish.md`:保留 / 本地合并 / 丢弃 | worktree + 三种选项 + PR | draft PR 转 ready |
-| domain modeling | `clarify` 的 reference:术语表 + ADR | 无 | 核心技能 `domain-modeling` |
-
 ## 故障排查
 
 ### 技能没触发
@@ -338,18 +323,26 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 **文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
 
-**不是文档的临时物照常清理**:调试探针和日志、项目外的抛弃式原型,以及你明确要求丢弃的分支(包括 `prototype/<name>` 一次性分支和 `finish` 里选择丢弃的分支)。
+**不是文档的临时物照常清理**:调试探针和日志,以及你明确要求丢弃的分支。
 
-### design 还是 spec?
-
-本套统一用 **spec**:产物是 `spec.md`。`design question`(prototype 要回答的问题)、ADR 的 `design decision`、`task design` 这些说法保留原样,指的是别的东西。
-
-## 版本和更新
+## 参考项目
 
 本技能集基于两个参考体系提炼:
 
-- **Superpowers** (obra) — 完整流程管理,subagent 驱动开发
-- **Matt Pocock Skills** — 工程基础,语言对齐(domain modeling + GLOSSARY.md)
+- **Superpowers** (obra/superpowers) — 完整流程管理,subagent 驱动开发
+- **Matt Pocock Skills** (mattpocock/skills) — 工程基础,语言对齐(domain modeling + GLOSSARY.md)
+
+其余项目以只读 submodule 挂在 `refer/` 下,只作参考,不随技能安装,也不被任何技能依赖:
+
+- **Spec Kit** (github/spec-kit) — 规格驱动开发的工具包
+- **OpenSpec** (Fission-AI/OpenSpec) — spec 框架
+- **BMAD-METHOD** (bmad-code-org/BMAD-METHOD) — Agile AI Driven Development 方法论
+- **ECC** (affaan-m/ECC) — agent harness 编排系统
+- **gstack** (garrytan/gstack) — 个人 agent 开发栈
+- **oh-my-claudecode** (Yeachan-Heo/oh-my-claudecode) — Claude Code 编排插件
+- **Compound Engineering** (EveryInc/compound-engineering-plugin) — 36 个技能,围绕 brainstorm → plan → build → review → capture 循环
+- **Impeccable** (pbakaus/impeccable) — 前端界面设计指导
+- **Agent Skills** (addyosmani/agent-skills) — 生产级工程技能集
 
 当前版本专注本地化开发,极简流程,直线推进。
 
