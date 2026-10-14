@@ -84,7 +84,7 @@ graph TD
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
-| **plan** | spec 已批准 | 分三档:Direct/Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
+| **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
