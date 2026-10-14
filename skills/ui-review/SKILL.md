@@ -160,7 +160,7 @@ Fix:
 
 Check WCAG AA compliance.
 
-**Key checks (see [references/wcag-checklist.md](../ui-design/references/wcag-checklist.md)):**
+**Key checks (WCAG AA):**
 - Color contrast ≥4.5:1 (text), ≥3:1 (large text/components)
 - Semantic HTML (`<button>` not `<div onclick>`)
 - ARIA labels on icon-only buttons
