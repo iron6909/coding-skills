@@ -1,349 +1,137 @@
 ---
 name: ui-design
-description: Plan UI/UX design before implementation. Creates DESIGN.md (design system) and ui-spec.md (interface specifications) based on clarify output. Use when implementing new frontend features or when design specifications are needed.
+description: Turn an approved spec's frontend surfaces into design specifications before coding. Creates DESIGN.md at the project root when the project has none, and ui-spec.md beside the spec. Use when a spec involves frontend UI and layout, component states, or interaction flows still need deciding.
 disable-model-invocation: true
 ---
 
-# UI Design Planning
+# UI Design
 
-Creates design specifications before coding begins. This skill operates between `clarify` (which defines requirements) and `plan` (which breaks down tasks).
+Decide the interface before anyone writes code. Runs between `clarify` (which produces `spec.md`) and `plan` (which breaks the work into tasks).
+
+This skill decides what the interface is: arrangement, components, states, and the tokens behind them. It does not choose implementation tasks, and it writes no application code.
 
 ## When to invoke
 
-- After `clarify` produces `spec.md` with frontend UI requirements
-- User explicitly requests UI design or interface planning
-- Project lacks `DESIGN.md` or design system documentation
-- Need to define interface behavior, layout, and component states before coding
+- `spec.md` describes frontend surfaces and layout, states, or interactions are still open
+- The project has no `DESIGN.md`, so a new interface would invent a palette or type scale ad hoc
+- A visual decision has more than one defensible answer and the spec does not settle it
+
+Skip this skill when the spec already fixes the visual direction, or when the change reuses existing components unchanged. Route straight to `plan` in those cases.
 
 ## Output
 
-1. **DESIGN.md** (project root, if missing)
-   - Design system: colors, typography, spacing, components
-   - Reusable tokens and patterns
-   - Created once, evolved over time
+| Artifact | Path | When |
+|----------|------|------|
+| Design system | `DESIGN.md` at the project root | Only when none exists |
+| Interface spec | `docs/features/YYYYMMDD-<semantic-name>/ui-spec.md` | Always |
 
-2. **ui-spec.md** (`docs/features/YYYYMMDD-<name>/ui-spec.md`)
-   - Interface specifications for this specific feature
-   - Wireframes, component states, interaction flows
-   - Created per feature
+`DESIGN.md` is the reusable system and belongs to the whole project. `ui-spec.md` is scoped to one feature and sits beside the `spec.md` it serves, so `plan` finds it in the same directory.
 
-## Workflow
+## Phase 0: Assess what exists
 
-### Phase 0: Assess Current State
+1. Check the project root for `DESIGN.md`. When it exists, read it and treat it as the authority: Phase 1 is skipped.
+2. When it is missing, extract what the code already ships — CSS custom properties, a Tailwind or theme config, component styles. A working project usually has a de facto system. Record it instead of replacing it.
+3. Read `spec.md` in full and list every surface it mentions.
 
-1. **Check for existing design system**
-   - Does `DESIGN.md` exist at project root?
-   - Scan existing frontend code for design tokens:
-     - CSS variables (`:root { --color-primary: ... }`)
-     - Tailwind config (`tailwind.config.js`)
-     - Theme files (`theme.ts`, `styles/variables.scss`)
-   - Identify framework (React, Vue, Svelte, native HTML)
+State what you found before proposing anything. A project with an inferred system and one with none need different questions.
 
-2. **Read the spec**
-   - Load `docs/features/YYYYMMDD-<name>/spec.md` from clarify
-   - Identify all UI surfaces mentioned
-   - Note stated requirements and constraints
+## Phase 1: Establish the design system
 
-### Phase 1: Establish Design System (if missing)
+Only when `DESIGN.md` is missing, and only for decisions the code does not already answer.
 
-If `DESIGN.md` does not exist, create it by asking:
+Ask about three things, then decide the rest and say why:
 
-1. **Product positioning**
-   - What is this product? (tool, marketing site, documentation, portfolio)
-   - Who are the target users?
-   - What tone should the design convey? (professional, playful, technical, elegant)
+- What the product is and who uses it
+- The tone the interface should carry
+- Hard constraints (a brand color, an existing typeface, a platform requirement)
 
-2. **Design decisions** (see [references/design-principles.md](references/design-principles.md) for guidance)
-   - **Mode**: Persuade / Operate / Read / Experience
-   - **Color palette**: Primary, secondary, neutral, semantic colors
-   - **Typography**: Display font, body font, monospace font, scale
-   - **Spacing scale**: Base unit (4px or 8px), scale steps
-   - **Border radius**: Sharp, subtle, rounded, pill
-   - **Shadows**: Elevation levels for layering
+From those answers choose and justify:
 
-3. **Write DESIGN.md**
-   ```markdown
-   # Design System
-   
-   ## Mode
-   [Persuade / Operate / Read / Experience]
-   
-   ## Colors
-   ### Primary
-   - primary-50: #...
-   - primary-500: #...
-   - primary-900: #...
-   
-   ### Semantic
-   - success: #...
-   - warning: #...
-   - error: #...
-   - info: #...
-   
-   ### Neutral
-   - Always tinted, never pure gray
-   - neutral-50: #...
-   - neutral-900: #...
-   
-   ## Typography
-   ### Fonts
-   - Display: [font-family]
-   - Body: [font-family]
-   - Mono: [font-family]
-   
-   ### Scale
-   - text-xs: 12px / 16px
-   - text-sm: 14px / 20px
-   - text-base: 16px / 24px
-   - text-lg: 18px / 28px
-   - text-xl: 20px / 28px
-   - text-2xl: 24px / 32px
-   - text-3xl: 30px / 36px
-   
-   ## Spacing
-   - Base: 8px
-   - Scale: 0.5, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32
-   
-   ## Border Radius
-   - sm: 4px
-   - md: 8px
-   - lg: 12px
-   - full: 9999px
-   
-   ## Shadows
-   - sm: 0 1px 2px rgba(0,0,0,0.05)
-   - md: 0 4px 6px rgba(0,0,0,0.1)
-   - lg: 0 10px 15px rgba(0,0,0,0.1)
+- **Mode** — Persuade, Operate, Read, or Experience. Pick it from the surface at hand, not from the product: a tool's marketing page is Persuade while its dashboard is Operate.
+- **Palette** — one primary, semantic colors for success, warning, error, and info, plus a neutral ramp. Tint the neutrals; pure gray and pure black read as unfinished.
+- **Type** — a display face (optional), a body face, a mono face, and a scale built on a single ratio.
+- **Space, radius, elevation** — one base unit and a small closed set of values for each.
+
+Read `./references/design-principles.md` before deciding. It carries what each mode optimizes for and the anti-patterns that make a system read as machine-made. Do not ship a palette or typeface those rules ban.
+
+Write `DESIGN.md` in this shape, giving every token a value:
+
+```markdown
+# Design System
+
+## Mode
+Persuade | Operate | Read | Experience
+
+## Colors
+primary / primary-hover / primary-active
+success, warning, error, info
+neutral ramp, tinted
+
+## Typography
+faces, then the scale as size / line-height pairs
+
+## Spacing
+base unit and the steps above it
+
+## Radius / Elevation
+the closed set of values
+```
+
+## Phase 2: Specify the interfaces
+
+For each surface in the spec:
+
+1. **Structure** — the screens or regions, how the user moves between them, and the journeys that matter. ASCII wireframes are enough; they carry arrangement, not pixels.
+2. **Layout per breakpoint** — mobile, tablet, desktop. Say what changes, not only what shrinks.
+3. **Components and states** — every interactive element needs default, hover, focus, active, and disabled at minimum, plus loading, error, and empty where it can reach them. Read `./references/component-states.md` for the state set per component type rather than inventing a state model.
+4. **Interactions** — pointer, keyboard, and touch behavior, including what closes a dialog and where focus goes next.
+5. **Edge cases** — loading, empty, error, long content, and no data.
+
+Write `ui-spec.md` beside `spec.md`, in this shape:
+
+```markdown
+# UI Specification: <feature name>
+
+## Overview
+the surface and its mode
+
+## Structure
+screens, navigation, journeys
+
+## Screens
+per screen: wireframe, layout per breakpoint, components with states
+
+## Interactions
+pointer, keyboard, touch
+
+## Edge cases
+loading, empty, error
+
+## Accessibility
+what this spec relies on, not a copy of the checklist
+```
+
+Keep it to decisions a developer cannot infer from the spec. Anything an implementer would do the obvious way does not need a line.
+
+## Phase 3: Verify before handing off
+
+Read `./references/wcag-checklist.md` and check the specification against it. The checklist is the authority; restating its items here would let the two drift apart.
+
+Three failures recur often enough to name: text below 4.5:1 contrast, touch targets under 44px, and color carrying meaning on its own.
+
+## Phase 4: Save and hand off
+
+1. Commit `DESIGN.md` when it was created, and `ui-spec.md`:
+
+   ```
+   docs(ui-design): add design specifications for <feature-name>
    ```
 
-### Phase 2: Design Interface Specifications
-
-Based on `spec.md`, design the specific interfaces for this feature:
-
-1. **Information Architecture**
-   - List all screens/views needed
-   - Define navigation structure
-   - Map user journeys
-
-2. **Layout Design**
-   - Describe layout structure (text or ASCII wireframes)
-   - Define responsive breakpoints:
-     - Mobile: 320-767px
-     - Tablet: 768-1023px
-     - Desktop: 1024px+
-   - Specify grid structure (12-column, flex, CSS Grid)
-
-3. **Component States** (see [references/component-states.md](references/component-states.md))
-   
-   For each interactive component, define:
-   - **default**: Initial appearance
-   - **hover**: Mouse over (desktop only)
-   - **focus**: Keyboard focus
-   - **active**: Being clicked/pressed
-   - **disabled**: Non-interactive state
-   - **loading**: Async operation in progress
-   - **error**: Validation failed or error occurred
-   - **success**: Action completed successfully
-
-4. **Interaction Flows**
-   - Click/tap behaviors
-   - Keyboard shortcuts
-   - Touch gestures (mobile)
-   - Form validation sequences
-   - Error recovery paths
-
-5. **Write ui-spec.md** in `docs/features/YYYYMMDD-<name>/`
-   
-   Use this template:
-   ```markdown
-   # UI Specification: [Feature Name]
-   
-   ## Overview
-   [Brief description of the interface]
-   
-   Mode: [Persuade / Operate / Read / Experience]
-   
-   ## Information Architecture
-   
-   ### Screens
-   1. [Screen name]: [Purpose]
-   2. [Screen name]: [Purpose]
-   
-   ### Navigation Flow
-   [Describe or diagram the flow between screens]
-   
-   ### Key User Journeys
-   1. [Journey name]: [Steps]
-   2. [Journey name]: [Steps]
-   
-   ## Screen Specifications
-   
-   ### [Screen Name 1]
-   
-   #### Layout (Desktop)
-   ```
-   [ASCII wireframe or detailed text description]
-   Example:
-   +----------------------------------+
-   | Header                    [User] |
-   +----------------------------------+
-   | [Title]                          |
-   | [Description]                    |
-   |                                  |
-   | +-------------+  +-------------+ |
-   | | Card 1      |  | Card 2      | |
-   | | [Content]   |  | [Content]   | |
-   | +-------------+  +-------------+ |
-   +----------------------------------+
-   ```
-   
-   #### Layout (Mobile)
-   ```
-   [Mobile layout, single column]
-   ```
-   
-   #### Components
-   
-   ##### [Component Name, e.g., Submit Button]
-   - Type: Button
-   - Label: "Submit"
-   - Variant: Primary
-   - States:
-     - default: Primary color, enabled
-     - hover: Slightly darker
-     - active: Darker, scale 0.98
-     - disabled: Gray, cursor not-allowed
-     - loading: Spinner, disabled
-   
-   ##### [Component Name, e.g., Email Input]
-   - Type: Text input
-   - Label: "Email address"
-   - Placeholder: "you@example.com"
-   - Validation: Email format
-   - States:
-     - default: Neutral border
-     - focus: Primary border, outline
-     - error: Red border, error message below
-     - success: Green checkmark icon
-   
-   ### [Screen Name 2]
-   [Repeat structure]
-   
-   ## Interaction Specifications
-   
-   ### Mouse/Click
-   - [Element]: [What happens on click]
-   - [Element]: [What happens on click]
-   
-   ### Keyboard
-   - Tab: Move focus to next interactive element
-   - Enter: [Context-specific action]
-   - Esc: [Close modal / cancel action]
-   - [Custom shortcuts]
-   
-   ### Touch (Mobile)
-   - Tap: Same as click
-   - Swipe: [Direction and effect]
-   - Long-press: [Action]
-   
-   ## Responsive Behavior
-   
-   ### Mobile (320-767px)
-   - Single column layout
-   - Larger touch targets (≥44×44px)
-   - Stack cards vertically
-   - Hamburger menu for navigation
-   
-   ### Tablet (768-1023px)
-   - 2-column layout where applicable
-   - Expanded navigation
-   
-   ### Desktop (1024px+)
-   - Multi-column layout
-   - Hover states active
-   - Keyboard shortcuts visible
-   
-   ## Accessibility Requirements
-   
-   - WCAG AA compliance
-   - Color contrast ≥4.5:1 for text, ≥3:1 for large text
-   - Semantic HTML (`<button>`, `<nav>`, `<main>`, etc.)
-   - ARIA labels where needed
-   - Keyboard navigation for all interactive elements
-   - Focus indicators visible
-   - Screen reader announcements for dynamic content
-   
-   ## Edge Cases
-   
-   - Loading states: Show skeleton or spinner
-   - Empty states: Helpful message and CTA
-   - Error states: Specific, actionable error messages
-   - Offline: Graceful degradation or cached content
-   - Long content: Truncation or pagination strategy
-   - No data: Empty state illustration and guidance
-   ```
-
-### Phase 3: Usability Self-Check
-
-Before finalizing, verify against core usability principles (see [references/wcag-checklist.md](references/wcag-checklist.md)):
-
-1. **Color Contrast**
-   - Text on background: ≥4.5:1 (normal), ≥3:1 (large)
-   - No gray text on colored backgrounds
-   - All colors tinted (never pure gray)
-
-2. **Touch Targets**
-   - All interactive elements ≥44×44px on mobile
-   - Adequate spacing between targets
-
-3. **Keyboard Navigation**
-   - All functionality accessible via keyboard
-   - Focus order logical (top-to-bottom, left-to-right)
-   - Focus indicators clearly visible
-
-4. **Form Design**
-   - Every input has associated label
-   - Error messages specific and actionable
-   - Required fields marked clearly
-   - Inline validation where helpful
-
-5. **States Coverage**
-   - All interactive elements define: default, hover, focus, active, disabled
-   - Async operations have loading state
-   - Forms have error and success states
-
-### Phase 4: Handoff
-
-1. **Commit documents**
-   ```bash
-   git add DESIGN.md  # if created
-   git add docs/features/YYYYMMDD-<name>/ui-spec.md
-   git commit -m "docs(ui-design): add design specifications for <feature-name>"
-   ```
-
-2. **Confirm with user**
-   - Present key design decisions
-   - Highlight any assumptions made
-   - Ask for feedback before handing off to `plan`
-
-3. **Next step**
-   - Inform user that `plan` skill will now decompose ui-spec.md into implementation tasks
-   - Or route to `plan` automatically if user approves
+2. Present the decisions that had more than one defensible answer, plus every assumption you made. Ask for changes before moving on.
+3. Say what comes next: `plan` reads `ui-spec.md` from the feature directory and breaks it into tasks. Do not start it.
 
 ## References
 
-Load these on demand during the workflow:
-
-- [references/design-principles.md](references/design-principles.md) - Core design principles, mode selection, visual hierarchy
-- [references/wcag-checklist.md](references/wcag-checklist.md) - WCAG AA accessibility checklist
-- [references/component-states.md](references/component-states.md) - Standard states for common components
-
-## Notes
-
-- **Wireframes**: ASCII art is sufficient. The goal is to communicate layout and structure, not pixel-perfect visuals.
-- **Mode matters**: A landing page (Persuade) has different needs than a dashboard (Operate).
-- **Design system is living**: DESIGN.md evolves. When adding new patterns, update it.
-- **Separation of concerns**:
-  - DESIGN.md = reusable system
-  - ui-spec.md = specific to this feature
-  - plan.md (next step) = implementation tasks
+- `./references/design-principles.md` — read before Phase 1, and whenever a visual decision needs justifying. Modes, hierarchy, usability, and the anti-patterns to avoid.
+- `./references/component-states.md` — read during Phase 2 when defining a component's state set.
+- `./references/wcag-checklist.md` — read during Phase 3, and whenever contrast, accessible naming, or target size comes up.
