@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-15
+
+### Changed
+
+- **临时目录改名（破坏性）**：所有技能写入的临时目录从 `.cartoons/` 改为 `.coding/`，同步更新 11 个 `SKILL.md`、10 个 references、`README.md` 文档结构、`AGENTS.md` 规则和 `.gitignore`。
+  - 只有目录名变了：子目录结构、文件名格式、「文档一律不删」规则都不变。
+  - 已存在的 `.cartoons/` 目录保留在磁盘上，不迁移也不删除；新运行只写 `.coding/`。
+
+### 迁移对照
+
+| 旧路径 | 新路径 |
+|--------|--------|
+| `.cartoons/` | `.coding/` |
+| `.cartoons/features/20250115-user-auth/impl/` | `.coding/features/20250115-user-auth/impl/` |
+| `.cartoons/handoff/20250115-1430.md` | `.coding/handoff/20250115-1430.md` |
+| `.cartoons/ideation/20250115-1530-auth-flow.md` | `.coding/ideation/20250115-1530-auth-flow.md` |
+| `.cartoons/optimize/20250115-1430/` | `.coding/optimize/20250115-1430/` |
+| `.cartoons/refactor/20250115-scope.md` | `.coding/refactor/20250115-scope.md` |
+| `.cartoons/review/20250115-1430-scope.md` | `.coding/review/20250115-1430-scope.md` |
+| `.cartoons/ui-review/20250115-1430.md` | `.coding/ui-review/20250115-1430.md` |
+| `.cartoons/autoflow-state.json` | `.coding/autoflow-state.json` |
+
+使用方需要做的：把项目 `.gitignore` 里的 `.cartoons/` 换成 `.coding/`（本仓库已改）。旧的 `.cartoons/` 目录留着还是清理，由你决定。
+
 ## [2.0.2] - 2026-10-15
 
 ### Fixed
@@ -218,7 +242,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.2...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/iron6909/coding-skills/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/iron6909/coding-skills/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/iron6909/coding-skills/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/iron6909/coding-skills/compare/v1.3.3...v2.0.0
