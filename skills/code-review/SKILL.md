@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review code changes since a review base using configurable lenses — Standards (repo coding standards), Spec (spec conformance), Learnings (recorded traps), and optional lenses (Security, Performance, Accessibility, I18n) — and write a report to .cartoons. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review code changes since a review base using configurable lenses — Standards (repo coding standards), Spec (spec conformance), Learnings (recorded traps), and optional lenses (Security, Performance, Accessibility, I18n) — and write a report to .coding. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
 disable-model-invocation: true
 ---
 
@@ -130,7 +130,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 ## Write the report
 
-Write the findings to `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.cartoons/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
+Write the findings to `.coding/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.coding/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
 Use the Report structure in `./references/review-lenses.md`. Present each lens separately in that order. A Learnings finding names its source file; disabled or unavailable lenses are explicitly marked, not counted as passes.
 
@@ -168,7 +168,7 @@ Confirm the Definition of Done loaded above, then check the review itself:
 - [ ] all enabled lenses ran, or unavailable lenses are explicitly marked
 - [ ] every finding carries a severity you assigned, not the reviewer's
 - [ ] every finding that points at code names a file, and a line where one applies
-- [ ] the report was written to `.cartoons/`, never to the repository root
+- [ ] the report was written to `.coding/`, never to the repository root
 - [ ] no code changed unless the user asked for fixes
 - [ ] optional lenses only ran if explicitly enabled in configuration
 
@@ -199,4 +199,4 @@ Deferred: <N Minor findings>
 Next: <user reviews findings, requests fixes, or decides integration>
 ```
 
-The report written to `.cartoons/` is for the user to read. List deferred minors here for their decision. If Blocking findings remain and the user wants to capture them for future reference, offer to route them to `capture`.
+The report written to `.coding/` is for the user to read. List deferred minors here for their decision. If Blocking findings remain and the user wants to capture them for future reference, offer to route them to `capture`.

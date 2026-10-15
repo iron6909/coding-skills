@@ -72,7 +72,7 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 - Goal, spec path, and approach
 - Tasks: ordered list with dependencies and requirement coverage
 - Final verification commands and expected results
-- Task briefs under `.cartoons/features/YYYYMMDD-<semantic-name>/impl/`
+- Task briefs under `.coding/features/YYYYMMDD-<semantic-name>/impl/`
 
 ### Specific checks
 
@@ -87,7 +87,7 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 - Dependencies are valid (no circular, no missing prerequisites)
 - Tracer bullet ordering: vertical slices before horizontal layers
 
-**Task briefs** (read from `.cartoons/`):
+**Task briefs** (read from `.coding/`):
 - Each brief states its goal, covered requirements, dependencies, acceptance checks, steps, files, and consumed/produced interfaces
 - Interfaces are consistent (task-2 Consumes what task-1 Produces)
 

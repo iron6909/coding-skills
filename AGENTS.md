@@ -32,14 +32,14 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 ## Output paths
 
-The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.cartoons/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
+The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.coding/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
 
-- `.cartoons/` is temporary and gitignored: never put `spec.md`, `plan.md`, or anything that must be committed there.
+- `.coding/` is temporary and gitignored: never put `spec.md`, `plan.md`, or anything that must be committed there.
 - Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Documents are never deleted
 
-No skill deletes a document: not `spec.md` or `plan.md`, not `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under `.cartoons/`, not a review or research report. A document that looks obsolete is superseded or left in place. These skills run in other people's repositories, where a deleted document is gone for good.
+No skill deletes a document: not `spec.md` or `plan.md`, not `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under `.coding/`, not a review or research report. A document that looks obsolete is superseded or left in place. These skills run in other people's repositories, where a deleted document is gone for good.
 
 A learning may be moved to `docs/learnings/_archived/` when the archival gates in its shared lifecycle reference are met. Archiving preserves the document; it never permits deleting it or overwriting an archived copy.
 

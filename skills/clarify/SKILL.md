@@ -178,7 +178,7 @@ When a decision passes the three-condition test (hard to reverse + surprising ch
 **Process**:
 1. Write the smallest code needed to answer the question
 2. Run it and observe the result
-3. Delete the spike code (or save to `.cartoons/` if user wants to reference it)
+3. Delete the spike code (or save to `.coding/` if user wants to reference it)
 4. Write conclusions into the spec (Solution section or new "Feasibility Validation" section)
 
 **Do not** create `spike.md`. Validation findings go into `spec.md`.

@@ -1,6 +1,6 @@
 ---
 name: optimize
-description: Profile a measured performance problem, compare variants, and commit verified improvements. Save experiment reports under .cartoons/optimize/. Use for systematic latency, throughput, memory, or cost work; use debug for regressions and execute for a known small fix.
+description: Profile a measured performance problem, compare variants, and commit verified improvements. Save experiment reports under .coding/optimize/. Use for systematic latency, throughput, memory, or cost work; use debug for regressions and execute for a known small fix.
 disable-model-invocation: true
 ---
 
@@ -211,7 +211,7 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 
 ### Phase 5: Commit
 
-Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch, staging only this work's code and tests and checking `git diff --staged`. Reports under `.cartoons/` stay uncommitted. Do not create an empty final commit, merge, or push; report the branch and let the user decide integration.
+Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch, staging only this work's code and tests and checking `git diff --staged`. Reports under `.coding/` stay uncommitted. Do not create an empty final commit, merge, or push; report the branch and let the user decide integration.
 
 Commit message:
 ```
@@ -232,11 +232,11 @@ Reference `./references/git-commit.md` for commit conventions.
 
 ## Output
 
-- **Run directory**: default `.cartoons/optimize/YYYYMMDD-HHMM/`. If it exists, use the next unused `-2`, `-3`, or later suffix for the entire new run, even if one expected report is absent. Never overwrite an earlier run. Keep that actual directory for all reports, links, summaries, and commit messages.
+- **Run directory**: default `.coding/optimize/YYYYMMDD-HHMM/`. If it exists, use the next unused `-2`, `-3`, or later suffix for the entire new run, even if one expected report is absent. Never overwrite an earlier run. Keep that actual directory for all reports, links, summaries, and commit messages.
   - `baseline.md`: initial profile and attribution
   - `variant-N.md`: each tested variant
   - `summary.md`: final results
-- **Committed**: optimization code changes (not the `.cartoons/` reports)
+- **Committed**: optimization code changes (not the `.coding/` reports)
 - **Branch**: the current approved branch or `feature/YYYYMMDD-optimize-<name>`; left for the user's integration decision
 
 ## Principles

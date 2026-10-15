@@ -376,7 +376,7 @@ Look for:
 
 ## Configuration
 
-Optional threshold overrides in `.cartoons/simplify-config.toml`:
+Optional threshold overrides in `.coding/simplify-config.toml`:
 
 ```toml
 [complexity]

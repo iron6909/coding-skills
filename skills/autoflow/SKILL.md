@@ -42,7 +42,7 @@ Ask once for approval of both:
 
 An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved spec and plan revisions and the authorization. If the plan changes, renew the approval rather than carrying it over silently.
 
-`plan` then saves and commits `plan.md`. Its task briefs remain gitignored under `.cartoons/`; they are not committed. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
+`plan` then saves and commits `plan.md`. Its task briefs remain gitignored under `.coding/`; they are not committed. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
 
 ## Stage 2: Execute
 
@@ -58,7 +58,7 @@ Invoke `code-review` with the fixed feature review base, approved spec and plan 
 
 The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
 
-Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. The review report stays under `.cartoons/` and is not committed.
+Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. The review report stays under `.coding/` and is not committed.
 
 ## Stops and recovery
 
@@ -82,7 +82,7 @@ Tasks: <completed / executable; each reviewed and committed; approved skipped ta
 Checks: <commands and fresh results>
 Review: <report path; Blocking/Important fixed or remaining>
 Deferred: <Minor findings>
-State: .cartoons/autoflow-state.json
+State: .coding/autoflow-state.json
 Stopped: <reason, or none>
 Next: <resolve blocker, resume, or user decides integration>
 ```

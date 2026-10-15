@@ -72,7 +72,7 @@ Each task in `plan.md` references the requirement IDs it implements:
 
 ### Task brief references
 
-In `.cartoons/features/YYYYMMDD-<name>/impl/task-N.md`:
+In `.coding/features/YYYYMMDD-<name>/impl/task-N.md`:
 
 ```markdown
 # Task N: <short name>

@@ -1,6 +1,6 @@
 ---
 name: ui-review
-description: Review implemented frontend UI against the project's design system and accessibility floor, and write findings to .cartoons. Checks design consistency, usability, accessibility, responsive behavior, and performance. Use after execute finishes frontend work, or when asked to audit, review, or improve an interface. Changes code only if the user then asks for fixes.
+description: Review implemented frontend UI against the project's design system and accessibility floor, and write findings to .coding. Checks design consistency, usability, accessibility, responsive behavior, and performance. Use after execute finishes frontend work, or when asked to audit, review, or improve an interface. Changes code only if the user then asks for fixes.
 disable-model-invocation: true
 ---
 
@@ -18,7 +18,7 @@ Do not confuse this with `code-review`, which judges a diff against repo standar
 
 ## Output
 
-`.cartoons/ui-review/YYYYMMDD-HHMM.md`, holding every finding. If that path exists, append `-2`, `-3`, or the next unused suffix; never overwrite a report. Use the selected path throughout the run. Nothing is committed by default.
+`.coding/ui-review/YYYYMMDD-HHMM.md`, holding every finding. If that path exists, append `-2`, `-3`, or the next unused suffix; never overwrite a report. Use the selected path throughout the run. Nothing is committed by default.
 
 Each finding carries an ID, a severity, a file and line, the issue, the expected state, the impact on a real user, the fix, and its evidence. Include the page, viewport, state, screenshot, or reproduction steps when applicable.
 

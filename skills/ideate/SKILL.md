@@ -1,6 +1,6 @@
 ---
 name: ideate
-description: Generate and evaluate grounded technical ideas before committing to one direction. Use when exploring solution space, comparing approaches, or the user says "not sure how to do this" with a clear problem. Output - ranked options with trade-offs in .cartoons/ideation/.
+description: Generate and evaluate grounded technical ideas before committing to one direction. Use when exploring solution space, comparing approaches, or the user says "not sure how to do this" with a clear problem. Output - ranked options with trade-offs in .coding/ideation/.
 disable-model-invocation: true
 ---
 
@@ -109,7 +109,7 @@ Compress to 2-3 approaches. Stress-test each one.
 
 ### Phase 3: Output
 
-Save to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
+Save to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
 
 ```markdown
 # Ideation: [Topic]
@@ -196,7 +196,7 @@ Present the saved ideation to user:
 2. **[Option 2 name]**: [One sentence]. Alternative if [condition].
 [Repeat only for the actual survivors.]
 
-Full analysis saved to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`.
+Full analysis saved to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`.
 
 **Which approach should we pursue?**"
 
@@ -208,7 +208,7 @@ After selection, append the chosen approach and the user's reason to the saved i
 
 ## Notes
 
-- **Ideation results are temporary** (`.cartoons/`) - not committed to git
+- **Ideation results are temporary** (`.coding/`) - not committed to git
 - **The selected approach gets formalized** in `clarify` → `spec.md`
 - **Keep ideation focused**: 30-60 minutes, not exhaustive exploration
 - **Use read-only subagents** for code/web exploration when needed

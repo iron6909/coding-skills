@@ -19,4 +19,4 @@ Important choices and their reasons, in `docs/adr/`. Prevents re-opening decisio
 - **AGENTS.md / GLOSSARY.md / ADRs**: project-level, long-lived, shared by all features.
 - **`docs/features/`**: per-feature spec and plan. For multi-module work, also holds `capability-map.md`. Permanent.
 - **Research and spike findings**: optional validation within `clarify`, recorded in the feature spec's decisions and feasibility findings, not a separate research skill or output directory.
-- **`.cartoons/`**: per-feature execution ledger and task briefs. Temporary in the sense that it is gitignored, never deleted: it is the local record of how the work was done.
+- **`.coding/`**: per-feature execution ledger and task briefs. Temporary in the sense that it is gitignored, never deleted: it is the local record of how the work was done.

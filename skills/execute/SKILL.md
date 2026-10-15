@@ -37,10 +37,10 @@ Say which mode you are in before starting, and name the reason for any early sto
 For planned work, create an isolated impl directory:
 
 ```text
-.cartoons/features/YYYYMMDD-<name>/impl/
+.coding/features/YYYYMMDD-<name>/impl/
 ```
 
-`.cartoons/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, in `.cartoons/features/` to match `docs/features/YYYYMMDD-<name>/`. Spec and plan live under `docs/features/`, never here.
+`.coding/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, in `.coding/features/` to match `docs/features/YYYYMMDD-<name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 
@@ -56,7 +56,7 @@ Read `impl/task-N.md` for task details. `plan.md` is a lightweight index. For a 
 
 Read any approved `ui-spec.md` beside the spec and the relevant constraints in `DESIGN.md` when present. They govern frontend tasks alongside the spec and plan, even when a brief is available.
 
-If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from the approved spec, plan, applicable `ui-spec.md`, and design constraints in the same format. Write `Task <N>: brief rebuilt from approved inputs` to the ledger and continue. Do not invent layout, state, interaction, or product decisions. If those sources are still too thin, stop and ask the user to rerun `plan`. Rebuild only executable tasks at Full tier; there is no brief to rebuild for a session plan.
+If `impl/task-N.md` is missing (a fresh clone, or a `.coding/` that was never created), rebuild it from the approved spec, plan, applicable `ui-spec.md`, and design constraints in the same format. Write `Task <N>: brief rebuilt from approved inputs` to the ledger and continue. Do not invent layout, state, interaction, or product decisions. If those sources are still too thin, stop and ask the user to rerun `plan`. Rebuild only executable tasks at Full tier; there is no brief to rebuild for a session plan.
 
 ## Preconditions
 

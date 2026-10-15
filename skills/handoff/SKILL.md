@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Save session state to .cartoons/handoff/YYYYMMDD-HHMM.md with the current phase, blockers, artifact paths, and next actions. Use when pausing unfinished work or handing it to another session or agent.
+description: Save session state to .coding/handoff/YYYYMMDD-HHMM.md with the current phase, blockers, artifact paths, and next actions. Use when pausing unfinished work or handing it to another session or agent.
 disable-model-invocation: true
 ---
 
@@ -33,7 +33,7 @@ Identify:
 
 ### 2. Create Handoff Document
 
-Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
+Write `.coding/handoff/YYYYMMDD-HHMM.md`:
 
 ```markdown
 # Handoff: [Feature/Task Name]
@@ -89,7 +89,7 @@ Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 **Plan**: [Path if exists, or "Not created yet"]
 **Branch**: `[branch-name]` ([commits ahead of the default branch])
 **Learnings**: [Path to docs/learnings/ if any]
-**Progress ledger**: [Path to .cartoons/.../impl/progress.md if in execute phase]
+**Progress ledger**: [Path to .coding/.../impl/progress.md if in execute phase]
 
 ## Unsaved spec draft (only when no saved draft exists)
 
@@ -105,7 +105,7 @@ Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 
 Write the file, then tell the user:
 
-> "Handoff saved to `.cartoons/handoff/YYYYMMDD-HHMM.md`.
+> "Handoff saved to `.coding/handoff/YYYYMMDD-HHMM.md`.
 > 
 > **Current phase**: [phase name]
 > **Completed**: [key milestones]
@@ -119,16 +119,16 @@ Provide the exact path so they can read it later.
 
 When the user says "resume from handoff" or provides a handoff file:
 
-1. **Read the handoff**: Load `.cartoons/handoff/YYYYMMDD-HHMM.md`
+1. **Read the handoff**: Load `.coding/handoff/YYYYMMDD-HHMM.md`
 2. **Verify artifacts**: Check that referenced files still exist and match expected state. An inline unapproved spec draft resumes clarification and still needs approval
 3. **Confirm next steps**: "It looks like we were in [phase], with [task] next. Continue from here?"
 4. **Report the next skill**: State the verified next action and recommended skill, then stop. The user chooses when to invoke it.
 
 ## Handoff Locations
 
-Always write to `.cartoons/handoff/YYYYMMDD-HHMM.md` (gitignored).
+Always write to `.coding/handoff/YYYYMMDD-HHMM.md` (gitignored).
 
-Example: `.cartoons/handoff/20250120-1430.md`. If the timestamp already exists, append a short topic or numeric suffix; never overwrite a prior handoff.
+Example: `.coding/handoff/20250120-1430.md`. If the timestamp already exists, append a short topic or numeric suffix; never overwrite a prior handoff.
 
 Use the latest matching handoff for the work being resumed. Keep older handoffs.
 

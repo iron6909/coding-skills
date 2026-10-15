@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn an approved spec into a small, ordered implementation plan. Full tier saves plan.md beside the spec in docs/features and task briefs in .cartoons; Brief tier keeps the plan in the conversation. Use when a spec is approved and the work has more than one task.
+description: Turn an approved spec into a small, ordered implementation plan. Full tier saves plan.md beside the spec in docs/features and task briefs in .coding; Brief tier keeps the plan in the conversation. Use when a spec is approved and the work has more than one task.
 disable-model-invocation: true
 ---
 
@@ -41,7 +41,7 @@ The spec is the authority. Do not add new product decisions silently. Record a n
 
 ## Revising an existing plan
 
-If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.cartoons/features/YYYYMMDD-<name>/impl/progress.md` (if present), and `git log`.
+If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.coding/features/YYYYMMDD-<name>/impl/progress.md` (if present), and `git log`.
 
 - Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
 - Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
@@ -139,10 +139,10 @@ Do not require a failing test when the repository has no test harness or when th
 
 Skip this section on Brief: that tier keeps tasks in the conversation and writes no briefs.
 
-After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.cartoons/`, using the same `YYYYMMDD-<semantic-name>` as the spec directory:
+After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.coding/`, using the same `YYYYMMDD-<semantic-name>` as the spec directory:
 
 ```bash
-DIR=".cartoons/features/YYYYMMDD-<semantic-name>/impl"
+DIR=".coding/features/YYYYMMDD-<semantic-name>/impl"
 mkdir -p "$DIR"
 # Write to $DIR/task-<N>.md
 ```
@@ -226,7 +226,7 @@ After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lig
 
 Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
 
-plan.md is an index. Task details live in `.cartoons/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines. Review focus guides the relevant task reviews and, when invoked by the user or `autoflow`, independent `code-review`; it does not add another whole-feature review to execute.
+plan.md is an index. Task details live in `.coding/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines. Review focus guides the relevant task reviews and, when invoked by the user or `autoflow`, independent `code-review`; it does not add another whole-feature review to execute.
 
 ## Self-review
 
@@ -288,7 +288,7 @@ On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is
 
 ## Commit (Full tier only)
 
-Commit `plan.md`, which is permanent. Task briefs live in gitignored `.cartoons/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
+Commit `plan.md`, which is permanent. Task briefs live in gitignored `.coding/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
 
 Read `./references/git-commit.md` for commit rules.
 
@@ -303,7 +303,7 @@ Full, after approval, saving, and committing:
 ```text
 Plan tier: full
 Plan saved: docs/features/YYYYMMDD-<semantic-name>/plan.md
-Task briefs: .cartoons/features/YYYYMMDD-<name>/impl/task-*.md (<N> tasks)
+Task briefs: .coding/features/YYYYMMDD-<name>/impl/task-*.md (<N> tasks)
 Commit: <short hash>
 Next: execute
 ```

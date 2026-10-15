@@ -4,7 +4,7 @@ Read this before starting a persisted run or resuming one. State coordinates the
 
 ## Location and schema
 
-Use `.cartoons/autoflow-state.json`. Dry-run never writes state. Keep the record after completion or interruption; do not expire or auto-delete it.
+Use `.coding/autoflow-state.json`. Dry-run never writes state. Keep the record after completion or interruption; do not expire or auto-delete it.
 
 Use this schema only. The example shows an approved plan with execution in progress:
 

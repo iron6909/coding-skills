@@ -17,7 +17,7 @@ The tier does not weaken the approval gate. Every tier presents a draft and wait
 | Tier | Use when | Produces |
 |------|----------|----------|
 | **Brief** | at most 5 files, one module, does not hit any hard floor | a task list in the conversation. No files. |
-| **Full** | everything else | `plan.md`, plus one brief per task in `.cartoons/` |
+| **Full** | everything else | `plan.md`, plus one brief per task in `.coding/` |
 
 ## Hard floors
 

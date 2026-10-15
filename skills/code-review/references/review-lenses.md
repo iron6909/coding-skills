@@ -32,13 +32,13 @@ Each lens returns:
 ## Configuration
 
 Resolve configuration in this order; do not combine files:
-1. `.cartoons/review-lenses.toml` at the project root
-2. Otherwise `.cartoons/review-lenses.md`
+1. `.coding/review-lenses.toml` at the project root
+2. Otherwise `.coding/review-lenses.md`
 3. Otherwise only the default lenses
 
 Optional lenses run only when explicitly enabled. Skip Spec if no spec is available and Learnings if no learnings are recorded; explain those omissions in the report.
 
-### Project-level (.cartoons/review-lenses.md)
+### Project-level (.coding/review-lenses.md)
 
 ```markdown
 # Review Configuration
@@ -58,7 +58,7 @@ Enabled lenses: standards, spec, learnings, security, performance
 - unnecessary re-renders
 ```
 
-### File-based (.cartoons/review-lenses.toml)
+### File-based (.coding/review-lenses.toml)
 
 ```toml
 [review]

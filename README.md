@@ -93,23 +93,23 @@ graph TD
 |------|---------|------|------|
 | **guide** | 未指名技能的开发请求 | 路由后交给对应技能 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
-| **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
+| **ideate** | 不确定如何实现,需对比技术方案 | `.coding/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | TDD、逐任务评审/提交、最终验证；传 `auto` 则单次批准跑完可执行任务 |
-| **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
+| **ui-review** | 审查已实现的前端界面 | `.coding/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
-| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
+| **optimize** | 系统性性能优化 | 优化代码提交 + `.coding/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
+| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.coding/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | spec 已批准,需自动交付 | plan.md、代码提交、审查报告与授权修复 | 仅 plan → execute → code-review；计划批准后自动执行,不代做 clarify |
-| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
+| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.coding/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
 | **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/YYYYMMDD-<topic>.md` | 反事实门槛筛掉可推断的内容 |
 | **learning-refresh** | learnings 与代码库漂移 | 更新/合并/归档 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目,不删除文档 |
 | **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/capability-map 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
-| **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff/YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
+| **handoff** | 暂停工作,跨会话继续 | `.coding/handoff/YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
 
 ## 关键概念
 
@@ -134,7 +134,7 @@ graph TD
 │   │   ├── 20250115-jwt-security.md    # 单主题学习文档
 │   │   └── _archived/                  # 满足归档条件的旧 learning，保留原文
 │   └── adr/                             # 架构决策记录（惰性创建）
-├── .cartoons/                           # 临时，不提交（按技能组织）
+├── .coding/                           # 临时，不提交（按技能组织）
 │   ├── autoflow-state.json              # 三阶段进度；旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
 │   ├── features/                        # feature 相关
 │   │   └── 20250115-user-auth/
@@ -211,7 +211,7 @@ graph TD
 | commit | 你指定的临时改动（不 push） |
 | code-review | 报告不提交；经你授权的修复单独提交,不包含被审查的原始改动 |
 | ui-review | 报告不提交；授权修复先验证再单独提交，不包含被审查的原改动。必要验证不可用时须明确接受边界，仍标为未验证 |
-| refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
+| refactor、handoff、ideate | 不提交；报告与临时文件留在 `.coding/` |
 
 ## 何时用什么
 
@@ -284,7 +284,7 @@ learnings 与代码库漂移
   2. 图片处理和存储
   3. 前端表单集成
 → 呈现计划草稿,用户批准
-→ 保存并提交 plan.md,task briefs 写入 .cartoons/features/20250120-avatar-upload/impl/(不提交),停下
+→ 保存并提交 plan.md,task briefs 写入 .coding/features/20250120-avatar-upload/impl/(不提交),停下
 → 用户确认后调用 execute
 → 依次完成 3 个 task,每个 TDD + 内置任务评审 + commit
 → 完成，报告证据；你可保留分支或另行执行本地合并，技能不代办
@@ -344,7 +344,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 检查 `plan.md` 的任务列表和每个 task brief 的 `Depends on` / `Interfaces`(Consumes/Produces)声明。
 
-### task brief 丢了(`.cartoons/` 被清掉)
+### task brief 丢了(`.coding/` 被清掉)
 
 `execute` 会按已批准的 spec.md、plan.md、适用的 ui-spec.md 和 DESIGN.md 约束就地重建可执行任务的 brief，并记录 `brief rebuilt from approved inputs`；这些来源仍不足以重建时才会停下来让你重跑 `plan`。已批准 skipped 的任务保留编号与历史，不重建或伪造完成提交。
 
@@ -354,7 +354,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 ### 会不会自动删东西?
 
-**文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
+**文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.coding/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
 
 **learning 可以归档,不能删除**:满足共享生命周期规则时移入 `docs/learnings/_archived/`,保留原因与引用关系；条件不明就留在原位并标记待核实。
 
