@@ -8,7 +8,7 @@ Complexity metrics provide objective signals for where to focus simplification e
 - **High cyclomatic complexity** → many branches, hard to test
 - **High cognitive complexity** → hard to understand
 - **High nesting depth** → hard to follow logic flow
-- **Long functions** → multiple responsibilities
+- **Long functions** → inspect for multiple responsibilities
 
 Metrics are **guides, not goals**. A function with high complexity may be inherently complex (e.g., parsing). Simplify to reduce accidental complexity, not to hit arbitrary thresholds.
 
@@ -52,12 +52,12 @@ def process_user(user):  # M = 1 (base)
 **Thresholds**:
 - **1-10**: Simple function, easy to test
 - **11-20**: Moderate complexity, consider splitting
-- **21-50**: High complexity, should split
-- **51+**: Very high complexity, must split
+- **21-50**: High complexity, prioritize review of branches
+- **51+**: Very high complexity, inspect for accidental complexity before proposing changes
 
 **When to simplify**:
-- M > 20: Extract helper functions for distinct branches
-- M > 10 with nested conditions: Flatten or extract
+- M > 20: Consider extracting distinct branches only if it reduces accidental complexity
+- M > 10 with nested conditions: Check whether guards or extraction make the flow clearer
 
 ## Cognitive Complexity
 
@@ -101,8 +101,8 @@ def calculate_discount(user, items, promo_code):
 - **16+**: Very complex, should refactor
 
 **When to simplify**:
-- Cognitive complexity > 15: Extract nested blocks to separate functions
-- Cognitive complexity > 10 with >3 nesting levels: Flatten with early returns
+- Cognitive complexity > 15: Look for nested blocks that form a cohesive responsibility
+- Cognitive complexity > 10 with >3 nesting levels: Consider early returns when they clarify the same behavior
 
 ## Nesting Depth
 
@@ -129,11 +129,11 @@ def process_data(data):
 - **1-2**: Flat, easy to follow
 - **3**: Acceptable, but watch for growth
 - **4**: Deep, consider flattening
-- **5+**: Too deep, must flatten
+- **5+**: Very deep, inspect whether flattening improves clarity
 
 **When to simplify**:
-- Depth > 3: Use early returns (guard clauses)
-- Depth > 4: Extract inner blocks to functions
+- Depth > 3: Consider guard clauses if they make the flow clearer
+- Depth > 4: Extract inner blocks only when they form a meaningful boundary
 
 ## Function Length
 
@@ -145,11 +145,11 @@ def process_data(data):
 - **1-20**: Short, single responsibility
 - **21-50**: Moderate, acceptable if cohesive
 - **51-100**: Long, likely doing too much
-- **101+**: Very long, definitely doing too much
+- **101+**: Very long, inspect cohesion and distinct responsibilities
 
 **When to simplify**:
-- Length > 50 and contains distinct sections: Extract sections to functions
-- Length > 100: Mandatory split
+- Length > 50 and contains distinct responsibilities: Consider extracting cohesive sections
+- Length > 100: Prioritize inspection, not a mandatory split. Keep a cohesive function intact unless a clearer boundary earns the extraction
 
 ## Parameter Count
 
@@ -158,11 +158,11 @@ def process_data(data):
 **Thresholds**:
 - **0-3**: Clear, easy to call
 - **4-5**: Moderate, consider grouping
-- **6+**: Too many, should use object/struct
+- **6+**: Many parameters, inspect whether some form a meaningful group
 
 **When to simplify**:
-- Parameters > 5: Group related parameters into object
-- Parameters > 3 with boolean flags: Use strategy pattern or command objects
+- Parameters > 5: Group only parameters that represent one cohesive value
+- Parameters > 3 with boolean flags: Check whether clearer names or separate operations remove confusion before adding an abstraction
 
 ## Complexity Prioritization
 
@@ -258,7 +258,7 @@ Acceptable: 3
 
 ## Simplification Patterns
 
-Based on metric thresholds:
+Examples for candidates found with metrics; apply only when clarity improves and behavior is preserved:
 
 ### High Cyclomatic (> 20)
 **Problem**: Too many branches
@@ -286,9 +286,12 @@ TAX_RATES = {
 }
 
 def calculate_tax(country, amount):
-    rate = TAX_RATES.get(country, 0.0)
-    return amount * rate
+    for code, rate in TAX_RATES.items():
+        if country == code:
+            return amount * rate
 ```
+
+Equality-based iteration preserves the original behavior for unknown and unhashable country inputs.
 
 ### High Cognitive (> 15)
 **Problem**: Hard to understand due to nesting

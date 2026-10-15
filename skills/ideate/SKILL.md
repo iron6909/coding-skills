@@ -74,7 +74,7 @@ Generate 5-8 technical approaches through exploration and analysis.
 - Search the web for external evidence when available (library maturity, case studies)
 - Check existing learnings for related patterns
 
-Do not validate each approach with throwaway code yet - that's Phase 2.
+Use Phase 2 to narrow the options through deeper investigation.
 
 ---
 
@@ -109,7 +109,7 @@ Compress to 2-3 approaches. Stress-test each one.
 
 ### Phase 3: Output
 
-Save to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
+Save to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Use the actual saved path for the handoff and later selection entry. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
 
 ```markdown
 # Ideation: [Topic]
@@ -196,7 +196,7 @@ Present the saved ideation to user:
 2. **[Option 2 name]**: [One sentence]. Alternative if [condition].
 [Repeat only for the actual survivors.]
 
-Full analysis saved to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`.
+Full analysis saved to `<actual saved report path>`.
 
 **Which approach should we pursue?**"
 

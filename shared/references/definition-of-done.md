@@ -24,7 +24,7 @@ When the repository documents one, that is the authority. Apply it instead of th
 Use this when the repository documents none. An item that genuinely does not apply may be skipped — name it and say why. An unnamed skip is a gap.
 
 - [ ] Every check this work touches passes: tests, lint, type-check, build
-- [ ] Both the focused check and the full suite ran, and the output was read
+- [ ] Focused and affected checks ran for each task; the full suite ran on the final completed change or standalone fix, and the output was read. Run it earlier or more often when the repository requires it
 - [ ] Every acceptance condition is confirmed by an observable result, not by reasoning
 - [ ] No debug output, temporary probe, or throwaway file remains
 - [ ] No unfinished-work marker comment remains in the changed lines

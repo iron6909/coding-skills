@@ -36,10 +36,10 @@ npx skills@latest add iron6909/coding-skills
 
 1. `clarify` 澄清需求，批准后保存并提交 `spec.md`；仍有界面决策时推荐 `ui-design`，否则可进入 `plan`
 2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
-3. `execute` 按 TDD 逐个任务实现、评审、提交，再运行最终测试与验收验证；不内置整体独立审查
+3. `execute` 按 TDD 持续实现全部已批准任务，每个任务轻量自查、单独提交，再运行最终测试与验收验证；不内置整体独立审查
 4. 需要整体独立审查时另行调用 `code-review`，报告后由你决定修复或集成
 
-已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务评审，整体独立审查只在最后的 `code-review` 阶段执行一次。
+已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务自查与提交，整体独立审查只在最后的 `code-review` 阶段执行一次。
 
 ## 核心流程
 
@@ -50,7 +50,7 @@ graph TD
     C -->|首次使用| D[survey]
     C -->|需求不明| E[clarify]
     C -->|spec 已批准且设计已定| F[plan]
-    C -->|已有计划| G[execute: 任务评审与最终验证]
+    C -->|已有计划| G[execute: 持续执行、任务自查与最终验证]
     C -->|故障| H[debug]
     C -->|审查他人改动| I[code-review]
     C -->|代码结构问题| M[refactor]
@@ -97,7 +97,7 @@ graph TD
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | TDD、逐任务评审/提交、最终验证；传 `auto` 则单次批准跑完可执行任务 |
+| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | 持续执行已批准任务；轻量自查、逐任务提交、最终验证 |
 | **ui-review** | 审查已实现的前端界面 | `.coding/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.coding/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
@@ -185,6 +185,14 @@ graph TD
 
 有 spec 时只通过批准的测试入口(test entry point)测试;无 spec 的小改动或修复先说明入口。回归测试要验证"还原修复后必须变红";无法建立测试时说明替代检查与覆盖缺口。
 
+### 执行与审查
+
+`execute` 一次调用持续完成全部已批准的可执行任务，不区分 default/auto，也不在任务间例行确认。范围变化、未解决的失败或高风险决策仍须停下处理。
+
+每个任务默认由主进程轻量自查当前增量；只有具体风险值得独立判断时，才使用一个只读 reviewer 代替自查。初查后最多一轮修复和一次定向复查，仍有未解决的 Blocking/Important 就停下，不反复展开完整审查。功能级 review base 保持固定，任务审查使用各自的 task base，不累计重审已完成任务。
+
+任务内运行聚焦和受影响检查，全量测试放在最终验证；项目 DoD 要求更频繁时从其规定。需要整体独立审查时另行调用 `code-review`，autoflow 则在最后执行一次，重点检查跨任务集成、需求遗漏和整体风险。恢复 autoflow 时核对 spec、plan 及适用 UI/design 输入的批准快照，输入新增、删除或变更都不能沿用旧授权。
+
 ### Tracer bullet 任务
 
 垂直切片优先于水平分层:
@@ -229,13 +237,13 @@ graph TD
   → plan (按体量选输出档)
     → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同一会话内接 execute
     → Full: 其它 → plan.md + task briefs
-  → execute (逐任务停下确认)
-    → 传 auto: 单次批准跑完所有任务(遇测试失败/规格歧义/高风险仍自动停下)
+  → execute (持续执行全部已批准任务，不逐任务确认)
+    → 遇未解决的检查失败、规格歧义或高风险决策仍停下
 
 已有批准的 spec,希望自动交付
   → autoflow (plan → execute → code-review)
     → 批准计划,同时授权自动执行和范围内的 Blocking/Important 修复
-    → 逐任务测试/评审/提交和最终验证仍不可跳过，再做一次整体 code-review，最后由你决定集成
+    → 逐任务相关测试、自查、提交和最终验证仍不可跳过，再做一次整体 code-review，最后由你决定集成
 
 有 bug
   → debug (4 阶段循环)
@@ -250,7 +258,7 @@ graph TD
   → refactor (改进候选)
 
 改动完成
-  → execute 完成任务评审与最终验证后读取 finish；这不代表已做整体独立审查，需要时另行调用 code-review
+  → execute 持续完成任务自查、提交与最终验证后读取 finish；这不代表已做整体独立审查，需要时另行调用 code-review
     → 报告保留分支或由你另行执行本地合并的选项；技能不 merge、push 或发布
     → 仅明确要求丢弃时移除分支,文档仍保留
 
@@ -280,13 +288,13 @@ learnings 与代码库漂移
 → 保存并提交 docs/features/20250120-avatar-upload/spec.md,停下
 → 用户确认后调用 plan
 → 拆分为 3 个 task:
-  1. 上传 API endpoint
-  2. 图片处理和存储
-  3. 前端表单集成
+  1. 安全上传并展示头像（API、存储、UI 与最低校验贯通）
+  2. 上传提示与预览（不绕过服务器校验）
+  3. 图片缩放与缩略图（处理结果可验证）
 → 呈现计划草稿,用户批准
 → 保存并提交 plan.md,task briefs 写入 .coding/features/20250120-avatar-upload/impl/(不提交),停下
 → 用户确认后调用 execute
-→ 依次完成 3 个 task,每个 TDD + 内置任务评审 + commit
+→ 持续完成 3 个 task,每个 TDD + 轻量自查 + commit，不逐任务确认
 → 完成，报告证据；你可保留分支或另行执行本地合并，技能不代办
 ```
 
@@ -334,7 +342,7 @@ learnings 与代码库漂移
 
 ### subagent 不可用
 
-subagent 仅用于只读调研。运行环境没有委派机制时,技能会退化为在主进程内联探索,不影响结果。
+subagent 仅用于只读调研或审查。运行环境没有委派机制时，在主进程内联完成，并说明独立审查的限制。
 
 ### 术语不一致
 

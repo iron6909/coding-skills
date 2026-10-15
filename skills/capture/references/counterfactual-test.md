@@ -187,7 +187,7 @@ The tokens expire after 24 hours and are stored in localStorage.
 
 **Problem**: This is project history, not a learning. It belongs in git log and the spec.
 
-### ⚠️ Weak learning (barely passes)
+### ❌ Generic security advice (fails counterfactual)
 ```markdown
 ## JWT tokens in localStorage are vulnerable to XSS
 

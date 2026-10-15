@@ -41,21 +41,26 @@ Lenses run in parallel when subagents are available. The Learnings lens is skipp
 
 Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
 
-Note: This skill is local-only and does not integrate with remote Git hosting services. Ask the user to fetch or check out the branch first if reviewing remote work, then review the local commits against the base.
+This skill reviews local commits only. Ask the user to fetch or check out remote work first.
 
-Capture the diff command once:
-
-```bash
-git diff <review-base>...HEAD
-```
-
-Capture commits:
+Resolve the supplied base and current head once, before review or fixes, and save the full output as `review_base_sha` and `review_head_sha`:
 
 ```bash
-git log <review-base>..HEAD --oneline
+git rev-parse --verify --end-of-options "<review-base>^{commit}"
+git rev-parse --verify "HEAD^{commit}"
 ```
 
-Before continuing, confirm the review base resolves and the diff is non-empty.
+Use those immutable SHAs for every lens and report:
+
+```bash
+git diff <review_base_sha>...<review_head_sha>
+```
+
+```bash
+git log <review_base_sha>..<review_head_sha> --oneline
+```
+
+Confirm both commits resolve and the diff is non-empty. Record both SHAs in the report. Never re-evaluate the original expression or replace the reviewed head after fix commits.
 
 ## Identify the spec source
 
@@ -67,6 +72,8 @@ Look for the originating spec in this order:
 4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
 
 When a plan is supplied, read it and use its Review focus as context for the enabled lenses. It does not enable optional lenses or replace the spec as authority.
+
+Review the whole feature diff, focusing on cross-task integration, missing requirements, and system-level risks. Task checks and their ledger are context, not proof: do not replay each task's review/fix history, but do not suppress a real finding merely because that task passed earlier.
 
 ## Identify the standards sources
 
@@ -120,11 +127,7 @@ For parallel read-only reviewers, read `./references/subagent-dispatch.md`. When
 
 ## Grade findings
 
-Re-grade each finding by effect on a reasonable user, using `./references/severity.md`:
-
-- **Blocking**: correctness, security, data loss, broken functionality, missed acceptance condition
-- **Important**: usability issue, poor error handling, accessibility gap, significant performance hit
-- **Minor**: style polish, nice-to-have improvement
+Re-grade each finding by effect on a reasonable user using `./references/severity.md`. That reference defines the levels; no lens imposes a severity ceiling.
 
 The reviewer's label is advice. Your grading is the gate.
 
@@ -176,16 +179,17 @@ Confirm the Definition of Done loaded above, then check the review itself:
 
 This skill reviews; it does not change the code without authorization. After the report, list Blocking and Important findings and ask the user whether to fix them. When called by `autoflow`, verified user authorization for the exact plan and target branch can cover in-scope Blocking/Important fixes without another routine prompt. It never covers Minor fixes, scope changes, or decisions that require explicit high-risk sign-off.
 
-If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Then fix each finding following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks. If 3+ minor findings share a theme (reuse opportunities, naming inconsistency, complexity), suggest the user run `/simplify` after merge to address them systematically.
+If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Before editing, confirm the target still points at `review_head_sha`; otherwise stop and reconcile the changed range with the user. For behavior fixes, follow `./references/tdd.md`; behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, and apply the loaded DoD to the final fixed code before declaring the fixes complete. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks. If 3+ minor findings share a theme (reuse opportunities, naming inconsistency, complexity), suggest the user run `/simplify` after merge to address them systematically.
 
 Read `./references/git-commit.md` for commit rules.
 
-When the fixes are done, run one scoped re-check of the changed lines against the original findings.
+When the fixes are done, record the current full commit SHA as `fix_head_sha` and run one scoped re-check against the original findings using `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`. Keep the original review SHAs unchanged; record fixes as a separate range.
 
 ## Completion report
 
 ```text
-Review: <review-base>...HEAD
+Review: <review_base_sha>...<review_head_sha>
+Fixes: <review_head_sha>..<fix_head_sha>, or none
 Report: <path of the review file written above>
 Lenses enabled: standards, spec, learnings[, security, performance, ...]
 Standards: <N findings, M fixed>

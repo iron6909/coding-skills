@@ -67,7 +67,7 @@ Text must have sufficient contrast ratio against background.
 
 **WCAG standards**:
 - Normal text: minimum 4.5:1 contrast ratio (AA), 7:1 (AAA)
-- Large text (18pt+): minimum 3:1 (AA), 4.5:1 (AAA)
+- Large text (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px): minimum 3:1 (AA), 4.5:1 (AAA)
 
 **Examples**:
 ```css
@@ -266,20 +266,7 @@ Before flagging an accessibility issue, provide evidence:
 
 ## Severity guidelines
 
-**Important** (should fix):
-- Missing alt text on content images
-- Form inputs without labels
-- Insufficient color contrast (fails WCAG AA)
-- Missing keyboard access
-- Invalid HTML or ARIA misuse
-
-**Minor** (nice to fix):
-- Improved focus indicators
-- Better error messages
-- Skip links
-- Page language declaration
-
-**Blocking**: Rarely blocking unless it completely breaks navigation for keyboard/screen reader users.
+Apply `./references/severity.md` by demonstrated impact, without a lens-specific ceiling. Missing names or keyboard access that prevent a required user journey are Blocking. A demonstrated WCAG AA failure is also Blocking when AA is an acceptance requirement. Other usability gaps may be Important; optional polish is Minor only when required behavior is already accessible. Verify effective names, keyboard behavior, and contrast rather than grading solely from a missing attribute.
 
 ## Patterns to flag
 
@@ -337,6 +324,6 @@ Before flagging an accessibility issue, provide evidence:
 
 Each finding must include:
 - Exact file and line number
-- Severity (important or minor)
+- Severity (blocking, important, minor)
 - WCAG criterion violated (e.g., "1.1.1 Non-text Content")
 - Specific fix or principle to apply

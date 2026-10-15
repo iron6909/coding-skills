@@ -12,6 +12,12 @@ For a clear bug, work from one evidence-based hypothesis. For an unclear bug, ra
 
 Read `GLOSSARY.md` (if it exists), the applicable `AGENTS.md` files, and any ADR touching the failing area first, and use their terms in the fix and the commit message.
 
+## Workspace safety
+
+Before adding probes, testing a hypothesis with edits, or running a reproduction that may write state, inspect the current branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve unrelated user work; if it overlaps the investigation and cannot be isolated safely, stop and agree on the boundary first.
+
+On the default branch (`main` or `master`), obtain consent for investigation edits there or create `feature/YYYYMMDD-<semantic-name>` before writing. Read-only investigation may proceed without edits. Destructive or security-sensitive actions need specific sign-off before they run, or a safe isolated reproducer that cannot affect real data.
+
 **Load the Definition of Done**: read `./references/definition-of-done.md` before declaring the fix complete. The fix must satisfy both the project-wide DoD and the reproduction it set out to kill.
 
 ## Phase 1: Root cause investigation
@@ -74,8 +80,6 @@ Redact secrets, tokens, and personal data as `<REDACTED>` before showing any com
 Never route a small fix through `clarify`, `plan`, or `execute`.
 
 ### Small fix workflow
-
-Before changing code, check the current branch. If it is the default branch (main or master), get the user's consent to fix there or create `feature/YYYYMMDD-<semantic-name>` first.
 
 1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, report the design limitation and recommend `refactor` for a structural review; do not invoke it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.

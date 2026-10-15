@@ -34,12 +34,12 @@ Strategies for breaking down features into tasks with optimal order and granular
 
 ### Horizontal Filling
 
-**Definition**: Complete one layer or aspect across the feature
+**Definition**: Improve an already working journey or a cross-cutting quality, with its own observable acceptance check. A new journey remains a vertical slice.
 
 **Example**: After login tracer bullet is working
-- ✅ "Add password reset flow" (expands auth system horizontally)
-- ✅ "Add OAuth providers" (adds alternative login methods)
-- ✅ "Add 2FA" (adds security layer)
+- ✅ "Improve guidance for already-handled login failures"
+- ✅ "Preserve the entered email after a failed login"
+- ✅ "Refine the session-expiry warning while existing expiry handling remains enforced"
 
 **When to use**:
 - After tracer bullet establishes pattern
@@ -53,7 +53,7 @@ Strategies for breaking down features into tasks with optimal order and granular
 - Clearer task boundaries
 
 **Disadvantages**:
-- May not be testable independently
+- May need the established journey's fixtures, but must still have an independent acceptance check
 - Can lead to "almost done" syndrome
 
 ## Recommended order
@@ -106,7 +106,7 @@ Task 2: Improve TODO error experience
 **Tasks 3+**: Each adds one acceptance condition
 - Can be vertical (new journey) or horizontal (enhance existing)
 - Prefer vertical if it adds user value
-- Use horizontal for cross-cutting concerns
+- Use horizontal for cross-cutting improvements that can be checked through existing journeys
 
 **Example**:
 ```markdown
@@ -121,9 +121,9 @@ Task 4: User can delete TODO (Vertical)
 - Test: delete, refresh, TODO gone
 
 Task 5: Persist session across refreshes (Horizontal)
-- Store JWT in localStorage
-- Auto-refresh token before expiry
-- Test: refresh page, still logged in
+- Reuse the project's approved session mechanism and expiry handling
+- Restore client state only after the session is verified
+- Test: a valid session survives refresh; an expired session cannot restore authenticated state
 ```
 
 ## Task Granularity Guidelines
@@ -156,16 +156,19 @@ Task 5: Persist session across refreshes (Horizontal)
 
 ### Serial Dependencies (must order)
 
-**Database schema before queries**:
+**Schema before queries, inside a vertical task**:
 ```markdown
-Task 1: Create users table
-Task 2: User registration (depends on Task 1)
+Task 1: User can register and see confirmation
+- Step 1: Add the users table and required constraints
+- Step 2: Implement registration and confirmation through the approved entry point
+- Check: valid registration succeeds; invalid or duplicate input is rejected
+Task 2: User can log in (depends on Task 1)
 ```
 
-**Foundation before features**:
+**Shared protections with their first usable path**:
 ```markdown
-Task 1: Authentication middleware
-Task 2: Protected routes (depends on Task 1)
+Task 1: User can view their own profile, with authentication and ownership checks
+Task 2: User can view their own settings, reusing those protections (depends on Task 1)
 ```
 
 ### Parallel-Safe Tasks (can reorder or parallelize)
@@ -191,11 +194,11 @@ In plan.md:
 ```markdown
 ## Tasks
 
-1. Task 1: Create users table — Depends on: None
-2. Task 2: User registration — Depends on: Task 1
-3. Task 3: User login — Depends on: Task 1, Task 2
-4. Task 4: Password reset — Depends on: Task 3
-5. Task 5: Email verification — Depends on: Task 2 (parallel-safe with Task 3, 4)
+1. Task 1: Safely create and view TODOs — Depends on: None
+2. Task 2: Mark a TODO complete — Depends on: Task 1
+3. Task 3: Delete a TODO — Depends on: Task 1
+4. Task 4: Filter TODOs by completion — Depends on: Task 2
+5. Task 5: Paginate the TODO list — Depends on: Task 1 (parallel-safe with Task 2, 3)
 ```
 
 ## Decision Tree
@@ -210,7 +213,7 @@ Start with feature spec
 ├─ Is this additional error UX for an already safe journey?
 │  └─ YES → Horizontal task (guidance, recovery, extra cases)
 ├─ Is this a new variation of existing behavior?
-│  └─ YES → Horizontal task (OAuth after password login)
+│  └─ YES → Horizontal task (guidance for an already-handled login failure)
 ├─ Is this a new journey independent of existing?
 │  └─ YES → New vertical slice
 └─ Default: Vertical if adds user value, Horizontal if enhances quality
@@ -234,9 +237,9 @@ Start with feature spec
 2. Logout (vertical)
 3. Session persistence (horizontal)
 4. Password reset (new vertical)
-5. Email verification (horizontal)
-6. OAuth providers (horizontal expansion)
-7. 2FA (horizontal security layer)
+5. Email verification (new vertical)
+6. OAuth provider login (new vertical)
+7. 2FA enrollment and challenge (new vertical)
 
 ### Pattern 3: API + UI Feature
 

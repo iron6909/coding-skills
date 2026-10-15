@@ -20,8 +20,9 @@ The lens system enables extensible, independent code review perspectives. Each l
 ## Lens interface
 
 Each lens receives:
-- The diff command: `git diff <review-base>...HEAD`
-- Commits: `git log <review-base>..HEAD --oneline`
+- The pinned diff command: `git diff <review_base_sha>...<review_head_sha>`
+- Commits: `git log <review_base_sha>..<review_head_sha> --oneline`
+- Severity rubric: `./references/severity.md`
 - Context files (spec, standards, learnings, etc.)
 - Focus areas (optional configuration)
 
@@ -251,9 +252,11 @@ Report findings as JSON array.
 Use the report path selected by SKILL.md. Every lens permits the full severity range; the main reviewer re-grades by impact using the severity reference.
 
 ```markdown
-# Review: <review-base>...HEAD
+# Review: <review_base_sha>...<review_head_sha>
 
-**Review base:** <commit or branch>
+**Review base:** <full review_base_sha>
+**Reviewed head:** <full review_head_sha>
+**Fix range:** <review_head_sha>..<fix_head_sha>, or none
 **Commits reviewed:** <count>
 **Lenses enabled:** standards, spec, learnings[, security, performance, ...]
 

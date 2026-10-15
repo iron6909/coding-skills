@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Implement an approved plan or a small, clear change, review each task, commit checked changes, report evidence, and hand the integration decision to the user. Use when a plan is ready or a small change has clear scope and acceptance checks. Pass "auto" to run every task after a single approval gate instead of stopping after each one.
+description: Continuously implement an approved plan or a small, clear change without routine task pauses. Self-check and commit each task, run final verification, and record Full-tier progress in .coding/features/<feature>/impl/progress.md. Use when a plan is ready or a small change has clear scope and acceptance checks.
 disable-model-invocation: true
 ---
 
@@ -16,21 +16,18 @@ Do not treat incomplete planned work as a small change. Do not add product scope
 
 A session plan exists only in the conversation that produced it. If you cannot find one — a new session, or a compressed context — stop and ask the user to rerun `plan` at the Full tier. Do not reconstruct tasks from memory, and do not infer them from the diff.
 
-## Execution modes
+## Continuous execution
 
-Two modes. Everything below applies to both; the mode only decides where the human checkpoints sit.
+Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its recorded authorization for the exact approved inputs. Missing approval or changed inputs require approval before proceeding.
 
-- **Default** (no argument): implement one task, then stop and hand back. The user starts the next task.
-- **Autonomous** (`auto`): one approval gate covers the whole run. After the user approves, work through every task without stopping between them. Each task still keeps its full TDD loop, its review, and its own commit. When called by `autoflow`, its recorded approval for this exact plan can satisfy the execution gate; changed inputs or missing authorization require approval again.
+Each task keeps its TDD loop, lightweight task review, and separate commit. Continuous execution does not authorize wider scope or bypass a safety gate.
 
-Autonomous mode removes the between-task pause, not any other gate. It stops early, and hands back to the user, when any of these happens:
+Stop and report the exact blocker when:
 
 - a check fails and no fix within the approved scope is clear
-- the task needs a decision the spec and brief do not settle
+- the task needs a decision the approved inputs do not settle
 - a doubt-driven trigger applies (see below)
-- a task exceeds its 5 review-fix rounds without passing
-
-Say which mode you are in before starting, and name the reason for any early stop. Do not switch to autonomous mode mid-run on your own initiative: the user asks for it. Do not treat autonomous mode as permission to widen scope, skip a review, or batch commits — the run is longer, not looser.
+- the bounded task review still has an unresolved Blocking or Important finding
 
 ## Workspace and ledger
 
@@ -71,7 +68,7 @@ Before changing code:
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
 - confirm the execution input has no unresolved product decisions
-- verify and reuse the original review base from the caller or ledger; only for a new standalone run with no existing base, record `git rev-parse HEAD`. If a resumed run's base is missing or invalid, stop and ask rather than resetting it to `HEAD`
+- resolve the feature's `review_base` from the caller or ledger to a full commit SHA and record it; only a new standalone run without an existing base uses `git rev-parse HEAD`. If a resumed run's base is missing or invalid, stop and ask rather than resetting it to `HEAD`
 - record the initial `git status --short`, staged diff, and unstaged diff
 
 **Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the approved test entry points in the spec. Configuration, documentation, or generated files use the strongest available check instead.
@@ -80,7 +77,9 @@ Before changing code:
 
 Do not implement an unapproved draft. For planned work, stop and report a missing spec or plan path. For a session plan, stop and report that it could not be found in the conversation.
 
-Keep the review base unchanged across tasks and resumed sessions. Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record that fact and review only this run's additions against the initial file state.
+Keep the feature's `review_base` unchanged for any later whole-feature review. Each task has its own `task_base`, recorded at task start; do not use the feature base to accumulate earlier tasks into a task review.
+
+Preserve initial user changes, including changes in task files. If they overlap the task, agree on the boundary before editing or staging. For untracked files, record their initial content when they overlap the task. If the repository has no commit, record `none` for the bases and review only this run's additions against the initial file state.
 
 ## Pre-flight scan
 
@@ -95,7 +94,7 @@ Before the first executable task, read plan.md for the task dependencies and fin
 
 ## Execution ownership
 
-The main process owns all code, test, spec, plan, and Git writes. Use read-only agents for independent investigation or review when this saves context. Give each agent a narrow scope and the relevant brief, rules, and review base.
+The main process owns all code, test, spec, plan, and Git writes. Use read-only agents for broad investigation when this saves context; independent task review follows the risk rule below, not task size alone. Give each agent a narrow scope and the relevant brief, rules, and task diff.
 
 **Dispatch rules**: read `./references/subagent-dispatch.md`. Agents report findings and file paths only.
 
@@ -105,16 +104,16 @@ Work through executable tasks in dependency order, using the cancellation rules 
 
 For each task:
 
-1. Write the task-start ledger entry.
+1. For a new task, record `task_base` as the current full `HEAD` SHA and capture its starting staged, unstaged, and relevant untracked state. Write the task-start entry. An in-progress task reuses its original base and starting state.
 2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies. For a session plan, use the task as stated in the conversation.
 3. Check that earlier task outputs exist and match the current task. Screen the task for doubt-driven triggers before implementation or verification commands; an open trigger requires specific sign-off before the affected action.
 4. Read the relevant code before editing.
 5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor. Choose appropriate test level (unit, integration, E2E) using `./references/testing-strategy.md`.
 6. Run the affected test, lint, build, or type-check command named by the task brief.
-7. Inspect the diff for scope creep, accidental files, and user data loss.
+7. Prepare the task-owned diff, excluding initial user changes and earlier tasks.
 8. Recheck the doubt-driven triggers for new risks before review and commit. An earlier approval does not cover a newly discovered risk.
-9. Run the task review below.
-10. Fix every valid review finding and repeat the affected checks.
+9. Run the lightweight task review below.
+10. Apply only its bounded fix pass and scoped re-check when needed; leave Minor findings deferred.
 11. Commit the task only after review passes and checks are fresh.
     - Read `./references/git-commit.md` and stage only task-owned changes, preserving the user's staged and unstaged work.
     - Check staged changes: `git diff --staged`
@@ -128,18 +127,20 @@ For each task:
     - Do not push. Record the commit to the ledger.
 12. Write the task-complete ledger entry.
 
+After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
+
 A failing check is not complete. Find the cause, fix the code or record a ruling, then run the check again. Do not weaken a test to match incorrect behavior.
 
 If the task brief is wrong, stop when every path forward requires a product decision. Otherwise choose the smallest change within approved scope, write a Ruling ledger entry, and continue. If the spec itself must change, stop and tell the user to revise it with `clarify`, then the plan with `plan`; the completed tasks stay as they are.
 
 ## Doubt-driven checkpoints
 
-Four triggers, in both modes. Check when reading each task and before any potentially side-effecting action, including tests or verification commands, then recheck at step 8. Stop immediately if new evidence raises a trigger; do not wait for the next checkpoint.
+Four triggers. Check when reading each task and before any potentially side-effecting action, including tests or verification commands, then recheck at step 8. Stop immediately if new evidence raises a trigger; do not wait for the next checkpoint.
 
 - **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
 - **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
 - **Unexplained**: a decision you cannot justify from the spec, the task brief, or repository evidence.
-- **Repeated failure**: a task has failed 3 or more fix attempts. The pattern points at the design, not the last hypothesis. This fires before the 5-round review cap, so the user decides rather than the loop running out.
+- **Repeated failure**: a task has failed 3 or more implementation fix attempts. The pattern points at the design, not the last hypothesis. Stop for the user's decision; the task review has its own tighter bound below.
 
 When a trigger applies:
 
@@ -147,13 +148,16 @@ When a trigger applies:
 2. Write a ledger `Ruling:` entry naming the trigger, the risk, and what you need decided.
 3. Stop and ask the user for explicit sign-off on that specific risk.
 
-An open doubt outranks the task loop and outranks autonomous mode. A green suite does not clear it: passing tests say the code does what you told it, not that the operation was safe to perform. Continue only after the user answers, and record their answer in the ledger.
-
-The repeated-failure trigger fires earlier than the review-fix cap on purpose: three failed attempts are a signal about the design, and that call belongs to the user, not to the loop counter.
+An open doubt outranks continuous execution. A green suite does not clear it: passing tests say the code does what you told it, not that the operation was safe to perform. Continue only after the user answers, and record their answer in the ledger.
 
 ## Ledger entries
 
 Append to `progress.md` after each event:
+
+**Feature review base** (once per run):
+```text
+Review base: <full commit SHA, or none for an unborn repository>
+```
 
 **Pre-flight:**
 ```text
@@ -163,7 +167,7 @@ Pre-flight: <interface rows or "no shared interfaces">
 **Task start:**
 
 ```text
-Task <N>: started (base <commit7>)
+Task <N>: started (task_base <full commit SHA, or none>)
 ```
 
 **Ruling:**
@@ -181,9 +185,14 @@ Task <N>: brief rebuilt from approved inputs
 Plan revised: <reason>
 ```
 
+**Review fix pass** (record before starting it, if needed):
+```text
+Task <N>: review fix pass — <findings to resolve>
+```
+
 **Task complete:**
 ```text
-Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
+Task <N>: complete (commits <task_base>..<head>, review: <self-check | independent>, re-check: <not needed | passed>, tests: <command> → <result>)
 ```
 
 **Approved cancellation:**
@@ -207,7 +216,9 @@ For a session plan or a small change, keep the same structure in conversation. A
 
 ## Resume
 
-On resume, read the ledger and current approved plan. Compare recorded commits and task state with the working tree and Git history. Keep the original review base and apply the executable-task rules above; a cancellation conflicting with the approved plan is a blocker. After a `Plan revised` entry, re-read the spec, applicable UI/design inputs, plan, and changed briefs, and rerun pre-flight for unfinished executable tasks. Do not trust old check results. Run required checks again, including final verification when no executable task remains.
+On resume, read the ledger and current approved plan. Compare recorded commits and task state with the working tree and Git history. Keep the original feature `review_base` and the active task's `task_base` and starting state. Recover missing legacy task boundaries only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not reset an interrupted review's fix allowance: resume its recorded fix pass or re-check, and require a user decision if findings remain.
+
+Apply the executable-task rules above; a cancellation conflicting with the approved plan is a blocker. After a `Plan revised` entry, re-read the spec, applicable UI/design inputs, plan, and changed briefs, and rerun pre-flight for unfinished executable tasks. Do not trust old check results. Run required checks again, including final verification when no executable task remains.
 
 A session plan has no ledger to resume from. After context compression, its task list is gone: stop and ask the user to rerun `plan` at the Full tier or restate the remaining tasks, then confirm the review base from Git before editing.
 
@@ -215,40 +226,27 @@ If a small change loses conversation record, reconstruct boundary from Git and c
 
 ## Task review
 
-Review runs after EACH task, before commit. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
+Review inline by default: one lightweight self-check before each task's commit. Use a single fresh read-only reviewer only when a concrete security, data-integrity, or cross-module correctness risk benefits from independent context. Size alone is not a reason to delegate. That reviewer replaces the inline pass, not adds another review; the executor still grades findings and owns fixes and commits. If delegation is unavailable, review inline and report the limitation.
 
-Task review checks ONE task's diff against its task brief and the relevant items in the plan's Review focus.
+Review only this task's changes against its brief and relevant plan Review focus. For tracked files, use `git diff <task_base> -- <task-owned paths>` to include staged and unstaged changes; inspect task-owned untracked files separately. Exclude initial user changes using the recorded starting state. Do not use `<review_base>...HEAD`: it accumulates earlier tasks and misses this task's uncommitted work.
 
 Check:
 
-- the task implements the task brief and no extra scope
-- changed files match the task brief
-- interfaces, error paths, boundaries, and compatibility behavior are correct
-- tests assert observable behavior and cover the acceptance conditions
-- no security, accessibility, data-loss, or error-handling regression exists
-- the diff has no dead code, accidental files, debug output, or unrequested dependency
+- the task's acceptance conditions and interfaces are satisfied without extra scope
+- tests cover observable behavior and relevant error and boundary cases
+- no security, accessibility, data-loss, compatibility, or error-handling regression exists
+- no accidental file, debug output, dead code, or unrequested dependency entered the diff
 
-Classify each finding using `./references/severity.md`:
+Grade using `./references/severity.md`. Resolve valid in-scope Blocking and Important findings before commit; record Minor findings and leave them unchanged. Rule out incorrect findings with evidence. An out-of-scope issue is follow-up unless it blocks approved behavior or downstream work; do not widen the task to fix it.
 
-- **Blocking:** correctness, security, data loss, broken checks, or a missed acceptance condition. Fix it before commit.
-- **Important:** a usability issue, poor error handling, an accessibility gap, or a significant performance hit inside the task. Fix it before commit.
-- **Minor:** useful cleanup that is outside the task. Record it and leave it unchanged. When you accumulate 3+ minor findings related to reuse, naming, or complexity, note that the user can run `/simplify` after this feature ships to address them systematically.
+Allow at most one fix pass and one scoped re-check after the initial review:
 
-If the review finds a Blocking or Important issue, fix it in the task scope and rerun the focused and affected checks. Review the updated diff again.
+1. Record the fix pass before editing, then fix the valid findings within scope.
+2. Run fresh focused and affected checks on the fix.
+3. Re-check the fixes and their affected paths, including new regressions they introduce. Do not restart the full task review, add reviewers, or expand into style cleanup.
+4. Stop before committing or advancing if a Blocking or Important finding remains unresolved. Report the evidence and smallest decision needed; another attempt requires the user's decision, not a reset loop counter.
 
-Allow at most **5 task review-fix rounds** for one task. One round contains one fix pass, fresh checks, and one review of the changed scope.
-
-- Rounds 1-3: continue with the current reviewer when possible.
-- Rounds 4-5: use a fresh read-only reviewer with stronger reasoning when available.
-- Do not start round 6.
-
-At round 5, classify every open finding:
-
-- **Incorrect or disputed:** record the ruling and continue only if the finding is not load-bearing.
-- **Real but outside the task:** record it as deferred follow-up and continue only if it does not block downstream work.
-- **Real and load-bearing:** stop execution and report the finding, its impact, and the smallest decision needed from the user.
-
-A review passes only when every Blocking and Important finding is fixed, explicitly ruled out, or deferred under these rules. Do not commit while a real load-bearing finding remains open.
+A task with no such findings needs no fix pass or second review. Safety checkpoints still apply before any affected action.
 
 ## Task commit
 
@@ -263,7 +261,7 @@ After the review passes and fresh checks succeed:
 
 Use the repository's existing test tools. Prefer standard library and existing dependencies. Do not add a test framework or dependency for this workflow.
 
-For each behavior change: the TDD loop (loaded above), then the affected checks, then the full suite.
+For each behavior change, follow the loaded TDD loop and run focused and affected checks. Follow the loaded DoD for full-suite timing; do not repeat the full suite after every intermediate task unless the repository requires it.
 
 After all executable tasks are reviewed and committed, run final verification on the current final code: the test, lint, build, type-check, and cross-task acceptance checks in `plan.md` Final verification. For a session plan, use the approved task list's checks; for a small change, use the request's checks. Apply the loaded DoD and state any unavailable check, substitute, and coverage gap rather than calling it passed.
 
@@ -273,7 +271,7 @@ Before claiming completion, confirm:
 
 - every executable task passed review and has a commit; approved skipped tasks are reported separately, without fabricated work
 - final verification and the applicable DoD are satisfied on the current code
-- no task exceeded 5 review-fix rounds
+- task reviews stayed within the bounded fix and re-check process, with no unresolved Blocking or Important finding
 
 Run `git diff --check` and inspect `git status`. Report each Final verification command with its result, and failures by command and exact error. Independent whole-feature review belongs to `code-review` when invoked by the user or `autoflow`, not this skill.
 
@@ -298,10 +296,10 @@ These are the reasons to skip a step. Every one of them is wrong here.
 | "The change is too small to need a test" | Small changes break things too. The TDD loop is cheapest on small changes. |
 | "I'll commit these tasks together, they're related" | One commit per task is what makes a task revertable. Squashing loses the boundary. |
 | "The check passed a minute ago, it still passes" | Fresh evidence only. Re-run it after the last edit. |
-| "The review is just me checking my own work" | That is what the reviewer is for. Use one when the task is large enough. |
+| "Every task needs an independent reviewer" | Ordinary tasks use a lightweight self-check. Delegate only for a concrete risk; whole-feature review is separate. |
 | "This extra fix is obviously right, I'll fold it in" | Unrequested scope. Record it and leave it. |
 | "The test is wrong, the code is right" | Fix the code or record a ruling. Never weaken a test to match behavior. |
-| "Auto mode means I don't need to stop and ask" | It removes the between-task pause, nothing else. Doubts, ambiguities, and failed checks still stop the run. |
+| "Continuous execution means I never stop" | Only routine task pauses are removed. Doubts, ambiguities, and unresolved failures still stop the run. |
 | "This task is risky but the tests are green" | Green tests say the code does what you told it, not that the operation is safe. That is what the doubt triggers are for. |
 | "I'll note the risk in the completion report instead of asking" | A risk reported after the commit is a risk already taken. Ask before. |
 
@@ -312,12 +310,12 @@ Stop and fix the process when you notice:
 - writing implementation before a failing test
 - editing a file the task brief does not name
 - committing with a failing or unread check
-- a task accumulating fixes beyond 5 review-fix rounds
+- restarting a full task review or another fix pass instead of stopping for unresolved findings
 - committing a task while a doubt trigger is open
 - committing a destructive operation without sign-off
 - describing work as done without a command and its output behind it
-- losing the review base, or reviewing against a moving base
-- in autonomous mode: batching commits, skipping a review, or widening scope
+- losing either base, using a moving base, or including earlier tasks in a task review
+- batching commits, skipping a task self-check, or widening scope
 
 ## Completion report
 
@@ -327,11 +325,10 @@ Report:
 
 ```text
 Implemented: <plan path, session plan, or small-change request>
-Mode: <default | autonomous>
-Tasks: <completed / executable count>, each reviewed and committed
+Tasks: <completed / executable count>, each self-checked or independently reviewed and committed
 Skipped: <task numbers and approved reasons, or None>
 Final verification: <commands and fresh results>
-Independent review: not performed by execute
+Whole-feature independent review: not performed by execute
 Checks: <commands and results>
 Changed: <short file list>
 
@@ -350,7 +347,7 @@ Next: <return to autoflow when it is the caller; otherwise keep, merge locally, 
 
 Read `./references/git-commit.md` for commit rules.
 
-Omit "Doubt checkpoints cleared" when no trigger fired. In autonomous mode also report where the run stopped, if it stopped early.
+Omit "Doubt checkpoints cleared" when no trigger fired. If execution stopped early, report the unfinished task and exact blocker.
 
 When called by `autoflow`, report completion and return to it before presenting integration options: its separate feature-wide `code-review` stage still remains. Do not invoke that skill here.
 

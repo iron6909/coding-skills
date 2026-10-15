@@ -1,6 +1,6 @@
 ---
 name: autoflow
-description: Automate plan → execute → code-review from an already approved spec. Save and commit plan.md beside the spec, implement and review each task, then review the whole feature and commit authorized fixes. Use when the user requests full-auto delivery of approved requirements. Does not clarify requirements, merge, or push.
+description: Automate plan → execute → code-review from an already approved spec. Save and commit plan.md beside the spec, check and commit each task, then review the whole feature and commit authorized fixes. Use when the user requests full-auto delivery of approved requirements. Does not clarify requirements, merge, or push.
 disable-model-invocation: true
 ---
 
@@ -14,7 +14,7 @@ The called skills own their planning, testing, review, and commit rules. Autoflo
 
 Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
 
-1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read the approved spec, including an explicitly named artifact from another specification system. Do not create a parallel spec. If it is missing, unapproved, or has unresolved product or UI decisions, stop and recommend `clarify` or `ui-design`; do not invoke either.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read the approved spec, including an explicitly named artifact from another specification system. Do not create a parallel spec. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `clarify` or `ui-design`; do not invoke either.
 2. Inspect the branch, staged and unstaged changes, and untracked files. Record the initial state. Never commit, stash, reset, or overwrite unrelated user work. If it cannot be isolated safely, stop and ask.
 3. Confirm the target branch. On the default branch, get consent to work there or create `feature/YYYYMMDD-<semantic-name>`. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
 4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
@@ -37,16 +37,16 @@ If no current approved plan exists, invoke `plan` at Full tier. Let it produce i
 
 Ask once for approval of both:
 
-- the exact plan and its verification commands;
+- the exact plan and its verification commands, with the applicable approved UI/design inputs;
 - autonomous execution plus fixes for Blocking and Important review findings that stay within the approved scope.
 
-An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved spec and plan revisions and the authorization. If the plan changes, renew the approval rather than carrying it over silently.
+An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved input snapshots and the authorization using the state reference. Changed inputs require renewed approval; do not carry authorization over silently.
 
 `plan` then saves and commits `plan.md`. Its task briefs remain gitignored under `.coding/`; they are not committed. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
 
 ## Stage 2: Execute
 
-Invoke `execute auto` with the approved inputs, authorization, initial working-tree record, and fixed review base. Its TDD, per-task review and commits for executable tasks, and final verification remain mandatory. Do not replace task reviews with the later `code-review` stage.
+Invoke `execute` with the approved inputs, authorization, initial working-tree record, and fixed feature review base. It runs continuously under its bounded task-review rules. TDD, task checks, separate commits, and final verification remain mandatory; the later `code-review` stage does not replace them.
 
 Use the execution ledger as the task-level record; do not maintain a second task list in autoflow state. If execution stops at any of its gates, record the blocker and hand back rather than launching the next stage.
 
@@ -62,7 +62,7 @@ Apply the review skill's fix verification and separate commits, followed by one 
 
 ## Stops and recovery
 
-Stop for a missing approval, changed spec or plan, an unresolved execution gate, unsafe working-tree overlap, failed checks without a clear in-scope fix, or any required high-risk sign-off. Preserve the branch, commits, state, ledger, briefs, and reports.
+Stop for a missing approval, changed approved inputs, an unresolved execution gate, unsafe working-tree overlap, failed checks without a clear in-scope fix, or any required high-risk sign-off. Preserve the branch, commits, state, ledger, briefs, and reports.
 
 Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `clarify` and stop; it is outside this orchestrator.
 

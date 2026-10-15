@@ -39,7 +39,7 @@ Follow these five steps in order:
 2. **Confirm** — read the failure and confirm it fails for the right reason: the bug itself, not a typo or a broken setup.
 3. **Fix** — apply the minimal change that addresses the root cause.
 4. **Verify** — run the test and confirm it passes.
-5. **Guard** — run the affected checks and the full suite. Confirm no regression.
+5. **Guard** — run the affected checks and confirm no regression. Follow the applicable Definition of Done for full-suite timing.
 
 Then prove the test guards the fix: revert the fix temporarily, confirm the test fails, restore the fix, and confirm it passes again.
 

@@ -135,4 +135,4 @@ Missing gitignored briefs alone do not block a fresh clone: check whether the ap
 
 - A document has 3+ Blocking findings: recommend rewriting the section, not patching
 - A finding requires a decision: don't invent it, report to user
-- Evidence is missing and you can't infer it: mark as Important, don't fabricate
+- Evidence is missing and you can't infer it: do not fabricate it; grade the gap by impact using `./references/severity.md`, including whether acceptance remains verifiable

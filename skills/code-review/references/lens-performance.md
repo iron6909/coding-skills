@@ -359,21 +359,7 @@ Large images without compression or responsive variants.
 
 ## Severity guidelines
 
-**Important** (should fix):
-- N+1 queries on frequently accessed endpoints
-- Missing indexes on large tables
-- Memory leaks in long-running processes
-- Loading unbounded datasets without pagination
-- Blocking operations on main thread
-
-**Minor** (nice to fix):
-- Missing memoization of expensive computations
-- Inefficient algorithms on small datasets
-- Suboptimal bundle splitting
-- SELECT * on tables with few columns
-- Missing cache on rarely accessed data
-
-**Note**: Performance issues are rarely "blocking" unless they cause timeouts or crashes. Most are "important" or "minor" based on frequency and user impact.
+Apply `./references/severity.md` by measured impact, without a lens-specific ceiling. A missed performance acceptance condition or unusable required path can be Blocking; frequency and user impact distinguish lesser findings.
 
 ## Performance measurement
 
@@ -446,6 +432,6 @@ For each file in the diff:
 
 Each finding must include:
 - Exact file and line number
-- Severity (important or minor, rarely blocking)
+- Severity (blocking, important, minor)
 - Clear description of the anti-pattern
 - Evidence with scale estimate and suggested fix

@@ -234,18 +234,7 @@ const length = Array.from(str).length; // Counts code points correctly
 
 ## Severity guidelines
 
-**Important** (should fix):
-- User-facing strings not translatable
-- Hardcoded date/currency formatting
-- Broken pluralization
-- String concatenation building sentences
-
-**Minor** (nice to fix):
-- Missing RTL support (if not targeting RTL languages)
-- Non-locale-aware sorting
-- Timezone handling (if app is local-only)
-
-**Blocking**: Rarely blocking unless the app is marketed as multilingual.
+Apply `./references/severity.md` by demonstrated impact, without a lens-specific ceiling. A wrong amount, date, or locale assumption that breaks required behavior can be Blocking even in a single-language app. Grade lesser usability and polish issues by their actual effect; do not flag support for a locale the approved scope excludes.
 
 ## Review checklist
 
@@ -293,7 +282,7 @@ For a new i18n implementation, verify:
 
 Each finding must include:
 - Exact file and line number
-- Severity (important or minor)
+- Severity (blocking, important, minor)
 - Specific i18n principle violated
 - Suggested fix with example
 

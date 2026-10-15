@@ -14,7 +14,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `ideate`: compare grounded technical options for a clear problem.
 - `clarify`: resolve requirements into an approved spec, with a capability map when decomposition is needed.
 - `plan`: turn an approved spec into small, testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
-- `execute`: implement an approved plan or a small, clear change, with review and commit after each task. Pass `auto` to run every task under one approval gate.
+- `execute`: continuously implement approved tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
 - `debug`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `optimize`: systematic performance optimization with measurement-driven iteration (profile, attribute, test variants, stopping criteria).
 - `code-review`: independently review a branch or commit range, including a completed feature.

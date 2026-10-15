@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-10-15
+
+### Breaking Changes
+
+- **execute 调用行为**：移除 default/auto 模式及 `auto` 参数，一次调用持续执行全部已批准任务，不再默认每任务停下。改用 `execute` 即可；范围变化、失败和高风险确认仍会停止执行。
+- **autoflow 状态格式**：状态 schema 从 1 升为 2，授权绑定适用 UI/design 输入的路径、内容及缺席状态。旧记录保留，不静默迁移或沿用旧授权；恢复前须核验已有产物，经用户确认后重建状态。
+
+### Changed
+
+- **[execute] 持续执行**：移除 default/auto 模式区分和例行任务间确认；按批准的范围连续完成可执行任务，高风险确认与阻塞停止规则保留。
+- **[execute] 收紧任务审查**：默认轻量自查，独立 reviewer 按具体风险使用；一次初查后最多一轮修复与定向复查，移除五轮审查和 reviewer 升级机制。区分固定功能基线与任务起点，避免累计重审。
+- **验证频率与交接**：任务内执行聚焦和受影响检查，全量测试按项目 DoD 在最终验证运行；同步 guide、autoflow、code-review 与共享规则，并增加流程契约自检。
+
+### Fixed
+
+- **安全与行为示例**：移除仅校验文件名和声明大小却声称安全的上传正例，改为完整内容验证、资源限制、防覆盖与隔离存储要求；税率重构保留未知国家和不可哈希输入的原行为。
+- **审查基线与严重度**：code-review 固定基线和被审查 head 的完整 SHA，修复范围另记；Accessibility、I18n、Performance 与 simplify 不再限制严重度，缺失证据按实际影响分级，并补齐 14pt 粗体大字条件。
+- **恢复授权与写入安全**：autoflow 状态 schema 升为 2，记录适用 UI/design 输入的路径、内容及缺席状态；旧记录保留并经确认重建，恢复时检测输入新增、删除和修改；debug 在探针、复现及假设修改前保护分支与已有改动。
+- **输出保留与丢弃**：ideate 同名报告加后缀且不再暗示可在收敛阶段写原型；refactor 区分临时写入与提交；Discard 只在文档已保留、分支 tip 未变且输入确认词后允许删除本次创建的未合并分支。
+- **任务切分与学习门槛**：统一新用户流程的纵向分类与独立验收要求，替换 README 分层示例；复杂度阈值只作线索，不强制拆分；通用 JWT/localStorage 建议不通过反事实门槛。
+- **回归检查**：在现有自检脚本中增加固定 Git 审查范围、确认丢弃及文档契约检查；本地有 Python 时执行税率示例对照，缺少解释器时明确报告跳过，不新增依赖。
+
 ## [3.0.0] - 2026-10-15
 
 ### Changed
@@ -242,7 +264,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/iron6909/coding-skills/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/iron6909/coding-skills/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/iron6909/coding-skills/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/iron6909/coding-skills/compare/v2.0.0...v2.0.1

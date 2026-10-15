@@ -62,19 +62,14 @@ app.get('/api/orders/:id', async (req, res) => {
 app.post('/api/upload', (req, res) => {
   fs.writeFileSync(`./uploads/${req.body.filename}`, req.file.buffer);
 });
-
-// ✅ Validated and sanitized
-app.post('/api/upload', (req, res) => {
-  const filename = path.basename(req.body.filename); // Prevent path traversal
-  if (!['jpg', 'png', 'gif'].includes(path.extname(filename).slice(1))) {
-    return res.status(400).json({ error: 'Invalid file type' });
-  }
-  if (req.file.size > 5 * 1024 * 1024) {
-    return res.status(400).json({ error: 'File too large' });
-  }
-  fs.writeFileSync(`./uploads/${filename}`, req.file.buffer);
-});
 ```
+
+A filename extension, client MIME type, or declared size does not validate image content. `path.basename()` alone also does not prevent overwriting an existing upload. Review the complete boundary instead of treating those checks as a safe implementation:
+
+- Enforce request-size limits before buffering, reject missing or malformed files, and check the actual byte length against the project's limit.
+- Fully decode and re-encode accepted raster images with the project's maintained image library. Enforce allowed formats and pixel/frame limits; reject invalid content and decompression bombs. A matching signature alone is insufficient.
+- Use a server-generated identifier, not the client filename, and exclusive creation or conditional object-store writes so a collision cannot replace existing data.
+- Store uploads outside executable/public application paths, enforce ownership, and serve them with a trusted content type and non-executable response policy.
 
 ### 4. SQL injection
 - String concatenation in SQL queries
