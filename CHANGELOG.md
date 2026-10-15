@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-10-15
+
+### Fixed
+
+- **指导示例安全与正确性**：登录示例正确等待密码校验并返回认证用户，补充错误凭据和非法输入检查；无障碍示例改用原生 button/dialog，修正 React 文本插值的 XSS 误报，替换行为不等价的性能示例。
+- **执行恢复与文档修订**：重建 brief 时纳入已批准的 UI 规格和设计约束；语义文档修订交回 clarify/plan，不再带着过期 briefs 直接执行。
+- **任务安全与追溯**：首个纵向切片即包含最低安全保护；需求退役保留已完成任务的覆盖历史，经批准取消的任务保留编号与原因，不伪造完成记录或提交。
+- **路由与暂存边界**：性能回归优先进入 debug；即使批准全部改动，也只暂存枚举的文件或 hunks。
+- **UI 状态与引用**：原生行为和适用状态优先，无障碍阈值以 WCAG 参考为准；修正局部引用、过期 research/Spike Path 和 Testing Boundary 用词。
+
+### Changed
+
+- **[execute/autoflow] 审查职责**：移除 execute 的整体终审，保留逐任务评审、提交和最终验证；autoflow 仅在 code-review 阶段执行一次整体独立审查。
+- **[ui-review] 严重度统一**：新报告使用 Blocking/Important/Minor，共用 severity 引用；旧报告保留，修复授权和验证门禁不变。
+
+### Added
+
+- **示例自检**：新增无依赖的 `node scripts/check-examples.mjs`，检查两版登录和重复值算法的边界行为；提交前检查同时列出现有同步器回归脚本。
+
 ## [2.0.1] - 2026-10-15
 
 ### Fixed
@@ -199,7 +218,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/iron6909/coding-skills/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/iron6909/coding-skills/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/iron6909/coding-skills/compare/v1.3.3...v2.0.0
 [1.3.3]: https://github.com/iron6909/coding-skills/compare/v1.3.2...v1.3.3
