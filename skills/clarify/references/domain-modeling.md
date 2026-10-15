@@ -6,7 +6,7 @@ This discipline *changes* the model. Reading `GLOSSARY.md` to use its terms is a
 
 ## Files
 
-One `GLOSSARY.md` at the repository root and ADRs in `docs/adr/`. Create both lazily, only when there is content to write. Formats: `./glossary-format.md` and `./adr-format.md`.
+One `GLOSSARY.md` at the repository root and ADRs in `docs/adr/`. Create both lazily, only when there is content to write. Formats: `./references/glossary-format.md` and `./references/adr-format.md`.
 
 ## During the session
 
@@ -28,7 +28,7 @@ When the user states how something works, check whether the code agrees. Surface
 
 ### Update GLOSSARY.md inline
 
-Once a term is settled, update `GLOSSARY.md` right away. Do not batch. Use the format in `./glossary-format.md`.
+Once a term is settled, update `GLOSSARY.md` right away. Do not batch. Use the format in `./references/glossary-format.md`.
 
 ### Offer ADRs sparingly
 
@@ -38,4 +38,4 @@ Offer an ADR only when **all three** hold:
 2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off**: genuine alternatives existed and one was picked for specific reasons.
 
-If any one fails, skip the ADR. Use the format in `./adr-format.md`.
+If any one fails, skip the ADR. Use the format in `./references/adr-format.md`.

@@ -83,6 +83,8 @@ Update all of these in the same commit:
 
 ```bash
 node scripts/sync-references.mjs --check                     # copies in sync, references named, no dead link
+node scripts/sync-references.test.mjs                        # synchronizer regression checks
+node scripts/check-examples.mjs                              # executable reference examples
 grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
 grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
 ```
@@ -91,7 +93,7 @@ grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill
 
 - **Commits**: Conventional Commits with a scope, for example `docs(clarify): add capability map for multi-module initiative`. One logical change per commit.
 - **Branches**: `feature/YYYYMMDD-<name>`.
-- **Testing**: this repository has no test suite. Verify with the checks above.
+- **Testing**: no application test suite; use the small standard-library self-checks and consistency checks above.
 - **Linting**: respect existing config. No new linter rules without approval.
 
 ## Version Management

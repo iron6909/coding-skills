@@ -23,7 +23,7 @@ const MAP = {
   "subagent-dispatch.md": ["survey", "clarify", "plan", "code-review", "execute", "refactor", "ideate"],
   "tdd.md": ["execute", "debug", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "debug"],
-  "severity.md": ["execute", "code-review", "simplify", "doc-review"],
+  "severity.md": ["execute", "code-review", "simplify", "doc-review", "ui-review"],
   "git-commit.md": ["survey", "clarify", "plan", "capture", "execute", "debug", "code-review", "simplify", "learning-refresh", "doc-review", "commit", "optimize"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
   "stable-ids.md": ["clarify", "plan", "execute"],

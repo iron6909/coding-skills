@@ -13,21 +13,22 @@ Missing states = confused users = poor experience.
 
 ---
 
-## Universal States
+## Common States
 
-These apply to almost all interactive components:
+Choose the states that apply to each component and input method; native behavior counts. The values below are optional styling examples, not a requirement for custom CSS or every state on every control. CSS alone does not supply disabled semantics or an accessible name.
+
+Read `./references/wcag-checklist.md` for accessibility requirements, naming, focus visibility, and target-size guidance; it is the authority for those checks.
 
 ### default
 The normal, resting state. How it looks when nothing is happening.
 
 ### hover
-Desktop only. Mouse cursor over the element, but not clicked yet.
+A pointer is over the element on an input that supports hover.
 
 **Rules:**
-- Don't use on mobile (touch has no hover)
-- Should be subtle but noticeable
-- Indicates "this is interactive"
-- Change cursor to `pointer` for clickable elements
+- Apply hover feedback only where supported; do not rely on it for touch or keyboard use
+- Native feedback counts; custom styling is optional
+- Respect native control and platform cursor conventions
 
 **Common changes:**
 - Slightly darker background
@@ -36,15 +37,14 @@ Desktop only. Mouse cursor over the element, but not clicked yet.
 - Underline appears (links)
 
 ### focus
-Keyboard focus. User tabbed to this element.
+The element has input focus, including keyboard or programmatic focus.
 
 **Rules:**
-- **Must be visible** (WCAG requirement)
-- Different from hover (keyboard ≠ mouse)
-- Usually outline or ring around element
-- Minimum 2px solid outline or 3px contrast
+- Keep a visible native indicator or provide an appropriate authored one
+- Hover-only feedback cannot substitute for keyboard focus
+- Outline and ring styles below are options, not universal size thresholds
 
-**Common styles:**
+**Optional authored styles:**
 - `outline: 2px solid primary-color`
 - `box-shadow: 0 0 0 3px rgba(primary, 0.2)` (focus ring)
 - `outline-offset: 2px` (space between element and outline)
@@ -177,10 +177,10 @@ disabled:
 
 ### Icon-Only Button
 
-Same as above, but:
-- Add `aria-label` attribute (accessibility)
-- Ensure ≥44×44px hit area (even if icon is smaller)
-- Focus ring should encompass entire hit area
+Use the applicable button states, plus:
+- Provide an effective accessible name, not necessarily one particular ARIA attribute
+- Assess the effective hit area using the WCAG reference's design goal and exceptions
+- Keep focus feedback visible around the operable area
 
 ---
 
@@ -286,7 +286,7 @@ disabled:
   - Cursor: not-allowed
 ```
 
-**Size:** Minimum 24×24px hit area (or 44×44px on mobile).
+**Hit area:** use the target-size guidance in `./references/wcag-checklist.md`; do not infer a conformance threshold from the drawn checkbox size.
 
 ---
 
@@ -351,7 +351,7 @@ disabled:
 ```
 default:
   - Color: primary-600
-  - Text-decoration: underline (always, for accessibility)
+  - Text-decoration: underline (body-text example)
   - Cursor: pointer
 
 hover:
@@ -374,7 +374,7 @@ disabled:
   - Text-decoration: underline (remains for recognizability)
 ```
 
-**Note:** Always underline links in body text. In navigation menus, underline can be optional if context is clear.
+**Note:** Underlining is a common non-color affordance for body-text links; navigation may use other clear context. Apply the WCAG reference rather than treating this style example as the only valid implementation.
 
 ---
 
@@ -624,14 +624,14 @@ disappearing:
 
 Before finalizing component specs, verify:
 
-- [ ] All 5 universal states defined (default, hover, focus, active, disabled)
-- [ ] Focus state visible and distinct (≥2px outline)
-- [ ] Disabled state clearly non-interactive
-- [ ] Loading state prevents double-clicks
-- [ ] Error state provides actionable message
-- [ ] Empty state guides next action
-- [ ] Hover states desktop-only (not on touch)
-- [ ] Touch targets ≥44×44px
+- [ ] Applicable states are specified; existing native states count
+- [ ] Focus has a visible native or authored indicator, checked against the WCAG reference
+- [ ] Disabled state, where applicable, has working semantics as well as styling
+- [ ] Loading feedback and behavior prevent harmful duplicate submission
+- [ ] Error state provides an actionable message where applicable
+- [ ] Empty state guides the next action where applicable
+- [ ] Hover feedback is used only where supported and is not the sole interaction cue
+- [ ] Effective target areas are assessed against the WCAG reference's design goal and exceptions
 - [ ] State changes have visual feedback
 - [ ] Screen reader announcements considered (aria-live, aria-invalid)
 
@@ -639,8 +639,8 @@ Before finalizing component specs, verify:
 
 ## Notes
 
-- **Hover ≠ Focus**: Hover is mouse-only, focus is keyboard-only. They should look different.
+- **Hover ≠ Focus**: Pointer hover and input focus are different states; neither replaces the other's applicable feedback. Native indicators may already cover them.
 - **Active is brief**: The moment between mousedown and mouseup. Often darker or smaller.
 - **Disabled vs Hidden**: Show disabled (user knows it exists), hide if not relevant.
 - **Loading prevents double-submit**: Crucial for forms and async actions.
-- **Transitions help**: 200ms ease makes state changes feel smooth, not jarring.
+- **Transitions are optional**: Follow project motion tokens and reduced-motion preferences; state feedback must work without animation.

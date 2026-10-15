@@ -98,7 +98,7 @@ graph TD
 | **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | TDD、逐任务评审/提交、最终验证；传 `auto` 则单次批准跑完可执行任务 |
-| **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度:一致性/可用性/可访问性/响应式/性能 |
+| **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |

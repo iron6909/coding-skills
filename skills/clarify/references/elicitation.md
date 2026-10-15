@@ -196,8 +196,8 @@ Deep elicitation:
 - Constraint relaxation (are these constraints real?)
 - Stakeholder mapping (who else is affected?)
 
-### Spike Path
-Focused elicitation:
+### Optional research/spike validation (either path)
+Use focused elicitation within Bounded or Architectural work when feasibility needs validation; this is not a third path:
 - Socratic questioning (why this approach?)
 - Analogy (has anyone solved this before?)
 - Counterfactual (what if we don't do this?)

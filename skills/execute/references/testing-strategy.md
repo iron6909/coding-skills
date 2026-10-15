@@ -244,13 +244,13 @@ app.post('/api/login', async (req, res) => {
 // Run: STILL PASSES
 ```
 
-## Spec Test Entry Points
+## Spec Testing Boundary
 
-The spec defines **test entry points** - the interfaces where behavior can be verified:
+The spec's **Testing Boundary** names the test entry points — the interfaces where behavior can be verified:
 
 **Example spec**:
 ```markdown
-## Test Entry Points
+## Testing Boundary
 
 - POST /api/users → creates user, returns 201
 - GET /api/users/:id → returns user JSON

@@ -22,13 +22,7 @@ Do not confuse this with `code-review`, which judges a diff against repo standar
 
 Each finding carries an ID, a severity, a file and line, the issue, the expected state, the impact on a real user, the fix, and its evidence. Include the page, viewport, state, screenshot, or reproduction steps when applicable.
 
-Severity says what happens next:
-
-| Severity | Meaning |
-|----------|---------|
-| **HIGH** | Blocks shipping |
-| **MEDIUM** | Fix this cycle |
-| **POLISH** | Optional refinement |
+Before grading, read `./references/severity.md`. Use **Blocking**, **Important**, and **Minor** in new reports; retain existing reports unchanged. Severity describes impact, not permission to edit.
 
 Use the impact criteria in `./references/ui-review-checklist.md`. Detection confidence and the dimension's name do not determine severity.
 
@@ -36,7 +30,7 @@ Use the impact criteria in `./references/ui-review-checklist.md`. Detection conf
 
 Ask what to review unless the request already says. Defaults worth offering: the files changed since the last review, or the whole frontend.
 
-Also settle two things: which dimensions to cover (all five, or one), and whether to report POLISH findings or only HIGH and MEDIUM. A first pass on a large app is more useful scoped to HIGH and MEDIUM.
+Also settle two things: which dimensions to cover (all five, or one), and whether to report Minor findings or only Blocking and Important. A first pass on a large app is more useful scoped to Blocking and Important.
 
 ## Phase 1: Establish the baseline
 
@@ -84,9 +78,9 @@ Evidence: <source, rendered views, interactions; limits>
 ## Summary
 counts per severity, and what was checked
 
-## HIGH
-## MEDIUM
-## POLISH
+## Blocking
+## Important
+## Minor
 
 per finding: ID, severity, file:line, issue, expected, impact, fix, evidence and verification status
 
@@ -104,7 +98,7 @@ Present the report and ask what to fix. Do not apply anything unasked.
 
 When the user approves fixes:
 
-1. Resolve any open design decision with the user before changing code. Work in severity order, HIGH first, and make the smallest change that fixes each finding.
+1. Resolve any open design decision with the user before changing code. Work in severity order, Blocking first, and make the smallest change that fixes each finding.
 2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.
 3. If necessary verification is unavailable, explain the gap. Commit with limited verification only if the user explicitly accepts that boundary; the report must still say unverified, not verified.
 4. After verification, commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the actual report path in the body. Stage only this finding's changes, excluding the original reviewed work and unrelated user changes. If unrelated changes are staged or cannot be separated safely, stop and ask; do not unstage or commit them. Do not push or commit the report.
@@ -113,5 +107,6 @@ Report verified fixes, unverified changes, and remaining findings. Post-commit r
 
 ## References
 
+- `./references/severity.md` — shared severity definitions. Read before grading any finding.
 - `./references/ui-review-checklist.md` — the checks for Phase 2, with severities. Read in full before reviewing.
 - `./references/common-ui-mistakes.md` — the recurring anti-patterns, with corrected code. Read when a finding needs a concrete replacement.
