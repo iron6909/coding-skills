@@ -44,11 +44,7 @@ Read the full document. Note:
 
 ### 5. Classify findings
 
-Per finding, assign severity using `./references/severity.md`:
-
-- **Blocking**: stops implementation (missing acceptance criteria, contradictory decisions, circular dependencies)
-- **Important**: will cause rework (vague scope, untestable claims, missing constraints)
-- **Minor**: polish issues (unclear wording, missing examples)
+Read `./references/severity.md` and use it to grade every finding. An acceptance condition with no verification is Blocking; an unsupported ordinary claim is not automatically Blocking. Judge its effect on the approved work.
 
 ### 6. Fix minor issues inline
 
@@ -81,7 +77,7 @@ Present a report:
 
 ### Minor (fixed)
 3. Fixed inconsistent term "user session" → "authenticated session" per GLOSSARY.md
-4. Added example to Testing section
+4. Added example to Testing Boundary section
 ```
 
 ### 8. Wait for user decision

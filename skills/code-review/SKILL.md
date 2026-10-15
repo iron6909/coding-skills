@@ -109,77 +109,11 @@ If `docs/learnings/` does not exist, record `Learnings: none recorded` and skip 
 
 Read `./references/learnings-format.md` to understand the format and structure of learning files when matching them to this diff.
 
-## Read lens configuration
+## Configure and run lenses
 
-Check for enabled optional lenses in this order:
+Read the Configuration and Lens dispatch rules in `./references/review-lenses.md`. Use only the configured optional lenses; absent source material is recorded as skipped, not passed.
 
-1. `.cartoons/review-lenses.toml` in project root
-2. `.cartoons/review-lenses.md` in project root (markdown format)
-3. Default: only Standards, Spec, Learnings (no optional lenses)
-
-**Example .cartoons/review-lenses.toml**:
-```toml
-[review]
-enabled = ["standards", "spec", "learnings", "security", "performance"]
-
-[review.lens.security]
-priority = "high"
-focus = ["authentication", "authorization", "input-validation"]
-
-[review.lens.performance]
-priority = "medium"
-focus = ["database-queries", "caching"]
-```
-
-**Example .cartoons/review-lenses.md**:
-```markdown
-# Review Configuration
-
-Enabled lenses: standards, spec, learnings, security, performance
-
-## Security lens focus
-- authentication flows
-- authorization checks
-- input validation
-
-## Performance lens focus
-- database queries
-- caching strategy
-```
-
-When no configuration exists, use defaults only. Do not enable optional lenses without explicit configuration.
-
-## Run enabled lenses
-
-**With subagents**: dispatch read-only reviewers in parallel (see `./references/subagent-dispatch.md` for dispatch rules):
-
-**Default lenses** (always run):
-1. **Standards reviewer**: reads standards docs + diff, reports violations
-2. **Spec reviewer**: reads spec + diff, reports mismatches or missing features
-3. **Learnings reviewer**: reads matching `docs/learnings/` files + diff, reports repeated traps (skip when no learnings exist)
-
-**Optional lenses** (run if enabled in configuration):
-4. **Security reviewer**: reads `./references/lens-security.md` + diff, reports vulnerabilities
-5. **Performance reviewer**: reads `./references/lens-performance.md` + diff, reports anti-patterns
-6. **Accessibility reviewer**: reads `./references/lens-accessibility.md` + diff, reports WCAG violations
-7. **I18n reviewer**: reads `./references/lens-i18n.md` + diff, reports i18n issues
-
-Each reviewer returns findings as JSON array:
-```json
-[
-  {
-    "file": "src/auth.ts",
-    "line": 42,
-    "severity": "blocking",
-    "description": "SQL injection: user input concatenated into query",
-    "evidence": "Query uses string concatenation on line 42"
-  }
-]
-```
-
-Every reviewer reports findings only. The main process owns grading and the report.
-
-**Without subagents**: perform the reviews inline. Run default lenses first (Standards, Spec, Learnings), then optional lenses in priority order (high → medium → low).
+For parallel read-only reviewers, read `./references/subagent-dispatch.md`. When delegation is unavailable, run the same enabled lenses inline in the reference's order. Reviewers return findings only; the main process owns grading and the report.
 
 ## Grade findings
 
@@ -195,66 +129,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 Write the findings to `.cartoons/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.cartoons/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
-```markdown
-# Review — <review-base>...HEAD
-
-**Review base:** <commit or branch>
-**Commits reviewed:** <count>
-**Lenses enabled:** standards, spec, learnings[, security, performance, ...]
-
----
-
-## Standards
-- [Blocking|Important|Minor] <file>:<line> — <finding>
-
-## Spec
-- [Blocking|Important|Minor] <finding>
-
-## Learnings
-- [Blocking|Important|Minor] <finding, naming the learning file it comes from>
-- or: `none recorded` / `none matched`
-
-## Security
-- [Blocking|Important|Minor] <file>:<line> — <finding>
-- or: `lens not enabled`
-
-## Performance
-- [Important|Minor] <file>:<line> — <finding>
-- or: `lens not enabled`
-
-## Accessibility
-- [Important|Minor] <file>:<line> — <finding>
-- or: `lens not enabled`
-
-## I18n
-- [Important|Minor] <file>:<line> — <finding>
-- or: `lens not enabled`
-
----
-
-## Summary
-
-**Findings by severity:**
-- Blocking: <count>
-- Important: <count>
-- Minor: <count>
-
-**Coverage by lens:**
-- Standards: <count> findings
-- Spec: <count> findings / no spec available
-- Learnings: <count> findings / none recorded / none matched
-- Security: <count> findings / lens not enabled
-- Performance: <count> findings / lens not enabled
-- Accessibility: <count> findings / lens not enabled
-- I18n: <count> findings / lens not enabled
-
-**Definition of Done applied:** <which DoD checklist was used>
-
-## Verdict
-<one line: what must change before this can merge>
-```
-
-Present each lens separately. Do not merge or reorder them. A Learnings finding always names the file it came from. Optional lenses show "lens not enabled" when not configured.
+Use the Report structure in `./references/review-lenses.md`. Present each lens separately in that order. A Learnings finding names its source file; disabled or unavailable lenses are explicitly marked, not counted as passes.
 
 ## Common rationalizations
 

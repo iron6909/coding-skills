@@ -22,12 +22,7 @@ Clean up working code: extract duplication, improve naming, optimize efficiency,
 
 ## Scope
 
-Simplify **recently changed code only**. Default scope:
-1. User-named files
-2. Current branch vs base (e.g., `git diff main...HEAD`)
-3. Files edited in the last commit if no branch
-
-Never simplify code the user didn't work on. This avoids unfocused churn.
+Simplify **recently changed code only**, within the files and change range confirmed in step 3. Stay with changed code and directly necessary context, not unrelated cleanup elsewhere in the same files.
 
 ## Execution
 
@@ -41,15 +36,18 @@ Read `./references/severity.md` and `./references/git-commit.md`.
 
 ### 3. Determine scope
 
-Ask user for target files, or detect from:
+Honor user-named files and ranges first. If committed work is in scope, use the user's base or a locally verifiable base that clearly matches the work, such as its known integration branch or an agreed last-commit range. Resolve it locally with `git rev-parse --verify <base>^{commit}`; ask when the base or range is ambiguous. Do not assume a branch name, fetch, or query hosting services.
+
+Include the requested staged and unstaged changes, plus clearly related untracked files. A working-tree-only request needs no commit baseline. Inspect candidates with the applicable commands:
+
 ```bash
-git diff --name-only main...HEAD
+git diff --name-only <base>...HEAD --  # only when this committed range is in scope
+git diff --name-only --cached --
+git diff --name-only --
+git ls-files --others --exclude-standard
 ```
 
-If no branch, fall back to last commit:
-```bash
-git diff --name-only HEAD~1..HEAD
-```
+Use the union within the confirmed scope, not every untracked file. If nothing relevant changed, report that and stop; do not fall back to unrelated older work or whole-repository cleanup.
 
 ### 4. Review against dimensions
 

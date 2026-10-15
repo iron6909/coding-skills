@@ -31,6 +31,13 @@ Each lens returns:
 
 ## Configuration
 
+Resolve configuration in this order; do not combine files:
+1. `.cartoons/review-lenses.toml` at the project root
+2. Otherwise `.cartoons/review-lenses.md`
+3. Otherwise only the default lenses
+
+Optional lenses run only when explicitly enabled. Skip Spec if no spec is available and Learnings if no learnings are recorded; explain those omissions in the report.
+
 ### Project-level (.cartoons/review-lenses.md)
 
 ```markdown
@@ -124,7 +131,7 @@ Main process:
 
 Run lenses in order:
 1. standards (always)
-2. spec (always)
+2. spec (when the originating spec is available)
 3. learnings (always if docs/learnings/ exists)
 4. enabled optional lenses in priority order
 
@@ -241,83 +248,56 @@ Report findings as JSON array.
 
 ## Report structure
 
+Use the report path selected by SKILL.md. Every lens permits the full severity range; the main reviewer re-grades by impact using the severity reference.
+
 ```markdown
-# Review — <review-base>...HEAD
+# Review: <review-base>...HEAD
 
 **Review base:** <commit or branch>
 **Commits reviewed:** <count>
-**Lenses enabled:** standards, spec, learnings, security, performance
-
----
+**Lenses enabled:** standards, spec, learnings[, security, performance, ...]
 
 ## Standards
-
-- [Important] src/auth.ts:42 — Mysterious name: getUserData does not reveal what data
-- [Minor] src/utils.ts:10 — Magic number 86400 should be named constant
+- [Blocking|Important|Minor] <file>:<line> - <finding>
 
 ## Spec
-
-- [Blocking] REQ-3 not implemented — Avatar resize missing
-- [Important] REQ-1 behavior mismatch — Upload accepts only PNG, spec says PNG/JPG/WEBP
+- [Blocking|Important|Minor] <finding>
+- or: no spec available
 
 ## Learnings
-
-- [Important] src/db.ts:25 — Repeated trap: parallel migrations exhaust connection pool (see docs/learnings/20260915-parallel-migrations.md)
+- [Blocking|Important|Minor] <finding, naming its learning file>
+- or: none recorded / none matched
 
 ## Security
-
-- [Blocking] src/auth.ts:67 — SQL injection: user input concatenated into query
-- [Important] src/api.ts:120 — Missing input validation on file upload size
+- [Blocking|Important|Minor] <file>:<line> - <finding>
+- or: lens not enabled
 
 ## Performance
+- [Blocking|Important|Minor] <file>:<line> - <finding>
+- or: lens not enabled
 
-- [Important] src/users.ts:45 — N+1 query: loading posts inside user loop
-- [Minor] src/cache.ts:30 — Unnecessary re-computation: result could be memoized
+## Accessibility
+- [Blocking|Important|Minor] <file>:<line> - <finding>
+- or: lens not enabled
 
----
+## I18n
+- [Blocking|Important|Minor] <file>:<line> - <finding>
+- or: lens not enabled
 
 ## Summary
+**Findings by severity:** Blocking: <count>, Important: <count>, Minor: <count>
+**Coverage by lens:** <findings or explicit skipped/unavailable status per lens>
+**Definition of Done applied:** <which checklist was used>
 
-**Findings by severity:**
-- Blocking: 2
-- Important: 5
-- Minor: 2
-
-**Coverage by lens:**
-- Standards: 2 findings
-- Spec: 2 findings
-- Learnings: 1 finding
-- Security: 2 findings
-- Performance: 2 findings
-
-**Definition of Done applied:** <which DoD checklist was used>
+## Verdict
+<what must change before this can merge>
 ```
+
+For example, `[Blocking] REQ-1: upload accepts only PNG, but the spec requires PNG/JPG/WEBP` is an acceptance failure, not an Important style issue. An unavailable lens is missing coverage, never a passing check.
 
 ## Adding a new lens
 
-To add a project-specific lens:
-
-1. **Define the lens** in CLAUDE.md or review-lenses.toml:
-   ```toml
-   [review.lens.custom-name]
-   priority = "medium"
-   focus = ["topic-1", "topic-2"]
-   ```
-
-2. **Optional: Create a reference file** `references/lens-custom-name.md`:
-   ```markdown
-   # Custom Name Lens
-   
-   ## What to check
-   - Pattern 1: <description>
-   - Pattern 2: <description>
-   
-   ## Examples
-   ❌ Bad: <code>
-   ✅ Good: <code>
-   ```
-
-3. **Lens runs automatically** when enabled in configuration
+Define the project's lens, its concrete checks and focus, and its priority in the selected configuration file above. Add its name to the enabled list. Reuse supplied project context; do not create a dependency on another skill's references. Report the custom lens separately without changing the built-in report order.
 
 ## Lens priority
 
@@ -326,7 +306,7 @@ Priority determines execution order when running serially (no subagents):
 - `medium` - Run second (performance, maintainability)
 - `low` - Run last (style, nice-to-haves)
 
-With parallel subagents, priority doesn't affect execution order but may affect finding presentation in the report.
+With parallel subagents, priority does not change execution or built-in report order.
 
 ## Lens independence
 
@@ -337,46 +317,6 @@ Each lens must be independent:
 - ❌ Cannot call other lenses
 - ❌ Cannot edit code
 - ❌ Cannot spawn its own subagents
-
-## Configuration resolution
-
-1. Check for `.cartoons/review-lenses.toml` in project root
-2. If not found, check for `.cartoons/review-lenses.md` in project root
-3. If not found, use defaults (standards, spec, learnings only)
-
-## Backward compatibility
-
-Projects without lens configuration:
-- Run the three default lenses (standards, spec, learnings)
-- Behavior identical to current code-review
-- No breaking changes
-
-## Migration path
-
-### For new projects
-Enable optional lenses in CLAUDE.md or review-lenses.toml from the start.
-
-### For existing projects
-1. Current behavior continues (3 default lenses)
-2. Add optional lenses incrementally as needed
-3. No need to update old review reports
-
-## Benefits
-
-### Extensibility
-Add project-specific lenses without modifying code-review skill.
-
-### Focus
-Each lens has one responsibility, making findings clearer.
-
-### Parallelism
-Lenses run independently, enabling parallel subagent execution.
-
-### Configuration
-Teams enable only the lenses they need.
-
-### Reusability
-Common lenses (security, performance) can be reused across projects.
 
 ## Anti-patterns
 
@@ -414,17 +354,3 @@ focus = ["performance"]  # Overlaps with code-quality
 ```
 
 **Why wrong**: Duplicate findings confuse the report. Make lenses orthogonal.
-
-## Summary
-
-**What**: Extensible lens system for code review
-
-**Why**: Enable project-specific review perspectives without modifying core skill
-
-**How**: 
-- Default lenses: standards, spec, learnings (always)
-- Optional lenses: security, performance, accessibility, i18n
-- Configure via CLAUDE.md or .claude/review-lenses.toml
-- Run in parallel with subagents, or serially without
-
-**Benefits**: Extensibility, focus, parallelism, configurability, reusability
