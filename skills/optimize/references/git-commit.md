@@ -6,7 +6,7 @@ Every skill that commits follows these rules. The skill's own instructions defin
 
 ## Stage only own files
 
-Stage only the files this skill created or changed. Use `git add <path>` for specific files, never `git add .` or `git add -A`.
+Stage only this skill's changes. Use `git add <path>` for files it owns entirely, or selective staging when a file also contains user changes. Never `git add .` or `git add -A`. If ownership cannot be separated safely, stop and ask.
 
 Before committing, verify what will be committed:
 
@@ -19,7 +19,7 @@ Check that:
 - No unrelated changes from the user are included
 - The diff matches what the skill intended to commit
 
-If unrelated files appear, unstage them before committing.
+If unrelated changes are already staged, stop and ask. Do not unstage, stash, overwrite, or commit the user's changes on their behalf.
 
 ## Commit message
 
@@ -45,6 +45,6 @@ fix(auth): prevent token expiry race
 
 ## Do not push
 
-Never push commits unless the user explicitly asks. Committing is local; pushing affects shared state.
+No skill pushes. Commits stay local; the user decides separately when to push.
 
 Do not merge or publish either. The commit stays on the current branch until the user decides what to do with it.

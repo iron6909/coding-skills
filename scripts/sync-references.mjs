@@ -24,7 +24,7 @@ const MAP = {
   "tdd.md": ["execute", "debug", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "debug"],
   "severity.md": ["execute", "code-review", "simplify", "doc-review"],
-  "git-commit.md": ["survey", "clarify", "plan", "capture", "execute", "debug", "code-review", "learning-refresh", "doc-review", "commit", "optimize"],
+  "git-commit.md": ["survey", "clarify", "plan", "capture", "execute", "debug", "code-review", "simplify", "learning-refresh", "doc-review", "commit", "optimize"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
   "stable-ids.md": ["clarify", "plan", "execute"],
   "counterfactual-test.md": ["capture", "learning-refresh"],
@@ -77,6 +77,14 @@ for (const skill of readdirSync(join(ROOT, "skills"))) {
 
   if (existsSync(dir)) {
     for (const ref of readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+      // ponytail: reuse the flat reference scan; recurse if nested references are introduced.
+      const source = readFileSync(join(dir, ref), "utf8").match(
+        /^<!-- synced from shared\/references\/(\S+) by scripts\/sync-references\.mjs: do not edit -->/,
+      )?.[1];
+      if (source && (source !== ref || !Object.hasOwn(MAP, source) || !MAP[source].includes(skill))) {
+        console.error(`unmapped: skills/${skill}/references/${ref} claims shared/references/${source}`);
+        drift++;
+      }
       if (text.includes(ref)) continue;
       console.error(`unnamed: skills/${skill}/references/${ref} is not named in skills/${skill}/SKILL.md`);
       drift++;

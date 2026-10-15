@@ -1,51 +1,50 @@
 <!-- synced from shared/references/git-commit.md by scripts/sync-references.mjs: do not edit -->
 
-# Git Commit Rules
+# Git commit rules
 
-All skills that commit changes follow these rules.
+Every skill that commits follows these rules. The skill's own instructions define what files to stage and the commit subject prefix.
 
-## Message format
+## Stage only own files
 
-Use Conventional Commits:
+Stage only this skill's changes. Use `git add <path>` for files it owns entirely, or selective staging when a file also contains user changes. Never `git add .` or `git add -A`. If ownership cannot be separated safely, stop and ask.
 
-```
-<type>(<scope>): <subject>
-
-[optional body]
-```
-
-- **type**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
-- **scope**: skill name or affected area (e.g., `clarify`, `execute`, `learnings`)
-- **subject**: imperative mood, lowercase, ≤72 chars, no period
-
-## Examples
-
-```bash
-docs(clarify): add user authentication spec
-
-feat(execute): implement JWT token generation
-
-fix(debug): correct cache invalidation logic
-
-docs(learnings): refresh against current codebase
-```
-
-## Staging
-
-Stage **only the files this skill modified**. Never `git add .` or `git add -A`.
-
-Use specific paths or `git add -p` for selective staging.
-
-## Verification
-
-Before committing:
+Before committing, verify what will be committed:
 
 ```bash
 git diff --staged
 ```
 
-Verify the diff contains only the expected changes for this commit.
+Check that:
+- Only the files this skill owns are staged
+- No unrelated changes from the user are included
+- The diff matches what the skill intended to commit
 
-## Push
+If unrelated changes are already staged, stop and ask. Do not unstage, stash, overwrite, or commit the user's changes on their behalf.
 
-No skill pushes. Commits stay local until the user decides to push.
+## Commit message
+
+Use the repository's own commit convention if `AGENTS.md` or `CLAUDE.md` sets one. Otherwise, use Conventional Commits:
+
+```
+type(scope): subject
+
+Optional body explaining why, not what.
+```
+
+- **type**: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, etc.
+- **scope**: the affected area (optional but recommended)
+- **subject**: imperative mood, lowercase, no period, ≤72 characters
+
+Examples:
+```
+docs(survey): record project facts
+docs(spec): add user authentication
+docs(plan): add login-flow
+fix(auth): prevent token expiry race
+```
+
+## Do not push
+
+No skill pushes. Commits stay local; the user decides separately when to push.
+
+Do not merge or publish either. The commit stays on the current branch until the user decides what to do with it.
