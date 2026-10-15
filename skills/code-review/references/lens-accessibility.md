@@ -56,25 +56,11 @@ All interactive elements must be keyboard accessible.
 <!-- ❌ Can't tab to this element -->
 <div class="custom-button" onclick="handleClick()">Action</div>
 
-<!-- ✅ Keyboard accessible -->
-<button onclick="handleClick()">Action</button>
-<!-- or -->
-<div class="custom-button" role="button" tabindex="0" onclick="handleClick()" onkeydown="if(event.key==='Enter') handleClick()">Action</div>
+<!-- ✅ Native button supports Enter and Space -->
+<button type="button" onclick="handleClick()">Action</button>
 ```
 
-```javascript
-// ❌ Dialog can't be closed with Escape key
-function openDialog() {
-  modal.style.display = 'block';
-}
-
-// ✅ Support Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modal.open) {
-    modal.close();
-  }
-});
-```
+Custom controls must implement their role's focus and activation behavior; adding `role` and `tabindex` alone is insufficient. Prefer the native element. For modal keyboard behavior, use the dialog example below.
 
 ### 4. Color contrast
 Text must have sufficient contrast ratio against background.
@@ -215,16 +201,22 @@ Must trap focus and announce state to screen readers.
   </form>
 </div>
 
-<!-- ✅ Focus trap and announcement -->
-<div class="modal" role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+<!-- ✅ Native modal behavior with an accessible name -->
+<button type="button" id="open-dialog">Review action</button>
+<dialog id="confirm-dialog" aria-labelledby="dialog-title">
   <h2 id="dialog-title">Confirm action</h2>
-  <p id="dialog-desc">This action cannot be undone.</p>
-  <form>
-    <input type="text" />
+  <form method="dialog">
+    <button autofocus>Cancel</button>
     <button>OK</button>
   </form>
-</div>
+</dialog>
+<script>
+  const dialog = document.getElementById('confirm-dialog');
+  document.getElementById('open-dialog').addEventListener('click', () => dialog.showModal());
+</script>
 ```
+
+`showModal()` supplies modal focus behavior and makes the background inert; native Escape and dialog-form submission close it. A styled `div`, `role="dialog"`, or an `open` attribute alone does not. Verify initial focus, Tab/Shift+Tab, keyboard dismissal, and focus return in the supported browsers; markup alone is not an interaction test.
 
 ### 12. Link text
 Links must have descriptive text (avoid "click here").

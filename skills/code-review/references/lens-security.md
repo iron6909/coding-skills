@@ -98,10 +98,8 @@ db.query('SELECT * FROM users WHERE email = ?', [req.body.email]);
 
 **Examples**:
 ```jsx
-// ❌ XSS vulnerability
-<div>{user.bio}</div> // If bio contains <script>alert('XSS')</script>
-
-// ✅ Escaped (React does this automatically)
+// ✅ Text interpolation is escaped, even if bio contains HTML.
+// React does this automatically.
 <div>{user.bio}</div> // React escapes by default
 
 // ❌ Dangerous

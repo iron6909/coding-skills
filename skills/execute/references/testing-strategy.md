@@ -187,17 +187,29 @@ test('POST /api/login returns token on valid credentials', async () => {
   expect(response.body.token).toBeDefined();
 });
 
+test('POST /api/login rejects an incorrect password', async () => {
+  const response = await request(app)
+    .post('/api/login')
+    .send({ email: 'user@example.com', password: 'wrong' });
+
+  expect(response.status).toBe(401);
+  expect(response.body.token).toBeUndefined();
+});
+
 // Run: FAILS (endpoint not implemented yet)
 ```
 
 ### GREEN: Minimal implementation to pass
 
 ```javascript
-// Minimal implementation
-app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
-  const user = db.findUser(email);
-  if (user && bcrypt.compare(password, user.passwordHash)) {
+// Minimal implementation; use the server's existing async error handling.
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body ?? {};
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({ error: 'Invalid credentials' });
+  }
+  const user = await db.findUser(email);
+  if (user && await bcrypt.compare(password, user.passwordHash)) {
     const token = jwt.sign({ userId: user.id }, SECRET);
     return res.json({ token });
   }
@@ -210,15 +222,19 @@ app.post('/api/login', (req, res) => {
 ### REFACTOR: Improve without changing behavior
 
 ```javascript
-// Refactored (extract validation)
-function validateCredentials(email, password) {
-  const user = db.findUser(email);
-  return user && bcrypt.compare(password, user.passwordHash);
+// Refactored (extract authentication; return the authenticated user).
+async function authenticateUser(email, password) {
+  const user = await db.findUser(email);
+  return user && await bcrypt.compare(password, user.passwordHash) ? user : null;
 }
 
-app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
-  if (validateCredentials(email, password)) {
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body ?? {};
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({ error: 'Invalid credentials' });
+  }
+  const user = await authenticateUser(email, password);
+  if (user) {
     const token = jwt.sign({ userId: user.id }, SECRET);
     return res.json({ token });
   }

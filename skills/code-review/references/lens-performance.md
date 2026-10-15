@@ -203,30 +203,26 @@ function CartSummary({ items }) {
 #### Inefficient algorithms
 Using O(n²) when O(n log n) or O(n) exists.
 
-**Examples**:
-```typescript
-// ❌ O(n²) nested loops
-function findDuplicates(arr) {
-  const dupes = [];
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[i] === arr[j]) dupes.push(arr[i]);
-    }
-  }
-  return dupes;
-}
+**Example contract**: return whether an array contains a repeated value, using SameValueZero equality (`NaN` matches itself, `0` matches `-0`, objects match by identity). Neither version changes the array.
 
-// ✅ O(n) with Set
-function findDuplicates(arr) {
-  const seen = new Set();
-  const dupes = new Set();
-  for (const item of arr) {
-    if (seen.has(item)) dupes.add(item);
-    seen.add(item);
+```typescript
+// ❌ O(n²): repeated membership scans
+function hasDuplicates(values) {
+  for (let i = 0; i < values.length; i++) {
+    if (values.includes(values[i], i + 1)) return true;
   }
-  return Array.from(dupes);
+  return false;
 }
 ```
+
+```typescript
+// ✅ Expected O(n) time, with O(n) additional storage
+function hasDuplicates(values) {
+  return new Set(values).size !== values.length;
+}
+```
+
+Check the output contract and workload before replacing an algorithm. A faster unique-values result is not equivalent to a list that preserves duplicate counts.
 
 ### 5. Network
 
