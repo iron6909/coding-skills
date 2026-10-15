@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-10-15
+
+### Fixed
+
+- **共享引用与提交边界**：修复 simplify 的过期共享副本和未登记副本漏检，遇到无关暂存或无法分离的混合改动时停止询问，不再代办合并、推送或发布。
+- **执行与设计批准**：在可能产生不可逆副作用的动作前取得授权，新增设计决定先批准再保存，UI 修复先验证再提交，验证不可用时明确保留未验证状态。
+- **需求追溯**：统一 spec、计划与提交中的稳定需求引用及 Testing Boundary 用词，无 spec 的小改动不再编造 REQ-N。
+- **技能交接与恢复**：仅在界面决策未定时建议 UI 设计，ideate 不再自动调用下一技能，handoff 保留未保存且未批准的 spec 草稿但不绕过 Brief 档边界。
+- **UI 无障碍检查**：修正大字阈值、对比度示例及原生控件判定，区分有效可访问名称、角色键盘行为与具体写法，也不再将触摸设计目标误判为 AA 要求。
+- **UI 设计与证据**：按界面模式、字体角色和已有系统应用设计规则，按实际影响分级，并区分源码、渲染和交互证据，避免凭字体、间距数列或 CSS 写法直接判错。
+- **文档与代码评审**：统一 lens 配置位置和报告规范，各维度保留完整严重度范围，无法验证或未满足的验收条件不再因模板而被降级。
+- **清理范围与报告保留**：simplify 使用实际本地基线并覆盖请求范围内的未提交改动，UI 评审和优化实验遇到同名路径时保留旧报告，后续引用沿用实际新路径。
+- **ideate 候选与证据**：按筛选后的实际数量汇报方案，搜索不可用时使用本地及用户材料继续，并标出未经验证的外部判断。
+
 ## [2.0.0] - 2026-10-15
 
 ### Breaking Changes
@@ -185,7 +199,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/iron6909/coding-skills/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/iron6909/coding-skills/compare/v1.3.3...v2.0.0
 [1.3.3]: https://github.com/iron6909/coding-skills/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/iron6909/coding-skills/compare/v1.3.1...v1.3.2
