@@ -45,7 +45,7 @@ Strategies for breaking down features into tasks with optimal order and granular
 - After tracer bullet establishes pattern
 - Adding variations of established behavior
 - Completing edge cases
-- Adding non-functional requirements (security, performance, accessibility)
+- Enhancing security, performance, or accessibility beyond the required baseline
 
 **Advantages**:
 - Follows established patterns
@@ -60,43 +60,41 @@ Strategies for breaking down features into tasks with optimal order and granular
 
 ### Phase 1: Tracer Bullet (Vertical)
 
-**Goal**: Prove the happy path works end-to-end
+**Goal**: Prove one safe end-to-end path.
+
+Every task must be independently safe to review and commit. Include required input validation, authorization, data-integrity constraints, error handling, and accessibility at each newly exposed boundary, or verify that existing protections cover it. Later tasks may improve UX and variants, not supply missing minimum safeguards.
 
 **Task 1**: Core user journey
-- Minimal implementation
-- Happy path only
-- No error handling beyond "show generic error"
-- No edge cases
-- Single test: happy path works
+- Minimal implementation of one path
+- Required protections and failure behavior for that path
+- Tests for success and the relevant rejected/unsafe cases
 
 **Example** (TODO app):
 ```markdown
-Task 1: User can create and view TODO
-- POST /api/todos → save to database
-- GET /api/todos → fetch from database
-- UI: form + list rendering
-- Test: create TODO, refresh, see it in list
+Task 1: User can safely create and view TODO
+- POST /api/todos → validate nonempty text, max 500 chars, then save
+- GET /api/todos → fetch only authorized records
+- UI: form + list rendering with required loading/error feedback
+- Test: create, refresh, see it; reject invalid text and unauthorized access
 ```
 
 **Outcome**: Something demoable, proves architecture works
 
 ### Phase 2: Error Handling (Horizontal Fill)
 
-**Goal**: Make tracer bullet robust
+**Goal**: Improve error UX and cover additional cases beyond the first slice's safety baseline.
 
-**Task 2**: Validation and error cases
-- Input validation
-- Error messages
-- Database constraints
-- Boundary conditions
+**Task 2**: Additional error experience
+- More specific error messages
+- Recovery UX and additional boundary cases
+- No deferred trust-boundary validation or required database constraints
 
 **Example**:
 ```markdown
-Task 2: TODO validation and errors
-- Reject empty TODO text
-- Reject TODO longer than 500 chars
-- Show error messages in UI
-- Handle network failures
+Task 2: Improve TODO error experience
+- Add field-specific guidance and a character counter
+- Preserve the user's draft after a failed request
+- Test: invalid or failed submission preserves text and shows guidance
 ```
 
 **Outcome**: Tracer bullet works reliably
@@ -179,11 +177,11 @@ Task 3: Settings page
 # Can be done in any order
 ```
 
-**Cross-cutting after core**:
+**Independent extensions after core**:
 ```markdown
-Task 1: User login (tracer)
-Task 2: Input validation (depends on Task 1)
-Task 3: Rate limiting (depends on Task 1)
+Task 1: User login with required validation and abuse protections (tracer)
+Task 2: Password reset (depends on Task 1)
+Task 3: OAuth provider login (depends on Task 1)
 # Tasks 2 and 3 are parallel-safe
 ```
 
@@ -209,8 +207,8 @@ Start with feature spec
 ├─ Does tracer bullet exist?
 │  ├─ NO → Task 1 must be tracer bullet
 │  └─ YES → Can do horizontal fill
-├─ Is this error handling for existing journey?
-│  └─ YES → Horizontal task (validation, error cases)
+├─ Is this additional error UX for an already safe journey?
+│  └─ YES → Horizontal task (guidance, recovery, extra cases)
 ├─ Is this a new variation of existing behavior?
 │  └─ YES → Horizontal task (OAuth after password login)
 ├─ Is this a new journey independent of existing?
@@ -223,10 +221,10 @@ Start with feature spec
 ### Pattern 1: CRUD Feature
 
 **Order**:
-1. Create + Read (tracer bullet - vertical)
-2. Update (vertical)
-3. Delete (vertical)
-4. Validation for all (horizontal)
+1. Create + Read with required validation and access control (tracer bullet - vertical)
+2. Update with its required safeguards (vertical)
+3. Delete with its required safeguards (vertical)
+4. Enhanced validation messages (horizontal)
 5. Pagination for Read (horizontal)
 
 ### Pattern 2: Authentication Feature
@@ -243,18 +241,18 @@ Start with feature spec
 ### Pattern 3: API + UI Feature
 
 **Order**:
-1. API endpoint + minimal UI (tracer bullet - vertical)
-2. API error handling (horizontal)
+1. API endpoint + minimal UI, required validation and failure/loading feedback (tracer bullet - vertical)
+2. Additional API error cases (horizontal)
 3. UI polish (horizontal)
-4. UI error states (horizontal)
-5. Loading states (horizontal)
+4. Richer UI error guidance (horizontal)
+5. Loading-state refinements (horizontal)
 
 ### Pattern 4: Data Pipeline
 
 **Order**:
-1. Ingest + Transform + Store one record (tracer bullet - vertical)
-2. Batch processing (horizontal scale)
-3. Error recovery (horizontal)
+1. Safely ingest, validate, transform, and store one record (tracer bullet - vertical)
+2. Batch processing with its required safeguards (horizontal scale)
+3. Recovery tooling beyond baseline failure/data-integrity handling (horizontal)
 4. Monitoring (horizontal observability)
 
 ## Anti-Patterns
@@ -284,8 +282,8 @@ Task 1: Complete authentication system
 ### ✅ Better
 
 ```markdown
-Task 1: User login (password only, happy path)
-Task 2: Login validation and errors
+Task 1: Password login with validation, invalid-credential rejection, and required abuse protections
+Task 2: Improve login error guidance and recovery UX
 Task 3: Logout and session management
 Task 4: Password reset flow
 Task 5: OAuth providers (Google, GitHub)
@@ -303,6 +301,7 @@ For each task in your plan:
 - [ ] Changes 20-100 lines (guideline)
 - [ ] Is independently reviewable
 - [ ] First task is a tracer bullet (proves end-to-end)
+- [ ] Each task includes the minimum safeguards needed to commit it independently
 
 ## Task Interface Documentation
 
@@ -329,9 +328,9 @@ When tasks depend on each other, document interfaces:
 If during execution you discover:
 - Task is larger than expected → Split into 2 tasks, revise plan
 - Task is blocked by missing dependency → Add new task for dependency
-- Task is unnecessary → Mark as skipped, document why
+- An unfinished task is unnecessary → Request cancellation through `plan`'s approved revision process; retain its number, brief, reason, and history as skipped
 
-Update `plan.md` when adjusting. Don't silently deviate from approved plan.
+Use `plan`'s revision process for these adjustments. Do not silently change the approved plan or fabricate a commit/completion for cancelled work.
 
 ## Examples
 
@@ -341,17 +340,16 @@ Update `plan.md` when adjusting. Don't silently deviate from approved plan.
 
 **Decomposition**:
 ```markdown
-1. Task 1: Upload and display avatar (tracer bullet - vertical)
-   - POST /api/users/avatar → save to storage
-   - GET /api/users/avatar → retrieve URL
-   - UI: upload form + display
-   - Test: upload image, see it displayed
+1. Task 1: Safely upload and display avatar (tracer bullet - vertical)
+   - POST /api/users/avatar → enforce ownership, validate image content/type (PNG, JPG, WEBP) and max 5MB before storage
+   - GET /api/users/avatar → retrieve the authorized URL
+   - UI: upload form + display with basic error feedback
+   - Test: upload a valid image; reject invalid content, oversized files, and unauthorized writes
    
-2. Task 2: Image validation (horizontal)
-   - Validate file type (PNG, JPG, WEBP only)
-   - Validate file size (max 5MB)
-   - Reject invalid uploads with clear errors
-   - Test: upload invalid files, see errors
+2. Task 2: Upload guidance and preview (horizontal)
+   - Show accepted types and size limit before upload
+   - Preview the selected valid image
+   - Test: preview and guidance do not bypass server validation
    
 3. Task 3: Avatar resize and optimization (horizontal)
    - Resize to 256x256
@@ -360,7 +358,7 @@ Update `plan.md` when adjusting. Don't silently deviate from approved plan.
    - Test: upload large image, verify resized
 ```
 
-**Why this order**: Task 1 proves storage and display works. Tasks 2-3 add quality without changing core behavior.
+**Why this order**: Task 1 proves safe storage and display. Tasks 2-3 add experience and processing without leaving unsafe uploads in the first commit.
 
 ### Example 2: Medium Feature (6 tasks)
 
@@ -368,17 +366,16 @@ Update `plan.md` when adjusting. Don't silently deviate from approved plan.
 
 **Decomposition**:
 ```markdown
-1. Task 1: Create and view comments (tracer bullet - vertical)
-   - POST /api/posts/:id/comments
-   - GET /api/posts/:id/comments
-   - UI: comment form + list
-   - Test: add comment, see it in list
+1. Task 1: Safely create and view comments (tracer bullet - vertical)
+   - POST /api/posts/:id/comments with required access checks, nonempty text up to 1000 chars, and max 5 comments/minute
+   - GET /api/posts/:id/comments within the authorized scope
+   - UI: comment form + safely rendered list and basic error feedback
+   - Test: add/view a comment; reject invalid, unauthorized, and rate-limited requests
    
-2. Task 2: Comment validation (horizontal)
-   - Reject empty comments
-   - Reject comments >1000 chars
-   - Rate limit: max 5 comments/minute
-   - Test: validation errors displayed
+2. Task 2: Comment input guidance (horizontal)
+   - Add character count and specific correction guidance
+   - Preserve draft text after a failed submission
+   - Test: guidance and draft recovery while server protections remain enforced
    
 3. Task 3: Edit own comments (vertical)
    - PUT /api/comments/:id (auth check)
@@ -407,7 +404,7 @@ Update `plan.md` when adjusting. Don't silently deviate from approved plan.
 
 **Start vertical** (tracer bullet) to prove end-to-end integration.
 
-**Fill horizontal** to add robustness, variations, and cross-cutting concerns.
+**Fill horizontal** to add UX, variations, and cross-cutting improvements beyond the required safety baseline.
 
 **Keep tasks small** (30-90 min) and independently testable.
 

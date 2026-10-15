@@ -147,7 +147,7 @@ Mark the ID as retired in the spec:
 - REQ-3: Animated GIFs preserve animation
 ```
 
-Update `plan.md` to remove the retired ID from task coverage.
+Revise the plan through `plan`: remove the retired ID from unfinished executable task coverage, but preserve completed tasks and their briefs as history, including their original coverage. New tasks must not claim a retired ID. If retirement changes already implemented behavior, plan a corrective task against the current acceptance conditions; do not rewrite the completed task.
 
 ### Changing requirement text
 Keep the same ID, update the text:
@@ -182,9 +182,10 @@ Before saving spec.md:
 
 Before saving plan.md:
 
-- [ ] Every task lists its **Covers:** IDs
-- [ ] Every REQ-N in the spec is covered by at least one task
-- [ ] No task covers a retired or non-existent ID
+- [ ] Every executable task lists its **Covers:** IDs
+- [ ] Every active REQ-N in the spec is covered by an executable task or a completed task that still satisfies it; skipped tasks do not count
+- [ ] No unfinished executable task covers a retired or non-existent ID
+- [ ] Completed task coverage remains unchanged as history, even when an ID is later retired
 
 Before committing code:
 

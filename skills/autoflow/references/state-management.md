@@ -50,7 +50,7 @@ Completion requires evidence:
 | Stage | Evidence |
 |-------|----------|
 | plan | Current approved spec and plan revisions; saved plan and commit; required authorization |
-| execute | Ledger, task commits, mandatory reviews, and fresh verification satisfy `execute` |
+| execute | Ledger, per-task reviews and commits for executable tasks, approved cancellations, and fresh final verification satisfy `execute`; no built-in whole-feature review is required |
 | review | Report for the whole feature diff, authorized fix commits if any, fresh checks, and no unresolved Blocking or Important finding |
 
 ## Resume
@@ -59,7 +59,7 @@ Completion requires evidence:
 2. Confirm the recorded branch is current, referenced commits remain reachable, and initial unrelated user changes will not be overwritten. A missing branch, changed history, or unsafe overlap is a blocker.
 3. Read the spec and plan and compare their blob IDs with the recorded approved revisions. If either changed, stop for clarification or plan revision and renewed approval; do not silently reuse authorization.
 4. Reconcile claimed stage completion with the evidence above. A complete flag is a pointer to inspect, not permission to skip verification.
-5. For execution, read the ledger and Git history and let `execute` determine the first unfinished task. Inspect manual commits and re-run affected checks; never mark a task or stage complete merely because a commit appeared.
+5. For execution, read the ledger and Git history and let `execute` determine the first unfinished executable task from the current approved plan, excluding approved skipped tasks without inventing commits. Inspect manual commits and re-run affected checks; never mark a task or stage complete merely because a commit appeared.
 6. Resume the first stage not verified complete. Preserve a prior review report and use the review skill's collision-safe naming for a new one.
 
 If a checkpoint cannot be reconciled, report the exact mismatch and keep all artifacts. Ask for the missing evidence or a confirmed reconstruction; do not reset commits, clean the workspace, infer approvals, or skip failed checks.

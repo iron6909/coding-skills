@@ -40,8 +40,8 @@ Use the first matching rule:
 1. If the user explicitly names a skill, use it.
 2. If the user asks to pause work and save state (signals: "create a handoff", "save state", "I need to stop here", "hand this off"), use `handoff`.
 3. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
-4. If the user asks for systematic performance optimization with measurement (signals: "optimize performance", "improve latency", "reduce memory usage", and mentions profiling or targets), use `optimize`.
-5. If the user reports a failure, error, broken behavior, or regression, use `debug`.
+4. If the user reports a failure, error, broken behavior, or regression, use `debug`, including performance regressions even when they ask for profiling or optimization.
+5. If the user asks for systematic performance optimization with measurement and no regression (signals: "optimize performance", "improve latency", "reduce memory usage", and mentions profiling or targets), use `optimize`.
 6. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.
 7. If the user asks to review a branch, commit range, or completed feature (signals: "review this branch", "audit these commits", "review the implementation"), use `code-review`. Per-task reviews inside `execute` remain part of that skill.
 8. If the task needs workspace facts and the workspace lacks a useful `AGENTS.md`, or the user asks to refresh stale project facts (commands, structure, conventions changed), use `survey`.

@@ -6,9 +6,10 @@ Read this after all tasks pass review and verification, when deciding what happe
 
 Do not start until:
 
-- every task passed review and has a commit
-- the final whole-change review passed (a small change: its task review)
-- every check in `plan.md` Final verification passed on the current commit (a small change: the checks the request names)
+- every executable task passed review and has a commit; approved skipped tasks retain their reasons and history
+- final verification and the applicable DoD passed on the current code, using the plan, session task list, or small-change request
+
+Execute performs task reviews and final verification, not an independent whole-feature review. Say that explicitly. The user may request `code-review` next; recommend it when useful, but do not invoke it or make it a new mandatory gate here.
 
 ## Confirm the base branch
 

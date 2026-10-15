@@ -45,8 +45,9 @@ If `plan.md` already exists in the spec's directory, this is a revision, usually
 
 - Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
 - Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
+- Cancel an unnecessary unfinished task only through an approved revision: retain its number and history, mark it `skipped: <approved reason>` in the plan, and keep its brief. It is no longer executable or counted as current requirement coverage. Check that active requirements remain covered and dependencies no longer rely on its missing outputs. Do not fabricate completion or a commit for it.
 - Present the revision as a draft (what changed and why) and get approval before overwriting `plan.md` or any brief.
-- After writing, append `Plan revised: <one-line reason>` to the ledger and commit as `docs(plan): update <name>`.
+- After approval, update the affected unfinished executable briefs together with the plan. Preserve completed and skipped briefs. Append `Plan revised: <one-line reason>` to the ledger and commit as `docs(plan): update <name>`.
 
 ## Explore
 
@@ -114,10 +115,12 @@ When a task produces an interface another task consumes, declare it explicitly i
 
 ### Order tasks by dependency
 
+Every slice must include the validation, authorization, data-integrity protection, and error handling needed to be safe on its own; reuse existing protections where verified. The later error-path work below is additional coverage and UX, not permission to defer a trust boundary.
+
 1. prerequisites and shared interfaces
 2. core behavior (tracer bullet slices)
 3. integration and user-facing behavior
-4. error paths and compatibility cases
+4. additional error paths and compatibility cases
 5. final verification
 
 Do not make separate tasks for every layer when one slice can prove the behavior.
@@ -223,13 +226,13 @@ After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lig
 
 Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
 
-plan.md is an index. Task details live in `.cartoons/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines.
+plan.md is an index. Task details live in `.cartoons/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines. Review focus guides the relevant task reviews and, when invoked by the user or `autoflow`, independent `code-review`; it does not add another whole-feature review to execute.
 
 ## Self-review
 
 Applies to every tier. Before reporting the plan, check it against the spec:
 
-- every spec requirement maps to a task or final check
+- every active spec requirement maps to an executable task, a completed task that still satisfies it, or a final check; skipped tasks do not count
 - every task has one clear deliverable
 - task order respects dependencies
 - shared interfaces use the same names and types everywhere

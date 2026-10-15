@@ -46,15 +46,15 @@ An explicit approval of those actions for this exact plan can satisfy the gate; 
 
 ## Stage 2: Execute
 
-Invoke `execute auto` with the approved inputs, authorization, initial working-tree record, and fixed review base. Its TDD, per-task review, final integration review, verification, and per-task commits remain mandatory. Do not replace task reviews with the later `code-review` stage.
+Invoke `execute auto` with the approved inputs, authorization, initial working-tree record, and fixed review base. Its TDD, per-task review and commits for executable tasks, and final verification remain mandatory. Do not replace task reviews with the later `code-review` stage.
 
 Use the execution ledger as the task-level record; do not maintain a second task list in autoflow state. If execution stops at any of its gates, record the blocker and hand back rather than launching the next stage.
 
-After execution succeeds, return to this orchestrator before any finish or integration decision. The feature-wide `code-review` stage still remains.
+After execution's final verification succeeds, return to this orchestrator before any finish or integration decision. Stage 3 is the run's single independent feature-wide review; execute does not run another one. Failed or stale verification cannot complete Stage 2.
 
 ## Stage 3: Code review
 
-Invoke `code-review` with the fixed feature review base, approved spec and plan paths, target branch, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
+Invoke `code-review` with the fixed feature review base, approved spec and plan paths, target branch, plan Review focus, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
 
 The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
 
@@ -78,7 +78,7 @@ Plan: <path and commit>
 Branch: <target branch>
 Review base: <commit>
 Stages: plan <status>; execute <status>; code-review <status>
-Tasks: <completed / total; each reviewed and committed>
+Tasks: <completed / executable; each reviewed and committed; approved skipped tasks listed separately>
 Checks: <commands and fresh results>
 Review: <report path; Blocking/Important fixed or remaining>
 Deferred: <Minor findings>

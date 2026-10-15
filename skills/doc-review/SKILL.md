@@ -39,7 +39,7 @@ Read the full document. Note:
 ### 4. Read dependencies
 
 - For spec: read any cited ADRs, learnings, GLOSSARY.md
-- For plan: read the corresponding spec.md
+- For plan: read the corresponding spec.md, applicable approved UI/design inputs, and existing task briefs/ledger to check whether execution details still match
 - For capability-map: read any linked feature specs
 
 ### 5. Classify findings
@@ -54,7 +54,7 @@ Edit the document directly for Minor findings:
 - Fix inconsistent terminology (check GLOSSARY.md)
 - Improve section structure
 
-Do not invent decisions or add scope. If a Minor fix requires a decision, promote it to Important.
+Keep these edits non-semantic: wording, structure, and examples must preserve approved behavior, acceptance, coverage, and dependencies. Do not invent decisions or add scope. If a Minor fix would change those meanings or needs a decision, promote it to Important.
 
 ### 7. Report Blocking and Important findings
 
@@ -83,11 +83,13 @@ Present a report:
 ### 8. Wait for user decision
 
 For Blocking and Important findings:
-- User may ask you to fix them (if they agree with your suggestion)
+- User may ask you to fix non-semantic issues (if they agree with your suggestion)
 - User may revise the document themselves
 - User may accept the document as-is and note the risk
 
 Do not proceed to commit until user confirms.
+
+Semantic changes belong to the document's owner, even when the user accepts the recommendation: recommend `clarify` for spec/capability-map decisions, or `plan`'s revision process for task acceptance, deliverables, requirement coverage, dependencies, or cancellations. Report the accepted proposal; do not apply it here or edit downstream briefs/ledger. If semantic changes are requested or already present, mark the downstream plan/briefs as needing revision in the completion report, not ready for execute. Only `plan` reconciles unfinished briefs and records `Plan revised` after approval.
 
 ### 9. Commit
 
@@ -113,7 +115,8 @@ State:
 - Minor fixes applied: <count>
 - Blocking/Important findings: <count> (fixed if user asked, open otherwise)
 - Committed: yes/no
+- Readiness: ready for the next skill, or owner revision required with affected downstream artifacts
 
 ## Next
 
-If Blocking findings remain unfixed, recommend not starting implementation until they're resolved. Otherwise, recommend `plan` for a spec, `execute` for a plan, or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.
+If Blocking findings remain unfixed, recommend not starting implementation. When semantic changes or stale downstream artifacts need owner revision, recommend the owner named above and do not recommend execute yet. Only an unchanged or non-semantically corrected approved plan with current briefs (or briefs safely rebuildable from approved inputs) can go directly to `execute`. Otherwise, recommend `plan` for a spec or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.

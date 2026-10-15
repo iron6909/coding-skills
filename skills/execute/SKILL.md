@@ -48,13 +48,15 @@ Create `progress.md` ledger inside with the first line:
 # Execution ledger — plan: docs/features/YYYYMMDD-<semantic-name>/plan.md
 ```
 
-If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. Resume from the first task without one. After context compression, trust the ledger and `git log`, not memory.
+If the ledger exists and its first line names this plan, tasks with `Task <N>: complete` are done. A task marked `skipped` with a reason in the current approved plan is cancelled, not executable: verify the approval, record the skipped entry below, and retain its number, brief, and history. Never invent a completion or commit for it. A skipped ledger entry alone cannot cancel an active plan task. Resume from the first executable task without `complete`. After context compression, trust the approved plan, ledger, and `git log`, not memory.
 
 For a session plan or a small change, keep ledger facts in conversation. Do not create impl or ledger files: a session plan already lives only in this conversation, and writing a ledger for it would imply a persistence it does not have.
 
 Read `impl/task-N.md` for task details. `plan.md` is a lightweight index. For a session plan, the task list in the conversation holds the same detail, and no brief is read.
 
-If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from `spec.md` and `plan.md` in the same format, write `Task <N>: brief rebuilt from plan.md` to the ledger, and continue. If the plan is too thin to rebuild a task without a product decision, stop and ask the user to rerun `plan`. This rebuild applies to Full tier work only: there is no brief to rebuild for a session plan.
+Read any approved `ui-spec.md` beside the spec and the relevant constraints in `DESIGN.md` when present. They govern frontend tasks alongside the spec and plan, even when a brief is available.
+
+If `impl/task-N.md` is missing (a fresh clone, or a `.cartoons/` that was never created), rebuild it from the approved spec, plan, applicable `ui-spec.md`, and design constraints in the same format. Write `Task <N>: brief rebuilt from approved inputs` to the ledger and continue. Do not invent layout, state, interaction, or product decisions. If those sources are still too thin, stop and ask the user to rerun `plan`. Rebuild only executable tasks at Full tier; there is no brief to rebuild for a session plan.
 
 ## Preconditions
 
@@ -82,7 +84,7 @@ Keep the review base unchanged across tasks and resumed sessions. Preserve initi
 
 ## Pre-flight scan
 
-Before Task 1, read plan.md for the task dependencies and final verification commands. For a session plan, the task list in the conversation holds both. Then scan task briefs for interface conflicts:
+Before the first executable task, read plan.md for the task dependencies and final verification commands. For a session plan, the task list in the conversation holds both. Then scan executable task briefs for interface conflicts:
 
 - For each task that consumes what an earlier task produces, check the interface match
 - Record one ledger row per shared interface: task numbers, what is produced vs consumed, finding
@@ -99,7 +101,7 @@ The main process owns all code, test, spec, plan, and Git writes. Use read-only 
 
 ## Task loop
 
-Work through planned tasks in dependency order. For a session plan, use its task list. For a small change, apply the same loop to the request as one task. Do not skip a task because a later task appears to include it.
+Work through executable tasks in dependency order, using the cancellation rules above. For a session plan, use its approved task list; a cancellation still needs explicit approval. For a small change, apply the same loop to the request as one task. Do not cancel a task merely because a later task appears to include it.
 
 For each task:
 
@@ -171,7 +173,7 @@ Task <N>: Ruling: <finding> — <decision and reason> — cost if wrong: <cost>
 
 **Brief rebuilt:**
 ```text
-Task <N>: brief rebuilt from plan.md
+Task <N>: brief rebuilt from approved inputs
 ```
 
 **Plan revised** (written by `plan` when it revises a plan mid-run):
@@ -184,18 +186,28 @@ Plan revised: <reason>
 Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)
 ```
 
-**Final review:**
+**Approved cancellation:**
 ```text
-Final: fixed <finding> — <test name> RED→GREEN, suite <N>/<N>
-Final: minor (deferred): <one-liner>
-Final: Ruling: <finding> — <decision> — cost if wrong: <cost>
+Task <N>: skipped — approved cancellation: <reason>
 ```
+
+**Deferred minor:**
+```text
+Task <N>: minor (deferred): <one-liner>
+```
+
+**Final verification:**
+```text
+Final verification: <command> → <result>
+```
+
+Retain historical ledger events, including older whole-change review records. They do not replace current task evidence or fresh verification.
 
 For a session plan or a small change, keep the same structure in conversation. A session plan writes no ledger, so its entries live here and are lost with the context.
 
 ## Resume
 
-On resume, read ledger first. Compare recorded commits and task state with working tree and Git history. Keep original review base. Continue from first task without `complete`. After a `Plan revised` entry, re-read `plan.md` and the changed briefs, and run the pre-flight scan again for the unfinished tasks. Do not trust old check results. Run required checks again.
+On resume, read the ledger and current approved plan. Compare recorded commits and task state with the working tree and Git history. Keep the original review base and apply the executable-task rules above; a cancellation conflicting with the approved plan is a blocker. After a `Plan revised` entry, re-read the spec, applicable UI/design inputs, plan, and changed briefs, and rerun pre-flight for unfinished executable tasks. Do not trust old check results. Run required checks again, including final verification when no executable task remains.
 
 A session plan has no ledger to resume from. After context compression, its task list is gone: stop and ask the user to rerun `plan` at the Full tier or restate the remaining tasks, then confirm the review base from Git before editing.
 
@@ -205,7 +217,7 @@ If a small change loses conversation record, reconstruct boundary from Git and c
 
 Review runs after EACH task, before commit. Use a fresh read-only reviewer when the task is large enough to benefit from independent context. Review inline for small tasks. The reviewer reports findings only. The executor owns all fixes and commits.
 
-Task review checks ONE task's diff against its task brief.
+Task review checks ONE task's diff against its task brief and the relevant items in the plan's Review focus.
 
 Check:
 
@@ -247,36 +259,23 @@ After the review passes and fresh checks succeed:
 - keep unrelated user changes out of the commit
 - record the commit identifier and check results in the execution report
 
-## Final whole-change review
-
-Runs ONCE after all tasks pass task review and have commits. A small change is one task, so its task review is the final review: skip this section. Reviews the complete change: `git diff <review-base> HEAD` plus uncommitted task changes. Exclude recorded initial user changes.
-
-Final review checks cross-task integration, interfaces, and acceptance conditions that individual task reviews cannot see.
-
-1. Run the full test, lint, build, and type-check commands named in `plan.md` Final verification (for a session plan, the checks the task list named; for a small change, the checks the request names).
-2. Use a fresh read-only reviewer for the complete change. Give it the plan's Review focus. The reviewer checks the spec, the plan, repository rules, task boundaries, cross-task interfaces, error paths, security, accessibility, data safety, and acceptance conditions.
-3. Classify findings as **Blocking**, **Important**, or **Minor**.
-4. Fix every Blocking and Important finding. Keep Minor findings as recorded follow-up work when they are outside the spec.
-5. Run the affected checks and the full suite again after the fix group.
-6. Perform exactly one scoped re-review of the final review fix group.
-7. If Blocking or Important findings remain, do not start another fix wave. Report each finding, its impact, and the decision needed from the user.
-8. If no Blocking or Important finding remains, run `git diff --check`, inspect `git status`, and commit final review fixes separately.
-
-The final review does not replace task review. It checks integration defects that individual task reviews cannot see. It has one fix wave and one scoped re-review. Do not invoke a separate review skill.
-
 ## Tests and verification
 
 Use the repository's existing test tools. Prefer standard library and existing dependencies. Do not add a test framework or dependency for this workflow.
 
 For each behavior change: the TDD loop (loaded above), then the affected checks, then the full suite.
 
-Before claiming completion, confirm the Definition of Done loaded above, then confirm the execution-specific conditions:
+After all executable tasks are reviewed and committed, run final verification on the current final code: the test, lint, build, type-check, and cross-task acceptance checks in `plan.md` Final verification. For a session plan, use the approved task list's checks; for a small change, use the request's checks. Apply the loaded DoD and state any unavailable check, substitute, and coverage gap rather than calling it passed.
 
-- every task passed review and has a commit
-- the final whole-change review passed and its fixes have a commit (a small change skips it)
+This is command-based verification, not a whole-diff review or another reviewer/fix wave. A clear in-scope failure goes through the affected task's implementation, review, and separate commit loop, followed by final verification again. Stop for an unresolved failure or decision under the existing gates.
+
+Before claiming completion, confirm:
+
+- every executable task passed review and has a commit; approved skipped tasks are reported separately, without fabricated work
+- final verification and the applicable DoD are satisfied on the current code
 - no task exceeded 5 review-fix rounds
 
-Report each Final verification command with its result, and report failures by command and exact error.
+Run `git diff --check` and inspect `git status`. Report each Final verification command with its result, and failures by command and exact error. Independent whole-feature review belongs to `code-review` when invoked by the user or `autoflow`, not this skill.
 
 Do not claim a test, build, review, or fix passed from an earlier run or an agent report. Fresh evidence is required.
 
@@ -329,8 +328,10 @@ Report:
 ```text
 Implemented: <plan path, session plan, or small-change request>
 Mode: <default | autonomous>
-Tasks: <task count>, each reviewed and committed
-Final review: <passed, with review-fix commit if needed; "n/a" for a small change>
+Tasks: <completed / executable count>, each reviewed and committed
+Skipped: <task numbers and approved reasons, or None>
+Final verification: <commands and fresh results>
+Independent review: not performed by execute
 Checks: <commands and results>
 Changed: <short file list>
 

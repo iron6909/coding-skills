@@ -58,7 +58,7 @@ Stage only the files the user specified or confirmed:
 git add <specific-files>
 ```
 
-**Never** use `git add .` or `git add -A` without explicit user approval.
+**Never** use `git add .` or `git add -A`. Even when the user approves all current changes, enumerate the confirmed files or hunks and stage only those.
 
 For partial staging (when only some changes in a file should be committed):
 ```bash

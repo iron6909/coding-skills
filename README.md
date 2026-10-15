@@ -36,10 +36,10 @@ npx skills@latest add iron6909/coding-skills
 
 1. `clarify` 澄清需求，批准后保存并提交 `spec.md`；仍有界面决策时推荐 `ui-design`，否则可进入 `plan`
 2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
-3. `execute` 按 TDD 逐个任务实现、评审、提交
-4. `code-review` 独立审查整体改动,报告后由你决定修复或集成
+3. `execute` 按 TDD 逐个任务实现、评审、提交，再运行最终测试与验收验证；不内置整体独立审查
+4. 需要整体独立审查时另行调用 `code-review`，报告后由你决定修复或集成
 
-已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。
+已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务评审，整体独立审查只在最后的 `code-review` 阶段执行一次。
 
 ## 核心流程
 
@@ -50,7 +50,7 @@ graph TD
     C -->|首次使用| D[survey]
     C -->|需求不明| E[clarify]
     C -->|spec 已批准且设计已定| F[plan]
-    C -->|已有计划| G[execute]
+    C -->|已有计划| G[execute: 任务评审与最终验证]
     C -->|故障| H[debug]
     C -->|审查他人改动| I[code-review]
     C -->|代码结构问题| M[refactor]
@@ -68,6 +68,7 @@ graph TD
     R --> F
     F --> G
     G --> J[完成]
+    G -->|可选整体审查| I
     H --> J
     I --> J
     M -->|选定候选| E
@@ -96,7 +97,7 @@ graph TD
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
+| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | TDD、逐任务评审/提交、最终验证；传 `auto` 则单次批准跑完可执行任务 |
 | **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度:一致性/可用性/可访问性/响应式/性能 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
@@ -205,7 +206,7 @@ graph TD
 | survey、clarify、plan、capture、learning-refresh、ui-design | 自己产出的文档:`AGENTS.md`/`GLOSSARY.md`、spec 或 `capability-map.md`、`plan.md`、learnings、`DESIGN.md` + `ui-spec.md` |
 | execute、debug | 每个任务或每次修复一次代码提交 |
 | simplify、optimize | 简化、优化后的代码 |
-| doc-review | 用户确认后提交已修改的原文档；只直接改 Minor,Blocking/Important 等你决定 |
+| doc-review | 用户确认后提交原文档的非语义修正；语义改动交回 clarify/plan，不能带着旧 briefs 直接执行 |
 | autoflow | 编排 plan、execute、code-review 各自的提交；spec 是已批准的输入,状态/briefs/报告不提交 |
 | commit | 你指定的临时改动（不 push） |
 | code-review | 报告不提交；经你授权的修复单独提交,不包含被审查的原始改动 |
@@ -234,7 +235,7 @@ graph TD
 已有批准的 spec,希望自动交付
   → autoflow (plan → execute → code-review)
     → 批准计划,同时授权自动执行和范围内的 Blocking/Important 修复
-    → 逐任务测试/评审/提交仍不可跳过,最后由你决定集成
+    → 逐任务测试/评审/提交和最终验证仍不可跳过，再做一次整体 code-review，最后由你决定集成
 
 有 bug
   → debug (4 阶段循环)
@@ -249,7 +250,8 @@ graph TD
   → refactor (改进候选)
 
 改动完成
-  → execute 读取 finish 参考，报告保留分支或由你另行执行本地合并的选项；技能不 merge、push 或发布
+  → execute 完成任务评审与最终验证后读取 finish；这不代表已做整体独立审查，需要时另行调用 code-review
+    → 报告保留分支或由你另行执行本地合并的选项；技能不 merge、push 或发布
     → 仅明确要求丢弃时移除分支,文档仍保留
 
 改动结束后,想留下推理过程
@@ -344,7 +346,7 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 
 ### task brief 丢了(`.cartoons/` 被清掉)
 
-`execute` 会按 spec.md 和 plan.md 就地重建 brief,并在账本里写 `brief rebuilt from plan.md`;plan 太薄重建不出来时会停下来让你重跑 `plan`。
+`execute` 会按已批准的 spec.md、plan.md、适用的 ui-spec.md 和 DESIGN.md 约束就地重建可执行任务的 brief，并记录 `brief rebuilt from approved inputs`；这些来源仍不足以重建时才会停下来让你重跑 `plan`。已批准 skipped 的任务保留编号与历史，不重建或伪造完成提交。
 
 ### execute 跳过 TDD
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Code Review
 
-Independent review of changes on another branch or historical commits. NOT for self-review during `execute` (which has built-in task and final reviews).
+Independent review of a branch, completed feature, or historical commits, including the feature-wide stage called by `autoflow`. NOT a replacement for the task reviews inside `execute`.
 
 ## When to use
 
@@ -14,6 +14,7 @@ Independent review of changes on another branch or historical commits. NOT for s
 - Reviewing someone else's branch
 - Auditing historical commits after the fact
 - User explicitly asks for an independent review
+- `autoflow` reaches its authorized feature-wide review stage
 
 **Read `./references/review-lenses.md` for the lens system architecture, configuration, and dispatch rules.**
 
@@ -64,6 +65,8 @@ Look for the originating spec in this order:
 2. `docs/features/YYYYMMDD-<semantic-name>/spec.md` matching the branch name or a commit scope
 3. Another spec-like document under `docs/` matching the branch name
 4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
+
+When a plan is supplied, read it and use its Review focus as context for the enabled lenses. It does not enable optional lenses or replace the spec as authority.
 
 ## Identify the standards sources
 
