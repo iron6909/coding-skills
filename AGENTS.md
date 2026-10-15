@@ -41,6 +41,8 @@ The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, 
 
 No skill deletes a document: not `spec.md` or `plan.md`, not `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under `.cartoons/`, not a review or research report. A document that looks obsolete is superseded or left in place. These skills run in other people's repositories, where a deleted document is gone for good.
 
+A learning may be moved to `docs/learnings/_archived/` when the archival gates in its shared lifecycle reference are met. Archiving preserves the document; it never permits deleting it or overwriting an archived copy.
+
 This covers documents only. Scratch that is not a document is still cleaned up: throwaway probes and logs, and a branch the user explicitly asks to drop.
 
 ## Shared reference files
@@ -59,7 +61,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 - The skill that writes a project document commits it, staging only its own files. No skill pushes. README's 提交责任 says which skill commits what.
 - Skill text is English. Leave no authoring markers (`ponytail:`, TODO) in shipped files.
 - One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
-- A skill ends where its output is saved and says what comes next. It does not auto-invoke the next skill; `guide` is the one skill that hands off, by design.
+- A skill ends where its output is saved and says what comes next. `guide` hands off to its selected skill; `autoflow` is the sole multi-stage orchestrator and may invoke only `plan` → `execute` → `code-review` from an already approved spec. Called skills return to it; their approval, verification, and commit gates still apply. No other skill auto-invokes a next skill.
 
 ## Terminology
 

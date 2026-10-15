@@ -61,7 +61,7 @@ Redact secrets, tokens, and personal data as `<REDACTED>` before showing any com
 ### Classify the fix size
 
 **Small fix** (1-2 files, under about 20 lines, clear boundary):
-- Create a failing test
+- Create a failing regression test, or justify a reproducible alternative check as described below
 - Implement the fix
 - Run checks
 - Commit directly
@@ -77,9 +77,9 @@ Never route a small fix through `clarify`, `plan`, or `execute`.
 
 Before changing code, check the current branch. If it is the default branch (main or master), get the user's consent to fix there or create `feature/YYYYMMDD-<semantic-name>` first.
 
-1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, say so: that is a design finding, and `architecture` is the skill that handles it.
+1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, report the design limitation and recommend `refactor` for a structural review; do not invoke it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
-3. **Verify the fix**. Run the regression test, the original reproduction, and the affected checks (test suite, lint, type-check). Confirm no other tests broke.
+3. **Verify the fix**. Run the regression test or justified alternative check, the original reproduction, and the available affected checks (test suite, lint, type-check). Confirm no regressions; list unavailable checks rather than claiming they passed.
 4. **Inspect the diff**. Check for scope creep and accidental files. Remove the temporary probes, logs, and throwaway files (scratch, not documents); every `[DEBUG-...]` line is gone.
 5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Check `git diff --staged` before committing. Do not commit unrelated user changes. Do not push.
 
@@ -104,7 +104,7 @@ If you catch yourself thinking any of these, stop and return to Phase 1:
 | "Quick fix for now, investigate later" / "Just try changing X" | The first fix sets the pattern, and a guess teaches nothing. |
 | "Issue is simple, skip the process" / "Emergency, no time" | Simple bugs have root causes too, and guess-and-check is slower than the process. |
 | "Add multiple changes, run tests" / "Multiple fixes save time" | You cannot isolate what worked, and stacked fixes cause new bugs. |
-| "Skip the test, I'll verify manually" / "Test after the fix works" | An untested fix does not stick; a failing test first proves both the bug and the fix. |
+| "Skip the test, I'll verify manually" / "Test after the fix works" | Prefer a failing test. Without a feasible harness, justify a reproducible alternative that proves the bug before the fix and passes afterward. |
 | "I see the problem" / "It's probably X" | Seeing a symptom is not understanding the root cause. |
 | "I do not fully understand but this might work" | Say "I do not understand X" and investigate. |
 | "One more fix attempt" after 2+ failures | Three failures point at the architecture, not the last hypothesis. |
@@ -127,10 +127,10 @@ Stop and fix the process when you notice:
 Confirm the Definition of Done loaded above, and specifically:
 
 - [ ] the reproduction now passes, and its output was read
-- [ ] the test fails again when the fix is temporarily reverted (the test guards the fix)
-- [ ] the affected checks and the full suite ran
-- [ ] every `[DEBUG-...]` probe and throwaway file is gone
-- [ ] the commit carries the root cause and the test in its body
+- [ ] the regression test, or justified alternative check, fails without the fix and passes with it
+- [ ] the available affected checks and full suite ran; unavailable checks and their limits are reported
+- [ ] every `[DEBUG-...]` probe and non-document throwaway file is gone
+- [ ] the commit carries the root cause and verification in its body
 
 Read `./references/git-commit.md` for commit rules.
 
@@ -154,6 +154,6 @@ Remaining: <known gap, or None>
 Next: <for a large fix, the recommended skill; otherwise None>
 ```
 
-Do not claim success without fresh output from the failing test and the affected checks. If no suitable regression test entry point exists, state that limit, name `architecture` as the skill that can create one, and say what verification was used instead.
+Do not claim success without fresh before/after evidence from the regression test or justified alternative and the available affected checks. If a regression test could not be added, name the verification used and the remaining coverage gap; do not describe an alternative check as an automated regression test.
 
 When the investigation turned on something the code does not explain — a trap, a misleading signal, a boundary this fix does not cover — say so in one line and offer `capture` as an optional next step. Do not invoke it. A bug whose root cause surprised you is exactly what `capture` is for; a typo fix is not.

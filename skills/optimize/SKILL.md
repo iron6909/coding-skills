@@ -1,25 +1,12 @@
 ---
 name: optimize
-description: Systematic performance optimization with measurement-driven iteration. Use when performance is inadequate and needs methodical improvement through profiling, attribution, variant testing, and stopping criteria. Not for ad-hoc tweaks—use execute or debug for those.
+description: Profile a measured performance problem, compare variants, and commit verified improvements. Save experiment reports under .cartoons/optimize/. Use for systematic latency, throughput, memory, or cost work; use debug for regressions and execute for a known small fix.
 disable-model-invocation: true
 ---
 
 # Optimize
 
 Measure-driven performance optimization loop: profile → attribute → generate variants → test → keep best → repeat.
-
-## When to use
-
-- Performance is measurably inadequate (too slow, too much memory, too expensive)
-- User explicitly asks for optimization or performance improvement
-- Metrics show degradation that needs systematic improvement
-- Clear performance target exists (latency < 100ms, throughput > 1000 req/s, memory < 500MB)
-
-**Do not use for**:
-- Ad-hoc performance tweaks → use `execute`
-- Performance bug (regression) → use `debug`
-- Unclear what to optimize → measure first, then come back
-- "Make it faster" without baseline or target → establish metrics first
 
 ## Prerequisites
 
@@ -28,8 +15,9 @@ Before starting:
 - **Target**: What's acceptable? (e.g., "reduce API latency from 800ms to <200ms")
 - **Measurement harness**: Can you measure the target metric reliably?
 - **Representative workload**: Real data, realistic conditions
+- **Decision thresholds**: Minimum worthwhile gain above measurement noise, acceptable complexity, and a time or iteration budget. Propose workload-based defaults if unspecified and report them; let the user adjust them.
 
-If missing, establish these first before invoking optimize.
+Establish missing measurements and targets before changing code. A percentage threshold is not universal: a smaller gain can matter if it reliably meets the target.
 
 ## Process
 
@@ -130,7 +118,7 @@ Rank by (impact / risk) ratio. Start with highest ratio.
 One variant at a time.
 
 **Workflow**:
-1. Create a feature branch: `optimize/YYYYMMDD-<variant-name>`
+1. Before the first variant, inspect the branch and working tree and record existing changes. On the default branch, get the user's consent to work there or create `feature/YYYYMMDD-optimize-<name>`. Reuse that branch for later variants.
 2. Implement the variant
 3. Run tests (ensure correctness)
 4. Measure performance with same harness as baseline
@@ -140,7 +128,7 @@ One variant at a time.
 ```markdown
 # Variant N: [variant name]
 
-**Branch**: `optimize/YYYYMMDD-<variant-name>`
+**Branch**: `<current-feature-branch>`
 **Commit**: [commit hash]
 
 ## Change
@@ -149,8 +137,8 @@ One variant at a time.
 
 ## Measurement
 
-**Before**: [baseline measurement]
-**After**: [new measurement]
+**Before**: [current kept version, measured with the baseline harness]
+**After**: [variant measurement under the same conditions]
 **Improvement**: [% or absolute difference]
 
 ## Trade-offs
@@ -170,19 +158,19 @@ One variant at a time.
 ```
 
 **Keep or revert**:
-- **Keep** if improvement ≥ 10% and tests pass and complexity is acceptable
-- **Revert** if improvement < 10% or tests fail or complexity too high
+- **Keep** if tests pass, complexity is acceptable, and the measured gain exceeds noise and either meets the agreed minimum gain or reaches the target
+- **Revert** if correctness fails, cost is unacceptable, or the gain does not meet those criteria
 - **Iterate** if promising but needs refinement
 
-For keeps: merge to main branch (or keep on optimization branch if batching).
-For reverts: document why, then delete branch.
+For keeps: commit only the verified variant's code on the current branch, following `./references/git-commit.md`.
+For reverts: record why and undo only this variant's code changes. Preserve existing user changes and every experiment report. If the changes cannot be separated safely, stop and ask. Do not delete a branch or merge without the user's decision.
 
 ### Phase 4: Stopping Criteria
 
 Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 
 1. **Target met**: Performance now meets or exceeds target
-2. **Plateau**: Last 2-3 variants showed < 5% improvement each
+2. **Plateau**: Last 2-3 variants failed to deliver the agreed worthwhile gain
 3. **Budget exhausted**: Time/effort limit reached
 4. **Diminishing returns**: Further optimization requires disproportionate effort
 
@@ -223,15 +211,9 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 
 ### Phase 5: Commit
 
-If multiple optimization commits were made, they're already committed individually. No final commit needed.
+Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch, staging only this work's code and tests and checking `git diff --staged`. Reports under `.cartoons/` stay uncommitted. Do not create an empty final commit, merge, or push; report the branch and let the user decide integration.
 
-If all work was on a single optimization branch, merge to main:
-```bash
-git checkout main
-git merge optimize/YYYYMMDD-<name>
-```
-
-Commit message for merge or final commit:
+Commit message:
 ```
 perf(<scope>): <summary of improvement>
 
@@ -254,7 +236,7 @@ Reference `./references/git-commit.md` for commit conventions.
   - `variant-N.md`: each tested variant
   - `summary.md`: final results
 - **Committed**: optimization code changes (not the `.cartoons/` reports)
-- **Branches**: may create temporary `optimize/YYYYMMDD-<name>` branches
+- **Branch**: the current approved branch or `feature/YYYYMMDD-optimize-<name>`; left for the user's integration decision
 
 ## Principles
 
@@ -279,9 +261,8 @@ Reference `./references/git-commit.md` for commit conventions.
 **Variants tested**:
 1. Add database indexes → 800ms → 350ms (56% improvement) ✓ Keep
 2. Cache common queries → 350ms → 180ms (49% improvement) ✓ Keep
-3. Optimize serialization → 180ms → 170ms (6% improvement) ✗ Revert (marginal)
 
-**Result**: Target met (170ms < 200ms), 2 iterations, stopped after target met.
+**Result**: Target met (180ms < 200ms), 2 variants tested and kept; stop without another variant.
 
 ### Example 2: Memory usage optimization
 
@@ -311,27 +292,14 @@ Reference `./references/git-commit.md` for commit conventions.
 **Variants tested**:
 1. Parallel test execution → 25min → 12min (52% improvement) ✓ Keep
 2. Incremental compilation → 12min → 9min (25% improvement) ✓ Keep
-3. Cache dependencies → 9min → 8.5min (6% improvement) ✗ Revert (marginal)
 
-**Result**: Target met (9min < 10min), 2 iterations, stopped after target met.
+**Result**: Target met (9min < 10min), 2 variants tested and kept; stop without another variant.
 
 ## Integration with Other Skills
 
 - **Before optimize**: Use `debug` if it's a regression (performance used to be better)
 - **Before optimize**: Use `execute` if it's a simple known fix (add an index, fix N+1 query)
-- **After optimize**: Use `capture` to record non-obvious optimization insights
-- **During optimize**: May use clarify's spike step to test a risky optimization approach before committing
+- **After optimize**: Recommend `capture` for non-obvious insights, if any
+- **If a risky approach needs a spike**: Stop and recommend `clarify` for validation
 
-## Notes
-
-Optimization is a specialized workflow. Most performance improvements are simple fixes (add an index, fix obvious inefficiency) that go through `execute`. Use `optimize` only when:
-- The bottleneck is unclear (need profiling)
-- Multiple approaches might work (need comparison)
-- Target is specific and measurable
-
-Avoid premature optimization. Optimize only when:
-- Performance is measurably inadequate
-- Users/metrics confirm it's a real problem
-- You have a clear target
-
-"Make it faster" without measurement is not optimization—it's guessing.
+Report the saved summary, measurements, checks, commits, and current branch, then stop. Do not invoke another skill.

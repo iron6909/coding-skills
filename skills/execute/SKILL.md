@@ -21,7 +21,7 @@ A session plan exists only in the conversation that produced it. If you cannot f
 Two modes. Everything below applies to both; the mode only decides where the human checkpoints sit.
 
 - **Default** (no argument): implement one task, then stop and hand back. The user starts the next task.
-- **Autonomous** (`auto`): one approval gate covers the whole run. After the user approves, work through every task without stopping between them. Each task still keeps its full TDD loop, its review, and its own commit.
+- **Autonomous** (`auto`): one approval gate covers the whole run. After the user approves, work through every task without stopping between them. Each task still keeps its full TDD loop, its review, and its own commit. When called by `autoflow`, its recorded approval for this exact plan can satisfy the execution gate; changed inputs or missing authorization require approval again.
 
 Autonomous mode removes the between-task pause, not any other gate. It stops early, and hands back to the user, when any of these happens:
 
@@ -69,9 +69,10 @@ Before changing code:
 - check the working tree for unrelated changes
 - identify the test, lint, build, and type-check commands
 - confirm the execution input has no unresolved product decisions
-- record `git rev-parse HEAD` as the review base and record the initial `git status --short`, staged diff, and unstaged diff
+- verify and reuse the original review base from the caller or ledger; only for a new standalone run with no existing base, record `git rev-parse HEAD`. If a resumed run's base is missing or invalid, stop and ask rather than resetting it to `HEAD`
+- record the initial `git status --short`, staged diff, and unstaged diff
 
-**Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the test entry points the spec's Testing section approved. Configuration, documentation, or generated files use the strongest available check instead.
+**Load TDD discipline**: if the project supports tests, read `./references/tdd.md` and follow it for every step that adds or changes behavior. Test only through the approved test entry points in the spec. Configuration, documentation, or generated files use the strongest available check instead.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md` before declaring any task complete. Every task must satisfy both the project-wide DoD and its own acceptance conditions.
 
@@ -343,15 +344,17 @@ Deferred minors:
 - <one-liner>
 
 Remaining: <known gaps, or None>
-Next: finish (keep, merge locally, or discard)
+Next: <return to autoflow when it is the caller; otherwise keep, merge locally, or discard>
 ```
 
 Read `./references/git-commit.md` for commit rules.
 
 Omit "Doubt checkpoints cleared" when no trigger fired. In autonomous mode also report where the run stopped, if it stopped early.
 
-Read `./references/finish.md` and present its options. Leave `impl/` and every other document in place. If any Minor findings were recorded, option 3 in `finish.md` routes them to `simplify`.
+When called by `autoflow`, report completion and return to it before presenting integration options: its separate feature-wide `code-review` stage still remains. Do not invoke that skill here.
+
+Otherwise, read `./references/finish.md` and present its options. Leave `impl/` and every other document in place. If any Minor findings were recorded, option 3 in `finish.md` recommends `simplify`; do not invoke it.
 
 When this run involved a trade-off, a trap, or a discovered boundary condition that the spec and plan do not record, say so in one line and offer `capture` as an optional next step. Do not invoke it. Do not offer it when the run held no such reasoning.
 
-Stop after implementation, task review, commits, verification, and the finish decision.
+Stop after implementation, task review, commits, verification, and the finish decision, or return to `autoflow` after verification when it is the caller.

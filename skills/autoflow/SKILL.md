@@ -1,375 +1,90 @@
 ---
 name: autoflow
-description: Orchestrate end-to-end feature delivery with minimal human checkpoints. Automatically routes through clarify → plan → execute → review, applying fixes autonomously. Use when user wants autonomous execution, says "just do it", "full auto", or explicitly invokes autoflow.
+description: Automate plan → execute → code-review from an already approved spec. Save and commit plan.md beside the spec, implement and review each task, then review the whole feature and commit authorized fixes. Use when the user requests full-auto delivery of approved requirements. Does not clarify requirements, merge, or push.
 disable-model-invocation: true
 ---
 
-# autoflow
+# Autoflow
 
-End-to-end autonomous feature delivery orchestrator.
+Coordinate exactly three stages: `plan` → `execute` → `code-review`. The supplied spec defines the scope; this skill does not create, infer, or approve requirements.
 
-## Purpose
+The called skills own their planning, testing, review, and commit rules. Autoflow owns stage transitions, recorded authorization, and recovery. It does not weaken their gates.
 
-Execute the full development workflow with minimal human intervention:
-1. Clarify requirements (if needed)
-2. Plan implementation
-3. Execute all tasks
-4. Review code and apply fixes
+## Entry and preparation
 
-This skill coordinates other skills autonomously, stopping only at critical decision points or when errors cannot be auto-resolved.
+Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
 
-**Note**: autoflow stops after code review and fixes are complete. All code is committed to the feature branch. What you do next (merge to main, push to remote, deploy) is up to you.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read the approved spec, including an explicitly named artifact from another specification system. Do not create a parallel spec. If it is missing, unapproved, or has unresolved product or UI decisions, stop and recommend `clarify` or `ui-design`; do not invoke either.
+2. Inspect the branch, staged and unstaged changes, and untracked files. Record the initial state. Never commit, stash, reset, or overwrite unrelated user work. If it cannot be isolated safely, stop and ask.
+3. Confirm the target branch. On the default branch, get consent to work there or create `feature/YYYYMMDD-<semantic-name>`. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
+4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
+5. Read `./references/state-management.md` before recording progress or resuming. An existing state for another run is not overwritten; ask whether to resume it or retain it under a unique filename before starting a new run.
 
-## When to use
+An autonomous request authorizes preparation, not unreviewed product decisions. If the plan exceeds the user's stated task or time budget, ask before execution; without a stated budget, call out plans over 10 tasks at the approval gate.
 
-- User says "just do it", "full auto", "automate this", "end-to-end"
-- User explicitly invokes `/autoflow`
-- Request is well-scoped and user trusts autonomous execution
+## Modes
 
-**Not** for:
-- Ambiguous or exploratory requests (use `clarify` first)
-- High-risk changes requiring oversight
-- Learning or teaching scenarios (user wants to see the process)
+- `/autoflow`: after the approval gate below, run the remaining stages without routine pauses.
+- `/autoflow --checkpointed`: additionally ask before each subsequent stage.
+- `/autoflow --dry-run`: read inputs and show the proposed plan, stage sequence, review scope, and blockers in conversation only. Do not change files, branches, state, or commits, invoke writing stages, or claim checks or reviews were run.
+- `/autoflow --resume`: verify recorded progress under the state reference before continuing.
 
-## Execution modes
+Flags describe instructions to the skill, not a separate executable. No configuration file is needed.
 
-### Full auto (default)
-Stop only at:
-- Requirement ambiguities that cannot be inferred
-- Review findings that are blocking
-- User explicitly pauses or stops
+## Stage 1: Plan
 
-### Checkpointed
-Stop at phase boundaries for quick approval:
-- After clarify: "Spec looks good?"
-- After plan: "Plan approved?"
-- After execute: "Ready to review?"
+If no current approved plan exists, invoke `plan` at Full tier. Let it produce its draft and apply its approval gate; do not auto-approve it. Full tier keeps the run resumable.
 
-### Dry-run
-Show what would be done at each phase without executing:
-- Generate spec draft
-- Generate plan draft
-- Show task breakdown
-- Report would-be review findings
-- Don't create feature branch
+Ask once for approval of both:
 
-**Invoke**: `/autoflow` (full auto) or `/autoflow --checkpointed` or `/autoflow --dry-run`
+- the exact plan and its verification commands;
+- autonomous execution plus fixes for Blocking and Important review findings that stay within the approved scope.
 
-## Workflow
+An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved spec and plan revisions and the authorization. If the plan changes, renew the approval rather than carrying it over silently.
 
-### Phase 0: Intake
+`plan` then saves and commits `plan.md`. Its task briefs remain gitignored under `.cartoons/`; they are not committed. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
 
-**Read user request and determine starting point**:
+## Stage 2: Execute
 
-1. Is there an existing spec?
-   - Yes → skip to Phase 2 (plan)
-   - No → continue to Phase 1 (clarify)
+Invoke `execute auto` with the approved inputs, authorization, initial working-tree record, and fixed review base. Its TDD, per-task review, final integration review, verification, and per-task commits remain mandatory. Do not replace task reviews with the later `code-review` stage.
 
-2. Is the request clear and bounded?
-   - Yes → proceed with auto-inferred decisions
-   - No → ask for clarification (minimum necessary questions)
+Use the execution ledger as the task-level record; do not maintain a second task list in autoflow state. If execution stops at any of its gates, record the blocker and hand back rather than launching the next stage.
 
-3. Is there an existing plan?
-   - Yes → skip to Phase 3 (execute)
+After execution succeeds, return to this orchestrator before any finish or integration decision. The feature-wide `code-review` stage still remains.
 
-4. Are there uncommitted changes?
-   - Yes → ask: commit first, stash, or work on top?
-   - No → create feature branch
+## Stage 3: Code review
 
-### Phase 1: Clarify (auto)
+Invoke `code-review` with the fixed feature review base, approved spec and plan paths, target branch, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
 
-**Goal**: Produce `docs/features/YYYYMMDD-<name>/spec.md`
+The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
 
-**Autonomous decisions**:
-- Feature naming: derive from request (kebab-case, 2-4 words)
-- Scope: infer from request, prefer bounded over architectural
-- Acceptance criteria: extract from request or infer minimal set
-- Tech approach: use repository's established patterns
+Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. The review report stays under `.cartoons/` and is not committed.
 
-**Stop conditions**:
-- Genuine ambiguity (multiple valid interpretations)
-- Missing information (user must provide data/constraints)
+## Stops and recovery
 
-**Invoke**: `clarify` with `--auto-approve` flag (pseudo-flag, means infer decisions)
+Stop for a missing approval, changed spec or plan, an unresolved execution gate, unsafe working-tree overlap, failed checks without a clear in-scope fix, or any required high-risk sign-off. Preserve the branch, commits, state, ledger, briefs, and reports.
 
-**Output**: `spec.md` committed
+Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `clarify` and stop; it is outside this orchestrator.
 
-### Phase 2: Plan (auto)
+Do not run destructive rollback commands or remove documents. Explain the current state and let the user decide recovery or integration.
 
-**Goal**: Produce `docs/features/YYYYMMDD-<name>/plan.md`
+## Completion report
 
-**Autonomous decisions**:
-- Tier: always use Full tier (generate task briefs)
-- Task breakdown: tracer bullet first, horizontal fill second
-- Task order: dependency-driven, testable-first
+Report actual results, not estimated success:
 
-**Stop conditions**:
-- Tasks exceed safe auto-execution scope (>10 tasks) → ask to continue or stop
-- Missing spec context that would affect planning
-
-**Invoke**: `plan` with Full tier
-
-**Output**: `plan.md` + task briefs committed
-
-### Phase 3: Execute (auto)
-
-**Goal**: Implement all tasks, one commit per task
-
-**Autonomous decisions**:
-- Execution mode: always use `auto` (run all tasks without stopping)
-- Conflict resolution: use established patterns in repository
-- Test strategy: follow spec's test entry points
-- Review fixes: apply all Important and Blocking findings
-
-**Stop conditions**:
-- Test failure cannot be auto-fixed (unknown root cause)
-- Review finding is architectural (requires user judgment)
-- Task exceeds 5 review-fix rounds
-
-**Invoke**: `execute auto`
-
-**Output**: N commits (one per task), code reviewed and fixed
-
-### Phase 4: Review (auto)
-
-**Goal**: Review all changes since feature branch start
-
-**Autonomous decisions**:
-- Review base: feature branch base commit
-- Enabled lenses: use project's `.cartoons/review-lenses.toml` if exists, else defaults
-- Fix strategy: auto-apply all Blocking and Important findings
-- Minor findings: defer (report but don't fix)
-
-**Stop conditions**:
-- Blocking finding cannot be auto-fixed (requires architectural decision)
-- Security finding requires verification with user
-
-**Invoke**: `code-review` with auto-fix enabled
-
-**Output**: Review report + fix commits
-
-**Stop here**: autoflow completes after review and fixes. Feature branch is ready. User decides next steps (merge, push, etc.).
-
-## Checkpoints
-
-Even in full auto mode, stop at:
-
-### Critical ambiguity
-**Example**: "Add user dashboard"
-- Ambiguous: What data? What visualizations? For which users?
-- Stop: Ask 1-3 targeted questions, then continue
-
-### Architectural decision
-**Example**: Review finding suggests replacing REST with GraphQL
-- Not convergent: Changes architectural approach
-- Stop: Report finding, ask user to decide
-
-### Security concern
-**Example**: Code touches authentication flow
-- High risk: Could affect all users
-- Stop: Show changes, confirm security approach
-
-## Reporting
-
-### Progress updates
-
-Show phase transitions:
-
-```
-[autoflow] Phase 1/4: Clarify
-→ Generated spec: docs/features/2026-10-12-user-login/spec.md
-→ Committed: docs(spec): add user-login
-
-[autoflow] Phase 2/4: Plan
-→ Generated plan: 3 tasks (tracer bullet + 2 horizontal)
-→ Committed: docs(plan): add user-login implementation plan
-
-[autoflow] Phase 3/4: Execute
-→ Task 1: Create login endpoint (✓ tests passing)
-→ Task 2: Add UI form (✓ tests passing)
-→ Task 3: Connect auth flow (✓ tests passing)
-→ Committed: 3 commits
-
-[autoflow] Phase 4/4: Review
-→ Standards: 2 findings (fixed)
-→ Spec: matches requirements
-→ Learnings: no issues
-→ Security: 1 finding (fixed)
-→ Committed: 2 fix commits
+```text
+Spec: <approved input path>
+Plan: <path and commit>
+Branch: <target branch>
+Review base: <commit>
+Stages: plan <status>; execute <status>; code-review <status>
+Tasks: <completed / total; each reviewed and committed>
+Checks: <commands and fresh results>
+Review: <report path; Blocking/Important fixed or remaining>
+Deferred: <Minor findings>
+State: .cartoons/autoflow-state.json
+Stopped: <reason, or none>
+Next: <resolve blocker, resume, or user decides integration>
 ```
 
-### Final report
-
-```
-[autoflow] Complete
-
-Feature: User login with JWT
-Branch: feature/2026-10-12-user-login
-
-Timeline:
-- Spec: 2 minutes
-- Plan: 3 minutes
-- Execute: 18 minutes (3 tasks)
-- Review: 4 minutes (3 findings fixed)
-Total: 27 minutes
-
-Output:
-- Spec: docs/features/2026-10-12-user-login/spec.md
-- Plan: docs/features/2026-10-12-user-login/plan.md
-- Commits: 7 (3 tasks + 2 doc + 2 fixes)
-- Branch: feature/2026-10-12-user-login (all changes committed)
-
-Next: Merge to main, push to remote, or continue developing
-```
-
-## Configuration
-
-Optional configuration in `.cartoons/autoflow-config.toml`:
-
-```toml
-[autoflow]
-mode = "full-auto"  # full-auto | checkpointed | dry-run
-auto_approve_minor = true  # auto-fix minor review findings
-max_tasks = 10  # stop if plan exceeds N tasks
-
-[autoflow.clarify]
-prefer_bounded = true  # prefer bounded over architectural
-infer_acceptance = true  # generate acceptance criteria from request
-
-[autoflow.execute]
-review_between_tasks = false  # review each task vs review all at end
-```
-
-## Safety
-
-### Guardrails
-
-1. **Reversibility check**: Before destructive operations (delete, drop, reset), stop and ask
-2. **Scope check**: If inferred scope exceeds 10 tasks, confirm before executing
-3. **Security check**: Authentication/authorization changes require explicit approval
-4. **Data check**: Database schema changes or migrations require explicit approval
-
-### Rollback
-
-If autoflow must stop mid-execution:
-
-```bash
-# Current state preserved
-git log --oneline  # see commits made
-git reset --soft <base-commit>  # undo commits but keep changes
-git reset --hard <base-commit>  # undo everything
-
-# Files written
-docs/features/YYYYMMDD-<name>/  # keep or delete
-.cartoons/features/YYYYMMDD-<name>/  # always safe to delete
-```
-
-### Resume
-
-If autoflow stopped, resume from last successful phase:
-
-```
-/autoflow --resume
-```
-
-For detailed state schema and management, read `./references/state-management.md`.
-
-Reads state from `.cartoons/autoflow-state.json`:
-```json
-{
-  "feature": "2026-10-12-user-login",
-  "phase": 3,
-  "completed": ["clarify", "plan"],
-  "current": "execute",
-  "task": 2
-}
-```
-
-## Skill coordination
-
-Autoflow invokes other skills with specific flags:
-
-| Skill | Invocation | Auto behavior |
-|-------|------------|---------------|
-| `clarify` | Direct call | Infer decisions from request |
-| `plan` | Direct call | Always Full tier |
-| `execute` | With `auto` flag | Run all tasks without stopping |
-| `code-review` | With auto-fix | Fix Blocking/Important findings |
-| git | Shell commands | Create branch, commits |
-
-## Integration with guide
-
-`guide` should route to `autoflow` when:
-- User says "just do it", "full auto", "automate"
-- User explicitly invokes `/autoflow`
-- Request is clear and user profile indicates trust in automation
-
-`guide` should NOT route to `autoflow` when:
-- Request is exploratory or ambiguous
-- User is learning (wants to see process)
-- Request involves high-risk changes
-
-## Comparison with manual workflow
-
-| Aspect | Manual (guide) | Autoflow |
-|--------|---------------|----------|
-| Checkpoints | After each skill | Only at critical decisions |
-| Planning | User approves plan | Auto-approved |
-| Execution | User starts each task | Runs all tasks |
-| Review | User decides fixes | Auto-fixes Blocking/Important |
-| Outcome | User merges when ready | Feature branch ready |
-| Speed | ~60 min for 3 tasks | ~30 min for 3 tasks |
-| Oversight | Full visibility | Minimal stops |
-
-## Error handling
-
-### Graceful degradation
-
-If autoflow cannot proceed autonomously:
-1. Report current state
-2. Explain blocker
-3. Offer manual continuation path
-
-**Example**:
-```
-[autoflow] Stopped at Phase 3: Execute
-
-Issue: Task 2 test failure (unknown root cause)
-Current state:
-- Task 1: ✓ complete
-- Task 2: ✗ test failing (cannot auto-fix)
-
-Manual continuation:
-1. Run: `npm test -- auth.test.ts`
-2. Fix the failing test
-3. Resume: `/autoflow --resume`
-
-Or debug manually: `/debug` with the test failure
-```
-
-### Timeout
-
-If any phase exceeds expected duration:
-- Clarify: 5 minutes
-- Plan: 10 minutes
-- Execute: 30 minutes (or 10 min per task)
-- Review: 10 minutes
-
-Report timeout and offer:
-1. Continue waiting
-2. Stop and switch to manual
-3. Skip current phase (if safe)
-
-## Next
-
-After autoflow completes, report:
-
-```
-Next actions:
-- Merge to main: `git checkout main && git merge <feature-branch>`
-- Push branch: `git push origin <feature-branch>` (if collaborating)
-- Continue work: Stay on branch and keep developing
-- New feature: Start another autoflow
-```
-
-Do not automatically invoke another skill. Let user decide next step.
+Finish after reporting. Do not merge, push, deploy, invoke another skill, or clean up documents. The user decides what happens to the branch.

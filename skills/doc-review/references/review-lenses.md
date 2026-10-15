@@ -21,15 +21,18 @@ Checks to apply when reviewing planning documents, organized by document type.
 
 ## spec.md (from clarify)
 
-### Required sections
+### Required content
+
+Check the content below, not extra headings. Scope and decisions may be embedded in the product brief, Solution, Constraints, or linked ADRs. Accept equivalent section names in older specs.
+
 - Problem: what needs to change and why
 - Goal: the outcome
 - Scope: what's included and excluded
-- Solution: chosen approach (Architectural path: 2-3 options compared, one recommended)
+- Solution: chosen approach, with alternatives compared when competing approaches exist
 - Decisions: confirmed choices, with ADRs if needed
 - Constraints: limits and non-negotiables
 - Acceptance: observable outcomes
-- Testing: test entry points
+- Testing Boundary: approved test entry points and mocked versus real dependencies
 
 ### Specific checks
 
@@ -46,8 +49,9 @@ Checks to apply when reviewing planning documents, organized by document type.
 - Edge cases and deferred work named
 
 **Solution**:
-- Architectural path: presents options, compares by complexity/fit/risk/testability, recommends one
-- Bounded/Spike: concrete enough for `plan` to break into tasks
+- Architectural path: compares viable alternatives by complexity/fit/risk/testability when a real choice exists, then recommends one
+- Bounded path: concrete enough for `plan` to break into tasks
+- Research or spike results, if used, support the chosen approach rather than forming a separate spec path
 
 **Decisions**:
 - Hard-to-reverse or surprising choices explained
@@ -58,22 +62,24 @@ Checks to apply when reviewing planning documents, organized by document type.
 - Error cases and edge cases covered
 - Not just "works" — specific observable behavior
 
-**Testing**:
+**Testing Boundary**:
 - Test entry points identified (functions/endpoints to test)
 - Clear how to verify each acceptance criterion
 
 ## plan.md (from plan)
 
-### Required sections
-- Summary: one-paragraph overview
-- Tasks: ordered list with dependencies
-- Task briefs exist in `.cartoons/<feature>/impl/`
+### Required content (Full tier)
+- Goal, spec path, and approach
+- Tasks: ordered list with dependencies and requirement coverage
+- Final verification commands and expected results
+- Task briefs under `.cartoons/features/YYYYMMDD-<semantic-name>/impl/`
 
 ### Specific checks
 
-**Summary**:
-- Captures the goal and approach in 3-5 sentences
-- Names the spec this implements
+**Context**:
+- Captures the goal and approach concisely
+- Names the approved spec this implements
+- Records relevant constraints and review focus without requiring empty sections
 
 **Tasks**:
 - Each task is independently testable
@@ -82,15 +88,17 @@ Checks to apply when reviewing planning documents, organized by document type.
 - Tracer bullet ordering: vertical slices before horizontal layers
 
 **Task briefs** (read from `.cartoons/`):
-- Each brief has: Objective, Deliverable, Dependencies, Interfaces (Produces/Consumes), Files
+- Each brief states its goal, covered requirements, dependencies, acceptance checks, steps, files, and consumed/produced interfaces
 - Interfaces are consistent (task-2 Consumes what task-1 Produces)
 
-## capability-map.md (from clarify Initiative path)
+Missing gitignored briefs alone do not block a fresh clone: check whether the approved plan and spec contain enough detail for `execute` to rebuild them. Report a missing decision rather than requiring temporary artifacts to be committed.
+
+## capability-map.md (from clarify's decomposition check)
 
 ### Required sections
 - Problem: why this multi-module work exists
 - Modules: list of capabilities/components to build
-- Dependencies: which modules depend on which
+- Dependencies: which modules depend on which, declared in the module table
 - Build order: sequence that respects dependencies
 - Notes: cross-module considerations
 
@@ -101,7 +109,7 @@ Checks to apply when reviewing planning documents, organized by document type.
 - Clear why this needs coordination
 
 **Modules**:
-- Each module has: Name, Outcome, Scope, Acceptance criteria
+- Each module states its name, outcome/scope, acceptance criteria, and dependencies
 - Clear boundaries between modules
 - No overlapping responsibilities
 

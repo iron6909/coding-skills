@@ -1,24 +1,12 @@
 ---
 name: handoff
-description: Create a lightweight session handoff for multi-session continuity. Captures current phase, blockers, and pointers to artifacts. Use when pausing work that will resume in another session, or when handing work between agents or users.
+description: Save session state to .cartoons/handoff/YYYYMMDD-HHMM.md with the current phase, blockers, artifact paths, and next actions. Use when pausing unfinished work or handing it to another session or agent.
 disable-model-invocation: true
 ---
 
 # Handoff
 
 Create a lightweight handoff document for session continuity.
-
-## When to use
-
-- Pausing work to resume later (next day, next week)
-- Handing work to another developer or agent
-- Context window approaching limit and work isn't complete
-- User asks to "save state" or "create a handoff"
-
-**Do not use for**:
-- Work is complete → just finish normally
-- Single-session work → no handoff needed
-- Quick questions → handoff is for multi-step work
 
 ## What This Does
 
@@ -58,7 +46,7 @@ Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 ## Completed
 
 - ✅ [Artifact or milestone with path]
-  - Example: ✅ Spec approved (`docs/features/2025-01-20-user-auth/spec.md`)
+  - Example: ✅ Spec approved (`docs/features/20250120-user-auth/spec.md`)
   - Example: ✅ Tasks 1-3 implemented and committed (`abc123f`, `def456a`, `789bcd0`)
 - ✅ [Another milestone]
 
@@ -97,7 +85,7 @@ Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 
 **Spec**: [Path if exists, or "Not created yet"]
 **Plan**: [Path if exists, or "Not created yet"]
-**Branch**: `[branch-name]` ([commits ahead of main])
+**Branch**: `[branch-name]` ([commits ahead of the default branch])
 **Learnings**: [Path to docs/learnings/ if any]
 **Progress ledger**: [Path to .cartoons/.../impl/progress.md if in execute phase]
 
@@ -127,15 +115,15 @@ When the user says "resume from handoff" or provides a handoff file:
 1. **Read the handoff**: Load `.cartoons/handoff/YYYYMMDD-HHMM.md`
 2. **Verify artifacts**: Check that referenced files still exist and match expected state
 3. **Confirm next steps**: "It looks like we were in [phase], with [task] next. Continue from here?"
-4. **Invoke next skill**: Once user confirms, call the skill specified in "Next Steps"
+4. **Report the next skill**: State the verified next action and recommended skill, then stop. The user chooses when to invoke it.
 
 ## Handoff Locations
 
 Always write to `.cartoons/handoff/YYYYMMDD-HHMM.md` (gitignored).
 
-Use timestamp format: `handoff-20250120-1430.md` (YYYYMMDD-HHMM)
+Example: `.cartoons/handoff/20250120-1430.md`. If the timestamp already exists, append a short topic or numeric suffix; never overwrite a prior handoff.
 
-If multiple handoffs exist, the latest is current. Older handoffs can remain for history.
+Use the latest matching handoff for the work being resumed. Keep older handoffs.
 
 ## Do Not
 
@@ -213,10 +201,8 @@ Current state:
 - **Human-readable**: Another person (or future you) should understand immediately
 - **Actionable next steps**: Clear enough to resume without re-exploring
 - **Phase-aware**: Capture which workflow stage we're in
-- **Temporary**: Handoffs are ephemeral, artifacts are permanent
+- **Session-only**: Handoffs are gitignored, not disposable; retain them like other documents.
 
 ## Notes
-
-This is intentionally lighter than CE's handoff system. No managed store, no multi-format support, no metadata index. Just a markdown file with pointers. The permanence comes from committed artifacts (spec.md, plan.md, code commits), not from the handoff itself.
 
 File artifacts (spec.md, plan.md, progress.md) already provide most continuity. Use handoff only when session state (current task, blockers, next actions) would otherwise be lost.

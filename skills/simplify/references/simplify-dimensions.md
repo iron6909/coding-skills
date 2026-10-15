@@ -42,22 +42,7 @@ function validateCredentials(email, password) {
 }
 ```
 
-**Similar functions** differing only in data:
-```python
-# Bad: three nearly identical functions
-def get_user_by_id(user_id):
-    return db.query("SELECT * FROM users WHERE id = ?", user_id)
-
-def get_post_by_id(post_id):
-    return db.query("SELECT * FROM posts WHERE id = ?", post_id)
-
-def get_comment_by_id(comment_id):
-    return db.query("SELECT * FROM comments WHERE id = ?", comment_id)
-
-# Good: parameterize the table
-def get_by_id(table, record_id):
-    return db.query(f"SELECT * FROM {table} WHERE id = ?", record_id)
-```
+**Similar functions** are not automatically duplication. Small queries such as `get_user_by_id`, `get_post_by_id`, and `get_comment_by_id` can preserve useful domain boundaries. Keep fixed table names and bound query values; do not replace them with a generic helper that interpolates an arbitrary SQL identifier. Share a genuinely repeated operation only when its callers have the same contract.
 
 **Copy-pasted error handling**:
 ```javascript

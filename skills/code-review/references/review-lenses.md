@@ -262,7 +262,7 @@ Report findings as JSON array.
 
 ## Learnings
 
-- [Important] src/db.ts:25 — Repeated trap: parallel migrations exhaust connection pool (see docs/learnings/2026-09-15-migrations.md)
+- [Important] src/db.ts:25 — Repeated trap: parallel migrations exhaust connection pool (see docs/learnings/20260915-parallel-migrations.md)
 
 ## Security
 

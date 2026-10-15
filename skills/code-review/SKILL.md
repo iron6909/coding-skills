@@ -276,7 +276,7 @@ Stop and fix the process when you notice:
 
 - a review base that does not resolve, or a diff that is empty
 - findings reported without a file and line where one applies
-- the two axes merged into one list
+- findings from different lenses merged into one list
 - the reviewer's severity label accepted without re-grading
 - a report overwritten instead of suffixed
 - code changed during the review, before the user approved fixes
@@ -296,7 +296,7 @@ Confirm the Definition of Done loaded above, then check the review itself:
 
 ## Fixes
 
-This skill reviews; it does not change the code. After the report, list Blocking and Important findings and ask the user whether to fix them.
+This skill reviews; it does not change the code without authorization. After the report, list Blocking and Important findings and ask the user whether to fix them. When called by `autoflow`, verified user authorization for the exact plan and target branch can cover in-scope Blocking/Important fixes without another routine prompt. It never covers Minor fixes, scope changes, or decisions that require explicit high-risk sign-off.
 
 If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Then fix each finding following `./references/tdd.md`: a test that reproduces the finding fails first, then the fix, then the full suite. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks. If 3+ minor findings share a theme (reuse opportunities, naming inconsistency, complexity), suggest the user run `/simplify` after merge to address them systematically.
 
@@ -317,10 +317,8 @@ Security: <N findings, M fixed | lens not enabled>
 Performance: <N findings, M fixed | lens not enabled>
 Accessibility: <N findings, M fixed | lens not enabled>
 I18n: <N findings, M fixed | lens not enabled>
-Next: <user reviews findings, or requests fixes, or merge ready>
-```
-Deferred: <N minors>
-Next: <fixes the user chose, or None>
+Deferred: <N Minor findings>
+Next: <user reviews findings, requests fixes, or decides integration>
 ```
 
 The report written to `.cartoons/` is for the user to read. List deferred minors here for their decision. If Blocking findings remain and the user wants to capture them for future reference, offer to route them to `capture`.

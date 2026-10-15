@@ -1,30 +1,19 @@
 ---
 name: doc-review
-description: Review planning documents (spec.md, plan.md, capability-map.md) for completeness, feasibility, consistency, and clarity. Use when asked to review, audit, or improve an existing planning document, or when a document is suspected to have gaps or contradictions. Not for code review—use code-review for that.
+description: Review an existing spec.md, plan.md, or capability-map.md for gaps, contradictions, feasibility, and unclear terms. Use when asked to audit or improve a planning document. Fix minor issues in place; report decisions needed before larger edits. Not for code review—use code-review.
 disable-model-invocation: true
 ---
 
 # doc-review
 
-Review requirements, plans, or initiative capability maps to find and fix gaps, contradictions, and feasibility issues before implementation.
-
-## When to use
-
-- User asks to "review this spec", "audit the plan", "check the capability map"
-- Before starting implementation on a complex or old document
-- When a document is suspected to have inconsistencies
-
-**Not** for:
-- Reviewing code → use `code-review`
-- Creating a new spec → use `clarify`
-- Creating a new plan → use `plan`
+Review one existing planning document before implementation. Creating a spec belongs to `clarify`; creating a plan belongs to `plan`.
 
 ## Scope
 
 Review one document at a time. Supported types:
 - `spec.md` (from `clarify`)
 - `plan.md` (from `plan`)
-- `capability-map.md` (from `clarify` Initiative path)
+- `capability-map.md` (from `clarify`'s Architectural decomposition check)
 
 Output: edit the document in place to fix minor issues, report blocking/important issues for user decision.
 
@@ -131,4 +120,4 @@ State:
 
 ## Next
 
-If Blocking findings remain unfixed, recommend not starting implementation until they're resolved. Otherwise, the document is ready for `plan` (if spec) or `execute` (if plan).
+If Blocking findings remain unfixed, recommend not starting implementation until they're resolved. Otherwise, recommend `plan` for a spec, `execute` for a plan, or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.

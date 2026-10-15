@@ -159,4 +159,4 @@ Present a summary:
 
 ## Next
 
-Code is now cleaner. Recommend using `review` to verify the simplification didn't introduce issues.
+Report the saved changes, checks, and commit, then stop. Recommend `code-review` if an independent review is useful; do not invoke it.

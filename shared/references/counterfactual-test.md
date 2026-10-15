@@ -17,19 +17,20 @@ Something that looked right but was not. The reader would try the same thing.
 
 **Example (passes)**:
 ```markdown
-## Using Array.includes() with NaN values
+## Legacy exporter encodes NaN as a string
 
-We tried `tags.includes(NaN)` to check if the array contained NaN. 
-It always returned false, even when NaN was present.
+Our legacy exporter deliberately writes non-finite readings as the JSON
+string "NaN". After JSON.parse(), `readings.includes(NaN)` returned false
+because the array contained a string, not the numeric value NaN.
 
-Array.includes() uses SameValueZero equality, which makes NaN === NaN 
-true for this method, but our tags were coming from JSON.parse() which 
-preserves NaN as a string "NaN", not the primitive.
+Array.includes() uses SameValueZero and does match numeric NaN. JSON.parse()
+does not coerce "NaN" to a number; bare NaN is not valid JSON.
 
-Check: use `tags.some(t => t === "NaN")` or fix the JSON serialization.
+Check the exporter's string sentinel explicitly, or normalize it at ingestion
+before numeric validation. Do not silently discard these missing readings.
 ```
 
-**Why it passes**: A reader would confidently write `includes(NaN)` without knowing about the JSON.parse() edge case.
+**Why it passes**: The exporter's sentinel convention is project-specific and absent from the consumer code; it is not a general warning about Array.includes().
 
 ### 2. Trade-offs with non-obvious losers
 Why the alternative lost, when the spec only says what won.
@@ -198,24 +199,23 @@ Consider using httpOnly cookies for more sensitive applications.
 
 ### ✅ Strong learning (clearly passes)
 ```markdown
-## localStorage.setItem() fails silently in Safari private mode
+## Legacy Safari private mode rejects localStorage writes
 
-We store JWT tokens in localStorage. In testing, login worked everywhere 
-except Safari private mode, where users stayed logged out with no error.
+Our supported legacy Safari versions before 10.1 throw QuotaExceededError
+on localStorage.setItem() in private mode. The login flow swallowed that
+exception, so users appeared logged out without a visible error.
 
-Safari's private mode throws a QuotaExceededError on localStorage.setItem(), 
-but our code didn't catch it, so the token write failed silently and 
-subsequent API calls had no auth header.
-
-Check: wrap localStorage writes in try/catch, fall back to sessionStorage 
-or memory-only storage. Test explicitly in Safari private mode (Cmd+Shift+N).
+This is a version-specific storage restriction, not a claim about current
+Safari. Check storage writes for failure and handle unavailable persistent
+storage explicitly, for example with memory-only state and reauthentication.
+Test on the affected supported versions; do not assume sessionStorage works.
 ```
 
 **Why it's strong**: 
-- Specific trap (Safari private mode)
+- Specific trap (private mode in supported legacy Safari versions)
 - Non-obvious symptom (silent failure, not an error message)
-- Concrete check (try/catch + fallback)
-- A reader would confidently write `localStorage.setItem()` without knowing this
+- Concrete check (handle failed writes and test affected versions)
+- Names the supported-version boundary that makes the historical behavior relevant
 
 ## Batch evaluation shortcut
 

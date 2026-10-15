@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Clarify a development request from vague idea to approved spec. Handles product understanding (problem, goals, users) and technical specification (solution, interfaces, testing). Supports two paths - Bounded (local change), Architectural (cross-module). Automatically assesses if work bundles multiple independently testable capabilities; if so, generates capability-map.md for approval before specifying each module. Phase 1 includes optional research and spike steps when needed. Saves to docs/features/YYYYMMDD-name/spec.md.
+description: Resolve unclear requirements into an approved spec.md in docs/features/YYYYMMDD-<semantic-name>/. Use for unsettled scope, constraints, solution choices, or acceptance checks. Choose Bounded or Architectural depth; split multi-capability work into an approved capability-map.md before specifying modules. Research and spikes are optional validation steps.
 disable-model-invocation: true
 ---
 
@@ -118,11 +118,15 @@ After exploring the codebase, assess whether this work bundles several independe
 
 **Created**: YYYYMMDD
 
+## Problem
+
+[Why this work needs several independently testable capabilities.]
+
 ## Modules
 
-| Module | Responsibility | Depends on |
-|--------|----------------|------------|
-| [id] | [what it does] | [list or -] |
+| Module | Outcome and scope | Acceptance | Depends on |
+|--------|-------------------|------------|------------|
+| [id] | [bounded result] | [observable check] | [list or -] |
 
 ## Build Order
 
@@ -135,8 +139,8 @@ After exploring the codebase, assess whether this work bundles several independe
 ```
 
 3. **Present the map for approval** (review module boundaries, dependency direction, build order)
-4. After approval, hand off: "I'll now clarify each module with its own spec. Which module should we start with?"
-5. For each module, invoke clarify (Bounded or Architectural) recursively
+4. After approval, save and commit the map, then stop and ask which module to specify next.
+5. Recommend a separate `clarify` invocation for the selected module, using the map as context. Do not automatically recurse through modules.
 
 **If decomposition is not needed:** Continue directly to Step 2.
 
@@ -280,16 +284,16 @@ If a spike was run, include the "Feasibility Validation" section with findings.
 
 ### For multi-capability work (after decomposition approval)
 
-The approved `capability-map.md` is already saved at `docs/features/YYYYMMDD-<initiative>/capability-map.md`. Each module then gets its own spec saved alongside it (e.g., `SPEC-auth.md`, `SPEC-billing.md`).
+Save the approved `capability-map.md` at `docs/features/YYYYMMDD-<initiative>/capability-map.md` and commit only that document and any approved glossary or ADR updates. Each selected module later gets its own `docs/features/YYYYMMDD-<module-name>/spec.md`; link it from the map when available. Stop after saving the map or the selected module's spec.
 
 ### Commit
 
-Stage only the spec:
+Stage only the artifact this invocation wrote, using its exact path:
 ```bash
-git add docs/features/YYYYMMDD-<semantic-name>/
+git add -- docs/features/YYYYMMDD-<semantic-name>/spec.md
 ```
 
-Also stage `GLOSSARY.md` if updated, and any new ADRs.
+For a decomposition map, stage its `capability-map.md` instead. Add only your approved `GLOSSARY.md` and ADR changes by exact path. Inspect `git diff --cached` before committing; if unrelated changes are staged, stop and ask rather than committing or unstaging them. Never stage the whole feature directory.
 
 Commit message:
 ```
@@ -312,12 +316,6 @@ Do not automatically invoke `plan`. Wait for user decision.
 
 ---
 
-## Spec options (deprecated - now part of path selection)
-
-The path selection (Bounded/Architectural) replaces the old spec options. This section exists only for reference.
-
----
-
 ## Review the draft
 
 Before presenting any draft (Phase 0 or Phase 1), check it for:
@@ -333,7 +331,7 @@ Prefer deletion, existing project patterns, standard library features, native pl
 
 ## Integration with other skills
 
-- **After clarify**: Route to `plan` for task breakdown
+- **After clarify**: Recommend `plan` for an approved module spec, or `clarify` for the next selected module; do not invoke either.
 - **During clarify**: Focus on understanding and specification. Do not start implementation.
 
 Research and spike validation are embedded in Phase 1 as optional steps, not separate skills.

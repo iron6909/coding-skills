@@ -223,7 +223,7 @@ After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lig
 
 Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
 
-plan.md is an index. Task details live in `impl/task-N.md` files. Keep plan.md under 100 lines.
+plan.md is an index. Task details live in `.cartoons/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines.
 
 ## Self-review
 
@@ -279,7 +279,7 @@ Present the plan as a draft in the conversation. Write no file yet.
 - **Full**: goal, approach, the task list with dependencies, final verification, and review focus.
 - **Brief**: the files to change and what happens in each, the check that will confirm it, as a task list where each task carries its own check.
 
-Wait for the user to approve. If they ask for changes, revise the draft and ask again.
+Wait for the user to approve. If they ask for changes, revise the draft and ask again. When called by `autoflow`, this same gate can also record the user's explicit authorization for autonomous execution and in-scope Blocking/Important review fixes; spec approval alone still does not approve the plan.
 
 On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is what `execute` relies on as the approved plan. On Brief there is nothing to write: the approval is agreement to proceed, and the tier decision is part of what the user is approving.
 

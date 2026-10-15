@@ -2,7 +2,7 @@
 
 # Learnings format and lifecycle
 
-`docs/learnings/` holds session learnings: trade-offs, traps, and boundary conditions the spec and plan do not record. Each learning is one file.
+`docs/learnings/` holds session learnings: trade-offs, traps, and boundary conditions the spec and plan do not record. Keep one file per topic; a file may contain several related entries.
 
 ## When to capture a learning
 
@@ -23,28 +23,26 @@ Do not capture:
 docs/learnings/YYYYMMDD-<topic>.md
 ```
 
-Name: today's date + short kebab-case topic (2-4 words). One learning per file.
+For a new topic, use today's date + a short kebab-case name (2-4 words). For an existing topic, update its active file without renaming it.
 
-Template:
+Use this canonical template:
 
 ```markdown
-# <Title: the trap or trade-off>
+---
+date: "YYYYMMDD"
+area: <module, subsystem, or domain>
+tags: [<3-6 lowercase module, tool, or concept tags>]
+---
 
-**Date:** YYYYMMDD
-**Area:** <module, subsystem, or domain>
-**Tags:** <keyword>, <keyword>
+# <Topic>
 
-## Problem
+<One line: what this is about.>
 
-<What went wrong or what trade-off was discovered>
+## <Entry title: the trap, trade-off, or boundary>
 
-## Why
+<What happened and the non-obvious reason, with concrete evidence.>
 
-<The non-obvious reason, with evidence>
-
-## How to apply
-
-<Concrete guidance: when to use this learning, when to ignore it>
+<How to apply it: what to do differently, and when the advice does not apply.>
 
 ## Related
 
@@ -52,22 +50,28 @@ Template:
 - `docs/adr/NNNN-<related>.md`
 ```
 
-Keep it short. A learning is a pointer to reasoning, not a tutorial.
+Repeat the entry section only for related lessons. Omit `Related` when unused. Keep each entry short: a pointer to reasoning, not a tutorial. Correct superseded claims in place and record what changed.
+
+Keep lifecycle metadata in the same YAML frontmatter: `last_verified` when checked, `status: stale` with `reason` when uncertain, and the archival fields specified below when moved. Use quoted `YYYYMMDD` dates.
+
+**Legacy files**: accept body-level `Date` / `Area` / `Tags` and `Problem` / `Why` / `How to apply` sections when reading. If metadata is absent, match on the title and body instead. Convert only a file being edited; do not bulk-migrate or discard older learnings.
 
 ## Matching and reading learnings
 
 **When to read**: during `plan` (task selection) and `code-review` (Learnings axis).
 
-**Match by**:
+Search active files directly under `docs/learnings/`; `_archived/` is history, not the default matching set.
+
+**Match by** (case-insensitive):
 1. **Tags**: exact match or substring (e.g., tag `auth` matches `authentication`)
 2. **Area**: substring match in the current work's module or subsystem
-3. **Title/Problem**: keyword overlap with the current request
+3. **Title and entries**: keyword overlap with the current request
 
-Read the matched learning's full content. A match on tags or area alone is not enough to judge relevance — the Problem and Why sections decide.
+Read each candidate's full content. Metadata finds candidates; the evidence, reasoning, and applicability decide relevance. Do not reject a legacy file merely because it lacks frontmatter.
 
 ## Refresh cycle
 
-Learnings drift as the codebase changes. The `learning-refresh` skill audits the store and updates, consolidates, or removes stale entries.
+Learnings drift as the codebase changes. The `learning-refresh` skill audits active entries and updates, consolidates, supersedes, or archives them. No learning is deleted. Match active files directly under `docs/learnings/`; read `_archived/` only to follow a citation or inspect history.
 
 **Staleness signals**:
 - Referenced code paths, modules, or APIs no longer exist
@@ -77,9 +81,12 @@ Learnings drift as the codebase changes. The `learning-refresh` skill audits the
 
 **Age alone is not staleness.** A two-year-old learning that still matches the code stays.
 
-**Deletion rules** (see `learning-refresh` skill for full gates):
-1. Auto-delete only when **all three** hold: the code referenced is gone, the problem domain is gone, and no inbound citations exist
-2. Learnings never referenced by in-repo code never auto-delete (no evidence they're obsolete)
-3. Non-interactive mode: ambiguous cases get `status: stale` frontmatter instead of deletion
+### Archival gates
 
-Version history is the archive. There is no `_archived/` directory.
+Move a learning to `docs/learnings/_archived/` only when its claim is verified obsolete, superseded, consolidated into another learning, or shown to fail the counterfactual quality gate. Age, a missing file, or an empty text search alone is not enough.
+
+- Without confirmation, archive only when **all three** hold: the referenced code is gone, the problem domain is gone, and no inbound citations exist.
+- In all other cases, present the evidence and get the user's approval for each move. Resolve inbound citations to the replacement or archived path before moving; if that cannot be done safely, leave the file in place.
+- When evidence or approval is missing, keep the file and add `status: stale` with a reason. In non-interactive mode, do not infer approval.
+- Preserve the full learning and add `status: archived`, `archived_on`, and `reason`; name any replacement in `superseded_by`.
+- Keep the filename unless it collides in `_archived/`; then add a numeric suffix. Never overwrite an archive. Update `Related` links to remain valid from the new location, using repository-relative paths.

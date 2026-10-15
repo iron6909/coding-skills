@@ -32,11 +32,14 @@ npx skills@latest add iron6909/coding-skills
 /guide 让我们添加用户登录功能
 ```
 
-`guide` 把请求路由到合适的技能;每个技能产出文档或代码后停下,等你确认再进入下一步:
+`guide` 把请求路由到合适的技能;通常每个技能产出文档或代码后停下,等你确认再进入下一步:
 
-1. `clarify` 澄清需求,批准后保存并提交 `spec.md`
+1. `clarify` 澄清需求,批准后保存并提交 `spec.md`;涉及界面时先用 `ui-design` 确定设计规格
 2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
-3. `execute` 按 TDD 逐个任务实现、评审、提交,最后由你决定合并还是保留分支
+3. `execute` 按 TDD 逐个任务实现、评审、提交
+4. `code-review` 独立审查整体改动,报告后由你决定修复或集成
+
+已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。
 
 ## 核心流程
 
@@ -56,6 +59,8 @@ graph TD
     C -->|审查文档| P[doc-review]
     C -->|清理代码| Q[simplify]
     C -->|审查界面| S[ui-review]
+    C -->|已批准 spec，自动交付| T[autoflow: plan → execute → code-review]
+    T --> J
 
     D --> E
     E -->|涉及前端界面| R[ui-design]
@@ -85,22 +90,22 @@ graph TD
 
 | 技能 | 触发时机 | 产物 | 示例 |
 |------|---------|------|------|
-| **guide** | 任何请求 | 路由决策 | "添加登录" → clarify |
+| **guide** | 未指名技能的开发请求 | 路由后交给对应技能 | "添加登录" → clarify |
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
 | **ui-design** | spec 涉及前端界面,需设计规格 | DESIGN.md + ui-spec.md | 建立设计系统、线框图、组件状态、交互流程 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪 | commits + progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
+| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度:一致性/可用性/可访问性/响应式/性能 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.cartoons/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
 | **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.cartoons/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
-| **autoflow** | 全自动端到端执行 | 完整交付:spec/plan/commits/review 修复 | 单次批准,最少检查点 |
+| **autoflow** | spec 已批准,需自动交付 | plan.md、代码提交、审查报告与授权修复 | 仅 plan → execute → code-review；计划批准后自动执行,不代做 clarify |
 | **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.cartoons/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
 | **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/YYYYMMDD-<topic>.md` | 反事实门槛筛掉可推断的内容 |
-| **learning-refresh** | learnings 与代码库漂移 | 更新/合并/删除 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目 |
+| **learning-refresh** | learnings 与代码库漂移 | 更新/合并/归档 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目,不删除文档 |
 | **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/capability-map 完整性/可行性检查 |
 | **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
 | **handoff** | 暂停工作,跨会话继续 | `.cartoons/handoff/YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
@@ -125,9 +130,11 @@ graph TD
 │   │   └── 20250125-platform-refactor/
 │   │       └── capability-map.md       # 多模块拆分（clarify 自动检测生成）
 │   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
-│   │   └── 20250115-jwt-security.md    # 单主题学习文档
+│   │   ├── 20250115-jwt-security.md    # 单主题学习文档
+│   │   └── _archived/                  # 满足归档条件的旧 learning，保留原文
 │   └── adr/                             # 架构决策记录（惰性创建）
 ├── .cartoons/                           # 临时，不提交（按技能组织）
+│   ├── autoflow-state.json              # 三阶段进度；旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
 │   ├── features/                        # feature 相关
 │   │   └── 20250115-user-auth/
 │   │       ├── impl/
@@ -173,7 +180,7 @@ graph TD
 2. **GREEN** — 最小代码通过
 3. **REFACTOR** — 清理重复
 
-只测 spec 里批准过的测试入口(test entry point);回归测试要验证"还原修复后必须变红"。
+有 spec 时只通过批准的测试入口(test entry point)测试;无 spec 的小改动或修复先说明入口。回归测试要验证"还原修复后必须变红";无法建立测试时说明替代检查与覆盖缺口。
 
 ### Tracer bullet 任务
 
@@ -193,13 +200,14 @@ graph TD
 
 | 技能 | 提交什么 |
 |------|---------|
-| survey、clarify、plan、capture、ui-design | 自己产出的文档:`AGENTS.md`/`GLOSSARY.md`、spec 或 `capability-map.md`、`plan.md`、learnings、`DESIGN.md` + `ui-spec.md` |
+| survey、clarify、plan、capture、learning-refresh、ui-design | 自己产出的文档:`AGENTS.md`/`GLOSSARY.md`、spec 或 `capability-map.md`、`plan.md`、learnings、`DESIGN.md` + `ui-spec.md` |
 | execute、debug | 每个任务或每次修复一次代码提交 |
 | simplify、optimize | 简化、优化后的代码 |
-| doc-review | 只直接改 Minor；Blocking/Important 等你决定 |
-| autoflow | 整个功能:spec、plan、提交、评审修复（都在 feature 分支上） |
+| doc-review | 用户确认后提交已修改的原文档；只直接改 Minor,Blocking/Important 等你决定 |
+| autoflow | 编排 plan、execute、code-review 各自的提交；spec 是已批准的输入,状态/briefs/报告不提交 |
 | commit | 你指定的临时改动（不 push） |
-| code-review、ui-review、refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
+| code-review | 报告不提交；经你授权的修复单独提交,不包含被审查的原始改动 |
+| ui-review、refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
 
 ## 何时用什么
 
@@ -208,10 +216,10 @@ graph TD
   → execute
 
 需求不明
-  → clarify (Spike/Bounded/Architectural)
-    → Spike: 探索可行性
+  → clarify (Bounded/Architectural)
     → Bounded: 局部小改
     → Architectural: 跨模块/接口
+    → research/spike: 路径内按需验证,不是第三条路径
 
 多步骤工作
   → plan (按体量选输出档)
@@ -219,6 +227,11 @@ graph TD
     → Full: 其它 → plan.md + task briefs
   → execute (逐任务停下确认)
     → 传 auto: 单次批准跑完所有任务(遇测试失败/规格歧义/高风险仍自动停下)
+
+已有批准的 spec,希望自动交付
+  → autoflow (plan → execute → code-review)
+    → 批准计划,同时授权自动执行和范围内的 Blocking/Important 修复
+    → 逐任务测试/评审/提交仍不可跳过,最后由你决定集成
 
 有 bug
   → debug (4 阶段循环)
@@ -233,7 +246,8 @@ graph TD
   → refactor (改进候选)
 
 改动完成
-  → finish(保留 / 本地合并 / 丢弃)
+  → execute 读取 finish 参考,由你决定保留分支或本地合并
+    → 仅明确要求丢弃时移除分支,文档仍保留
 
 改动结束后,想留下推理过程
   → capture (docs/learnings/,可选)
@@ -242,7 +256,7 @@ learnings 与代码库漂移
   → learning-refresh (审计并刷新 docs/learnings/)
 
 审查规划文档
-  → doc-review (spec/plan/charter 完整性检查)
+  → doc-review (spec/plan/capability-map 完整性检查)
 
 代码能跑但该清理
   → simplify (提取重复、改进命名、优化效率)
@@ -258,16 +272,16 @@ learnings 与代码库漂移
 → guide 路由到 clarify
 → clarify 问 2-3 个问题(格式?存储?尺寸限制?)
 → 呈现 spec,用户批准
-→ 保存并提交 docs/features/2025-01-20-avatar-upload/spec.md,停下
+→ 保存并提交 docs/features/20250120-avatar-upload/spec.md,停下
 → 用户确认后调用 plan
 → 拆分为 3 个 task:
   1. 上传 API endpoint
   2. 图片处理和存储
   3. 前端表单集成
 → 呈现计划草稿,用户批准
-→ 保存并提交 plan.md,task briefs 写入 impl/(不提交),停下
+→ 保存并提交 plan.md,task briefs 写入 .cartoons/features/20250120-avatar-upload/impl/(不提交),停下
 → 用户确认后调用 execute
-→ 依次完成 3 个 task,每个 TDD + code-review + commit
+→ 依次完成 3 个 task,每个 TDD + 内置任务评审 + commit
 → 完成,报告证据,由你决定保留分支还是本地合并
 ```
 
@@ -302,8 +316,8 @@ learnings 与代码库漂移
   - CI pipeline
 → 生成 capability-map.md,用户批准
 → 用户选第一个模块: frontend
-→ 为该模块调用 clarify (Bounded 或 Architectural) 写出 spec.md
-→ 然后 plan → execute
+→ 为该模块调用 clarify (Bounded 或 Architectural),保存 docs/features/YYYYMMDD-<module-name>/spec.md
+→ 然后 plan → execute → code-review
 → 重复,直到所有模块都完成
 ```
 
@@ -336,6 +350,8 @@ subagent 仅用于只读调研。运行环境没有委派机制时,技能会退�
 ### 会不会自动删东西?
 
 **文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.cartoons/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
+
+**learning 可以归档,不能删除**:满足共享生命周期规则时移入 `docs/learnings/_archived/`,保留原因与引用关系；条件不明就留在原位并标记待核实。
 
 **不是文档的临时物照常清理**:调试探针和日志,以及你明确要求丢弃的分支。
 
