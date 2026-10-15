@@ -105,18 +105,18 @@ For each task:
 
 1. Write the task-start ledger entry.
 2. Read `impl/task-N.md` for the step list, files, interfaces, checks, and dependencies. For a session plan, use the task as stated in the conversation.
-3. Check that earlier task outputs exist and match the current task.
+3. Check that earlier task outputs exist and match the current task. Screen the task for doubt-driven triggers before implementation or verification commands; an open trigger requires specific sign-off before the affected action.
 4. Read the relevant code before editing.
 5. Follow the TDD loop in `./references/tdd.md` for each behavior change: failing test, minimal implementation, refactor. Choose appropriate test level (unit, integration, E2E) using `./references/testing-strategy.md`.
 6. Run the affected test, lint, build, or type-check command named by the task brief.
 7. Inspect the diff for scope creep, accidental files, and user data loss.
-8. Check the doubt-driven triggers (see Doubt-driven checkpoints below). If one applies, record the risk and get explicit sign-off before continuing.
+8. Recheck the doubt-driven triggers for new risks before review and commit. An earlier approval does not cover a newly discovered risk.
 9. Run the task review below.
 10. Fix every valid review finding and repeat the affected checks.
 11. Commit the task only after review passes and checks are fresh.
-    - Stage only files this task touched: `git add <file1> <file2>...`
+    - Read `./references/git-commit.md` and stage only task-owned changes, preserving the user's staged and unstaged work.
     - Check staged changes: `git diff --staged`
-    - Write a conventional commit message referencing the REQ-N IDs this task implements (see `./references/stable-ids.md`):
+    - Follow the repository's commit convention, otherwise Conventional Commits. Reference implemented REQ-N IDs only when the input spec has them (see `./references/stable-ids.md`). For a small change without a spec, identify the approved request and its acceptance check instead; do not invent IDs or create a spec for the commit format. With IDs:
       ```
       feat(scope): implement REQ-1 and REQ-4
       
@@ -132,7 +132,7 @@ If the task brief is wrong, stop when every path forward requires a product deci
 
 ## Doubt-driven checkpoints
 
-Four triggers. Check them at step 8 of every task, in both modes:
+Four triggers, in both modes. Check when reading each task and before any potentially side-effecting action, including tests or verification commands, then recheck at step 8. Stop immediately if new evidence raises a trigger; do not wait for the next checkpoint.
 
 - **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
 - **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
@@ -141,7 +141,7 @@ Four triggers. Check them at step 8 of every task, in both modes:
 
 When a trigger applies:
 
-1. Do not commit the task.
+1. Do not perform the affected action or commit the task. Stopping a commit cannot undo an external side effect.
 2. Write a ledger `Ruling:` entry naming the trigger, the risk, and what you need decided.
 3. Stop and ask the user for explicit sign-off on that specific risk.
 
@@ -288,7 +288,7 @@ When output is large, save it to a temporary report and read only the relevant t
 
 If an agent fails, inspect any partial report. Continue in the main process or reassign the narrow read-only task. Check all findings against repository evidence.
 
-Do not revert unrelated user changes. Do not run destructive Git commands. Do not push, merge, or publish unless the user explicitly asks.
+Do not revert unrelated user changes or run destructive Git commands. This skill does not push, merge, or publish; those are separate user decisions.
 
 ## Common rationalizations
 

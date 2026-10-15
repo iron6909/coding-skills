@@ -53,7 +53,7 @@ Use the first matching rule:
 14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
 15. If the user asks to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`.
 16. If the request has unresolved scope, spec, constraints, or acceptance checks, use `clarify`.
-17. If a spec from `clarify` involves frontend UI and needs design specifications (signals: layout design, component states, interactions, or DESIGN.md missing), use `ui-design`.
+17. If an approved spec still needs layout, component-state, or interaction decisions, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
 18. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
 19. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
 20. If the approved work is clear and ready for code changes, use `execute`.

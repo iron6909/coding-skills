@@ -16,7 +16,9 @@ Creates a **pointer-based summary** of:
 - What's next
 - Known blockers or decisions needed
 
-**Not** a full conversation transcript or state dump. Points to artifacts on disk; doesn't duplicate their content.
+**Not** a full conversation transcript or state dump. Point to artifacts already on disk. The one exception is an unsaved spec draft: preserve its recoverable content inside the handoff and label it **unapproved**, without creating a formal spec.
+
+This does not make Brief plans resumable across sessions. If a plan must persist, recommend `plan` at Full tier instead of serializing a Brief plan here.
 
 ## Process
 
@@ -25,7 +27,7 @@ Creates a **pointer-based summary** of:
 Identify:
 - **Current phase**: Which skill stage are we in? (survey, clarify, plan, execute task N, debug, etc.)
 - **Completed artifacts**: What files exist? (spec.md, plan.md, commits)
-- **In-progress work**: What's partially done?
+- **In-progress work**: What's partially done? Is there an unsaved spec draft to preserve?
 - **Blockers**: What's preventing progress? (missing info, user decision needed, external dependency)
 - **Next steps**: What should happen when work resumes?
 
@@ -83,11 +85,16 @@ Write `.cartoons/handoff/YYYYMMDD-HHMM.md`:
 
 ## Artifacts
 
-**Spec**: [Path if exists, or "Not created yet"]
+**Spec**: [Path if saved; otherwise "Not saved; unapproved draft below" or "Not created yet"]
 **Plan**: [Path if exists, or "Not created yet"]
 **Branch**: `[branch-name]` ([commits ahead of the default branch])
 **Learnings**: [Path to docs/learnings/ if any]
 **Progress ledger**: [Path to .cartoons/.../impl/progress.md if in execute phase]
+
+## Unsaved spec draft (only when no saved draft exists)
+
+**Status: unapproved.**
+[Preserve the current draft's requirements, constraints, decisions, assumptions, and open questions well enough to resume clarification. Omit this section when a saved artifact already holds them. This is not an approved implementation input.]
 
 ## Notes
 
@@ -113,7 +120,7 @@ Provide the exact path so they can read it later.
 When the user says "resume from handoff" or provides a handoff file:
 
 1. **Read the handoff**: Load `.cartoons/handoff/YYYYMMDD-HHMM.md`
-2. **Verify artifacts**: Check that referenced files still exist and match expected state
+2. **Verify artifacts**: Check that referenced files still exist and match expected state. An inline unapproved spec draft resumes clarification and still needs approval
 3. **Confirm next steps**: "It looks like we were in [phase], with [task] next. Continue from here?"
 4. **Report the next skill**: State the verified next action and recommended skill, then stop. The user chooses when to invoke it.
 
@@ -127,7 +134,7 @@ Use the latest matching handoff for the work being resumed. Keep older handoffs.
 
 ## Do Not
 
-- **Duplicate artifact content**: Point to files, don't paste their content
+- **Duplicate saved artifact content**: Point to files; only the unsaved-spec exception above is copied
 - **Capture full conversation**: Just the state, not the dialogue
 - **Commit handoffs**: They're temporary, gitignored
 - **Serialize complex state**: Keep it simple and human-readable
@@ -164,7 +171,7 @@ Current state:
 
 → Create handoff showing:
   - Phase: clarify (awaiting approval)
-  - Completed: draft spec in conversation (not committed)
+  - Current: unapproved spec draft preserved in the handoff, not a completed spec
   - Blocker: user reviewing with team
   - Open question: OAuth vs JWT decision
   - Next: finalize spec and commit
@@ -194,14 +201,6 @@ Current state:
 - **During execute**: Handoff between tasks or mid-task if work pauses
 - **After debug**: Handoff if root cause is found but fix needs approval
 - **Multi-module work**: Handoff after completing each module in a capability-map
-
-## Principles
-
-- **Pointer-first**: Reference files, don't duplicate content
-- **Human-readable**: Another person (or future you) should understand immediately
-- **Actionable next steps**: Clear enough to resume without re-exploring
-- **Phase-aware**: Capture which workflow stage we're in
-- **Session-only**: Handoffs are gitignored, not disposable; retain them like other documents.
 
 ## Notes
 

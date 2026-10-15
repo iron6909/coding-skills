@@ -54,7 +54,7 @@ Once assigned:
 - Implementation details (which library to use, file structure)
 - Decisions that don't produce testable behavior (coding style, naming conventions)
 - Out of scope items (they're explicitly excluded)
-- Testing section items (those are means to verify IDs, not requirements themselves)
+- Testing Boundary section items (those are means to verify IDs, not requirements themselves)
 
 ## Using IDs in plan.md
 

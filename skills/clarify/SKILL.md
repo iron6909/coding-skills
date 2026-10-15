@@ -197,6 +197,8 @@ For **Architectural path**: If competing approaches exist, identify 2-3 viable o
 
 ### Step 6: Draft technical spec
 
+Read `./references/stable-ids.md` before drafting acceptance conditions, and use its verification checklist before saving the spec.
+
 #### Bounded path
 
 Present one recommended approach with necessary trade-offs.
@@ -253,8 +255,8 @@ Recommend one with clear reasoning.
 [Technical constraints: performance, compatibility, dependencies]
 
 ## Acceptance
-[Observable, testable conditions that define "done"]
-[Format: "Given X, when Y, then Z" or "System should..."]
+- REQ-1: [Observable, testable condition that defines "done"]
+- REQ-2: [Another acceptance condition, when needed]
 
 ## Testing Boundary
 [Where tests will be written]
@@ -309,10 +311,10 @@ Reference `./references/git-commit.md` for commit conventions.
 ### Hand off
 
 Tell user:
-- **Bounded/Architectural (single module)**: "Spec saved to `docs/features/.../spec.md`. Ready for `plan` to break this into tasks."
-- **Multi-capability work**: "Capability map saved at `docs/features/.../capability-map.md`. Module [X] spec ready; [Y] modules remaining. Continue with next module, or proceed to plan for this one?"
+- **Bounded/Architectural (single module)**: Give the saved spec path. If layout, component states, or interactions still need decisions, recommend `ui-design`; otherwise recommend `plan`. A frontend change with settled design choices does not require a new `ui-spec.md`.
+- **Multi-capability work**: Give the saved map path, module status, and the same conditional recommendation for any approved module spec. Let the user choose the next module or next skill.
 
-Do not automatically invoke `plan`. Wait for user decision.
+Stop after reporting. Do not automatically invoke any next skill.
 
 ---
 
@@ -331,7 +333,7 @@ Prefer deletion, existing project patterns, standard library features, native pl
 
 ## Integration with other skills
 
-- **After clarify**: Recommend `plan` for an approved module spec, or `clarify` for the next selected module; do not invoke either.
+- **After clarify**: Use the Hand off rules above to recommend the next skill; do not invoke it.
 - **During clarify**: Focus on understanding and specification. Do not start implementation.
 
 Research and spike validation are embedded in Phase 1 as optional steps, not separate skills.
@@ -344,6 +346,6 @@ Research and spike validation are embedded in Phase 1 as optional steps, not sep
 - `./references/glossary-format.md` - GLOSSARY.md format
 - `./references/adr-format.md` - ADR template and when to create
 - `./references/elicitation.md` - Advanced questioning for high-risk specs
-- `./references/stable-ids.md` - REQ-N ID format for requirements
+- `./references/stable-ids.md` - Read before drafting Acceptance and check before saving; owns ID assignment and revision rules
 - `./references/git-commit.md` - Commit message conventions
 - `./references/subagent-dispatch.md` - When and how to dispatch subagents for large codebases

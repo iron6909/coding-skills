@@ -35,7 +35,7 @@ Find the approved spec before planning.
 - Read the approved spec in full. The default path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
 - When `ui-spec.md` sits beside the spec, read it too. It carries interface decisions the spec leaves open — layout per breakpoint, component states, interaction flows — and tasks that skip it will reinvent those decisions one component at a time. Fold them into the relevant tasks rather than making a task per screen.
 - Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
-- If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification.
+- If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification. If necessary layout, state, or interaction decisions are missing, recommend `ui-design` and stop rather than inventing them in tasks. A settled frontend change does not require `ui-spec.md` merely because it has UI.
 
 The spec is the authority. Do not add new product decisions silently. Record a needed change in the spec first, then plan from the updated spec.
 
@@ -184,7 +184,7 @@ Each brief contains only what that task needs:
 - <interface or value>
 ```
 
-Briefs let execute read task context without loading the full plan. Each brief explicitly lists the REQ-N IDs it covers, linking the task back to the spec's acceptance conditions (see `./references/stable-ids.md`).
+Briefs let execute read task context without loading the full plan. Read `./references/stable-ids.md` before mapping coverage and use its checks before saving. Carry the spec's existing IDs into each brief; do not renumber them or assign requirement IDs to testing instructions.
 
 ## Plan format (Full tier only)
 

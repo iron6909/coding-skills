@@ -38,7 +38,7 @@ Read existing code, constraints, and patterns to understand the context.
 
 **For large codebases**: Dispatch read-only subagents to scan relevant modules and return findings. See `./references/subagent-dispatch.md` for when and how.
 
-**For external research**: Search the web for best practices, case studies, library comparisons. Focus on gathering evidence, not making decisions yet.
+**For external research**: Search the web for best practices, case studies, and library comparisons when available. If search is unavailable, continue with local and user-supplied material. Mark external maturity, compatibility, and similar claims as unverified where evidence is missing; carry those gaps into the options and recommendation. Do not add a search dependency or imply external validation.
 
 **Grounding output**: Brief summary (1 paragraph) of:
 - What exists today
@@ -71,7 +71,7 @@ Generate 5-8 technical approaches through exploration and analysis.
 
 **Evidence gathering**:
 - Read code to understand feasibility
-- Search web for external evidence (library maturity, case studies)
+- Search the web for external evidence when available (library maturity, case studies)
 - Check existing learnings for related patterns
 
 Do not validate each approach with throwaway code yet - that's Phase 2.
@@ -90,7 +90,7 @@ Compress to 2-3 approaches. Stress-test each one.
 
 **Deeper investigation**:
 - Read more specific code if needed
-- Search for negative experiences with this approach
+- Search for negative experiences with this approach when available
 - Check compatibility with existing constraints
 
 **Discard weaker options**:
@@ -109,7 +109,7 @@ Compress to 2-3 approaches. Stress-test each one.
 
 ### Phase 3: Output
 
-Save to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`:
+Save to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
 
 ```markdown
 # Ideation: [Topic]
@@ -163,9 +163,7 @@ Save to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`:
 
 ---
 
-### Option 3: [Name]
-
-[Same structure]
+[Add another option block only if a third approach survived]
 
 ---
 
@@ -175,7 +173,7 @@ Save to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`:
 
 1. **Option X** - Best fit because [reasoning: considers complexity, fit, risk]
 2. **Option Y** - Viable alternative if [condition when this becomes better]
-3. **Option Z** - Avoid because [clear reason]
+[Rank a third survivor only when one exists]
 
 ## Trade-offs
 
@@ -192,11 +190,11 @@ User selects one option → route to `clarify` for detailed specification.
 
 Present the saved ideation to user:
 
-"I've generated 3 technical approaches for [topic]:
+"I recommend [N] surviving technical approaches for [topic]:
 
 1. **[Option 1 name]**: [One sentence]. Best fit because [short reason].
 2. **[Option 2 name]**: [One sentence]. Alternative if [condition].
-3. **[Option 3 name]**: [One sentence]. [Why to avoid OR when viable].
+[Repeat only for the actual survivors.]
 
 Full analysis saved to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`.
 
@@ -204,9 +202,7 @@ Full analysis saved to `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md`.
 
 Wait for user to select. Do not automatically invoke `clarify`.
 
-After user selects, tell them: "Great choice. I'll now create a detailed spec for [selected option]. Routing to `clarify`..."
-
-Then invoke `clarify`, passing the selected approach as context.
+After selection, append the chosen approach and the user's reason to the saved ideation. Give its path and recommend a separate `clarify` invocation using that choice as context. Stop here; do not create a spec or invoke another skill.
 
 ---
 
@@ -223,7 +219,7 @@ Then invoke `clarify`, passing the selected approach as context.
 ## Integration with other skills
 
 - **Before ideate**: If problem is unclear, use `clarify` Phase 0 (product understanding) first
-- **After ideate**: User selects option → route to `clarify` for specification
+- **After ideate**: Record the selection and recommend `clarify` for specification; do not invoke it
 - **Parallel to ideate**: User may investigate topics independently, then reference findings in ideation
 
 ---
