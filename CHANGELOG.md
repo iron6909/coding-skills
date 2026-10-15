@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-15
+
+### Breaking Changes
+
+- **[autoflow] 自动化收敛为三个阶段**
+  - 仅从已批准的 spec 执行 `plan` → `execute` → `code-review`；需求澄清和 UI 决策须事先完成，计划与限定范围的修复权限仍需批准
+  - 不再自动推断或批准需求，也不负责合并、推送或部署
+- **[autoflow] 配置与恢复约定调整**
+  - 移除 TOML 配置及伪参数约定，统一四种调用模式与三阶段状态结构
+  - 旧状态保留但不自动迁移，也不能作为执行授权；恢复前须核验规格、计划、分支、提交与审批证据
+
+### Fixed
+
+- **文档保留与学习归档**：清理、回退和丢弃分支时保留文档；learning 仅在满足生命周期门槛后移入 `docs/learnings/_archived/`，不删除或覆盖归档副本
+- **learning 文档一致性**：统一 `capture`、`learning-refresh` 及消费方的格式、激活范围、晋升与归档条件，并保留旧格式的兼容处理
+- **评审基准与提交边界**：固定功能分支的评审基准，修正任务评审范围与宽泛暂存指令，避免漏审或提交无关改动
+- **[debug] 验证要求冲突**：缺少可行测试入口时允许说明理由并使用可复现的替代检查，完成条件与报告不再将其误称为自动回归测试
+- **[optimize] 迭代与停止条件**：保留可调整的收益和预算阈值，达到目标即停止；逐个提交有效变体，不再自行合并或删除分支
+- **[simplify] SQL 抽象示例**：移除动态拼接表名的通用查询示例，保留固定标识符、参数绑定与领域边界
+
+### Changed
+
+- 统一 task/step、审查维度、输出路径和交接章节，清理失效路由、重复描述及模板残留；共享规则仅维护源文件并同步到消费技能
+
 ## [1.3.3] - 2026-10-14
 
 ### Fixed
@@ -161,7 +185,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v1.3.3...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/iron6909/coding-skills/compare/v1.3.3...v2.0.0
 [1.3.3]: https://github.com/iron6909/coding-skills/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/iron6909/coding-skills/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/iron6909/coding-skills/compare/v1.3.0...v1.3.1
