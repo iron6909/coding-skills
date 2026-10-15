@@ -34,7 +34,7 @@ npx skills@latest add iron6909/coding-skills
 
 `guide` 把请求路由到合适的技能;通常每个技能产出文档或代码后停下,等你确认再进入下一步:
 
-1. `clarify` 澄清需求,批准后保存并提交 `spec.md`;涉及界面时先用 `ui-design` 确定设计规格
+1. `clarify` 澄清需求，批准后保存并提交 `spec.md`；仍有界面决策时推荐 `ui-design`，否则可进入 `plan`
 2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
 3. `execute` 按 TDD 逐个任务实现、评审、提交
 4. `code-review` 独立审查整体改动,报告后由你决定修复或集成
@@ -49,7 +49,7 @@ graph TD
     B --> C{类型?}
     C -->|首次使用| D[survey]
     C -->|需求不明| E[clarify]
-    C -->|已有 spec| F[plan]
+    C -->|spec 已批准且设计已定| F[plan]
     C -->|已有计划| G[execute]
     C -->|故障| H[debug]
     C -->|审查他人改动| I[code-review]
@@ -63,7 +63,7 @@ graph TD
     T --> J
 
     D --> E
-    E -->|涉及前端界面| R[ui-design]
+    E -->|界面决策未定| R[ui-design]
     E -->|否则| F
     R --> F
     F --> G
@@ -94,7 +94,7 @@ graph TD
 | **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
 | **ideate** | 不确定如何实现,需对比技术方案 | `.cartoons/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
 | **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
-| **ui-design** | spec 涉及前端界面,需设计规格 | DESIGN.md + ui-spec.md | 建立设计系统、线框图、组件状态、交互流程 |
+| **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
 | **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
 | **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | RED→GREEN→REFACTOR 循环;传 `auto` 则单次批准跑完所有任务 |
 | **ui-review** | 审查已实现的前端界面 | `.cartoons/ui-review/YYYYMMDD-HHMM.md` | 5 维度:一致性/可用性/可访问性/响应式/性能 |
@@ -163,6 +163,8 @@ graph TD
 └── AGENTS.md                            # 项目事实
 ```
 
+`ui-review` 的默认报告名与 `optimize` 的默认实验目录遇到同名项时，依次加 `-2`、`-3` 等后缀，不覆盖旧报告。`optimize` 为整次新实验选一个目录，baseline、变体、summary、链接和提交说明都沿用实际路径。
+
 ### 三层结构
 
 1. **spec** — 问题/目标/范围/方案/约束/验收条件/测试入口
@@ -207,7 +209,8 @@ graph TD
 | autoflow | 编排 plan、execute、code-review 各自的提交；spec 是已批准的输入,状态/briefs/报告不提交 |
 | commit | 你指定的临时改动（不 push） |
 | code-review | 报告不提交；经你授权的修复单独提交,不包含被审查的原始改动 |
-| ui-review、refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
+| ui-review | 报告不提交；授权修复先验证再单独提交，不包含被审查的原改动。必要验证不可用时须明确接受边界，仍标为未验证 |
+| refactor、handoff、ideate | 不提交；报告与临时文件留在 `.cartoons/` |
 
 ## 何时用什么
 
@@ -246,7 +249,7 @@ graph TD
   → refactor (改进候选)
 
 改动完成
-  → execute 读取 finish 参考,由你决定保留分支或本地合并
+  → execute 读取 finish 参考，报告保留分支或由你另行执行本地合并的选项；技能不 merge、push 或发布
     → 仅明确要求丢弃时移除分支,文档仍保留
 
 改动结束后,想留下推理过程
@@ -282,7 +285,7 @@ learnings 与代码库漂移
 → 保存并提交 plan.md,task briefs 写入 .cartoons/features/20250120-avatar-upload/impl/(不提交),停下
 → 用户确认后调用 execute
 → 依次完成 3 个 task,每个 TDD + 内置任务评审 + commit
-→ 完成,报告证据,由你决定保留分支还是本地合并
+→ 完成，报告证据；你可保留分支或另行执行本地合并，技能不代办
 ```
 
 ### 场景 2: Bug 修复

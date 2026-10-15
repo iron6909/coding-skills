@@ -62,6 +62,17 @@ Portfolios, galleries, showcases, creative projects.
 
 **Visual approach**: Bold, personalized, interactive, intentional.
 
+## Existing systems and open choices
+
+Treat approved DESIGN.md tokens as the consistency contract. When the file is absent, infer stable colors, type, spacing, and components from the code before proposing anything new. A project-specific scale is not wrong because it differs from a familiar one. Accessibility remains an independent floor; a brand choice cannot waive a real failure.
+
+Judge typography by role and mode:
+- An open Persuade or Experience direction needs a product-specific premise and intentional display hierarchy. Merely swapping one fashionable font for another is not a design strategy.
+- Operate and Read can use system stacks or familiar, legible body and UI faces. Familiarity alone is not a defect.
+- Keep approved brand type and explicit user choices. A warning about anonymous display type is not a ban on the same family in body text or controls.
+
+Choose a clear color strategy. Warm or cool neutrals can create cohesion, while pure gray, black, and white can be deliberate. Check contrast independently rather than treating hue as proof of quality.
+
 ## Visual Hierarchy: The Foundation
 
 Visual hierarchy makes interfaces understandable. It answers: "What should I look at? In what order?"
@@ -141,22 +152,22 @@ Users on mobile have:
    - Tablet: add more density
    - Desktop: add depth and micro-interactions
 
-3. **Breakpoints (not responsive)**
-   - Mobile: 320px to 767px
-   - Tablet: 768px to 1023px
-   - Desktop: 1024px and up
+3. **Choose breakpoints from content and project support**
+   - Reuse the existing system where it works
+   - Check intermediate widths and content extremes
+   - Do not equate viewport width with input capability
 
 ### Touch vs Pointer
 
-**Mobile (touch):**
-- No hover state (fingers can't linger)
-- Large targets (≥44×44px)
+**Coarse pointer / touch (on any device):**
+- Do not rely on hover
+- Aim for effective 44×44 CSS px touch areas; see the WCAG checklist for the design-goal and conformance distinction
 - Larger spacing between targets
 - Obvious affordance (looks clickable without hover)
 
-**Desktop (mouse):**
-- Hover reveals state
-- Can be smaller (≥32px ok)
+**Fine pointer (on any device):**
+- Hover can enhance state where supported
+- Assess target size and spacing for the supported inputs, not the desktop label
 - Tighter spacing possible
 - Hover and focus states important
 
@@ -209,7 +220,7 @@ Accessibility isn't a feature. It's how you build.
 
 ### Core Accessibility Requirements (WCAG AA)
 
-See [wcag-checklist.md](wcag-checklist.md) for the full list. Core principles:
+Read `./references/wcag-checklist.md` for thresholds and applicable criteria. Core principles:
 
 1. **Perceivable**: Information is usable by all senses
 2. **Operable**: Every function works with keyboard
@@ -219,7 +230,7 @@ See [wcag-checklist.md](wcag-checklist.md) for the full list. Core principles:
 ### Color
 
 - Never use color alone to convey meaning
-- All text ≥4.5:1 contrast on background (WCAG AA)
+- Meet the WCAG checklist's contrast threshold for the actual text size and weight
 - Never assume specific color perception
 - Consider colorblindness (8% of men, 0.5% of women)
 
@@ -252,12 +263,12 @@ Benefits:
 
 ### States
 
-Every interactive element must clearly indicate:
+Every interactive element must clearly indicate its applicable states; native states count:
 - **Default**: Normal state
-- **Hover**: (Desktop only) Mouse over
+- **Hover**: Where the input supports hover
 - **Focus**: (All) Keyboard focus - always visible
 - **Active**: (All) Being clicked/pressed
-- **Disabled**: (All) Non-interactive
+- **Disabled**: When the control can be unavailable
 
 Avoid:
 - ❌ Color alone for state
@@ -268,14 +279,14 @@ Avoid:
 ## Anti-Patterns (What to Avoid)
 
 ### Color
-- ❌ Gray text on colored background (poor contrast)
-- ❌ Pure gray (feels dead, no life) - always tint it
+- ❌ Text/background pairs with unverified contrast
+- ❌ Neutrals chosen without a coherent palette strategy; tinting is one option, not a universal requirement
 - ❌ Too many colors (confusing, no hierarchy)
 - ❌ Semantic colors wrong (red for success, green for error)
 
 ### Typography
-- ❌ Overused fonts (Inter, Roboto everywhere)
-- ❌ Banned fonts (Papyrus, Comic Sans, Impact)
+- ❌ Anonymous display typography in an open expressive brief; apply the role and mode guidance above
+- ❌ Novelty type that conflicts with the approved purpose, rather than a family banned by name
 - ❌ Inconsistent sizing (makes layout feel random)
 - ❌ Tracking/letterspacing on lowercase (unreadable)
 - ❌ Line-height too tight (hard to read)
@@ -290,13 +301,13 @@ Avoid:
 ### Interaction
 - ❌ No feedback (did that work?)
 - ❌ Disabled state unclear (why can't I click?)
-- ❌ Bounce/elastic animation (feels dated)
+- ❌ Gratuitous bounce in task UI; expressive motion needs a purpose and a usable reduced-motion alternative
 - ❌ Loading state missing (am I stuck?)
 - ❌ No error recovery (what do I do now?)
 
 ### Mobile
-- ❌ Touch targets < 44×44px (frustrating to tap)
-- ❌ Horizontal scroll (not expected)
+- ❌ Touch hit areas that are hard to acquire; assess the design goal and actual input
+- ❌ Accidental page overflow; intentional usable table or code scrolling is different
 - ❌ Hover-only affordance (no cursor on mobile)
 - ❌ Requires zoom to read (bad experience)
 - ❌ Autoplay video/sound (unexpected)
@@ -307,8 +318,8 @@ DESIGN.md is not set in stone. But:
 
 - **Don't change lightly** - consistency matters
 - **Add systematically** - new colors/sizes/shadows should follow pattern
-- **Document changes** - why did we add this?
-- **Update across project** - if DESIGN.md changed, propagate it
+- **Propose changes first** - explain why and obtain approval, especially when an existing decision conflicts
+- **Keep this skill scoped** - create DESIGN.md only when absent; changes to an existing system and implementation propagation are separate approved work
 
 ### When to Add a New Token
 
@@ -317,19 +328,19 @@ You have a new color / size / shadow that:
 2. Fits the pattern (extends scale, not random)
 3. Serves clear purpose (what's the story?)
 
-If all three are true, add it to DESIGN.md.
+If all three are true, propose it in the conversation. Approval comes before saving; follow SKILL.md's boundary for a new versus existing DESIGN.md.
 
 ## Decision Checklist
 
 Before finalizing ui-spec.md, verify:
 
-- [ ] Mode is clear (Persuade / Operate / Read / Experience)
+- [ ] Each surface has a clear mode (Persuade / Operate / Read / Experience)
 - [ ] Visual hierarchy obvious (what's most important?)
-- [ ] All states defined (default, hover, focus, active, disabled)
+- [ ] Applicable states are defined, including native feedback
 - [ ] Responsive behavior described
-- [ ] Color contrast ≥4.5:1
-- [ ] Touch targets ≥44×44px
+- [ ] Contrast meets the WCAG checklist at the specified sizes and weights
+- [ ] Touch areas meet the 44px design goal or have an assessed, documented exception
 - [ ] Keyboard navigation possible
 - [ ] Error/loading/empty states handled
 - [ ] Follows DESIGN.md patterns (no new ad-hoc colors/spacing)
-- [ ] No anti-patterns present
+- [ ] Applicable anti-patterns are addressed without overriding the approved brief or actual behavior

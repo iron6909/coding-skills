@@ -23,8 +23,8 @@ Core accessibility requirements based on WCAG 2.1 Level AA. This is the practica
 ### 1.1 Color Contrast (WCAG 1.4.3)
 
 **Text contrast ratios:**
-- Normal text (< 18px): **≥4.5:1** against background
-- Large text (≥18px or ≥14px bold): **≥3:1** against background
+- Normal text: **≥4.5:1** against background
+- Large text (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px): **≥3:1** against background
 - UI components and graphics: **≥3:1** against adjacent colors
 
 **How to check:**
@@ -39,8 +39,10 @@ Core accessibility requirements based on WCAG 2.1 Level AA. This is the practica
 
 **Pass examples:**
 - ✅ Black (#000) on white (#FFF): 21:1
-- ✅ Dark gray (#4A5568) on white: 8.6:1
-- ✅ Primary blue (#3B82F6) on white: 4.5:1
+- ✅ Dark gray (#4A5568) on white: about 7.526:1
+- ✅ Dark blue (#1D4ED8) on white: about 6.702:1
+
+`#3B82F6` on white is about 3.678:1: it passes for qualifying large text, not normal text.
 
 ### 1.2 Color Not Sole Indicator (WCAG 1.4.1)
 
@@ -89,7 +91,7 @@ All non-text content must have text alternative.
 **Rules:**
 - Informative images: describe what matters
 - Decorative images: `alt=""`
-- Icon buttons: `aria-label` describes action
+- Icon buttons: have an effective accessible name describing the action; `aria-label`, `aria-labelledby`, or visually hidden text are possible methods
 - Icons with text: `aria-hidden="true"` on icon
 
 ### 1.4 Adaptable Content (WCAG 1.3.1)
@@ -133,20 +135,22 @@ All functionality must work via keyboard.
 **Tab navigation:**
 - Tab: move to next focusable element
 - Shift+Tab: move to previous
-- Enter/Space: activate buttons/links
-- Arrow keys: within composite widgets (menus, tabs)
-- Esc: close dialogs/menus
+- Native buttons: Enter or Space activates
+- Native links: Enter activates; Space normally scrolls, not activates
+- Custom controls: support the keyboard behavior for their role
+- Arrow keys: navigate within composite widgets where their role requires it
+- Dialogs/menus: provide the expected dismissal keys and a working keyboard exit
 
 **Checklist:**
-- [ ] Can reach all interactive elements via Tab
-- [ ] Tab order is logical (top-to-bottom, left-to-right)
-- [ ] Can activate all buttons/links with Enter or Space
-- [ ] Can escape from modal dialogs with Esc
-- [ ] No keyboard trap (can always move focus away)
+- [ ] All functionality is reachable with Tab and role-appropriate keys within composite widgets
+- [ ] Focus order follows the reading and task order, including RTL
+- [ ] Buttons, links, and custom controls activate according to their native or declared role
+- [ ] Dialogs can be closed by keyboard and return focus appropriately
+- [ ] No keyboard trap; an intentional modal focus loop has a working keyboard exit
 
 **Common failures:**
-- ❌ `<div onclick>` instead of `<button>` (not focusable)
-- ❌ Custom dropdown without arrow key support
+- ❌ Click handlers on elements without usable semantics, focus, or activation keys
+- ❌ Custom controls missing the keyboard behavior their role requires
 - ❌ Modal that traps focus permanently
 - ❌ Hover-only tooltips (no keyboard access)
 
@@ -155,9 +159,9 @@ All functionality must work via keyboard.
 Keyboard focus indicator must be visible.
 
 **Rules:**
-- Focus indicator must be **obvious** (not subtle)
-- Don't remove outline without replacement
-- Minimum 2px solid or 3px contrast boundary
+- Keyboard focus has a clearly visible native or authored indicator
+- Do not remove a native indicator without a visible replacement
+- WCAG 2.1 SC 2.4.7 has no universal 2px outline minimum; evaluate actual visibility
 
 **Bad:**
 ```css
@@ -167,9 +171,9 @@ Keyboard focus indicator must be visible.
 }
 ```
 
-**Good:**
+**Optional custom example, not an AA size requirement:**
 ```css
-/* Modern focus-visible (only for keyboard) */
+/* A 2px outline is one design choice; visible native focus also counts. */
 button:focus-visible {
   outline: 2px solid #3B82F6;
   outline-offset: 2px;
@@ -178,7 +182,7 @@ button:focus-visible {
 
 ### 2.3 Touch Target Size (WCAG 2.5.5, Level AAA, but adopt it)
 
-Target size: **≥44×44 CSS pixels** (WCAG 2.5.5 is AAA but critical for mobile).
+Target size: **≥44×44 CSS pixels** as this skill's touch design goal. WCAG 2.5.5 is AAA, not an AA requirement; assess the effective hit area, applicable exceptions, and the approved project requirements before grading a smaller target. This checklist does not switch to WCAG 2.2's target-size criteria.
 
 **Why:**
 - Average adult finger pad: 10mm (≈38px)
@@ -403,24 +407,23 @@ Use this before finalizing specifications:
 ### Keyboard
 - [ ] All functionality accessible via keyboard
 - [ ] Tab order logical
-- [ ] Focus indicator always visible (≥2px outline)
+- [ ] Keyboard focus has a visible native or authored indicator
 - [ ] No keyboard trap
 
 ### Touch
-- [ ] All targets ≥44×44px on mobile
+- [ ] Effective touch areas meet the 44×44 CSS px design goal or have an assessed, documented exception
 - [ ] Adequate spacing between targets
 
 ### Labels & Text
 - [ ] Every input has visible label
 - [ ] Error messages descriptive and actionable
 - [ ] Alt text for all informative images
-- [ ] Icon-only buttons have aria-label
+- [ ] Icon-only buttons have an effective accessible name
 
 ### Semantic HTML
-- [ ] Buttons are `<button>`, not `<div onclick>`
-- [ ] Links are `<a href>`, not styled `<span>`
+- [ ] Actions and navigation have correct semantics and keyboard behavior; prefer native buttons and links
 - [ ] Headings used for structure
-- [ ] Forms use `<form>`, `<label>`, `<fieldset>`
+- [ ] Forms have appropriate labels, grouping, and relationships; use native elements where suitable
 
 ### States
 - [ ] All interactive elements have focus state

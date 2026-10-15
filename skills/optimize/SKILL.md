@@ -51,7 +51,7 @@ go tool pprof cpu.prof
 - Are there obvious inefficiencies? (N+1 queries, unnecessary allocations, blocking calls)
 
 **Document baseline**:
-Create `.cartoons/optimize/YYYYMMDD-HHMM/baseline.md`:
+Choose the unused run directory described under Output before writing the first report. Create `<run-dir>/baseline.md`:
 ```markdown
 # Optimization: [Feature/Component]
 
@@ -122,7 +122,7 @@ One variant at a time.
 2. Implement the variant
 3. Run tests (ensure correctness)
 4. Measure performance with same harness as baseline
-5. Document results in `.cartoons/optimize/YYYYMMDD-HHMM/variant-N.md`
+5. Document results in `<run-dir>/variant-N.md`, using the directory selected for the baseline
 
 **Variant results template**:
 ```markdown
@@ -162,7 +162,7 @@ One variant at a time.
 - **Revert** if correctness fails, cost is unacceptable, or the gain does not meet those criteria
 - **Iterate** if promising but needs refinement
 
-For keeps: commit only the verified variant's code on the current branch, following `./references/git-commit.md`.
+For keeps: commit only the verified variant's code on the current branch, following `./references/git-commit.md`. Include the actual run directory in the commit body.
 For reverts: record why and undo only this variant's code changes. Preserve existing user changes and every experiment report. If the changes cannot be separated safely, stop and ask. Do not delete a branch or merge without the user's decision.
 
 ### Phase 4: Stopping Criteria
@@ -174,7 +174,7 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 3. **Budget exhausted**: Time/effort limit reached
 4. **Diminishing returns**: Further optimization requires disproportionate effort
 
-**Final report** in `.cartoons/optimize/YYYYMMDD-HHMM/summary.md`:
+**Final report** in `<run-dir>/summary.md`, in the same selected directory:
 ```markdown
 # Optimization Summary: [Feature/Component]
 
@@ -225,13 +225,14 @@ Optimizations applied:
 
 Measurement methodology: [how you measured]
 Target: [target] - [met/not met]
+Experiment: [actual run directory]
 ```
 
 Reference `./references/git-commit.md` for commit conventions.
 
 ## Output
 
-- **Location**: `.cartoons/optimize/YYYYMMDD-HHMM/`
+- **Run directory**: default `.cartoons/optimize/YYYYMMDD-HHMM/`. If it exists, use the next unused `-2`, `-3`, or later suffix for the entire new run, even if one expected report is absent. Never overwrite an earlier run. Keep that actual directory for all reports, links, summaries, and commit messages.
   - `baseline.md`: initial profile and attribution
   - `variant-N.md`: each tested variant
   - `summary.md`: final results

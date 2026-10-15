@@ -1,13 +1,13 @@
 # UI Review Checklist
 
-40 essential checks across 5 dimensions for reviewing implemented frontend UI. Use this as the audit framework during Phase 2 of ui-review.
+Checks across five dimensions for reviewing implemented frontend UI. Use this as the audit framework during Phase 2 of ui-review.
 
 ---
 
 ## How to Use This Checklist
 
 For each check:
-1. **Verify** if it passes or fails
+1. **Verify** with source, rendered, or interaction evidence; record unavailable checks as not checked, not passed
 2. **If fails**: Create a finding with:
    - Severity: HIGH / MEDIUM / POLISH
    - File and line number
@@ -15,19 +15,30 @@ For each check:
    - Expected behavior
    - Impact
    - Fix (code diff or instructions)
+   - Evidence and verification status; page, viewport, and state when relevant
 
 **Severity guidelines:**
-- **HIGH**: Blocks shipping (accessibility violations, broken functionality, major usability issues)
-- **MEDIUM**: Should fix soon (inconsistency, missing states, minor usability issues)
-- **POLISH**: Nice to have (performance optimizations, better UX, refinements)
+- **HIGH**: A confirmed applicable AA failure, inaccessible core action, data loss, or another demonstrated shipping blocker.
+- **MEDIUM**: A meaningful inconsistency, missing feedback, or usability difficulty that does not block the core journey.
+- **POLISH**: An optional refinement with no material effect on the current journey.
+
+Item severities are defaults. Grade the demonstrated impact and approved requirements, not the dimension or detection confidence. A missing accessible name is not merely unclear wording; duplicate payment risk is not merely a missing spinner. Performance can block a core task, while an unmeasured concern is not a confirmed failure.
+
+## Context before judging
+
+Classify each surface: **Persuade** earns a decision or action; **Operate** supports a task; **Read** supports understanding; **Experience** lets the work lead. Apply aesthetics to that surface and role, not the product category. Open new visual directions still need product-specific choices, not interchangeable templates.
+
+Approved DESIGN.md tokens govern consistency. Without that file, infer the stable system from code and label the inference; do not invent a scale. Explicit brand choices and familiar task UI are not defects just because they are common. These choices never exempt an accessibility failure.
+
+Search matches require contextual verification. Use available browser inspection for rendered views and interactions; otherwise record the source-only limits. A viewport screenshot proves neither a touch gesture nor real-device performance.
 
 ---
 
-## Dimension 1: Design Consistency (8 checks)
+## Dimension 1: Design Consistency
 
 ### 1.1 Color Usage
-- [ ] **All colors use design tokens** (no hardcoded hex/rgb values)
-  - Grep for: `#[0-9a-fA-F]{6}` not in comments or not from `var(--` or `theme.`
+- [ ] **Colors follow the project's token system when one exists**
+  - Locate literals, then check definitions, generated/vendor code, and the approved palette before reporting drift
   - Severity: MEDIUM
   - Why: Breaks theming, inconsistent with design system
 
@@ -36,15 +47,14 @@ For each check:
   - Severity: MEDIUM
   - Why: Visual inconsistency, off-brand
 
-- [ ] **Semantic colors used correctly** (success=green, error=red, warning=yellow/orange)
+- [ ] **Semantic colors use consistent project and domain meanings**
   - Check button variants, alerts, badges
   - Severity: MEDIUM
   - Why: Breaks user expectations, confusing
 
-- [ ] **No gray text on colored backgrounds**
-  - Flag: `color: gray-*` inside elements with `background: primary-*`
-  - Severity: POLISH
-  - Why: Poor contrast, often fails WCAG
+- [ ] **Secondary text belongs to the palette and remains readable**
+  - Verify actual foreground/background contrast. Prefer a hue-related secondary tone when it serves the direction; neutral gray is not inherently wrong
+  - Severity: POLISH for color harmony; use Accessibility severity for a confirmed contrast failure
 
 ### 1.2 Typography
 - [ ] **Font families match DESIGN.md**
@@ -58,8 +68,8 @@ For each check:
   - Why: Inconsistent hierarchy
 
 ### 1.3 Spacing
-- [ ] **Spacing uses spacing scale** (4/8/12/16/24/32/48/64)
-  - Grep for: `margin:|padding:` with non-scale values
+- [ ] **Spacing follows the project's own scale, when defined**
+  - Compare computed margin, padding, and gap to that scale. Without one, judge repeated roles, grouping, and rhythm rather than a universal number list
   - Severity: POLISH
   - Why: Visually uneven, looks unintentional
 
@@ -70,7 +80,7 @@ For each check:
 
 ---
 
-## Dimension 2: Usability (10 checks)
+## Dimension 2: Usability
 
 ### 2.1 Interactive Elements
 - [ ] **All buttons have clear, action-oriented labels**
@@ -78,24 +88,24 @@ For each check:
   - Severity: MEDIUM
   - Why: Users don't know what will happen
 
-- [ ] **Touch targets ≥44×44px on mobile**
-  - Check button heights, icon button padding
-  - Severity: HIGH (mobile users can't tap)
+- [ ] **Touch targets meet the 44×44 CSS px design goal on mobile**
+  - Inspect effective hit area, padding, spacing, and approved requirements, not just icon dimensions. This goal comes from WCAG 2.5.5 AAA, not a universal 2.1 AA failure threshold
+  - Severity: MEDIUM by usability impact; HIGH if a core action is inaccessible or a shipping requirement fails
 
-- [ ] **Clickable elements have hover state** (desktop)
-  - Check: buttons, links, cards have `:hover` styles
+- [ ] **Pointer interaction has appropriate feedback**
+  - Check existing native or authored feedback where hover is available; do not require a custom rule or rely on hover for touch
   - Severity: POLISH
   - Why: No affordance, unclear if clickable
 
-- [ ] **Cursor changes to pointer on clickable elements**
-  - Check: `cursor: pointer` on interactive elements
+- [ ] **Interactive elements have recognizable affordances**
+  - Respect native control and platform cursor conventions; a missing custom pointer cursor alone is not a defect
   - Severity: POLISH
   - Why: No indication of interactivity
 
 ### 2.2 Forms
-- [ ] **Every input has visible label**
-  - Flag: inputs without associated `<label>` element
-  - Severity: HIGH (accessibility + usability)
+- [ ] **Inputs have persistent, understandable labels or instructions**
+  - Review the whole control, including native labeling and visible context; placeholder-only fields lose their cue after typing
+  - Severity: MEDIUM for unclear guidance; HIGH when the control lacks an accessible name or cannot be used
 
 - [ ] **Error messages are specific and actionable**
   - Flag: "Invalid input", "Error"
@@ -109,10 +119,9 @@ For each check:
   - Why: Users guess what's required
 
 ### 2.3 Feedback
-- [ ] **Loading states prevent double-clicks**
-  - Check: buttons disable during async operations
-  - Severity: HIGH
-  - Why: Double-submission, data corruption
+- [ ] **Async actions give feedback and prevent harmful duplicate submission**
+  - Verify submission guards or idempotent behavior, not just a spinner or disabled style
+  - Severity: HIGH for data loss or duplicate transactions; MEDIUM for missing feedback without that risk
 
 - [ ] **Empty states provide guidance**
   - Check: empty lists/grids have helpful message + CTA
@@ -126,19 +135,19 @@ For each check:
 
 ---
 
-## Dimension 3: Accessibility (12 checks)
+## Dimension 3: Accessibility
 
 ### 3.1 Color & Contrast
 - [ ] **Text contrast ≥4.5:1** (normal text)
-  - Note potential issues, recommend DevTools check
+  - Verify computed foreground/background pairs before claiming failure; otherwise record a suspected risk
   - Severity: HIGH (WCAG AA requirement)
 
-- [ ] **Large text contrast ≥3:1** (≥18px or ≥14px bold)
-  - Same as above
+- [ ] **Large text contrast ≥3:1** (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px)
+  - Smaller text uses the normal-text threshold
   - Severity: HIGH
 
 - [ ] **UI components contrast ≥3:1**
-  - Borders, icons, focus indicators against background
+  - Required visual boundaries, icons, and states against adjacent colors; check applicable exceptions rather than flagging decorative or disabled content
   - Severity: HIGH
 
 - [ ] **Color not used alone to convey information**
@@ -147,8 +156,8 @@ For each check:
   - Why: Colorblind users miss information
 
 ### 3.2 Semantic HTML
-- [ ] **Buttons are `<button>`, not `<div onclick>`**
-  - Grep: `onClick` on `<div>` or `<span>`
+- [ ] **Actions have appropriate semantics and keyboard behavior**
+  - Prefer native buttons. For custom controls, verify role, name, focusability, and keyboard behavior before declaring failure
   - Severity: HIGH
   - Why: Not keyboard accessible, screen reader can't identify
 
@@ -157,13 +166,13 @@ For each check:
   - Severity: HIGH
   - Why: Screen readers can't describe image
 
-- [ ] **Icon-only buttons have `aria-label`**
-  - Grep: `<button>` with icon but no text, missing `aria-label`
+- [ ] **Icon-only buttons have an effective accessible name**
+  - Verify the computed name from content, `aria-label`, `aria-labelledby`, or native labeling; absence of one specific attribute is not proof
   - Severity: HIGH
   - Why: Screen reader announces "button" without purpose
 
 - [ ] **Form inputs associated with labels**
-  - Check: `<label for="id">` matches `<input id="id">`
+  - Verify explicit or wrapping labels and other valid naming mechanisms in the full control, not a single-line grep
   - Severity: HIGH
   - Why: Screen readers can't announce label
 
@@ -174,122 +183,71 @@ For each check:
   - Why: Keyboard users can't use the feature
 
 - [ ] **Focus indicators visible**
-  - Check: `:focus` or `:focus-visible` styles exist and ≥2px outline
+  - Verify the rendered native or authored indicator. Missing custom focus CSS alone is not a failure; removing the native indicator without a visible replacement is
   - Severity: HIGH
   - Why: Keyboard users don't know where they are
 
-- [ ] **Tab order logical** (top-to-bottom, left-to-right)
-  - Check: no `tabindex` > 0 (messes up order)
+- [ ] **Tab order follows the reading and task order**
+  - Compare DOM, visual, and keyboard order, including RTL; investigate positive tabindex rather than assuming a physical left-to-right layout
   - Severity: MEDIUM
   - Why: Confusing navigation
 
 - [ ] **No keyboard trap**
-  - Modal dialogs: can press Esc to close
-  - Custom widgets: can Tab away
+  - Verify a working keyboard exit or close action and appropriate focus return. An intentional modal focus loop is not a trap when users can close it by keyboard
+  - Custom widgets do not prevent users from leaving by keyboard
   - Severity: HIGH
   - Why: Users stuck, can't continue
 
 ---
 
-## Dimension 4: Responsive Design (6 checks)
+## Dimension 4: Responsive Design
 
 ### 4.1 Layout
 - [ ] **Mobile layout makes sense** (not just stacked desktop)
-  - Check: @media queries actually change layout
+  - Inspect the resulting layout at supported widths; media queries, container queries, or fluid layout may all be valid
   - Severity: MEDIUM
   - Why: Poor mobile UX
 
-- [ ] **No horizontal scroll on any viewport**
-  - Check: fixed widths don't overflow
-  - Severity: HIGH
-  - Why: Content hidden, bad UX
+- [ ] **No accidental page-level horizontal overflow**
+  - Distinguish broken page layout from intentional, usable table or code scrolling within a region
+  - Severity: HIGH when content or a core action is inaccessible; otherwise grade the actual impact
 
 - [ ] **Breakpoints are reasonable**
-  - Mobile: ≤767px, Tablet: 768-1023px, Desktop: ≥1024px
+  - Use project-supported viewports and content-driven transitions; inspect intermediate widths instead of imposing fixed breakpoint numbers
   - Severity: POLISH
   - Why: Awkward in-between states
 
 ### 4.2 Content
-- [ ] **Text readable without zoom** (≥16px on mobile)
-  - Check: body text font-size on mobile
+- [ ] **Text remains legible on the supported viewport**
+  - 16 CSS px is a common body-text starting point, not a blanket conformance threshold; inspect the actual font and allow zoom
   - Severity: MEDIUM
   - Why: Users forced to pinch-zoom
 
-- [ ] **Images responsive** (srcset, sizes, or CSS contain)
-  - Check: `<img>` tags or CSS background handling
+- [ ] **Images fit their context and load appropriate resolution**
+  - Inspect sizing, cropping, and load cost; srcset, sizes, or CSS are possible methods, not mandatory syntax
   - Severity: POLISH
   - Why: Slow load, wasted bandwidth
 
 ### 4.3 Interaction
-- [ ] **Touch targets sized for mobile** (≥44×44px)
-  - Already in Usability, but double-check mobile specifically
-  - Severity: HIGH
-  - Why: Can't tap on mobile
+- [ ] **Primary touch gestures remain usable**
+  - Exercise relevant gestures when supported; report whether evidence came from a viewport, synthesized touch, or a physical device and what remains untested
+  - Severity: grade the affected task, not the test method
 
 ---
 
-## Dimension 5: Performance (4 checks)
+## Dimension 5: Performance
 
-### 5.1 CSS
-- [ ] **CSS nesting depth ≤3 levels**
-  - Grep: `& & & &` (4+ levels)
-  - Severity: POLISH
-  - Why: Selector specificity wars, slow rendering
+- [ ] **No demonstrated avoidable rendering or loading work**
+  - Inspect layout read/write loops, oversized assets, unnecessary rerenders, or measured style/layout cost. Selector names and nesting depth alone do not prove a slowdown
+  - Severity: grade the measured user impact; a blocked core task can be HIGH
 
-- [ ] **No universal selector in performance-critical paths**
-  - Grep: `* {` at root level
-  - Severity: POLISH
-  - Why: Applies to every element, slow
+- [ ] **Animations stay smooth on supported devices**
+  - Prefer inexpensive properties where appropriate. Measure layout, paint, and compositing rather than assuming transform/opacity guarantee GPU acceleration or banning every filter, mask, or shadow
+  - Severity: grade observed frame drops or task interference, not a fixed duration
 
-### 5.2 Animations
-- [ ] **Animations use GPU-accelerated properties** (transform, opacity)
-  - Grep: `transition: width|height|top|left`
-  - Severity: POLISH
-  - Why: Causes reflow, janky animation
-
-- [ ] **Smooth animations** (no jank)
-  - Check: 200-300ms duration, ease/ease-out curves
-  - Severity: POLISH
-  - Why: Feels sluggish or abrupt
-
----
-
-## Quick Severity Reference
-
-**When to mark HIGH:**
-- Accessibility violations (WCAG AA)
-- Broken functionality (can't click, double-submit)
-- Critical usability (can't read text, can't tap)
-- Keyboard trap or completely inaccessible
-
-**When to mark MEDIUM:**
-- Design inconsistency (off-brand, breaks system)
-- Missing states (loading, error, empty)
-- Unclear labels or error messages
-- Responsive issues on common viewports
-- Poor form UX (missing labels, unclear required)
-
-**When to mark POLISH:**
-- Performance optimizations
-- Better but not required UX improvements
-- Refinements to spacing/typography
-- Animation smoothness
-- Empty state could be friendlier
-
----
-
-## Checklist Summary Table
-
-| Dimension | Total Checks | Typical HIGH | Typical MEDIUM | Typical POLISH |
-|-----------|--------------|--------------|----------------|----------------|
-| Design Consistency | 8 | 0 | 4-6 | 2-4 |
-| Usability | 10 | 2-3 | 4-5 | 3-4 |
-| Accessibility | 12 | 8-10 | 1-2 | 1-2 |
-| Responsive | 6 | 1-2 | 2-3 | 1-2 |
-| Performance | 4 | 0 | 0 | 3-4 |
-| **Total** | **40** | **11-15** | **11-16** | **10-16** |
-
-Typical pass rate for first review: 60-75% (15-25 findings).
+- [ ] **Reduced-motion preferences keep the interface usable**
+  - Provide an intentional alternative that preserves state and useful feedback. Do not replace the check with a global near-zero-duration rule
+  - Severity: grade the accessibility or task impact
 
 ---
 

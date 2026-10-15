@@ -1,62 +1,53 @@
 # Common UI Mistakes
 
-20 anti-patterns extracted from hundreds of frontend reviews. These are the mistakes that appear repeatedly in AI-generated and human-written code.
+Context-dependent review patterns, not automatic failures. Use `./references/ui-review-checklist.md` for surface modes, evidence, and severity. Separate accessibility requirements, project consistency, and aesthetic guidance.
 
 ---
 
 ## Color Mistakes
 
-### 1. Pure Gray (No Tint)
+### 1. Unintentional Neutrals
 
-**Problem:**
+**Problem:** A new palette inherits defaults with no relationship to its intended mood or the existing system.
+
+**Fix:** Choose a deliberate neutral strategy. A subtle warm or cool tint often gives an expressive surface cohesion; pure gray, black, and white remain valid when the brand, content, or existing system calls for them. Do not report a neutral value alone as unfinished.
+
 ```css
-background: #808080;  /* Dead, lifeless gray */
-color: #666666;
+/* Optional directions, not contrast guarantees */
+.cool-surface { background: #7E8B99; }
+.warm-surface { background: #8B8680; }
 ```
 
-**Why it's bad:** Pure grays feel cold, digital, lifeless. Real surfaces reflect ambient light and have subtle color casts.
-
-**Fix:** Always tint grays toward warm (beige) or cool (blue).
-```css
-/* Cool gray (subtle blue tint) */
-background: #7E8B99;  /* Not pure gray */
-
-/* Warm gray (subtle brown tint) */
-background: #8B8680;
-```
-
-**How to create tinted grays:**
-- Start with pure gray (#808080)
-- Shift hue toward blue (cool) or orange/brown (warm)
-- Keep saturation low (5-15%)
+Measure foreground/background contrast separately.
 
 ---
 
-### 2. Gray Text on Colored Background
+### 2. Unverified Text Contrast
 
 **Problem:**
 ```css
 .badge {
-  background: #3B82F6;  /* Blue */
-  color: #6B7280;       /* Gray text */
+  background: #3B82F6;
+  color: #6B7280;
 }
 ```
 
-**Why it's bad:** Gray text on colored backgrounds usually fails contrast, looks muddy, and feels like a mistake.
+**Why it's bad:** The actual pair may fail contrast. Gray is not inherently wrong, and replacing it with white is not automatically safe: white on `#3B82F6` is about 3.678:1, below the normal-text requirement.
 
-**Fix:** Use white, black, or tinted version of the background color.
+**Fix:** Measure the pair. These alternatives pass normal-text contrast:
 ```css
 .badge {
-  background: #3B82F6;
-  color: #FFFFFF;  /* White - clean, high contrast */
+  background: #1D4ED8;
+  color: #FFFFFF;  /* about 6.702:1 */
 }
 
-/* Or tinted version */
-.badge {
-  background: #3B82F6;
-  color: #EBF5FF;  /* Very light blue - maintains color harmony */
+.badge-soft-text {
+  background: #1D4ED8;
+  color: #EBF5FF;  /* about 6.075:1 */
 }
 ```
+
+Among passing pairs, choose secondary tones that fit the palette; a hue-related tone can add cohesion.
 
 ---
 
@@ -66,13 +57,13 @@ background: #8B8680;
 
 **Why it's bad:** Visual chaos, no hierarchy, feels like a toy.
 
-**Fix:** Limit to:
+**Fix:** Start small when creating a new palette. One starter budget, not a universal cap:
 - 1 primary color
 - 0-1 secondary color (often not needed)
 - 4 semantic colors (success, warning, error, info)
 - 5-7 neutral shades (your tinted grays)
 
-**Total:** 10-13 colors maximum.
+Expand only for real roles such as data series or domain semantics. Do not reject an approved palette because it exceeds this starter budget.
 
 ---
 
@@ -96,23 +87,13 @@ background: #8B8680;
 
 ## Typography Mistakes
 
-### 5. Overused Fonts
+### 5. Anonymous Typography
 
-**Problem:**
-```css
-font-family: 'Inter', sans-serif;  /* Everyone uses this */
-font-family: 'Roboto', sans-serif;
-font-family: 'Open Sans', sans-serif;
-```
+**Problem:** An open, expressive design uses a familiar default headline without a product-specific reason.
 
-**Why it's bad:** Your site looks exactly like 10,000 others. No personality.
+**Fix:** Judge the surface and font role. Persuade or Experience work needs an intentional typographic voice; do not substitute another fashionable default and call it distinctive. Operate and Read often benefit from system stacks or familiar, legible body and UI faces.
 
-**Better choices:**
-- System fonts: `-apple-system, BlinkMacSystemFont, "Segoe UI"` (fast, free, accessible)
-- Less common: Work Sans, DM Sans, Plus Jakarta Sans, Manrope, Space Grotesk
-- Serif: Source Serif, Lora, Crimson Pro
-
-**Avoid completely:** Papyrus, Comic Sans, Impact, Lobster (banned).
+Preserve approved brand type, existing systems, and explicit user choices. A display-face warning is not a ban on the same family in body or controls. Assess hierarchy, fit, readability, and loading cost; do not use a font blacklist or replace it with a whitelist.
 
 ---
 
@@ -196,13 +177,13 @@ p {
 
 **Why it's bad:** Hard to scan, overwhelming, unprofessional.
 
-**Fix:** Use generous spacing:
+**Fix:** Use the project's scale and density. These are possible ranges for a spacious page, not prescriptions for a dense tool:
 - Between sections: 48px-96px
 - Between components: 24px-32px
 - Inside components (padding): 16px-24px
 - Between related items: 8px-16px
 
-**Rule of thumb:** When in doubt, add more space.
+**Rule of thumb:** Make grouping and rhythm clear; add or reduce space for the actual task and viewport.
 
 ---
 
@@ -215,9 +196,9 @@ p {
 .header { margin-bottom: 19px; }
 ```
 
-**Why it's bad:** Looks accidental, unintentional, sloppy.
+**Why it's bad:** Unrelated values for repeated roles can look accidental. Those numbers are not wrong if they belong to the project's scale.
 
-**Fix:** Stick to spacing scale (4, 8, 12, 16, 24, 32, 48, 64, 96).
+**Fix:** Follow the project's scale. For example, if its scale includes 16 and 24:
 ```css
 .card { margin-bottom: 16px; }
 .section { margin-bottom: 24px; }
@@ -237,12 +218,12 @@ p {
 
 **Why it's bad:** Weak visual flow, hard to scan (eye searches for line start), feels like a PowerPoint.
 
-**Fix:** Align left for body text and most content. Center sparingly:
+**Fix:** Prefer logical start alignment for continuous text and task content. Center deliberately for:
 - Hero sections
 - Empty states
 - Short headings
 
-Body text, forms, lists: always left-aligned.
+Follow the content's language and reading direction; do not force left alignment on RTL content.
 
 ---
 
@@ -262,7 +243,7 @@ button:active {
 }
 ```
 
-Every interactive element needs: default, hover, focus, active states.
+Verify usable default, focus, and activation feedback, plus hover where available. Native feedback counts; a missing custom pseudo-class is not proof of failure.
 
 ---
 
@@ -276,7 +257,7 @@ Every interactive element needs: default, hover, focus, active states.
 
 **Why it's bad:** User clicks again (double-submit), or thinks it's broken.
 
-**Fix:** Show loading state, disable button.
+**Fix:** Show progress and prevent harmful duplicate submission. Disabling during submission is one option; verify the actual guard or idempotent behavior rather than assuming a spinner protects data.
 ```jsx
 <button onClick={submitForm} disabled={isLoading}>
   {isLoading ? <Spinner /> : 'Submit'}
@@ -292,17 +273,17 @@ Every interactive element needs: default, hover, focus, active states.
 transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Bounce */
 ```
 
-**Why it's bad:** Feels dated (2015-2018 trend), distracting, over-the-top.
+**Why it's bad:** Gratuitous bounce distracts from task UI. Expressive motion can be appropriate for an Experience surface when intentional.
 
-**Fix:** Use simple easing.
+**Fix:** Default to restrained easing in task UI, animate only the properties needed, and preserve clear feedback for reduced-motion users.
 ```css
-transition: all 0.2s ease-out;  /* Smooth, subtle, modern */
+transition: transform 0.2s ease-out;  /* Example for a transform change */
 ```
 
 - `ease-out`: elements entering view
 - `ease-in`: elements leaving view
 - `ease` or `ease-in-out`: general purpose
-- Duration: 150-300ms
+- 150-300ms can be a starting point, not a performance or quality test; inspect the actual motion on supported devices
 
 ---
 
@@ -341,9 +322,9 @@ button {
 }
 ```
 
-**Why it's bad:** Frustrating to tap, miss-taps are common.
+**Why it's bad:** A genuinely small hit area can cause missed taps. Visual height alone does not establish the effective area.
 
-**Fix:** ≥44×44px on mobile.
+**Fix:** Aim for an effective 44×44 CSS px touch area. This is the WCAG 2.5.5 AAA design goal, not a blanket 2.1 AA failure threshold. Assess padding, spacing, exceptions, and project requirements; the breakpoint below is only an example.
 ```css
 button {
   height: 44px;
@@ -392,11 +373,11 @@ button:hover {
 
 ### 18. Horizontal Scroll
 
-**Problem:** Fixed-width content overflows on mobile.
+**Problem:** Unintended page-level overflow makes content or controls difficult to reach on mobile.
 
 **Why it's bad:** Content hidden, awkward to scroll sideways.
 
-**Fix:** Use responsive widths.
+**Fix:** Use responsive page widths. Preserve intentional, accessible scrolling inside a table or code region; do not flag all horizontal scrolling.
 ```css
 /* Bad */
 .container {
@@ -405,6 +386,7 @@ button:hover {
 
 /* Good */
 .container {
+  box-sizing: border-box;
   max-width: 1200px;
   width: 100%;
   padding: 0 16px;  /* Breathing room on edges */
@@ -470,77 +452,49 @@ button:hover {
 
 ## Quick Detection Patterns
 
-Use these grep/find patterns to catch mistakes:
+These searches locate candidates only. Verify the whole component, computed styles, mode, role, and existing system before reporting a finding.
 
 ```bash
-# Pure grays (mistake #1)
+# Palette candidates; neutral gray is allowed
 grep -rn "#808080\|#666666\|#999999\|#CCCCCC" src/ --include="*.css"
 
-# Overused fonts (mistake #5)
+# Familiar faces; inspect display/body/UI role and approved choices
 grep -rn "Inter\|Roboto\|Open Sans" src/ --include="*.css"
 
-# Tight line-height (mistake #6)
+# Dense leading; inspect font, content, and role
 grep -rn "line-height: 1\.[0-3]" src/ --include="*.css"
 
-# Card nesting (mistake #8)
-grep -rn "<Card" src/ | wc -l  # If >10 per file, probably nested
+# Card candidates; counts do not establish nesting
+grep -rn "<Card" src/
 
-# Small touch targets (mistake #16)
-grep -rn "height: [1-3][0-9]px" src/components/*Button* --include="*.css"
+# Small visual height; inspect the effective hit area
+grep -rn "height: [1-3][0-9]px" src/ --include="*.css"
 
-# Missing labels (mistake #19)
-grep -rn "<input" src/ --include="*.jsx" | grep -v "<label"
+# Inputs; inspect full labels and effective names, not a single-line exclusion
+grep -rn "<input" src/ --include="*.jsx"
 
-# Generic errors (mistake #20)
+# Generic errors; inspect surrounding guidance and recovery
 grep -rn "Invalid input\|Error occurred" src/ --include="*.jsx"
 ```
 
----
-
 ## Summary Checklist
 
-Before shipping, verify you avoided:
-
-**Color:**
-- [ ] No pure grays (always tinted)
-- [ ] No gray text on colored backgrounds
-- [ ] ≤13 colors total
-- [ ] Semantic colors used correctly
-
-**Typography:**
-- [ ] Not using Inter/Roboto/Open Sans
-- [ ] Line-height ≥1.5 on body text
-- [ ] No letterspacing on lowercase
-
-**Layout:**
-- [ ] No nested cards
-- [ ] Generous whitespace
-- [ ] Consistent spacing (from scale)
-- [ ] Not everything centered
-
-**Interaction:**
-- [ ] All interactive elements have :active state
-- [ ] Loading states on async actions
-- [ ] No bounce/elastic animations
-- [ ] Error states have recovery action
-
-**Mobile:**
-- [ ] Touch targets ≥44×44px
-- [ ] Affordance visible without hover
-- [ ] No horizontal scroll
-
-**Forms:**
-- [ ] Visible labels (not placeholder-only)
-- [ ] Specific, actionable error messages
+- [ ] Palette and neutral strategy fit the approved direction; measured contrast passes
+- [ ] Semantic colors have consistent meanings, with non-color cues where needed
+- [ ] Font roles suit each surface's mode, brand, and existing system
+- [ ] Body leading and tracking support the actual text, font, and script
+- [ ] Grouping, alignment, and spacing follow the project's scale and task density
+- [ ] Native or authored feedback makes activation, focus, progress, and recovery clear
+- [ ] Motion serves the task, remains smooth, and respects reduced-motion needs
+- [ ] Effective touch areas meet the design goal or have an assessed, documented exception
+- [ ] No accidental page overflow; intentional local scrolling remains usable
+- [ ] Form labels and actionable errors remain available while entering data
 
 ---
 
 ## Where these come from
 
-Every entry is a pattern that recurs across real frontend code, grouped by the
-kind of harm it does: color and type that read as unfinished, layout that is
-hard to scan, controls that give no feedback, and forms that cannot be
-completed. WCAG AA failures are the source of the rest.
+These prompts cover palette and typography choices, scanability, interaction feedback, and forms. Some checks enforce accessibility requirements; others are consistency rules or design heuristics. Keep those sources of authority distinct.
 
 The detection patterns in each section are starting points for a grep, not a
 complete audit. A pattern search finds a hardcoded color; it cannot tell

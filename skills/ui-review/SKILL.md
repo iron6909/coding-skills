@@ -18,17 +18,19 @@ Do not confuse this with `code-review`, which judges a diff against repo standar
 
 ## Output
 
-`.cartoons/ui-review/YYYYMMDD-HHMM.md`, holding every finding. Nothing is committed by default.
+`.cartoons/ui-review/YYYYMMDD-HHMM.md`, holding every finding. If that path exists, append `-2`, `-3`, or the next unused suffix; never overwrite a report. Use the selected path throughout the run. Nothing is committed by default.
 
-Each finding carries an ID, a severity, a file and line, the issue, the expected state, the impact on a real user, and the fix.
+Each finding carries an ID, a severity, a file and line, the issue, the expected state, the impact on a real user, the fix, and its evidence. Include the page, viewport, state, screenshot, or reproduction steps when applicable.
 
 Severity says what happens next:
 
-| Severity | Meaning | Examples |
-|----------|---------|----------|
-| **HIGH** | Blocks shipping | Accessibility violations, unusable controls, data-losing bugs |
-| **MEDIUM** | Fix this cycle | Off-system values, missing states, unclear labels |
-| **POLISH** | Optional | Performance, animation smoothness, friendlier copy |
+| Severity | Meaning |
+|----------|---------|
+| **HIGH** | Blocks shipping |
+| **MEDIUM** | Fix this cycle |
+| **POLISH** | Optional refinement |
+
+Use the impact criteria in `./references/ui-review-checklist.md`. Detection confidence and the dimension's name do not determine severity.
 
 ## Phase 0: Scope
 
@@ -41,6 +43,8 @@ Also settle two things: which dimensions to cover (all five, or one), and whethe
 Read `DESIGN.md` when it exists. It is the baseline for every consistency finding: a value that matches a documented token is not a finding, and a finding that departs from one names the token.
 
 When there is no `DESIGN.md`, the baseline is what the code most consistently does. Say so in the report, and do not report a one-off value as a violation of a system that does not exist.
+
+Identify each surface's visitor mode using `./references/ui-review-checklist.md` before applying aesthetic checks. Approved tokens do not exempt an accessibility failure.
 
 Then read enough of the code to know the framework and where styles live — component files, stylesheets, theme config.
 
@@ -58,13 +62,15 @@ The dimensions, and what a finding in each means:
 
 `./references/common-ui-mistakes.md` lists the patterns that recur across projects, with corrected code. Consult it when a finding needs a concrete replacement, and when deciding whether something is a mistake at all.
 
-Grep finds part of this. A pattern search locates hardcoded colors or missing labels; it cannot tell whether a layout makes sense on a phone. Read the code for the rest, and say in the report which findings were mechanical and which were judgment calls.
+Search matches are leads to verify in context, not findings by themselves. When browser inspection is available, inspect representative in-scope viewports, states, keyboard paths, and responsive behavior. Otherwise continue as a source-only review and list visual, interaction, and runtime-performance gaps under `Not checked`.
+
+Distinguish confirmed failures, suspected risks, and design judgments, with the evidence for each. A narrow viewport does not prove touch gestures; synthesized touch does not prove physical-device behavior. Use safe local or test states. Do not import cookies or install tools as a prerequisite for review. Do not access authenticated sites or trigger real transactions without explicit permission.
 
 One finding is one issue. When the same issue appears in ten places, that is one finding listing ten locations, not ten findings.
 
 ## Phase 3: Write the report
 
-Write `.cartoons/ui-review/YYYYMMDD-HHMM.md`:
+Write to the unused report path selected under Output:
 
 ```markdown
 # UI Review Report
@@ -72,6 +78,8 @@ Write `.cartoons/ui-review/YYYYMMDD-HHMM.md`:
 Date: YYYY-MM-DD HH:MM
 Scope: <what was reviewed>
 Baseline: DESIGN.md, or the inferred system, or none found
+Modes: <per surface>
+Evidence: <source, rendered views, interactions; limits>
 
 ## Summary
 counts per severity, and what was checked
@@ -80,7 +88,7 @@ counts per severity, and what was checked
 ## MEDIUM
 ## POLISH
 
-per finding: ID, severity, file:line, issue, expected, impact, fix
+per finding: ID, severity, file:line, issue, expected, impact, fix, evidence and verification status
 
 ## Not checked
 what the scope or the environment ruled out
@@ -96,12 +104,12 @@ Present the report and ask what to fix. Do not apply anything unasked.
 
 When the user approves fixes:
 
-1. Work in severity order, HIGH first.
-2. Commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the report path in the body. One finding per commit keeps a wrong fix revertable on its own.
-3. When a fix turns out to need a design decision rather than a code change, stop and ask instead of guessing.
-4. Re-run only the checks the change could affect.
+1. Resolve any open design decision with the user before changing code. Work in severity order, HIGH first, and make the smallest change that fixes each finding.
+2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.
+3. If necessary verification is unavailable, explain the gap. Commit with limited verification only if the user explicitly accepts that boundary; the report must still say unverified, not verified.
+4. After verification, commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the actual report path in the body. Stage only this finding's changes, excluding the original reviewed work and unrelated user changes. If unrelated changes are staged or cannot be separated safely, stop and ask; do not unstage or commit them. Do not push or commit the report.
 
-Report which findings were fixed and which remain.
+Report verified fixes, unverified changes, and remaining findings. Post-commit rechecks are welcome but do not replace the checks before committing.
 
 ## References
 
