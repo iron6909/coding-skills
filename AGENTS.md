@@ -89,7 +89,7 @@ grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
 grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
 ```
 
-When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual evaluation pack. Run each case in a fresh isolated local fixture with the complete core installed unless the case explicitly tests a missing target. Supply any stated follow-up or approval only at its gate. Save the actual agent trace, resulting diff, check output, and per-expectation pass/fail evidence under `tmp/`. The script validates case structure, not agent compliance; never report behavioral passes without those traces. Do not add an evaluation framework or make network access a prerequisite.
+When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual evaluation pack. Run each case in a fresh isolated local fixture with the README-defined core and the optional skills it exercises installed, except any explicitly absent route target. Supply any stated follow-up or approval only at its gate. Save the actual agent trace, resulting diff, check output, and per-expectation pass/fail evidence under `tmp/`. The script validates case structure, not agent compliance; never report behavioral passes without those traces. Do not add an evaluation framework or make network access a prerequisite.
 
 ## Conventions
 

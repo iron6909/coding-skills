@@ -14,13 +14,18 @@
 npx skills@latest add iron6909/coding-skills
 ```
 
-核心技能是一个完整体系：辅助技能 `commit`、`handoff` 可按需安装，其余技能必须全部安装，不能任意裁剪。安装器会将选中的技能目录复制到项目的 `.claude/skills/`。
+安装器会将选中的技能目录复制到项目的 `.claude/skills/`。按以下分类选择：
+
+- **核心技能（5 个，整体安装）**：`survey`、`clarify`、`plan`、`execute`、`code-review`。
+- **辅助技能（14 个，按需安装）**：`guide`、`ideate`、`ui-design`、`ui-review`、`debug`、`optimize`、`commit`、`autoflow`、`refactor`、`capture`、`learning-refresh`、`doc-review`、`simplify`、`handoff`。
+
+核心表示主流程基础能力，不要求每个任务依次调用全部五个。辅助按场景选择；例如必要界面决策尚未确定时，需选装 `ui-design` 或先明确并批准设计，不能直接跳过未决问题。
 
 本项目使用自己的规格、计划和任务追踪格式，不兼容其他规格系统。参考项目仅提供方法借鉴。
 
 ### 手动安装
 
-克隆此仓库，将 `skills/` 下的全部核心技能目录复制到项目的 `.claude/skills/`；`commit`、`handoff` 可选。不要只复制单个核心技能。
+克隆此仓库，将上述五个核心技能目录复制到项目的 `.claude/skills/`，再按需添加辅助技能。每个目录都须连同其自带的 references 一起复制。
 
 ## 快速开始
 
@@ -31,24 +36,25 @@ npx skills@latest add iron6909/coding-skills
 /survey
 
 # 2. 开始第一个功能
-/guide 让我们添加用户登录功能
+/clarify 让我们添加用户登录功能
 ```
 
-`guide` 把请求路由到合适的技能;通常每个技能产出文档或代码后停下,等你确认再进入下一步:
+若安装了可选的 `guide`，也可以执行 `/guide 让我们添加用户登录功能`，由它选择入口；直接调用核心技能不依赖 guide。通常每个技能产出文档或代码后停下，等你确认再进入下一步：
 
 1. `clarify` 澄清需求，批准后保存并提交 `spec.md`；仍有界面决策时推荐 `ui-design`，否则可进入 `plan`
 2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
 3. `execute` 按 TDD 持续实现全部已批准任务，每个任务轻量自查、单独提交，再运行最终测试与验收验证；不内置整体独立审查
 4. 需要整体独立审查时另行调用 `code-review`，报告后由你决定修复或集成
 
-已有批准的 spec 且需求、界面决策已确定时,可用 `autoflow` 自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务自查与提交，整体独立审查只在最后的 `code-review` 阶段执行一次。
+安装可选的 `autoflow` 后，已有批准的 spec 且需求、界面决策已确定时，可由它自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务自查与提交，整体独立审查只在最后的 `code-review` 阶段执行一次。
 
 ## 核心流程
 
 ```mermaid
 graph TD
-    A[用户请求] --> B[guide 路由]
-    B --> C{类型?}
+    A[用户请求] --> B[guide 路由（可选）]
+    A --> C{类型?}
+    B --> C
     C -->|首次使用| D[survey]
     C -->|需求不明| E[clarify]
     C -->|spec 已批准且设计已定| F[plan]
