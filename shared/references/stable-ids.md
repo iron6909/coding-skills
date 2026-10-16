@@ -1,304 +1,86 @@
 # Stable Requirement IDs (REQ-N)
 
-Stable requirement IDs enable traceability from spec through plan to code and tests. Each requirement gets a permanent, unique identifier that never changes.
+Use stable IDs to trace acceptance conditions from spec to tasks, tests, and commits.
 
-## Purpose
+## Assignment and scope
 
-- **Traceability**: answer "which requirement does this code implement?" and "which code implements this requirement?"
-- **Stability**: requirement IDs persist across spec revisions, plan updates, and code changes
-- **Communication**: unambiguous reference in commits, PRs, code comments, and discussions
+- Format: `REQ-N`, with positive integers starting at 1 within each spec, not a global counter.
+- Assign one ID to each observable acceptance condition, including testable performance, security, or data-integrity properties.
+- New specs have sequential IDs. Revisions append after the highest ID ever assigned, including retired IDs.
+- IDs are immutable: never renumber them, move them to another requirement, or reuse a retired ID.
+- Implementation choices, coding conventions, exclusions, and Testing Boundary entry points do not get requirement IDs. Put them in Decisions, Constraints, Out of scope, or Testing Boundary instead.
+- Make the condition testable before assigning its ID; an ID does not make “fast” or “intuitive” verifiable.
 
-## ID format
-
-`REQ-N` where N is a positive integer starting at 1.
-
-Examples: `REQ-1`, `REQ-2`, `REQ-10`, `REQ-42`
-
-## Assignment rules
-
-### 1. One ID per acceptance condition
-Each item under the spec's **Acceptance** section gets one ID.
-
-**Example spec fragment**:
 ```markdown
 ## Acceptance
 
-- REQ-1: User can upload an avatar image (PNG, JPG, or WEBP)
+- REQ-1: User can upload a PNG, JPG, or WEBP avatar
 - REQ-2: Uploaded image is resized to 128x128 pixels
-- REQ-3: Avatar displays in user profile and navigation bar
-- REQ-4: Upload fails with clear error if file exceeds 5MB
+- REQ-3: Avatar displays in the profile and navigation bar
+- REQ-4: Upload fails with a clear error if the file exceeds 5MB
 ```
 
-### 2. IDs are assigned once and never reused
-- First spec version assigns REQ-1, REQ-2, REQ-3
-- Spec revision adds REQ-4, REQ-5 (never renumber existing IDs)
-- If REQ-2 is later removed, REQ-2 is retired (never reassign it to a different requirement)
+## Task and commit references
 
-### 3. IDs are sequential within a spec
-Start at REQ-1 for each spec. Do not use a global counter across features.
-
-### 4. IDs are immutable
-Once assigned:
-- ID never changes (even if the requirement text is revised)
-- ID never moves to a different requirement
-- ID is never deleted from git history (even if the requirement is removed)
-
-## Scope boundaries
-
-### What gets an ID
-- Observable acceptance conditions (user-visible behavior)
-- Testable system properties (performance, security, compatibility)
-- Data integrity requirements (validation rules, constraints)
-
-### What doesn't get an ID
-- Implementation details (which library to use, file structure)
-- Decisions that don't produce testable behavior (coding style, naming conventions)
-- Out of scope items (they're explicitly excluded)
-- Testing Boundary section items (those are means to verify IDs, not requirements themselves)
-
-## Using IDs in plan.md
-
-Each task in `plan.md` references the requirement IDs it implements:
+Each plan task lists the IDs it implements:
 
 ```markdown
 ## Tasks
 
 1. Task 1: Safely upload and display an avatar — **Covers:** REQ-1, REQ-3, REQ-4 — depends on: None
-2. Task 2: Resize uploaded avatars to 128x128 — **Covers:** REQ-2 — depends on: Task 1
+2. Task 2: Resize uploaded avatars — **Covers:** REQ-2 — depends on: Task 1
 ```
 
-### Task brief references
+Each task brief carries the same IDs in **Covers requirements:** and maps its acceptance checks to them. Do not assign new IDs to test instructions.
 
-In `.coding/features/YYYYMMDD-<name>/impl/task-N.md`:
+When the approved spec has IDs, reference the implemented IDs in task commits, for example:
+
+```text
+feat(avatar): safely upload and display avatar (REQ-1, REQ-3, REQ-4)
+```
+
+Code comments may cite an ID when it explains a non-obvious decision. Do not add comments solely to label every implementation line.
+
+## Revisions
+
+### Add
+
+Assign the next unused ID. Keep existing IDs unchanged; do not renumber them to close gaps.
+
+### Retire
+
+Keep the condition visible in the spec with its ID and reason:
 
 ```markdown
-# Task N: <short name>
-
-**Covers requirements:** REQ-1, REQ-3, REQ-4
-
-## Goal
-<what this task delivers>
-
-## Acceptance
-- REQ-1: User can upload an avatar image → verify with upload form test
-- REQ-3: Avatar displays in profile and navigation → verify after upload and refresh
-- REQ-4: Upload fails if file > 5MB → verify with oversized file test
-```
-
-## Using IDs in commits
-
-Reference REQ-N in commit messages to trace code changes back to requirements:
-
-```bash
-git commit -m "feat(avatar): safely upload and display avatar
-
-Implements REQ-1 (upload), REQ-3 (display), and REQ-4 (size validation).
-
-- Uploads validated PNG/JPG/WEBP images for the authorized user
-- Displays the avatar in the profile and navigation bar
-- Rejects files over 5MB with 413 status"
-```
-
-## Using IDs in code
-
-Optional but recommended: reference IDs in code comments for complex or non-obvious requirement implementations:
-
-```typescript
-// REQ-2: Resize uploaded image to 128x128
-async function processAvatar(file: File): Promise<Buffer> {
-  const image = await sharp(file.buffer);
-  return image.resize(128, 128).toBuffer();
-}
-
-// REQ-4: Reject files over 5MB
-const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5MB
-if (file.size > MAX_AVATAR_SIZE) {
-  throw new Error('Avatar file must be under 5MB');
-}
-```
-
-## Handling spec revisions
-
-### Adding requirements
-New acceptance conditions get the next available ID:
-
-**Original spec**:
-```markdown
-## Acceptance
-- REQ-1: User can upload avatar
-- REQ-2: Image resized to 128x128
-```
-
-**Revised spec** (adds animated GIF support):
-```markdown
-## Acceptance
-- REQ-1: User can upload avatar (PNG, JPG, WEBP, or GIF)
-- REQ-2: Image resized to 128x128
-- REQ-3: Animated GIFs preserve animation after resize
-```
-
-### Removing requirements
-Mark the ID as retired in the spec:
-
-```markdown
-## Acceptance
-- REQ-1: User can upload avatar
-- ~~REQ-2: Image resized to 128x128~~ (retired: now using original size)
-- REQ-3: Animated GIFs preserve animation
+- ~~REQ-2: Uploaded image is resized to 128x128 pixels~~ (retired: preserve original size)
 ```
 
 Revise the plan through `plan`: remove the retired ID from unfinished executable task coverage, but preserve completed tasks and their briefs as history, including their original coverage. New tasks must not claim a retired ID. If retirement changes already implemented behavior, plan a corrective task against the current acceptance conditions; do not rewrite the completed task.
 
-### Changing requirement text
-Keep the same ID, update the text:
+### Change
 
-**Before**:
-```markdown
-- REQ-1: User can upload avatar (PNG or JPG)
-```
+Keep the ID when revising the same acceptance condition. Record a significant scope change in Decisions and obtain approval before revising the plan. A genuinely new condition gets a new ID rather than taking over an existing one.
 
-**After**:
-```markdown
-- REQ-1: User can upload avatar (PNG, JPG, WEBP, or GIF)
-```
+## Verification
 
-The ID stays REQ-1. If the change is significant, note it in **Decisions**:
+Before saving a spec:
 
-```markdown
-## Decisions
+- [ ] Every active Acceptance item has a unique REQ-N ID and an observable outcome
+- [ ] A new spec starts at REQ-1 without gaps; a revision neither renumbers nor reuses IDs
+- [ ] Retired conditions retain their IDs, strikethrough, and reasons
 
-**REQ-1 expanded**: Added WEBP and GIF support based on user feedback. 
-Animated GIFs required new requirement REQ-3 for animation preservation.
-```
-
-## Verification checklist
-
-Before saving spec.md:
-
-- [ ] Every item under **Acceptance** has a REQ-N ID
-- [ ] IDs start at REQ-1 and increment sequentially (no gaps in new specs)
-- [ ] IDs are unique within this spec (no duplicate numbers)
-- [ ] Retired IDs (if any) are marked with ~~strikethrough~~
-
-Before saving plan.md:
+Before saving a plan:
 
 - [ ] Every executable task lists its **Covers:** IDs
-- [ ] Every active REQ-N in the spec is covered by an executable task or a completed task that still satisfies it; skipped tasks do not count
+- [ ] Every active REQ-N is covered by an executable task or a completed task that still satisfies it; skipped tasks do not count
 - [ ] No unfinished executable task covers a retired or non-existent ID
 - [ ] Completed task coverage remains unchanged as history, even when an ID is later retired
 
-Before committing code:
+Before a task commit:
 
-- [ ] Commit message references the REQ-N(s) implemented (optional but recommended)
-- [ ] Complex requirement implementations have REQ-N code comments (optional)
+- [ ] If the approved spec has IDs, the message references the IDs implemented
+- [ ] Any ID cited in code still refers to the intended condition
 
-## Benefits
+## Existing specs without IDs
 
-### Traceability
-```
-REQ-1: Upload capability
-  ↓
-plan.md Task 1: Covers REQ-1
-  ↓
-commit abc123: "feat(avatar): safely upload and display avatar (REQ-1, REQ-3, REQ-4)"
-  ↓
-src/routes/avatar.ts: POST endpoint implementation
-  ↓
-tests/avatar.test.ts: "uploads avatar (REQ-1)"
-```
-
-### Impact analysis
-When changing REQ-2:
-1. Search plan.md for "REQ-2" → Task 2
-2. Search git log for "REQ-2" → 3 commits
-3. Search codebase for "REQ-2" → 2 files + 1 test
-
-### Review efficiency
-PR reviewer sees commit: "feat(avatar): implement REQ-2 and REQ-3"
-- Open spec.md, read REQ-2 and REQ-3
-- Verify code matches those requirements
-- No need to read the entire spec
-
-### Stable references in discussions
-"REQ-4 is blocking the release" — everyone knows exactly which requirement
-"Should we defer REQ-7?" — unambiguous scope discussion
-
-## Anti-patterns
-
-### ❌ Renumbering IDs
-```markdown
-## Acceptance
-- REQ-1: Feature A
-- REQ-2: Feature B    ← removed
-- REQ-3: Feature C    ← DON'T renumber to REQ-2
-```
-
-**Why wrong**: Breaks git history, commits, and code comments that reference REQ-3
-
-**Correct**: Mark REQ-2 as retired, keep REQ-3 as REQ-3
-
-### ❌ Reusing retired IDs
-```markdown
-## Acceptance
-- REQ-1: Feature A
-- REQ-2: Feature D    ← NEW feature, reusing retired REQ-2
-```
-
-**Why wrong**: Confusing when reading old commits/code that mention REQ-2 (which requirement did they mean?)
-
-**Correct**: Use REQ-4 (next available)
-
-### ❌ IDs for implementation details
-```markdown
-## Acceptance
-- REQ-1: Use PostgreSQL for storage    ← implementation decision, not observable behavior
-- REQ-2: Follow REST conventions       ← implementation style, not testable outcome
-```
-
-**Why wrong**: IDs are for observable behavior, not how you build it
-
-**Correct**: Put these in **Decisions** or **Constraints**, not **Acceptance**
-
-### ❌ Vague requirements with IDs
-```markdown
-## Acceptance
-- REQ-1: System should be fast
-- REQ-2: UI should be intuitive
-```
-
-**Why wrong**: Not testable, can't verify if REQ-1 is met
-
-**Correct**: Make acceptance conditions observable and testable:
-```markdown
-- REQ-1: API endpoints respond within 200ms for 95% of requests
-- REQ-2: New users complete first task within 2 minutes (measured in usability testing)
-```
-
-## Migration strategy
-
-### For new features
-Apply REQ-N IDs immediately when writing spec.md.
-
-### For existing specs without IDs
-1. Add IDs to **Acceptance** section in the next spec revision
-2. Update plan.md to add **Covers:** to each task
-3. No need to retroactively add IDs to old commits or code
-
-### Partial adoption
-- It's OK to have some specs with IDs and some without (during transition)
-- It's OK to have IDs in spec but not in all commits yet
-- Start with new features, migrate old specs opportunistically
-
-## Summary
-
-**What**: Assign REQ-N IDs to each acceptance condition in spec.md
-
-**Why**: Enable traceability from requirements → plan → code → tests
-
-**Rules**:
-- One ID per acceptance condition
-- Sequential, starting at REQ-1 per spec
-- Immutable (never reuse, renumber, or delete)
-- Reference in plan tasks, commits, and optionally in code
-
-**Benefits**: Traceability, impact analysis, review efficiency, stable references
+Add IDs to Acceptance in the next approved revision of this system's spec, then reconcile plan coverage through `plan`. Do not rewrite old commits or completed task history to backfill IDs. A standalone change without a spec does not need invented IDs.

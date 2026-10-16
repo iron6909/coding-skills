@@ -1,6 +1,26 @@
 # Component States Reference
 
-Standard states for common UI components. Use these to ensure consistent, predictable behavior across the interface.
+Standard states for common UI components. Start with the [quick reference table](#quick-reference-table), then read the common states and only the component sections in scope. Detailed CSS is illustrative, not a requirement to replace native controls.
+
+## Contents
+
+- [Common states](#common-states)
+- [Buttons](#button-states)
+- [Input fields](#input-field-states)
+- [Checkboxes](#checkbox-states)
+- [Radio buttons](#radio-button-states)
+- [Toggle switches](#toggle-switch-states)
+- [Links](#link-states)
+- [Cards and panels](#cardpanel-states)
+- [Dropdowns and selects](#dropdownselect-states)
+- [Modals and dialogs](#modaldialog-states)
+- [Loading](#loading-states)
+- [Empty](#empty-states)
+- [Errors](#error-states)
+- [Tooltips](#tooltip-states)
+- [Toasts and notifications](#toastnotification-states)
+- [Quick reference table](#quick-reference-table)
+- [Design checklist](#design-checklist)
 
 ## Why States Matter
 

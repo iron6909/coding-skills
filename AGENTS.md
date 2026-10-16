@@ -84,10 +84,12 @@ Update all of these in the same commit:
 ```bash
 node scripts/sync-references.mjs --check                     # copies in sync, references named, no dead link
 node scripts/sync-references.test.mjs                        # synchronizer regression checks
-node scripts/check-examples.mjs                              # executable reference examples
+node scripts/check-examples.mjs                              # executable examples, text contracts, scenario schema
 grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
 grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
 ```
+
+When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual evaluation pack. Run each case in a fresh isolated local fixture with the complete core installed unless the case explicitly tests a missing target. Supply any stated follow-up or approval only at its gate. Save the actual agent trace, resulting diff, check output, and per-expectation pass/fail evidence under `tmp/`. The script validates case structure, not agent compliance; never report behavioral passes without those traces. Do not add an evaluation framework or make network access a prerequisite.
 
 ## Conventions
 

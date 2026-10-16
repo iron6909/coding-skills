@@ -40,8 +40,30 @@ for (const skill of ["code-review", "ui-review"]) {
 }
 for (const config of ["review-lenses.toml", "review-lenses.md"]) assert.ok(readme.includes(config), `README must document ${config}`);
 
+const strategy = read("skills/execute/references/testing-strategy.md");
+assert.ok(!/Recommended ratio|Coverage targets|Dependencies can be mocked/.test(strategy), "test selection must follow risk, not universal quotas or mockability");
+assert.ok(!read("skills/ideate/SKILL.md").includes("Generate 5-8"), "ideation must not pad the option count");
+for (const file of ["component-states.md", "wcag-checklist.md"]) {
+  assert.ok(read(`skills/ui-design/references/${file}`).includes("## Contents"), `${file} needs navigation before detailed examples`);
+}
+let workflowCases;
+try {
+  workflowCases = JSON.parse(read("scripts/workflow-cases.json"));
+} catch (error) {
+  assert.fail(`Invalid workflow cases: ${error.message}`);
+}
+assert.ok(Array.isArray(workflowCases) && workflowCases.length > 0, "the manual workflow case set must be a non-empty array");
+assert.equal(new Set(workflowCases.map(({ id }) => id)).size, workflowCases.length, "workflow case IDs must be unique");
+for (const item of workflowCases) {
+  assert.match(item.id, /^[a-z][a-z0-9-]+$/);
+  assert.match(item.skill, /^[a-z][a-z-]+$/);
+  assert.ok(read(`skills/${item.skill}/SKILL.md`), `unknown workflow skill: ${item.skill}`);
+  for (const key of ["setup", "prompt"]) assert.ok(typeof item[key] === "string" && item[key].trim(), `${item.id}: missing ${key}`);
+  for (const key of ["expect", "forbid"]) assert.ok(Array.isArray(item[key]) && item[key].length > 0 && item[key].every((value) => typeof value === "string" && value.trim()), `${item.id}: missing ${key}`);
+}
+
 const loginExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes("app.post('/api/login'"));
-assert.equal(loginExamples.length, 2);
+assert.equal(loginExamples.length, 1);
 for (const source of loginExamples) {
   for (const [body, status] of [
     [{ email: "user@example.com", password: "wrong" }, 401],
@@ -238,4 +260,5 @@ const decomposition = read("skills/plan/references/task-decomposition.md");
 assert.ok(!decomposition.includes("May not be testable independently"), "every task must remain independently testable");
 assert.ok(!decomposition.includes('"Add password reset flow" (expands auth system horizontally)'), "password reset is a new vertical journey");
 assert.ok(!read("README.md").includes("1. 上传 API endpoint"), "the README must start with a vertical slice, not isolated layers");
-console.log("example and workflow checks passed: login, async cleanup, loading labels, duplicates, complexity totals, accessibility, continuous execution, bounded task review, pinned review and dispatch ranges, confirmed discard and document contracts");
+console.log("example and contract checks passed: login, async cleanup, loading labels, duplicates, complexity totals, accessibility, continuous execution, bounded task review, pinned review and dispatch ranges, confirmed discard and document contracts");
+console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

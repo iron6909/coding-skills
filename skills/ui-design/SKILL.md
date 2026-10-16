@@ -83,7 +83,7 @@ For each surface in the spec:
 
 1. **Structure** — the screens or regions, how the user moves between them, and the journeys that matter. ASCII wireframes are enough; they carry arrangement, not pixels.
 2. **Layout per breakpoint** — mobile, tablet, desktop. Say what changes, not only what shrinks.
-3. **Components and states** — specify default, focus, activation feedback, hover where supported, and disabled, loading, error, or empty where applicable. Native behavior counts. Read `./references/component-states.md` for the state set per component type rather than inventing a state model.
+3. **Components and states** — specify default, focus, activation feedback, hover where supported, and disabled, loading, error, or empty where applicable. Native behavior counts. Start with the quick reference table in `./references/component-states.md`, then read only the applicable component sections rather than inventing a state model.
 4. **Interactions** — pointer, keyboard, and touch behavior, including what closes a dialog and where focus goes next.
 5. **Edge cases** — loading, empty, error, long content, and no data.
 
@@ -115,7 +115,7 @@ Keep it to decisions a developer cannot infer from the spec. Anything an impleme
 
 ## Phase 3: Verify before handing off
 
-Read `./references/wcag-checklist.md` and check the specification against it. The checklist is the authority; restating its items here would let the two drift apart.
+Start with the quick checklist in `./references/wcag-checklist.md`, check the specification against it, and consult the relevant criteria for details or disputed thresholds. The checklist is the authority; restating its items here would let the two drift apart.
 
 Use that reference for contrast thresholds, effective touch areas, and color-only meaning. A specification check does not establish rendered or interaction conformance.
 

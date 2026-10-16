@@ -1,6 +1,17 @@
 # WCAG AA Accessibility Checklist
 
-Core accessibility requirements based on WCAG 2.1 Level AA. This is the practical subset you need to check during design.
+Core accessibility requirements based on WCAG 2.1 Level AA. Start with the [quick checklist](#quick-checklist-for-ui-specmd), then consult the relevant sections for criteria, thresholds, and examples. This practical subset is not a claim of full conformance.
+
+## Contents
+
+- [The four principles](#the-four-principles)
+- [Perceivable](#1-perceivable)
+- [Operable](#2-operable)
+- [Understandable](#3-understandable)
+- [Robust](#4-robust)
+- [Quick checklist](#quick-checklist-for-ui-specmd)
+- [Testing tools](#tools-for-testing)
+- [Resources](#resources)
 
 ## Why WCAG AA?
 

@@ -49,7 +49,7 @@ Read existing code, constraints, and patterns to understand the context.
 
 ### Phase 1: Divergent Thinking
 
-Generate 5-8 technical approaches through exploration and analysis.
+Generate only genuinely distinct, viable approaches grounded in the constraints. Usually 2-3 are enough; add more only when they could change the decision. Do not pad the count with implausible options.
 
 **How to generate ideas**:
 - Start with the obvious approach (what most developers would try)
@@ -80,7 +80,7 @@ Use Phase 2 to narrow the options through deeper investigation.
 
 ### Phase 2: Convergent Thinking
 
-Compress to 2-3 approaches. Stress-test each one.
+Keep the viable contenders, normally 2-3, and stress-test each one. If only one survives, explain why; do not invent a competitor. Reuse a direction the user already selected unless new evidence reopens the choice.
 
 **Stress tests**:
 - **What could go wrong?** (failure modes, edge cases)
