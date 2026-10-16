@@ -16,15 +16,20 @@ function harness(commands = allSkills, context = {}) {
   const sent = [];
   const messages = [];
   const notices = [];
+  const reports = [];
+  const events = new Map();
   let discoveries = 0;
+  const ctx = { mode: "tui", hasUI: true, isIdle: () => true, ui: { notify: (...args) => { notices.push(args); reports.push(args[0]); } }, ...context };
   extension({
+    on: (name, handler) => events.set(name, handler),
     registerCommand: (name, command) => registered.set(name, command),
     getCommands: () => { discoveries++; return commands; },
     sendUserMessage: (...args) => sent.push(args),
-    sendMessage: (...args) => messages.push(args),
+    sendMessage: (...args) => { messages.push(args); reports.push(args[0].content); },
   });
-  const ctx = { mode: "json", hasUI: false, isIdle: () => true, ui: { notify: (...args) => notices.push(args) }, ...context };
-  return { registered, sent, messages, notices, ctx, commands, discoveries: () => discoveries, run: (args = "") => registered.get("coding").handler(args, ctx) };
+  events.get("session_start")?.({}, ctx);
+  const input = (text, source = "interactive") => events.get("input")({ text, source }, ctx);
+  return { registered, sent, messages, notices, reports, ctx, commands, input, discoveries: () => discoveries, run: (args = "") => registered.has("coding") ? registered.get("coding").handler(args, ctx) : input(`/coding${args ? ` ${args}` : ""}`) };
 }
 
 const h = harness();
@@ -32,11 +37,10 @@ assert.deepEqual([...h.registered.keys()], ["coding"], "only the namespaced comm
 assert.equal(h.discoveries(), 0, "factory must not inspect session resources before they load");
 assert.deepEqual(h.sent, [], "loading an extension must not start a workflow");
 await h.run();
-assert.equal(h.messages.length, 1);
-assert.match(h.messages[0][0].content, /\/coding <skill>/);
-for (const command of allSkills) assert.ok(h.messages[0][0].content.includes(command.name.slice(6)));
-assert.equal(h.messages[0][1].triggerTurn, false, "help must not start a model turn");
-assert.equal(h.messages[0][0].display, true);
+assert.equal(h.reports.length, 1);
+assert.match(h.reports[0], /\/coding <skill>/);
+for (const command of allSkills) assert.ok(h.reports[0].includes(command.name.slice(6)));
+assert.deepEqual(h.messages, [], "interactive help uses the host UI, not another model turn");
 assert.deepEqual(h.sent, []);
 
 for (const [input, expected] of [
@@ -56,8 +60,7 @@ for (const input of ["unknown", "../plan", "plan/../../other", "/skill:plan", "p
   const run = harness();
   await run.run(input);
   assert.deepEqual(run.sent, [], `invalid selector must not dispatch: ${input}`);
-  assert.match(run.messages[0][0].content, /unavailable/i);
-  assert.equal(run.messages[0][1].triggerTurn, false);
+  assert.match(run.reports[0], /unavailable/i);
 }
 for (const commands of [
   [],
@@ -72,23 +75,23 @@ for (const commands of [
   const run = harness(commands);
   await run.run("plan do not bypass a disabled or conflicting resource");
   assert.deepEqual(run.sent, [], "only an unambiguous loaded package skill may run");
-  assert.match(run.messages[0][0].content, /unavailable/i);
+  assert.match(run.reports[0], /unavailable/i);
 }
 
 const filtered = harness([skill("plan")]);
 await filtered.run();
-assert.ok(filtered.messages[0][0].content.includes("plan description"));
-assert.ok(!filtered.messages[0][0].content.includes("execute description"));
+assert.ok(filtered.reports[0].includes("plan description"));
+assert.ok(!filtered.reports[0].includes("execute description"));
 filtered.commands.length = 0;
 await filtered.run("plan");
 assert.deepEqual(filtered.sent, [], "availability must be read at invocation time, not cached");
 
 const busy = harness(allSkills, { isIdle: () => false });
 await busy.run("plan");
-assert.match(busy.messages[0][0].content, /busy/i);
+assert.match(busy.reports[0], /busy/i);
 assert.deepEqual(busy.sent, [], "busy launches must neither steer nor queue another workflow");
 await busy.run(" \t\n");
-assert.match(busy.messages[1][0].content, /\/coding <skill>/, "help remains available while busy");
+assert.match(busy.reports[1], /\/coding <skill>/, "help remains available while busy");
 
 for (const mode of ["tui", "rpc"]) {
   const run = harness(allSkills, { mode, hasUI: true });
@@ -99,7 +102,25 @@ for (const mode of ["tui", "rpc"]) {
   assert.deepEqual(run.messages, []);
   assert.deepEqual(run.sent, []);
 }
-const print = harness(allSkills, { mode: "print" });
+for (const mode of ["print", "json"]) {
+  const run = harness(allSkills, { mode, hasUI: false });
+  assert.deepEqual([...run.registered.keys()], [], "non-interactive requests must use the awaited native input pipeline");
+  assert.deepEqual(await run.run('plan   "path with spaces"\nsecond line'), { action: "transform", text: '/skill:plan   "path with spaces"\nsecond line' });
+  assert.deepEqual(run.sent, [], "CLI dispatch must not fork a fire-and-forget model turn");
+  assert.deepEqual(await run.input("ordinary prompt"), { action: "continue" });
+  assert.deepEqual(await run.input("/coding-other plan"), { action: "continue" });
+  assert.deepEqual(await run.input("/coding plan", "extension"), { action: "continue" }, "extension messages retain native expansion policy");
+  run.ctx.isIdle = () => false;
+  if (mode === "json") {
+    assert.deepEqual(await run.run("plan"), { action: "handled" });
+    assert.match(run.reports[0], /busy/i);
+    assert.deepEqual(await run.run(), { action: "handled" });
+    assert.equal(run.messages[1][1].triggerTurn, false);
+    assert.equal(run.messages[1][0].display, true);
+    assert.deepEqual(await run.run("unknown"), { action: "handled" });
+  }
+}
+const print = harness(allSkills, { mode: "print", hasUI: false });
 const stderr = [];
 const originalWrite = process.stderr.write;
 try {
