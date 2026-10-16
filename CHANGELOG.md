@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-10-16
+
+### Breaking Changes
+
+- **规格输入**：不再适配 OpenSpec、Spec Kit 等外部规格系统的格式、路径和任务状态；按规格推进的工作须改用本体系批准的 `docs/features/YYYYMMDD-<semantic-name>/spec.md`，外部材料仍可作为背景。
+
+### Fixed
+
+- **审查底线**：code-review 默认检查正确性、边界、错误处理、测试有效性和基础安全，底线不能被配置关闭，当次明确请求的专审无须先创建配置。
+- **工作区与副作用**：optimize、simplify、ui-review 在受影响操作前保留既有改动并确认分支、环境和授权，simplify 遇到基线失败时停止，回退只撤销本次增量。
+- **批准的界面决策**：code-review 与 ui-review 对照适用的批准 UI 规格和 DESIGN.md 约束，autoflow 传递这些输入，报告区分设计系统一致性、批准决策符合性与实际验证证据。
+
+### Changed
+
+- **安装组合**：核心明确为 survey、clarify、plan、execute、code-review 五个，其余十四个辅助技能按需安装，快速开始不依赖 guide，路由目标缺失时由用户选择安装或直接处理。
+- **工作记录与配置**：`.coding/` 是否忽略或提交由用户决定，技能不自动修改忽略或跟踪规则，仅提交其负责的产物，审查配置保留原位置。
+- **任务与测试指导**：精简稳定 ID 与测试策略引用，UI 引用增加目录，测试按风险选择，方案探索不再凑固定数量。
+
+### Added
+
+- **回归场景**：新增 11 个可手工执行的工作流场景及结构校验，结构校验不代表实际代理行为通过。
+
 ## [4.0.1] - 2026-10-16
 
 ### Fixed
@@ -278,7 +300,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v4.0.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/iron6909/coding-skills/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/iron6909/coding-skills/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/iron6909/coding-skills/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/iron6909/coding-skills/compare/v2.0.2...v3.0.0
