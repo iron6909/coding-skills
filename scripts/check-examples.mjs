@@ -8,6 +8,16 @@ import { runInNewContext } from "node:vm";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const blocks = (path, language) => [...read(path).matchAll(new RegExp("```" + language + "\\r?\\n([\\s\\S]*?)\\r?\\n```", "g"))].map((match) => match[1]);
 
+let manifest;
+try {
+  manifest = JSON.parse(read("package.json"));
+} catch (error) {
+  assert.fail(`Invalid package manifest: ${error.message}`);
+}
+assert.ok(manifest.keywords.includes("pi-package"), "the package must be discoverable as a Pi package");
+assert.deepEqual(manifest.pi.skills, ["./skills"], "Pi must load the existing self-contained skill directories");
+assert.deepEqual(manifest.files, ["skills", "README.md", "LICENSE"], "publish skills and user-facing documents, not development rules");
+
 // ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
 const lenses = read("skills/code-review/references/review-lenses.md");
 assert.ok(lenses.includes("## Correctness and safety floor (always)"), "every review needs a correctness/safety floor");
@@ -34,6 +44,11 @@ const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((labe
 assert.deepEqual(coreSkills, ["survey", "clarify", "plan", "execute", "code-review"], "the core must contain exactly the five main-workflow skills");
 const installedSkills = readdirSync(new URL("../skills/", import.meta.url), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
 assert.deepEqual([...coreSkills, ...auxiliarySkills].sort(), installedSkills, "every skill must be classified once as core or auxiliary");
+for (const skill of installedSkills) {
+  const source = read(`skills/${skill}/SKILL.md`);
+  assert.match(source, new RegExp(`^name: ${skill}$`, "m"), `${skill} must retain its portable name`);
+  assert.match(source, /^disable-model-invocation: true$/m, `${skill} must remain explicitly invoked`);
+}
 assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/clarify"), "the quick start must work without optional guide");
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   const source = read(`skills/${file}`);

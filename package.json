@@ -10,8 +10,12 @@
     "coding",
     "tdd",
     "local-first",
-    "chinese"
+    "chinese",
+    "pi-package"
   ],
+  "pi": {
+    "skills": ["./skills"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iron6909/coding-skills.git"
@@ -25,7 +29,7 @@
   "files": [
     "skills",
     "README.md",
-    "AGENTS.md"
+    "LICENSE"
   ],
   "engines": {
     "node": ">=18.0.0"
