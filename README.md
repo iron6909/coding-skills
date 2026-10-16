@@ -2,11 +2,24 @@
 
 [![skills.sh](https://skills.sh/b/iron6909/coding-skills)](https://skills.sh/iron6909/coding-skills)
 
-coding agent 编码技能集，专注清晰流程和本地化开发。需求、计划和工作记录都使用本地文件，不依赖 issue tracker。
+coding agent 编码技能集，专注清晰流程和本地化开发。需求、计划和工作记录都使用本地文件，不依赖 issue tracker。可作为 Pi 原生包加载，也保留 skills.sh 安装方式。
 
 ## 安装
 
-推荐通过 skills.sh 安装：
+### Pi Coding Agent
+
+先安装 Pi，使用 Node >=22.19。在要使用技能的项目目录执行，将路径替换为本仓库的本地克隆目录：
+
+```bash
+pi install "/path/to/coding-skills" --local
+pi
+```
+
+`--local` 将包声明写入目标项目的 `.pi/settings.json`，不加则使用 Pi 默认的个人安装位置。按 Pi 提示确认项目资源信任，已有交互会话可用 `/reload` 重载资源。开发版使用包含 `extensions/index.ts` 的副本；`v5.0.1` 标签不含此入口。其他包源与资源筛选见 [Pi Packages](https://pi.dev/docs/latest/packages)。
+
+### 其他宿主
+
+通过 skills.sh 安装便携技能：
 
 ```bash
 npx skills@latest add iron6909/coding-skills
@@ -16,19 +29,21 @@ npx skills@latest add iron6909/coding-skills
 
 ## 快速开始
 
-安装后，在 coding agent 的项目会话中逐项调用：
+安装后，在 Pi 的项目会话中逐项调用：
 
 ```text
-/survey                         # 首次使用，或项目事实过期时
-/clarify 添加用户头像上传          # 澄清需求，审阅并制定规格
-/plan                           # 审阅并制定计划
-/execute
-/code-review                    # 需要整体独立审查时另行调用
+/coding survey                         # 首次使用，或项目事实过期时
+/coding clarify 添加用户头像上传          # 澄清需求，审阅并制定规格
+/coding plan                           # 审阅并制定计划
+/coding execute
+/coding code-review                    # 需要整体独立审查时另行调用
 ```
 
-若界面决策尚未确定，先通过 `/ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动可以直接用 `/execute`。
+也可用 Pi 原生的 `/skill:clarify 添加用户头像上传` 等写法。其他宿主按各自语法调用同名技能，比如 `/clarify`；本包不为 Pi 注册这些短别名。
 
-技能需要显式调用，不会自动触发。不知道选哪个时，可使用 `guide`，运行 `/guide 添加用户头像上传`，由它选择入口；目标缺装时会提示，不会自动安装。
+若界面决策尚未确定，先通过 `/coding ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动可以直接用 `/coding execute`。
+
+技能需要显式调用，不会自动触发。不知道选哪个时，可使用 `guide`，运行 `/coding guide 添加用户头像上传`，由它选择入口；目标缺装时会提示，不会自动安装。
 
 ## 技能速查
 
@@ -68,7 +83,7 @@ npx skills@latest add iron6909/coding-skills
 ### 修复故障
 
 ```text
-/debug 购物车总价计算错误，使用优惠券后金额没有变化
+/coding debug 购物车总价计算错误，使用优惠券后金额没有变化
 ```
 
 定位原因、补充回归验证并提交修复。小修复不必再走一遍需求与计划流程。
@@ -76,7 +91,7 @@ npx skills@latest add iron6909/coding-skills
 ### 从规格自动交付
 
 ```text
-/autoflow 根据已批准的用户头像上传规格完成开发
+/coding autoflow 根据已批准的用户头像上传规格完成开发
 ```
 
 需先安装 `autoflow`，准备好已批准的规格，并确定界面决策。它只编排 `plan → execute → code-review`：计划仍需批准，同时授权后续执行与范围内的 Blocking/Important 修复，不代做需求澄清或界面设计。
@@ -146,6 +161,27 @@ npx skills@latest add iron6909/coding-skills
 | autoflow | 编排 plan、execute、code-review 各自的提交 |
 | commit | 用户指定的临时改动 |
 | refactor、handoff、ideate | 不提交，只留下报告或交接记录 |
+
+## Pi 入口与边界
+
+- `/coding` 显示本包当前加载且无歧义的技能，不启动模型。`/coding <skill> [arguments]` 只调用选定技能，参数交给 Pi 原生技能展开。
+- 技能缺失、被筛选或来源冲突时拒绝启动，不回退到同名外部技能。停用扩展但保留技能时仍可使用 `/skill:<skill>`，原生同名资源的选择由 Pi 负责，使用前核对来源。
+- 忙碌时拒绝新任务，不插队也不排队，帮助仍可查看。交互界面和 RPC 使用通知；`--print` 的帮助与错误写入 stderr，JSON 模式使用原生消息记录。非交互调用会等待本次模型轮次完成。
+
+扩展不提供子代理、浏览器或 Web 检索工具，也不编排后续阶段。宿主缺少能力时按技能说明降级或报告无法验证，不能把自查冒充独立审查。审批、验证、提交和恢复规则仍由技能指导模型执行，不是代码级强制门控。扩展和代理使用 Pi 宿主的权限，不构成沙箱；项目信任和工具权限按 Pi 配置决定。
+
+## 验证
+
+在仓库克隆中执行，维护脚本不随包安装：
+
+```bash
+node scripts/pi-extension.test.mjs
+npm pack --dry-run --json --offline
+```
+
+便携包保留原有 Node >=18 声明；Pi 及上述扩展自检使用 Node >=22.19，无需另加构建步骤。
+
+已在 Windows、Node 24.10.0、Pi 1.3.0 上验证本地安装、SDK 原生展开、资源筛选与重载、来源冲突，以及 CLI 打印、JSON 和 RPC 协议。集成检查使用本地固定响应桩，不证明模型遵守技能指令。TUI 只验证了命令绑定，未做真实终端交互；其他版本与平台、11 个真实代理行为场景均未验证。
 
 ## 参考与许可
 

@@ -7,6 +7,7 @@ Rules for AI coding agents that develop and maintain this repository. This file 
 ## Repository layout
 
 ```
+extensions/ # Shipped. Thin Pi command adapter.
 skills/    # Shipped. One directory per skill: SKILL.md + references/
 shared/    # NOT shipped. Source of files copied into several skills
 scripts/   # NOT shipped. Maintenance scripts (sync-references.mjs)
@@ -20,6 +21,12 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 - Local-only. Do not add issue-tracker integration (GitHub, Linear, Jira), CI definitions, PR-description generation, or multi-user state sync to any skill.
 - Prefer deleting or simplifying over adding. A new skill or reference must earn its place.
+
+## Pi extension changes
+
+- Keep `/coding` a source-aware native adapter, not a workflow engine. Do not duplicate skill lists or frontmatter parsing, or add short aliases.
+- Preserve the native awaited input pipeline for print/JSON and guard UI capabilities. Do not replace it with fire-and-forget dispatch.
+- Use Pi's provided API and TypeScript loader. Keep host dependencies peer-provided; do not bundle the host or add a build chain for this adapter.
 
 ## Skills are self-contained
 
@@ -85,9 +92,13 @@ Update all of these in the same commit:
 node scripts/sync-references.mjs --check                     # copies in sync, references named, no dead link
 node scripts/sync-references.test.mjs                        # synchronizer regression checks
 node scripts/check-examples.mjs                              # executable examples, text contracts, scenario schema
+node scripts/pi-extension.test.mjs                           # adapter contracts; use Pi's required Node version
+npm pack --dry-run --json --offline                          # inspect exact published resources, no development content
 grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
 grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
 ```
+
+Extension changes also need real-host loading, dispatch, filtering, source-conflict, reload, and non-UI checks in isolated local fixtures under `tmp/`. Record the actual host/platform and unverified surfaces.
 
 When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual evaluation pack. Run each case in a fresh isolated local fixture with the README-defined core and the optional skills it exercises installed, except any explicitly absent route target. Supply any stated follow-up or approval only at its gate. Save the actual agent trace, resulting diff, check output, and per-expectation pass/fail evidence under `tmp/`. The script validates case structure, not agent compliance; never report behavioral passes without those traces. Do not add an evaluation framework or make network access a prerequisite.
 
