@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use one of three execution inputs:
 
-- **Planned work:** read the approved spec and `plan.md` in full. The spec defines behavior. The plan defines task order. The default spec path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`; when the project uses another specification system, the plan or the user names the artifact path instead.
+- **Planned work:** read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior; the plan defines task order.
 - **Session plan:** a Brief tier plan from `plan`, held in this conversation rather than on disk. The task list is the plan; the spec path, if any, still governs behavior.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
@@ -37,7 +37,7 @@ For planned work, create an isolated impl directory:
 .coding/features/YYYYMMDD-<name>/impl/
 ```
 
-`.coding/` is temporary and gitignored. Under it, `impl/` holds the ledger and task briefs for one feature, in `.coding/features/` to match `docs/features/YYYYMMDD-<name>/`. Spec and plan live under `docs/features/`, never here.
+`.coding/` holds work records, reports, and user-maintained configuration. Whether it is ignored or versioned is the user's decision; do not change ignore or tracking rules. Under it, `impl/` holds the ledger and task briefs for one feature, in `.coding/features/` to match `docs/features/YYYYMMDD-<name>/`. Spec and plan live under `docs/features/`, never here.
 
 Create `progress.md` ledger inside with the first line:
 

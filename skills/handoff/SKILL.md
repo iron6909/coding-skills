@@ -126,7 +126,7 @@ When the user says "resume from handoff" or provides a handoff file:
 
 ## Handoff Locations
 
-Always write to `.coding/handoff/YYYYMMDD-HHMM.md` (gitignored).
+Always write to `.coding/handoff/YYYYMMDD-HHMM.md`. The user decides whether to ignore or version handoffs; do not change that policy.
 
 Example: `.coding/handoff/20250120-1430.md`. If the timestamp already exists, append a short topic or numeric suffix; never overwrite a prior handoff.
 
@@ -136,7 +136,7 @@ Use the latest matching handoff for the work being resumed. Keep older handoffs.
 
 - **Duplicate saved artifact content**: Point to files; only the unsaved-spec exception above is copied
 - **Capture full conversation**: Just the state, not the dialogue
-- **Commit handoffs**: They're temporary, gitignored
+- **Commit handoffs automatically**: This skill only saves the handoff; the user owns any versioning decision
 - **Serialize complex state**: Keep it simple and human-readable
 - **Auto-resume**: User decides when to resume
 

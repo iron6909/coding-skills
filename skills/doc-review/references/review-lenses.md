@@ -91,7 +91,7 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 - Each brief states its goal, covered requirements, dependencies, acceptance checks, steps, files, and consumed/produced interfaces
 - Interfaces are consistent (task-2 Consumes what task-1 Produces)
 
-Missing gitignored briefs alone do not block a fresh clone: check whether the approved plan and spec contain enough detail for `execute` to rebuild them. Report a missing decision rather than requiring temporary artifacts to be committed.
+Missing briefs alone do not block a fresh clone: check whether the approved plan and spec contain enough detail for `execute` to rebuild them. Report a missing decision rather than requiring temporary artifacts to be committed.
 
 ## capability-map.md (from clarify's decomposition check)
 

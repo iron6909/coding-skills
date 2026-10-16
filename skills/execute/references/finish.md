@@ -30,4 +30,4 @@ Do not merge, push, or publish anything. This suite is local-only; the user perf
 
 - Only touch a branch or workspace this run created.
 - Never force checkout, reset, clean, workspace removal, or push. The only force exception is deleting the exact branch after the Discard gate above. If cleanup is refused because of uncommitted changes, list the files and let the user choose how to preserve them. Documents must survive; only non-document scratch may be deleted.
-- `impl/`, the task briefs, and any review report are documents: they stay. They are gitignored, so they cost nothing, and they record how the work was done.
+- `impl/`, the task briefs, and any review report are documents: they stay as records of how the work was done. Their ignore and versioning policy is the user's choice; do not change it or automatically include these records in a code commit.

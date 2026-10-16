@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Plan
 
-Turn an approved spec into an implementation plan. The default spec path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`; when the project uses another specification system, plan from that artifact instead.
+Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan.
 
 Do not write product code or start implementation.
 
@@ -32,7 +32,7 @@ Read `output-tier.md` for the floors and the choosing order.
 Find the approved spec before planning.
 
 - Read the applicable `AGENTS.md` files.
-- Read the approved spec in full. The default path is `docs/features/YYYYMMDD-<semantic-name>/spec.md`. When the project uses another specification system, the user or `AGENTS.md` names the artifact path instead — plan from that, and do not create a second spec.
+- Read the approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` in full. Use this skill set's format and approval contract.
 - When `ui-spec.md` sits beside the spec, read it too. It carries interface decisions the spec leaves open — layout per breakpoint, component states, interaction flows — and tasks that skip it will reinvent those decisions one component at a time. Fold them into the relevant tasks rather than making a task per screen.
 - Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
 - If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification. If necessary layout, state, or interaction decisions are missing, recommend `ui-design` and stop rather than inventing them in tasks. A settled frontend change does not require `ui-spec.md` merely because it has UI.
@@ -288,7 +288,7 @@ On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is
 
 ## Commit (Full tier only)
 
-Commit `plan.md`, which is permanent. Task briefs live in gitignored `.coding/` and are not committed. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
+Commit `plan.md`, which is permanent. Task briefs live under `.coding/` and are not part of this skill's commit; the user decides their ignore and versioning policy. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
 
 Read `./references/git-commit.md` for commit rules.
 

@@ -14,7 +14,7 @@ The called skills own their planning, testing, review, and commit rules. Autoflo
 
 Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
 
-1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read the approved spec, including an explicitly named artifact from another specification system. Do not create a parallel spec. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `clarify` or `ui-design`; do not invoke either.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `clarify` or `ui-design`; do not invoke either.
 2. Inspect the branch, staged and unstaged changes, and untracked files. Record the initial state. Never commit, stash, reset, or overwrite unrelated user work. If it cannot be isolated safely, stop and ask.
 3. Confirm the target branch. On the default branch, get consent to work there or create `feature/YYYYMMDD-<semantic-name>`. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
 4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
@@ -42,7 +42,7 @@ Ask once for approval of both:
 
 An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved input snapshots and the authorization using the state reference. Changed inputs require renewed approval; do not carry authorization over silently.
 
-`plan` then saves and commits `plan.md`. Its task briefs remain gitignored under `.coding/`; they are not committed. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
+`plan` then saves and commits `plan.md`. Its task briefs stay under `.coding/` and are not part of that commit; the user decides whether to ignore or version them. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
 
 ## Stage 2: Execute
 
@@ -54,7 +54,7 @@ After execution's final verification succeeds, return to this orchestrator befor
 
 ## Stage 3: Code review
 
-Invoke `code-review` with the fixed feature review base, approved spec and plan paths, target branch, plan Review focus, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
+Invoke `code-review` with the fixed feature review base, approved spec and plan paths, applicable approved UI/design inputs, target branch, plan Review focus, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
 
 The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
 

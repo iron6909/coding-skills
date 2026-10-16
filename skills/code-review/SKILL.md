@@ -59,8 +59,9 @@ Look for the originating spec in this order:
 
 1. A path the user passed as an argument
 2. `docs/features/YYYYMMDD-<semantic-name>/spec.md` matching the branch name or a commit scope
-3. Another spec-like document under `docs/` matching the branch name
-4. Ask the user. If no spec exists, skip the Spec axis and say so in the report
+3. Ask the user for the originating approved spec. If none exists, report that; do not invent a spec or an external-format substitute
+
+For a feature UI review, also read the matching approved `ui-spec.md` and applicable `DESIGN.md` constraints. Pass them to the Spec lens to check approved layouts, breakpoints, states, and interactions, separately from design-system consistency. If no matching UI spec exists, say so without blocking an ordinary code review. Do not claim rendered or interaction checks passed from source inspection alone.
 
 When a plan is supplied, read it and use its Review focus as context for the enabled lenses. It does not enable optional lenses or replace the spec as authority.
 
@@ -186,7 +187,7 @@ Report: <path of the review file written above>
 Lenses enabled: standards, spec, learnings[, security, performance, ...]
 Correctness/safety floor: <checked, or unavailable checks and why>
 Standards: <N findings including the floor, M fixed>
-Spec: <match | N gaps | no spec available>
+Spec: <match | N gaps | no applicable approved inputs available>
 Learnings: <N findings, M fixed | none recorded | none matched>
 Security: <N findings, M fixed | lens not enabled>
 Performance: <N findings, M fixed | lens not enabled>

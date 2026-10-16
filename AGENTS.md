@@ -34,7 +34,7 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.coding/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
 
-- `.coding/` is temporary and gitignored: never put `spec.md`, `plan.md`, or anything that must be committed there.
+- `.coding/` holds work records and user-maintained configuration. In consuming projects, users decide whether to ignore or commit it; skills must not change ignore or tracking rules automatically. Keep permanent `spec.md` and `plan.md` under `docs/features/`, never `.coding/`.
 - Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Documents are never deleted

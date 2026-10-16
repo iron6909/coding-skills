@@ -1,6 +1,6 @@
 ---
 name: ui-review
-description: Review implemented frontend UI against the project's design system and accessibility floor, and write findings to .coding. Checks design consistency, usability, accessibility, responsive behavior, and performance. Use after execute finishes frontend work, or when asked to audit, review, or improve an interface. Changes code only if the user then asks for fixes.
+description: Review implemented frontend UI against approved UI decisions, the project's design system, and the accessibility floor, and write findings to .coding. Checks design consistency, usability, accessibility, responsive behavior, and performance. Use after execute finishes frontend work, or when asked to audit, review, or improve an interface. Changes code only if the user then asks for fixes.
 disable-model-invocation: true
 ---
 
@@ -46,6 +46,8 @@ When there is no `DESIGN.md`, the baseline is what the code most consistently do
 
 Identify each surface's visitor mode using `./references/ui-review-checklist.md` before applying aesthetic checks. Approved tokens do not exempt an accessibility failure.
 
+When the review matches a feature, read its approved `ui-spec.md` and originating spec. Check the approved layouts, breakpoints, component states, and interactions separately from design-system consistency; matching tokens does not prove those decisions were implemented. If no matching UI spec exists, state that and continue the ordinary interface review without inventing one.
+
 Then read enough of the code to know the framework and where styles live — component files, stylesheets, theme config.
 
 ## Phase 2: Review the five dimensions
@@ -78,11 +80,14 @@ Write to the unused report path selected under Output:
 Date: YYYY-MM-DD HH:MM
 Scope: <what was reviewed>
 Baseline: DESIGN.md, or the inferred system, or none found
+Approved UI inputs: <spec/ui-spec paths, or none applicable>
 Modes: <per surface>
 Evidence: <source, rendered views, interactions; limits>
 
 ## Summary
 counts per severity, and what was checked
+Design-system consistency: <result and evidence>
+Approved UI decision conformance: <result, gaps, or no applicable inputs>
 
 ## Blocking
 ## Important

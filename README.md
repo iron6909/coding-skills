@@ -14,11 +14,13 @@
 npx skills@latest add iron6909/coding-skills
 ```
 
-选择你需要的技能，安装器会将它们复制到项目的 `.claude/skills/` 目录。
+核心技能是一个完整体系：辅助技能 `commit`、`handoff` 可按需安装，其余技能必须全部安装，不能任意裁剪。安装器会将选中的技能目录复制到项目的 `.claude/skills/`。
+
+本项目使用自己的规格、计划和任务追踪格式，不兼容其他规格系统。参考项目仅提供方法借鉴。
 
 ### 手动安装
 
-克隆此仓库，将 `skills/` 目录下的技能复制到你的项目 `.claude/skills/` 目录。
+克隆此仓库，将 `skills/` 下的全部核心技能目录复制到项目的 `.claude/skills/`；`commit`、`handoff` 可选。不要只复制单个核心技能。
 
 ## 快速开始
 
@@ -101,7 +103,7 @@ graph TD
 | **ui-review** | 审查已实现的前端界面 | `.coding/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
 | **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
 | **optimize** | 系统性性能优化 | 优化代码提交 + `.coding/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
-| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.coding/review/`) | Fowler smells + spec 对照 + 已记录陷阱;修复需你同意 |
+| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.coding/review/`) | 必查正确性与基础安全 + spec/UI 决策对照 + 已记录陷阱；专审按配置或明确请求启用，修复需你同意 |
 | **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
 | **autoflow** | spec 已批准,需自动交付 | plan.md、代码提交、审查报告与授权修复 | 仅 plan → execute → code-review；计划批准后自动执行,不代做 clarify |
 | **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.coding/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
@@ -134,8 +136,10 @@ graph TD
 │   │   ├── 20250115-jwt-security.md    # 单主题学习文档
 │   │   └── _archived/                  # 满足归档条件的旧 learning，保留原文
 │   └── adr/                             # 架构决策记录（惰性创建）
-├── .coding/                           # 临时，不提交（按技能组织）
+├── .coding/                           # 工作记录、报告与用户配置（按技能组织）
 │   ├── autoflow-state.json              # 三阶段进度；旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
+│   ├── review-lenses.toml               # 用户维护的审查镜头配置
+│   ├── review-lenses.md                 # 同一配置的 Markdown 形式，二选一
 │   ├── features/                        # feature 相关
 │   │   └── 20250115-user-auth/
 │   │       ├── impl/
@@ -164,6 +168,8 @@ graph TD
 └── AGENTS.md                            # 项目事实
 ```
 
+用户项目是否忽略 `.coding/`、是否自行提交其中的记录或配置，由用户决定；技能不自动设置忽略规则或改变跟踪状态。下文“提交责任”只约束技能自动暂存和提交的范围，不限制用户自己管理这些文件。本开发源仓库的 `.gitignore` 不会随技能安装到用户项目。
+
 `ui-review` 的默认报告名与 `optimize` 的默认实验目录遇到同名项时，依次加 `-2`、`-3` 等后缀，不覆盖旧报告。`optimize` 为整次新实验选一个目录，baseline、变体、summary、链接和提交说明都沿用实际路径。
 
 ### 三层结构
@@ -190,6 +196,8 @@ graph TD
 `execute` 一次调用持续完成全部已批准的可执行任务，不区分 default/auto，也不在任务间例行确认。范围变化、未解决的失败或高风险决策仍须停下处理。
 
 每个任务默认由主进程轻量自查当前增量；只有具体风险值得独立判断时，才使用一个只读 reviewer 代替自查。初查后最多一轮修复和一次定向复查，仍有未解决的 Blocking/Important 就停下，不反复展开完整审查。功能级 review base 保持固定，任务审查使用各自的 task base，不累计重审已完成任务。
+
+`code-review` 的 Standards 轴始终检查正确性和基础安全，不依赖 spec、经验库或专审配置；Security 等可选镜头用于深入专审，未启用不代表可以忽略明显安全缺陷。匹配功能的已批准 `ui-spec.md` 和适用 DESIGN.md 约束也是代码/UI 审查输入。
 
 任务内运行聚焦和受影响检查，全量测试放在最终验证；项目 DoD 要求更频繁时从其规定。需要整体独立审查时另行调用 `code-review`，autoflow 则在最后执行一次，重点检查跨任务集成、需求遗漏和整体风险。恢复 autoflow 时核对 spec、plan 及适用 UI/design 输入的批准快照，输入新增、删除或变更都不能沿用旧授权。
 
@@ -339,6 +347,8 @@ learnings 与代码库漂移
 ### 技能没触发
 
 技能都需要用户显式调用(`/技能名`)。没有指名技能时,调用 `guide` 由它路由;路由规则见 `skills/guide/SKILL.md`。
+
+若路由目标未安装，`guide` 会提示安装该技能或直接处理请求。直接处理不等于已加载该技能，仍须遵守项目约束与授权；不会自动安装。核心技能缺装应补齐，而不是作为核心精简模式使用。
 
 ### subagent 不可用
 

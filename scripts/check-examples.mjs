@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,6 +23,22 @@ for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Exec
     assert.ok(source.includes(safeguard), `${skill} missing safeguard: ${safeguard}`);
   }
 }
+
+const guide = read("skills/guide/SKILL.md");
+assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
+const readme = read("README.md");
+assert.ok(readme.includes("其余技能必须全部安装"), "the core skill system must be installed in full");
+for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
+  const source = read(`skills/${file}`);
+  assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
+}
+for (const skill of ["clarify", "plan", "execute", "autoflow"]) {
+  assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
+}
+for (const skill of ["code-review", "ui-review"]) {
+  assert.ok(read(`skills/${skill}/SKILL.md`).includes("approved `ui-spec.md`"), `${skill} must check applicable approved UI decisions`);
+}
+for (const config of ["review-lenses.toml", "review-lenses.md"]) assert.ok(readme.includes(config), `README must document ${config}`);
 
 const loginExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes("app.post('/api/login'"));
 assert.equal(loginExamples.length, 2);

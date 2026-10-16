@@ -66,8 +66,8 @@ A clear small change can skip `survey`, `clarify`, and `plan` when its scope and
 After choosing a skill:
 
 1. State `Route: <skill>` and give one short reason.
-2. Locate that skill's `SKILL.md` under the configured skills directory.
-3. Read the selected skill file.
+2. Locate that skill's `SKILL.md` under the configured skills directory. If it is not installed, tell the user which skill is missing and offer to install it or directly handle the request without it; wait for their choice. Do not install automatically or claim the skill was loaded. If they choose direct handling, follow the request, project constraints, and authorization boundaries without inventing the missing skill's workflow, then return to the user. Core skills belong to one complete installation; a missing core skill is an incomplete installation, not a supported reduced mode.
+3. If installed, read the selected skill file.
 4. Follow it immediately in the same turn.
 5. Do not ask the user to invoke the selected skill.
 6. Do not stop after printing the route.

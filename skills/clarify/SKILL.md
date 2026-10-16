@@ -10,11 +10,9 @@ Turn an unclear development request into an approved spec, from product understa
 
 Do not write product code, create `plan.md`, or start implementation.
 
-## The project's specification system
+## Specification contract
 
-Check `AGENTS.md` and `CLAUDE.md` before choosing a path. If either names a specification system this project already uses (OpenSpec, Spec Kit, Specify, or similar), write to that system's artifact format and storage conventions and do not create a second `spec.md` beside it.
-
-The split is fixed: this skill owns the clarification, the content of the spec, and the approval gate; the chosen system supplies only the directory structure and file naming. The spec is a deliverable you produce for that system, not something the system produces for you.
+Read `AGENTS.md` and `CLAUDE.md` for project constraints. Use this skill set's spec format under `docs/features/YYYYMMDD-<semantic-name>/`. This skill owns clarification, spec content, and approval; it does not adapt other specification systems' formats, paths, or task state. External materials may inform clarification but do not replace this system's approved execution inputs.
 
 ## Choose a path
 

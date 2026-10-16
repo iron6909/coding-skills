@@ -47,7 +47,7 @@ Resolve configuration in this order; do not combine files:
 2. Otherwise `.coding/review-lenses.md`
 3. Otherwise only the default lenses
 
-Keep default lenses enabled regardless of the configuration's enabled list. Optional lenses run when enabled by the selected configuration or an explicit user request for this run; a request does not require creating a configuration file. Record the selection source. Skip Spec if no spec is available and Learnings if no learnings are recorded; explain those omissions in the report.
+Keep default lenses enabled regardless of the configuration's enabled list. Optional lenses run when enabled by the selected configuration or an explicit user request for this run; a request does not require creating a configuration file. Record the selection source. Skip Spec only if neither a spec nor applicable approved UI/design inputs are available, and Learnings if no learnings are recorded; explain those omissions in the report.
 
 ### Project-level (.coding/review-lenses.md)
 
@@ -142,7 +142,7 @@ Main process:
 
 Run lenses in order:
 1. standards (always)
-2. spec (when the originating spec is available)
+2. spec (when a spec or applicable approved UI/design inputs are available)
 3. learnings (always if docs/learnings/ exists)
 4. enabled optional lenses in priority order
 
@@ -182,8 +182,9 @@ Do not edit code. Do not make recommendations beyond the finding.
 ### Spec lens (always enabled)
 **Input**:
 - Diff
-- Spec file path
-- Acceptance conditions with REQ-N IDs
+- Approved spec file path, when available
+- Applicable approved ui-spec.md and DESIGN.md paths for frontend changes
+- Acceptance conditions with existing REQ-N IDs; do not invent IDs for UI decisions
 
 **Output**: Missing features, behavior mismatches, acceptance condition violations
 
@@ -191,13 +192,15 @@ Do not edit code. Do not make recommendations beyond the finding.
 ```
 Review the diff against the spec.
 
-Spec: <path>
+Spec: <path, or none available>
+UI/design inputs: <applicable approved paths, or none>
 Diff command: git diff <review_base_sha>...<review_head_sha>
 
 Check:
 - Are all acceptance conditions (REQ-N) implemented?
 - Does behavior match the spec?
 - Are there features not in the spec?
+- Does the UI match applicable approved layouts, breakpoints, states, interactions, and design constraints? Distinguish source evidence from unverified rendered or interaction behavior.
 
 Report findings as JSON array with same structure as above.
 ```
@@ -276,8 +279,9 @@ Use the report path selected by SKILL.md. Every lens permits the full severity r
 - [Blocking|Important|Minor] <file>:<line> - <correctness, safety, or standards finding>
 
 ## Spec
+**Inputs:** <spec and applicable approved UI/design paths; missing inputs>
 - [Blocking|Important|Minor] <finding>
-- or: no spec available
+- or: no applicable approved inputs available
 
 ## Learnings
 - [Blocking|Important|Minor] <finding, naming its learning file>
