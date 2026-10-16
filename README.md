@@ -8,14 +8,16 @@ coding agent 编码技能集，专注清晰流程和本地化开发。需求、�
 
 ### Pi Coding Agent
 
-先安装 Pi，使用 Node >=22.19。在要使用技能的项目目录执行，将路径替换为本仓库的本地克隆目录：
+先安装 Pi，使用 Node >=22.19。npm 版本发布后，在要使用技能的项目目录执行：
 
 ```bash
-pi install "/path/to/coding-skills" --local
+pi install npm:@iron6909/coding-skills
 pi
 ```
 
-`--local` 将包声明写入目标项目的 `.pi/settings.json`，不加则使用 Pi 默认的个人安装位置。按 Pi 提示确认项目资源信任，已有交互会话可用 `/reload` 重载资源。开发版使用包含 `extensions/index.ts` 的副本；`v5.0.1` 标签不含此入口。其他包源与资源筛选见 [Pi Packages](https://pi.dev/docs/latest/packages)。
+默认使用 Pi 的个人安装位置；仅在当前项目启用时加 `--local`，包声明会写入项目的 `.pi/settings.json`。按 Pi 提示确认项目资源信任，已有交互会话可用 `/reload` 重载资源。
+
+发布前或本地开发时，仍可用 `pi install "/path/to/coding-skills" --local` 加载本地副本，路径替换为克隆目录。`v5.0.1` 标签不含此入口。其他包源与资源筛选见 [Pi Packages](https://pi.dev/docs/latest/packages)。
 
 ### 其他宿主
 

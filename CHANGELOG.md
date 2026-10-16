@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2026-10-16
+
 ### Added
 
 - **Pi Coding Agent**：支持原生包安装和 `/coding` 入口，保留原有 19 个便携技能，安装、原生命令及验证边界见 README。
