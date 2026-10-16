@@ -26,6 +26,12 @@ Before grading, read `./references/severity.md`. Use **Blocking**, **Important**
 
 Use the impact criteria in `./references/ui-review-checklist.md`. Detection confidence and the dimension's name do not determine severity.
 
+## Workspace safety
+
+A read-only audit can proceed without a branch change. Before authorized fixes or checks that may write application state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content and existing check failures. Preserve user work; stop if overlapping changes cannot be separated safely. On the default branch (`main` or `master`), obtain consent for code edits there or create `feature/YYYYMMDD-<semantic-name>` before editing.
+
+Use isolated local/test fixtures for any state-changing verification. Destructive, security-sensitive, or real external effects need specific sign-off before execution; review or fix permission is not permission to affect real resources. Any rollback must undo only this run's changes, never the user's initial work.
+
 ## Phase 0: Scope
 
 Ask what to review unless the request already says. Defaults worth offering: the files changed since the last review, or the whole frontend.

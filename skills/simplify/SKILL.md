@@ -24,6 +24,12 @@ Clean up working code: extract duplication, improve naming, optimize efficiency,
 
 Simplify **recently changed code only**, within the files and change range confirmed in step 3. Stay with changed code and directly necessary context, not unrelated cleanup elsewhere in the same files.
 
+## Workspace safety
+
+Before the first edit or check that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if overlapping changes cannot be isolated. On the default branch (`main` or `master`), obtain consent for edits there or create `feature/YYYYMMDD-<semantic-name>` before writing.
+
+Use isolated local/test targets for verification. Destructive, security-sensitive, or real external effects need specific sign-off before running a command, or a safe isolated reproducer. Run the applicable checks as a baseline before cleanup; if they already fail, report that and stop rather than treating the failure as a simplification result.
+
 ## Execution
 
 ### 1. Read simplify dimensions
@@ -81,7 +87,7 @@ pytest
 cargo test
 ```
 
-If tests fail, revert the change that broke them. Simplification must not break tests.
+If tests fail, undo only this batch's simplification changes, preserving the recorded initial state and user work, then rerun the checks. If the changes cannot be separated safely, stop and ask; never reset or discard the user's work. Simplification must not break tests.
 
 Also run type-check and lint:
 ```bash

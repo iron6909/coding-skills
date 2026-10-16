@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a local branch, completed feature, or commit range against standards, its spec, recorded learnings, and configured specialist lenses. Save findings under .coding/review/ or .coding/features/<feature>/. Fix code only with explicit authorization; execute owns its task reviews.
+description: Review a local branch, completed feature, or commit range for correctness, basic safety, standards, spec conformance, recorded learnings, and explicitly enabled specialist lenses. Save findings under .coding/review/ or .coding/features/<feature>/. Fix code only with explicit authorization; execute owns its task reviews.
 disable-model-invocation: true
 ---
 
@@ -133,14 +133,14 @@ Use the Report structure in `./references/review-lenses.md`, including its order
 | Rationalization | Reality |
 |-----------------|---------|
 | "The diff is small, it doesn't need a review" | Small diffs still carry the exact bugs a review catches, and they are cheap to read. |
-| "The tests pass, so the code is correct" | Tests check the behavior someone thought to write. The Spec lens checks the rest. |
+| "The tests pass, so the code is correct" | The correctness/safety floor checks gaps in behavior and tests; the Spec lens adds acceptance coverage when a spec exists. |
 | "I wrote it, I know it's fine" | That is exactly the reviewer's blind spot. Use a fresh read-only reviewer. |
-| "No documented standards, so anything goes" | Then the smell baseline applies. Standalone code is not exempt. |
+| "No documented standards, so anything goes" | The correctness/safety floor still applies; the smell baseline supplies maintainability heuristics. |
 | "No learnings file, so this diff is clean" | That is an absent lens, not a passing one. Say `none recorded`; do not score it as a pass. |
 | "I grepped the learnings and found nothing relevant" | Check by tag and by subject before concluding. A trap recorded under another module's tag still applies if it is the same trap. |
 | "The spec is old, the code has moved on" | A mismatch is the finding. Report it; do not silently prefer the code. |
 | "I'll fix these findings while I'm here" | This skill reviews. Fixes are a separate, user-approved step. |
-| "Security/performance lenses aren't enabled, so skip them" | Correct. Only run enabled lenses; never invent findings from disabled lenses. |
+| "Security/performance lenses aren't enabled, so skip them" | Skip specialist passes, not the mandatory correctness/safety floor. Report an obvious safety defect even without a Security lens. |
 
 ## Red flags
 
@@ -164,7 +164,8 @@ Confirm the Definition of Done loaded above, then check the review itself:
 - [ ] every finding that points at code names a file, and a line where one applies
 - [ ] the report was written to `.coding/`, never to the repository root
 - [ ] no code changed unless the user asked for fixes
-- [ ] optional lenses only ran if explicitly enabled in configuration
+- [ ] the correctness/safety floor ran, even when no spec or configuration exists
+- [ ] optional lenses only ran if enabled by configuration or an explicit request for this run
 
 ## Fixes
 
@@ -183,7 +184,8 @@ Review: <review_base_sha>...<review_head_sha>
 Fixes: <review_head_sha>..<fix_head_sha>, or none
 Report: <path of the review file written above>
 Lenses enabled: standards, spec, learnings[, security, performance, ...]
-Standards: <N findings, M fixed>
+Correctness/safety floor: <checked, or unavailable checks and why>
+Standards: <N findings including the floor, M fixed>
 Spec: <match | N gaps | no spec available>
 Learnings: <N findings, M fixed | none recorded | none matched>
 Security: <N findings, M fixed | lens not enabled>

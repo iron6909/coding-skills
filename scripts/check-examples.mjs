@@ -8,6 +8,22 @@ import { runInNewContext } from "node:vm";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const blocks = (path, language) => [...read(path).matchAll(new RegExp("```" + language + "\\r?\\n([\\s\\S]*?)\\r?\\n```", "g"))].map((match) => match[1]);
 
+// ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
+const lenses = read("skills/code-review/references/review-lenses.md");
+assert.ok(lenses.includes("## Correctness and safety floor (always)"), "every review needs a correctness/safety floor");
+for (const check of ["boundary conditions", "error handling", "test effectiveness", "trust boundaries", "data loss"]) {
+  assert.ok(lenses.includes(check), `missing review floor: ${check}`);
+}
+assert.ok(lenses.includes("explicit user request for this run"), "a requested specialist lens must not require a config file");
+for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Execution"], ["ui-review", "1. Resolve any open design decision"]]) {
+  const source = read(`skills/${skill}/SKILL.md`);
+  const gate = source.indexOf("## Workspace safety");
+  assert.ok(gate >= 0 && gate < source.indexOf(action), `${skill} needs workspace safety before its first affected action`);
+  for (const safeguard of ["initial staged and unstaged", "default branch", "sign-off"]) {
+    assert.ok(source.includes(safeguard), `${skill} missing safeguard: ${safeguard}`);
+  }
+}
+
 const loginExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes("app.post('/api/login'"));
 assert.equal(loginExamples.length, 2);
 for (const source of loginExamples) {

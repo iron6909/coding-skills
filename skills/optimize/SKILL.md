@@ -14,10 +14,16 @@ Before starting:
 - **Baseline measurement**: Know current performance (how slow? how much memory?)
 - **Target**: What's acceptable? (e.g., "reduce API latency from 800ms to <200ms")
 - **Measurement harness**: Can you measure the target metric reliably?
-- **Representative workload**: Real data, realistic conditions
+- **Representative workload**: Isolated representative fixtures and realistic conditions; do not assume production data or services are safe to use
 - **Decision thresholds**: Minimum worthwhile gain above measurement noise, acceptable complexity, and a time or iteration budget. Propose workload-based defaults if unspecified and report them; let the user adjust them.
 
 Establish missing measurements and targets before changing code. A percentage threshold is not universal: a smaller gain can matter if it reliably meets the target.
+
+## Workspace safety
+
+Before the first profile, benchmark, edit, or other command that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if it overlaps and cannot be isolated safely. On the default branch (`main` or `master`), obtain consent for edits there or create `feature/YYYYMMDD-optimize-<name>` before writing; reuse that branch for the run.
+
+Check the command's target environment, credentials, and external effects before running it. Use isolated local/test fixtures by default. Destructive, security-sensitive, paid, or real external transactions need specific sign-off before execution, or a safe isolated harness that cannot affect real resources. Record existing correctness-check failures before attributing any to a variant.
 
 ## Process
 
@@ -118,7 +124,7 @@ Rank by (impact / risk) ratio. Start with highest ratio.
 One variant at a time.
 
 **Workflow**:
-1. Before the first variant, inspect the branch and working tree and record existing changes. On the default branch, get the user's consent to work there or create `feature/YYYYMMDD-optimize-<name>`. Reuse that branch for later variants.
+1. Recheck the workspace and target-environment safety boundary established before profiling; new side effects need their own authorization.
 2. Implement the variant
 3. Run tests (ensure correctness)
 4. Measure performance with same harness as baseline

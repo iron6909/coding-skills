@@ -7,7 +7,7 @@ The lens system enables extensible, independent code review perspectives. Each l
 **Lens**: An independent review perspective with a clear responsibility, input (diff + context), and output (findings).
 
 **Default lenses** (always enabled):
-- `standards` - Repository coding standards
+- `standards` - Correctness/safety floor and repository coding standards
 - `spec` - Specification conformance
 - `learnings` - Recorded trap detection
 
@@ -16,6 +16,16 @@ The lens system enables extensible, independent code review perspectives. Each l
 - `performance` - Performance issues
 - `accessibility` - WCAG compliance
 - `i18n` - Internationalization readiness
+
+## Correctness and safety floor (always)
+
+The Standards reviewer owns these checks in the same pass as coding standards; do not add a reviewer or review round. They apply even without a spec, learnings, standards, or optional lenses:
+
+- **Behavior**: check boundary conditions, state transitions, concurrency, and error handling against the changed code's callers and observable contract.
+- **Tests**: check test effectiveness, missing regression cases, and whether assertions actually exercise the changed behavior. Passing tests are evidence, not proof of correctness.
+- **Safety**: check trust boundaries, input validation, authorization, secrets exposure, and obvious data loss risks.
+
+Label these findings as correctness or safety under Standards, with code evidence. Specialist lenses add depth; do not duplicate a finding already covered by the floor. A disabled Security lens means no specialist security pass, not permission to ignore an obvious safety defect.
 
 ## Lens interface
 
@@ -37,7 +47,7 @@ Resolve configuration in this order; do not combine files:
 2. Otherwise `.coding/review-lenses.md`
 3. Otherwise only the default lenses
 
-Optional lenses run only when explicitly enabled. Skip Spec if no spec is available and Learnings if no learnings are recorded; explain those omissions in the report.
+Keep default lenses enabled regardless of the configuration's enabled list. Optional lenses run when enabled by the selected configuration or an explicit user request for this run; a request does not require creating a configuration file. Record the selection source. Skip Spec if no spec is available and Learnings if no learnings are recorded; explain those omissions in the report.
 
 ### Project-level (.coding/review-lenses.md)
 
@@ -141,15 +151,16 @@ Run lenses in order:
 ### Standards lens (always enabled)
 **Input**:
 - Diff
+- Correctness/safety floor checks above; include their text in the reviewer's context, not just the section name
 - Repository standards docs (CODING_STANDARDS.md, CONTRIBUTING.md, AGENTS.md)
 - GLOSSARY.md and relevant ADRs
 - Smell baseline (if no documented standards)
 
-**Output**: Violations of documented standards or smell baseline
+**Output**: Correctness/safety floor findings, plus violations of documented standards or the smell baseline
 
 **Subagent prompt** (when dispatching):
 ```
-Review the diff for coding standards violations.
+Review the diff against the correctness and safety floor above and the repository's coding standards.
 
 Standards sources: <list of files>
 Diff command: git diff <review_base_sha>...<review_head_sha>
@@ -261,7 +272,8 @@ Use the report path selected by SKILL.md. Every lens permits the full severity r
 **Lenses enabled:** standards, spec, learnings[, security, performance, ...]
 
 ## Standards
-- [Blocking|Important|Minor] <file>:<line> - <finding>
+**Correctness/safety floor:** <checked, or unavailable checks and why>
+- [Blocking|Important|Minor] <file>:<line> - <correctness, safety, or standards finding>
 
 ## Spec
 - [Blocking|Important|Minor] <finding>
