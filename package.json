@@ -1,6 +1,7 @@
 {
   "name": "@iron6909/coding-skills",
   "version": "5.0.1",
+  "type": "module",
   "description": "极简 coding agent 技能集，专注清晰流程和本地化开发",
   "keywords": [
     "claude",
@@ -14,7 +15,11 @@
     "pi-package"
   ],
   "pi": {
-    "skills": ["./skills"]
+    "skills": ["./skills"],
+    "extensions": ["./extensions/index.ts"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
   },
   "repository": {
     "type": "git",
@@ -27,6 +32,7 @@
   },
   "homepage": "https://github.com/iron6909/coding-skills#readme",
   "files": [
+    "extensions",
     "skills",
     "README.md",
     "LICENSE"

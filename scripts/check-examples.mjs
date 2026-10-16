@@ -16,7 +16,11 @@ try {
 }
 assert.ok(manifest.keywords.includes("pi-package"), "the package must be discoverable as a Pi package");
 assert.deepEqual(manifest.pi.skills, ["./skills"], "Pi must load the existing self-contained skill directories");
-assert.deepEqual(manifest.files, ["skills", "README.md", "LICENSE"], "publish skills and user-facing documents, not development rules");
+assert.deepEqual(manifest.pi.extensions, ["./extensions/index.ts"], "Pi must load the single command adapter");
+assert.equal(manifest.type, "module");
+assert.deepEqual(manifest.peerDependencies, { "@earendil-works/pi-coding-agent": "*" }, "Pi provides the host, not a bundled runtime dependency");
+assert.ok(!manifest.dependencies, "the adapter must not add runtime packages");
+assert.deepEqual(manifest.files, ["extensions", "skills", "README.md", "LICENSE"], "publish resources and user-facing documents, not development rules");
 
 // ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
 const lenses = read("skills/code-review/references/review-lenses.md");
