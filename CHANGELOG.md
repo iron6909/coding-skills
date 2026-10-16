@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.1] - 2026-10-16
+
+### Fixed
+
+- **审查模板范围**：三个独立 reviewer 模板统一使用固定的基线和 head SHA，避免主流程已固定范围、委派模板仍随 `HEAD` 漂移。
+- **示例正确性与无障碍**：测试隔离等待数据库清理和应用状态重置；加载按钮保留文本名称并将 Spinner 标为装饰；删除可能改变数组遍历行为的长度缓存正例，修正复杂度计算和覆盖率摘要漂移。
+- **规则一致性**：提交格式和需求覆盖以共享引用为准；仅在存在真实选择时比较架构备选方案；区分可直接证明的冗余删除与需要测量的性能收益声明。
+- **追溯与描述**：稳定 ID 示例改为可独立验收的纵向切片，同步任务简报、验收与提交示例；refactor 描述明确实际报告路径。
+- **回归检查**：现有自检补齐委派模板范围、异步清理、加载文本和复杂度总数检查，使用 Node 18 支持的 API，不新增依赖。
+
+### Changed
+
+- 精简 code-review、execute、commit、simplify 与 UI 状态中的重复规则，正文保留流程和按需读取入口，细则由引用统一维护。
+
 ## [4.0.0] - 2026-10-15
 
 ### Breaking Changes
@@ -264,7 +278,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v4.0.1...HEAD
+[4.0.1]: https://github.com/iron6909/coding-skills/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/iron6909/coding-skills/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/iron6909/coding-skills/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/iron6909/coding-skills/compare/v2.0.1...v2.0.2

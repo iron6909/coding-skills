@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: Review the shape of existing code and propose structural improvements for an already-chosen target. Use when the user names a specific area to refactor, or when the codebase is hard to change in a known area. For greenfield architecture, use clarify's Architectural path. For bug fixes, use debug. Produces candidates in a temporary report, not code.
+description: Review the shape of existing code and propose structural improvements for an already-chosen target. Use when the user names a specific area to refactor, or when the codebase is hard to change in a known area. For greenfield architecture, use clarify's Architectural path. For bug fixes, use debug. Produces ranked candidates in .coding/refactor/YYYYMMDD-<scope>.md, not code.
 disable-model-invocation: true
 ---
 

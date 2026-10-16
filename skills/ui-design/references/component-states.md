@@ -113,8 +113,8 @@ disabled:
 
 loading:
   - Background: primary-500
-  - Text: invisible or pushed right
-  - Spinner visible (usually white)
+  - Text: keep the action label (visible or visually hidden)
+  - Spinner visible, decorative, and hidden from assistive technology
   - Cursor: not-allowed
   - Disabled state (can't click again)
 ```
@@ -488,13 +488,7 @@ transition:
 
 ### Button Loading
 
-```
-loading:
-  - Spinner visible (inside button)
-  - Button text: hidden or pushed to side
-  - Cursor: not-allowed
-  - Disabled: true (can't click again)
-```
+Use the Primary Button loading state above for applicable button variants, preserving each variant's styling.
 
 ### Skeleton Loading
 

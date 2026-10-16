@@ -51,26 +51,7 @@ Use the union within the confirmed scope, not every untracked file. If nothing r
 
 ### 4. Review against dimensions
 
-For each file in scope, check all three dimensions:
-
-**Reuse** (extract duplication):
-- Repeated logic (same 5+ lines in 2+ places)
-- Similar functions differing only in parameters
-- Copy-pasted error handling or validation
-
-**Clarity** (improve readability):
-- Verbose or misleading names
-- Long functions (>50 lines) with distinct sections
-- Magic numbers or strings
-- Missing or outdated comments
-- Nested conditionals (>3 levels)
-- **High complexity**: Use the signals in `./references/complexity-metrics.md` to find candidates, then name the actual readability or cohesion problem; a count alone does not justify a change
-
-**Efficiency** (optimize when safe):
-- Redundant loops or repeated computation
-- Unnecessary allocations
-- Inefficient data structures for the access pattern
-- Premature optimization is a trap—only optimize obvious waste
+Review each file using the three dimensions and efficiency evidence rules in `./references/simplify-dimensions.md`. For complexity candidates, use `./references/complexity-metrics.md`; name the actual readability or cohesion problem rather than treating a count as a violation.
 
 Grade every finding using `./references/severity.md`; passing tests do not rule out Blocking defects. If one is found, report it, stop the affected cleanup, and recommend `debug` rather than changing behavior inside simplification.
 
@@ -85,7 +66,6 @@ Make changes that preserve behavior:
 
 Do not:
 - Change public APIs without user confirmation
-- Optimize without evidence (no profiling? no optimization)
 - Refactor code outside the scope
 - Mix simplification with feature changes
 

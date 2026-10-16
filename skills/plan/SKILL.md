@@ -232,7 +232,7 @@ plan.md is an index. Task details live in `.coding/features/YYYYMMDD-<semantic-n
 
 Applies to every tier. Before reporting the plan, check it against the spec:
 
-- every active spec requirement maps to an executable task, a completed task that still satisfies it, or a final check; skipped tasks do not count
+- requirement coverage passes the checklist in `./references/stable-ids.md`
 - every task has one clear deliverable
 - task order respects dependencies
 - shared interfaces use the same names and types everywhere

@@ -260,7 +260,8 @@ Verify usable default, focus, and activation feedback, plus hover where availabl
 **Fix:** Show progress and prevent harmful duplicate submission. Disabling during submission is one option; verify the actual guard or idempotent behavior rather than assuming a spinner protects data.
 ```jsx
 <button onClick={submitForm} disabled={isLoading}>
-  {isLoading ? <Spinner /> : 'Submit'}
+  {isLoading && <span aria-hidden="true"><Spinner /></span>}
+  {isLoading ? 'Submitting...' : 'Submit'}
 </button>
 ```
 

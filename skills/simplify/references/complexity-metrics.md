@@ -64,8 +64,8 @@ def process_user(user):  # M = 1 (base)
 **Definition**: How difficult code is to understand (not just test)
 
 **Increments**:
-- Each `if`, `else if`, `switch`, `for`, `while`, `catch` adds +1
-- Each nesting level adds +1 per construct
+- Each `if`, `else if`, `else`, `switch`, `for`, `while`, `catch` adds +1
+- Add the nesting depth for `if`, `switch`, loops, and `catch`; `else` and `else if` have no nesting penalty
 - Breaks in control flow (`break`, `continue`, `goto`) add +1
 - Recursive calls add +1
 
@@ -75,23 +75,23 @@ def process_user(user):  # M = 1 (base)
 ```python
 def calculate_discount(user, items, promo_code):
     total = 0
-    for item in items:  # +1 (loop) +1 (nesting level 1) = +2
+    for item in items:  # +1 (top-level loop)
         total += item.price
         
-        if item.on_sale:  # +1 (if) +1 (nesting level 2) = +2
-            if user.is_premium:  # +1 (if) +1 (nesting level 3) = +2
+        if item.on_sale:  # +1 (if) +1 (nesting) = +2
+            if user.is_premium:  # +1 (if) +2 (nesting) = +3
                 total -= item.price * 0.3
-            else:  # +1 (nesting level 3)
+            else:  # +1 (else; no nesting penalty)
                 total -= item.price * 0.15
     
-    if promo_code:  # +1 (if)
-        if promo_code == "SAVE20":  # +1 (if) +1 (nesting level 2) = +2
+    if promo_code:  # +1 (top-level if)
+        if promo_code == "SAVE20":  # +1 (if) +1 (nesting) = +2
             total *= 0.8
-        elif promo_code == "SAVE50":  # +1 (nesting level 2)
+        elif promo_code == "SAVE50":  # +1 (elif; no nesting penalty)
             total *= 0.5
     
     return total
-# Total cognitive complexity: 13
+# Total cognitive complexity: 11
 ```
 
 **Thresholds**:

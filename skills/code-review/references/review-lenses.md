@@ -152,7 +152,7 @@ Run lenses in order:
 Review the diff for coding standards violations.
 
 Standards sources: <list of files>
-Diff command: git diff <base>...HEAD
+Diff command: git diff <review_base_sha>...<review_head_sha>
 
 Report findings as JSON array:
 [
@@ -181,7 +181,7 @@ Do not edit code. Do not make recommendations beyond the finding.
 Review the diff against the spec.
 
 Spec: <path>
-Diff command: git diff <base>...HEAD
+Diff command: git diff <review_base_sha>...<review_head_sha>
 
 Check:
 - Are all acceptance conditions (REQ-N) implemented?
@@ -203,7 +203,7 @@ Report findings as JSON array with same structure as above.
 Review the diff for repeated traps.
 
 Learnings files: <list of relevant files>
-Diff command: git diff <base>...HEAD
+Diff command: git diff <review_base_sha>...<review_head_sha>
 
 Check: Does the diff repeat a trap these learnings recorded?
 

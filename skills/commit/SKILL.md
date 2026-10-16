@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Create high-quality commits for ad-hoc changes. Detects project conventions from git log, stages specified files only, and writes good commit messages. Use when you need to commit user-directed changes that don't belong to a specific skill's output (e.g., experimental code, configuration tweaks, manual edits).
+description: Create user-directed commits for ad-hoc changes outside another skill's workflow. Apply the shared commit rules, use git history for project vocabulary, and stage only confirmed files or hunks. Use for experimental code, configuration tweaks, or manual edits the user wants committed.
 disable-model-invocation: true
 ---
 
@@ -22,21 +22,14 @@ Create well-crafted commits for ad-hoc changes, respecting project conventions.
 
 ## Process
 
-### 1. Detect Conventions
+### 1. Read Conventions
 
-Analyze recent commits to understand project style:
+Read `./references/git-commit.md` before choosing the message format; it owns convention precedence and the default format.
+
+Inspect recent commits for project vocabulary, common types, and scopes, without overriding those rules:
 ```bash
 git log --oneline -20 --no-merges
 ```
-
-Look for:
-- **Format**: Conventional Commits (`type(scope): subject`), free-form, or other
-- **Types**: Common prefixes (feat, fix, docs, refactor, test, chore, etc.)
-- **Scope usage**: Do commits include scope? What scopes are used?
-- **Subject style**: Imperative mood? Capitalized? Punctuation?
-- **Length**: Typical subject length
-
-Reference `./references/git-commit.md` for commit conventions.
 
 ### 2. Review Changes
 
@@ -67,29 +60,7 @@ git add -p <file>
 
 ### 4. Write Commit Message
 
-Craft a message that:
-- **Follows detected conventions**: Match project style
-- **Describes the change**: What was done, not why (unless non-obvious)
-- **Uses imperative mood**: "Add feature" not "Added feature"
-- **Fits in one line**: Subject ≤ 72 characters if possible
-- **Includes scope**: If project uses scopes
-
-**Format** (Conventional Commits, if detected):
-```
-type(scope): subject
-
-[optional body if change needs explanation]
-```
-
-**Common types**:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation only
-- `refactor`: Code restructuring without behavior change
-- `test`: Test additions or fixes
-- `chore`: Maintenance tasks (deps, config)
-- `perf`: Performance improvement
-- `ci`: CI/CD changes
+Write a message specific to the confirmed change, following the format and subject/body rules loaded above.
 
 ### 5. Confirm and Commit
 
@@ -99,13 +70,12 @@ Show the proposed commit message to the user. Ask:
 
 Once approved:
 ```bash
-git commit -m "type(scope): subject"
+git commit -m "<approved subject>"
 ```
 
 Or with body:
 ```bash
-git commit -m "type(scope): subject" -m "
-Optional body explaining non-obvious aspects of the change."
+git commit -m "<approved subject>" -m "<approved body>"
 ```
 
 ### 6. Verify
@@ -168,7 +138,7 @@ User: "Commit only the validation logic changes in user.js, not the logging stuf
 
 ## Principles
 
-- **Respect conventions**: Match project's commit style
+- **Respect conventions**: Apply the loaded commit rules
 - **Surgical staging**: Stage only specified files
 - **Quality messages**: Clear, concise, conventional
 - **No surprises**: Show changes before committing

@@ -182,7 +182,7 @@ if (action !== 'delete') return;
 
 ## 3. Efficiency (optimize obvious waste)
 
-Remove unnecessary work. Only optimize clear inefficiencies—don't guess at performance problems.
+Remove statically demonstrable redundant work only when behavior and readability are preserved. Claims of latency, throughput, or memory gains require measurements; recommend `optimize` for systematic performance work.
 
 ### What to look for
 
@@ -202,7 +202,7 @@ for user in users:
         admin_users.append(user)
 ```
 
-**Repeated computation**:
+**Repeated computation**: Hoist only when the inputs stay unchanged and reducing calls has no observable side effects.
 ```javascript
 // Bad: calculateDiscount called every iteration
 for (const item of cart.items) {
@@ -253,7 +253,7 @@ fn process_items_into(items: &[Item], buffer: &mut Vec<String>) {
 
 ### When not to optimize
 
-- No evidence of slowness (no profiling, no user complaint)
+- Neither redundant work nor a measured bottleneck has been established
 - Optimization makes code significantly harder to read
 - The code is not in a hot path (runs once at startup, user-triggered only)
 - Premature optimization (the algorithm is O(n) and n is always <10)

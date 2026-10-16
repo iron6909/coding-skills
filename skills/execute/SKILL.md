@@ -115,16 +115,10 @@ For each task:
 9. Run the lightweight task review below.
 10. Apply only its bounded fix pass and scoped re-check when needed; leave Minor findings deferred.
 11. Commit the task only after review passes and checks are fresh.
-    - Read `./references/git-commit.md` and stage only task-owned changes, preserving the user's staged and unstaged work.
-    - Check staged changes: `git diff --staged`
-    - Follow the repository's commit convention, otherwise Conventional Commits. Reference implemented REQ-N IDs only when the input spec has them (see `./references/stable-ids.md`). For a small change without a spec, identify the approved request and its acceptance check instead; do not invent IDs or create a spec for the commit format. With IDs:
-      ```
-      feat(scope): implement REQ-1 and REQ-4
-      
-      - <what was added/changed>
-      - <verification command and result>
-      ```
-    - Do not push. Record the commit to the ledger.
+    - Inspect `git diff --check` and `git status`.
+    - Read `./references/git-commit.md` for staging and message rules; commit only task-owned changes, preserving the user's staged and unstaged work.
+    - Reference implemented REQ-N IDs only when the input spec has them (see `./references/stable-ids.md`). For a small change without a spec, identify the approved request and its acceptance check instead; do not invent IDs or create a spec for the commit format.
+    - Record the commit to the ledger.
 12. Write the task-complete ledger entry.
 
 After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
@@ -247,15 +241,6 @@ Allow at most one fix pass and one scoped re-check after the initial review:
 4. Stop before committing or advancing if a Blocking or Important finding remains unresolved. Report the evidence and smallest decision needed; another attempt requires the user's decision, not a reset loop counter.
 
 A task with no such findings needs no fix pass or second review. Safety checkpoints still apply before any affected action.
-
-## Task commit
-
-After the review passes and fresh checks succeed:
-
-- inspect `git diff --check` and `git status`
-- commit only the task files and tests, with the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits (`type(scope): subject`)
-- keep unrelated user changes out of the commit
-- record the commit identifier and check results in the execution report
 
 ## Tests and verification
 

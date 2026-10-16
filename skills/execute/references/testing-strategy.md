@@ -417,15 +417,15 @@ test('useAuth returns user when logged in', () => {
 
 **Example**:
 ```javascript
-beforeEach(() => {
+beforeEach(async () => {
   // Reset database
-  db.users.deleteAll();
+  await db.users.deleteAll();
   
   // Clear mocks
   jest.clearAllMocks();
   
   // Reset application state
-  app.reset();
+  await app.reset();
 });
 ```
 
@@ -468,6 +468,6 @@ beforeEach(() => {
 
 **Test through entry points** defined in spec, not internal implementation.
 
-**Aim for 70-80% coverage** on business logic, less on infrastructure.
+**Use the coverage targets above**, subject to the project's requirements; coverage alone does not prove correctness.
 
 **Keep tests fast and isolated** to encourage running them frequently.

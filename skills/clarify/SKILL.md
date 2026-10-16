@@ -193,8 +193,6 @@ After exploring code (and running research/spike if needed), ask what remains:
 - Acceptance conditions
 - Testing boundary
 
-For **Architectural path**: If competing approaches exist, identify 2-3 viable options.
-
 ### Step 6: Draft technical spec
 
 Read `./references/stable-ids.md` before drafting acceptance conditions, and use its verification checklist before saving the spec.
@@ -205,13 +203,13 @@ Present one recommended approach with necessary trade-offs.
 
 #### Architectural path
 
-Present 2-3 viable approaches. Compare by:
+When a real choice exists, present 2-3 viable approaches. Compare by:
 - Complexity
 - Fit with current code
 - Risk
 - Testability
 
-Recommend one with clear reasoning.
+Recommend one with clear reasoning. Otherwise, state the single justified approach without inventing alternatives.
 
 ### Spec structure
 
@@ -227,19 +225,19 @@ Recommend one with clear reasoning.
 ## Solution
 
 [Bounded: the approach]
-[Architectural: comparison of 2-3 options]
+[Architectural: compare 2-3 options only when a real choice exists; otherwise state the justified approach]
 
-### [For Architectural] Option 1: [Name]
+### [When comparing options] Option 1: [Name]
 **Approach**: [description]
 **Pros**: [benefits]
 **Cons**: [drawbacks]
 **Fit**: [how well it matches existing patterns]
 **Risk**: [what could go wrong]
 
-### [For Architectural] Option 2: [Name]
+### [When comparing options] Option 2: [Name]
 ...
 
-**Recommendation**: Option X, because [clear reasoning]
+**Recommendation**: [Chosen approach and clear reasoning]
 
 ## Feasibility Validation (if spike was run)
 **Question**: [What we needed to validate]

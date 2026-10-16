@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review code changes since a review base using configurable lenses — Standards (repo coding standards), Spec (spec conformance), Learnings (recorded traps), and optional lenses (Security, Performance, Accessibility, I18n) — and write a report to .coding. Use when asked to review code, a branch, or historical commits. Changes code only if the user then asks for fixes. NOT for self-review during execute (execute has its own review).
+description: Review a local branch, completed feature, or commit range against standards, its spec, recorded learnings, and configured specialist lenses. Save findings under .coding/review/ or .coding/features/<feature>/. Fix code only with explicit authorization; execute owns its task reviews.
 disable-model-invocation: true
 ---
 
@@ -16,24 +16,15 @@ Independent review of a branch, completed feature, or historical commits, includ
 - User explicitly asks for an independent review
 - `autoflow` reaches its authorized feature-wide review stage
 
-**Read `./references/review-lenses.md` for the lens system architecture, configuration, and dispatch rules.**
-
 ## Review lenses
 
-Multi-perspective review using independent lenses. Each lens examines the diff from one focused angle.
+Read `./references/review-lenses.md` before selecting or dispatching lenses; it owns selection, configuration, execution order, and report structure.
 
-**Default lenses** (always enabled):
-- **Standards**: does the code follow this repo's documented coding standards?
-- **Spec**: does the code implement the originating spec?
-- **Learnings**: does the code repeat a trap this project already recorded?
-
-**Optional lenses** (enable per-project):
-- **Security**: security vulnerabilities (see `./references/lens-security.md`)
-- **Performance**: performance anti-patterns (see `./references/lens-performance.md`)
-- **Accessibility**: WCAG compliance (see `./references/lens-accessibility.md`)
-- **I18n**: internationalization readiness (see `./references/lens-i18n.md`)
-
-Lenses run in parallel when subagents are available. The Learnings lens is skipped when `docs/learnings/` does not exist — say so in the report rather than treating it as a pass.
+Read an optional lens's reference only when that lens is enabled:
+- **Security**: `./references/lens-security.md`
+- **Performance**: `./references/lens-performance.md`
+- **Accessibility**: `./references/lens-accessibility.md`
+- **I18n**: `./references/lens-i18n.md`
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. A DoD item the diff breaks is a finding, even when no documented standard names it explicitly. State at the end of the report which DoD applied.
 
@@ -121,7 +112,7 @@ Read `./references/learnings-format.md` to understand the format and structure o
 
 ## Configure and run lenses
 
-Read the Configuration and Lens dispatch rules in `./references/review-lenses.md`. Use only the configured optional lenses; absent source material is recorded as skipped, not passed.
+Run the enabled lenses using the configuration and dispatch rules loaded above.
 
 For parallel read-only reviewers, read `./references/subagent-dispatch.md`. When delegation is unavailable, run the same enabled lenses inline in the reference's order. Reviewers return findings only; the main process owns grading and the report.
 
@@ -135,7 +126,7 @@ The reviewer's label is advice. Your grading is the gate.
 
 Write the findings to `.coding/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.coding/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
 
-Use the Report structure in `./references/review-lenses.md`. Present each lens separately in that order. A Learnings finding names its source file; disabled or unavailable lenses are explicitly marked, not counted as passes.
+Use the Report structure in `./references/review-lenses.md`, including its ordering, source citations, and skipped/unavailable statuses.
 
 ## Common rationalizations
 

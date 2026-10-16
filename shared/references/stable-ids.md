@@ -63,9 +63,8 @@ Each task in `plan.md` references the requirement IDs it implements:
 ```markdown
 ## Tasks
 
-1. Task 1: Upload endpoint — **Covers:** REQ-1, REQ-4 — depends on: None
-2. Task 2: Image processing — **Covers:** REQ-2 — depends on: Task 1
-3. Task 3: Frontend integration — **Covers:** REQ-3 — depends on: Task 2
+1. Task 1: Safely upload and display an avatar — **Covers:** REQ-1, REQ-3, REQ-4 — depends on: None
+2. Task 2: Resize uploaded avatars to 128x128 — **Covers:** REQ-2 — depends on: Task 1
 ```
 
 ### Task brief references
@@ -75,13 +74,14 @@ In `.coding/features/YYYYMMDD-<name>/impl/task-N.md`:
 ```markdown
 # Task N: <short name>
 
-**Covers requirements:** REQ-1, REQ-4
+**Covers requirements:** REQ-1, REQ-3, REQ-4
 
 ## Goal
 <what this task delivers>
 
 ## Acceptance
 - REQ-1: User can upload an avatar image → verify with upload form test
+- REQ-3: Avatar displays in profile and navigation → verify after upload and refresh
 - REQ-4: Upload fails if file > 5MB → verify with oversized file test
 ```
 
@@ -90,12 +90,12 @@ In `.coding/features/YYYYMMDD-<name>/impl/task-N.md`:
 Reference REQ-N in commit messages to trace code changes back to requirements:
 
 ```bash
-git commit -m "feat(avatar): add upload endpoint
+git commit -m "feat(avatar): safely upload and display avatar
 
-Implements REQ-1 (upload capability) and REQ-4 (size validation).
+Implements REQ-1 (upload), REQ-3 (display), and REQ-4 (size validation).
 
-- POST /api/user/avatar endpoint
-- Validates file type (PNG/JPG/WEBP)
+- Uploads validated PNG/JPG/WEBP images for the authorized user
+- Displays the avatar in the profile and navigation bar
 - Rejects files over 5MB with 413 status"
 ```
 
@@ -200,7 +200,7 @@ REQ-1: Upload capability
   ↓
 plan.md Task 1: Covers REQ-1
   ↓
-commit abc123: "feat(avatar): add upload endpoint (REQ-1)"
+commit abc123: "feat(avatar): safely upload and display avatar (REQ-1, REQ-3, REQ-4)"
   ↓
 src/routes/avatar.ts: POST endpoint implementation
   ↓

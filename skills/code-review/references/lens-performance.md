@@ -171,19 +171,6 @@ Computing the same value multiple times.
 
 **Examples**:
 ```typescript
-// ❌ Computes length on every iteration
-for (let i = 0; i < items.length; i++) {
-  process(items[i]);
-}
-
-// ✅ Cache length
-const len = items.length;
-for (let i = 0; i < len; i++) {
-  process(items[i]);
-}
-```
-
-```typescript
 // ❌ Recomputes total on every render
 function CartSummary({ items }) {
   const total = items.reduce((sum, item) => sum + item.price, 0);
