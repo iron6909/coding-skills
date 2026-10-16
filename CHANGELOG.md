@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.1] - 2026-10-16
+
+### Changed
+
+- **使用说明**：精简 README，以安装、快速开始、技能速查和使用示例为主，保留输出路径、提交责任及重要授权边界，不改变技能行为。
+
+### Fixed
+
+- **文档一致性**：技能分类检查改为读取速查表，快速开始检查按实际章节边界定位，维护规则同步更新。
+
 ## [5.0.0] - 2026-10-16
 
 ### Breaking Changes

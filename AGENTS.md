@@ -76,7 +76,7 @@ Update all of these in the same commit:
 
 1. `skills/<name>/SKILL.md` and its `references/`
 2. `skills/guide/SKILL.md`: the skill list and, if it is a routing target, the routing order
-3. `README.md`: the skill table and diagram
+3. `README.md`: the skill table and quick start
 4. `MAP` in `scripts/sync-references.mjs`, if it holds shared files
 
 ## Checks before committing

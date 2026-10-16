@@ -28,13 +28,13 @@ const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
 const readme = read("README.md");
 const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((label) => {
-  const line = readme.split(/\r?\n/).find((line) => line.startsWith(`- **${label}`)) ?? "";
-  return [...line.matchAll(/`([\w-]+)`/g)].map(([, name]) => name);
+  const section = readme.split(`### ${label}`)[1]?.split("\n#")[0] ?? "";
+  return [...section.matchAll(/\]\(skills\/([\w-]+)\/SKILL\.md\)/g)].map(([, name]) => name);
 });
 assert.deepEqual(coreSkills, ["survey", "clarify", "plan", "execute", "code-review"], "the core must contain exactly the five main-workflow skills");
 const installedSkills = readdirSync(new URL("../skills/", import.meta.url), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
 assert.deepEqual([...coreSkills, ...auxiliarySkills].sort(), installedSkills, "every skill must be classified once as core or auxiliary");
-assert.ok(readme.split("## 快速开始")[1]?.split("## 核心流程")[0].includes("/clarify"), "the quick start must work without optional guide");
+assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/clarify"), "the quick start must work without optional guide");
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);

@@ -2,409 +2,153 @@
 
 [![skills.sh](https://skills.sh/b/iron6909/coding-skills)](https://skills.sh/iron6909/coding-skills)
 
-极简 coding agent 技能集,专注清晰流程和本地化开发。基于 Superpowers 和 Matt Pocock Skills 提炼。
-
-**核心原则**: 完全本地化开发,不依赖 issue tracker (GitHub/Linear/Jira)。所有设计、计划、任务管理使用本地文件。
+coding agent 编码技能集，专注清晰流程和本地化开发。需求、计划和工作记录都使用本地文件，不依赖 issue tracker。
 
 ## 安装
 
-### 通过 skills.sh 安装（推荐）
+推荐通过 skills.sh 安装：
 
 ```bash
 npx skills@latest add iron6909/coding-skills
 ```
 
-安装器会将选中的技能目录复制到项目的 `.claude/skills/`。按以下分类选择：
-
-- **核心技能（5 个，整体安装）**：`survey`、`clarify`、`plan`、`execute`、`code-review`。
-- **辅助技能（14 个，按需安装）**：`guide`、`ideate`、`ui-design`、`ui-review`、`debug`、`optimize`、`commit`、`autoflow`、`refactor`、`capture`、`learning-refresh`、`doc-review`、`simplify`、`handoff`。
-
-核心表示主流程基础能力，不要求每个任务依次调用全部五个。辅助按场景选择；例如必要界面决策尚未确定时，需选装 `ui-design` 或先明确并批准设计，不能直接跳过未决问题。
-
-本项目使用自己的规格、计划和任务追踪格式，不兼容其他规格系统。参考项目仅提供方法借鉴。
-
-### 手动安装
-
-克隆此仓库，将上述五个核心技能目录复制到项目的 `.claude/skills/`，再按需添加辅助技能。每个目录都须连同其自带的 references 一起复制。
+也可以手动克隆仓库，将需要的完整技能目录复制到项目的 `.agents/skills/`。
 
 ## 快速开始
 
-安装后,在项目中执行:
+安装后，在 coding agent 的项目会话中逐项调用：
 
-```bash
-# 1. 勘察项目(首次使用,或项目事实过期时)
-/survey
-
-# 2. 开始第一个功能
-/clarify 让我们添加用户登录功能
+```text
+/survey                         # 首次使用，或项目事实过期时
+/clarify 添加用户头像上传          # 澄清需求，审阅并制定规格
+/plan                           # 审阅并制定计划
+/execute
+/code-review                    # 需要整体独立审查时另行调用
 ```
 
-若安装了可选的 `guide`，也可以执行 `/guide 让我们添加用户登录功能`，由它选择入口；直接调用核心技能不依赖 guide。通常每个技能产出文档或代码后停下，等你确认再进入下一步：
+若界面决策尚未确定，先通过 `/ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动可以直接用 `/execute`。
 
-1. `clarify` 澄清需求，批准后保存并提交 `spec.md`；仍有界面决策时推荐 `ui-design`，否则可进入 `plan`
-2. `plan` 拆分任务,呈现草稿,批准后保存并提交 `plan.md`
-3. `execute` 按 TDD 持续实现全部已批准任务，每个任务轻量自查、单独提交，再运行最终测试与验收验证；不内置整体独立审查
-4. 需要整体独立审查时另行调用 `code-review`，报告后由你决定修复或集成
-
-安装可选的 `autoflow` 后，已有批准的 spec 且需求、界面决策已确定时，可由它自动编排第 2–4 阶段,不代做需求澄清或界面设计。它保留逐任务自查与提交，整体独立审查只在最后的 `code-review` 阶段执行一次。
-
-## 核心流程
-
-```mermaid
-graph TD
-    A[用户请求] --> B[guide 路由（可选）]
-    A --> C{类型?}
-    B --> C
-    C -->|首次使用| D[survey]
-    C -->|需求不明| E[clarify]
-    C -->|spec 已批准且设计已定| F[plan]
-    C -->|已有计划| G[execute: 持续执行、任务自查与最终验证]
-    C -->|故障| H[debug]
-    C -->|审查他人改动| I[code-review]
-    C -->|代码结构问题| M[refactor]
-    C -->|沉淀推理| N[capture]
-    C -->|learnings 陈旧| O[learning-refresh]
-    C -->|审查文档| P[doc-review]
-    C -->|清理代码| Q[simplify]
-    C -->|审查界面| S[ui-review]
-    C -->|已批准 spec，自动交付| T[autoflow: plan → execute → code-review]
-    T --> J
-
-    D --> E
-    E -->|界面决策未定| R[ui-design]
-    E -->|否则| F
-    R --> F
-    F --> G
-    G --> J[完成]
-    G -->|可选整体审查| I
-    H --> J
-    I --> J
-    M -->|选定候选| E
-    H -->|大型修复| E
-    G -->|可选| N
-    H -->|可选| N
-    G -->|可选| Q
-    G -->|可选| S
-    O --> J
-    P --> J
-    Q --> J
-    S --> J
-
-    style B fill:#e1f5ff
-    style G fill:#d4edda
-    style H fill:#fff3cd
-```
+技能需要显式调用，不会自动触发。不知道选哪个时，可使用 `guide`，运行 `/guide 添加用户头像上传`，由它选择入口；目标缺装时会提示，不会自动安装。
 
 ## 技能速查
 
-| 技能 | 触发时机 | 产物 | 示例 |
-|------|---------|------|------|
-| **guide** | 未指名技能的开发请求 | 路由后交给对应技能 | "添加登录" → clarify |
-| **survey** | 首次使用,或项目事实过期 | AGENTS.md、GLOSSARY.md | 项目事实:栈/命令/约定 |
-| **ideate** | 不确定如何实现,需对比技术方案 | `.coding/ideation/YYYYMMDD-HHMM-<topic>.md` | 生成2-3个方案,压力测试,推荐 |
-| **clarify** | 需求不明 | spec.md/capability-map.md | 两路径:Bounded/Architectural;自动检测分解;Phase 1 可选 research/spike |
-| **ui-design** | spec 已批准，界面决策未定 | 缺失时创建 DESIGN.md；产出 ui-spec.md | 按界面确定模式，设计草案批准后才保存、提交 |
-| **plan** | spec 已批准 | 分两档:Brief 只留在会话,Full 产出 plan.md + task briefs | 拆分为 tracer bullet 任务 |
-| **execute** | 计划就绪,或小改动范围与验收已明确 | commits + Full 档 progress.md | 持续执行已批准任务；轻量自查、逐任务提交、最终验证 |
-| **ui-review** | 审查已实现的前端界面 | `.coding/ui-review/YYYYMMDD-HHMM.md` | 5 维度审查；统一 Blocking / Important / Minor；修复需授权 |
-| **debug** | 报告故障 | 诊断 + 回归测试 + 修复提交 | 4 阶段:根因调查→模式分析→假设验证→实施 |
-| **optimize** | 系统性性能优化 | 优化代码提交 + `.coding/optimize/YYYYMMDD-HHMM/` | Profile→归因→测试变体→停止标准 |
-| **code-review** | 分支审查（本地） | Standards + Spec + Learnings 三轴报告(`.coding/review/`) | 必查正确性与基础安全 + spec/UI 决策对照 + 已记录陷阱；专审按配置或明确请求启用，修复需你同意 |
-| **commit** | 临时改动需提交 | 单次提交（不 push） | 检测约定,暂存指定文件,写优质提交信息 |
-| **autoflow** | spec 已批准,需自动交付 | plan.md、代码提交、审查报告与授权修复 | 仅 plan → execute → code-review；计划批准后自动执行,不代做 clarify |
-| **refactor** | 代码结构拖累修改、模块过浅、难测试、已选定目标 | 改进候选清单(`.coding/refactor/YYYYMMDD-<scope>.md`) | 删除测试判断深/浅模块 |
-| **capture** | 功能/修复刚结束,推理过程会被丢掉 | `docs/learnings/YYYYMMDD-<topic>.md` | 反事实门槛筛掉可推断的内容 |
-| **learning-refresh** | learnings 与代码库漂移 | 更新/合并/归档 learnings,提交改动 | 审计 `docs/learnings/` 陈旧条目,不删除文档 |
-| **doc-review** | 审查规划文档 | 原地编辑 + 报告,提交修复 | spec/plan/capability-map 完整性/可行性检查 |
-| **simplify** | 代码能跑但该清理 | 提交简化后代码 | 提取重复逻辑、改进命名、优化效率 |
-| **handoff** | 暂停工作,跨会话继续 | `.coding/handoff/YYYYMMDD-HHMM.md` | 记录阶段/已完成/阻塞点/下一步 |
+### 核心技能
+
+以下五个技能整体安装，不要求每次全部调用。
+
+| 技能 | 何时使用 |
+|------|----------|
+| [survey](skills/survey/SKILL.md) | 首次接入项目，或需要更新项目事实与术语 |
+| [clarify](skills/clarify/SKILL.md) | 澄清需求并形成规格；大型跨模块工作先拆分能力 |
+| [plan](skills/plan/SKILL.md) | 规格已批准，需要拆分可验证的任务 |
+| [execute](skills/execute/SKILL.md) | 执行已批准的计划，或实现范围明确的小改动 |
+| [code-review](skills/code-review/SKILL.md) | 对本地分支改动做整体独立审查 |
+
+### 辅助技能
+
+| 技能 | 何时使用 |
+|------|----------|
+| [guide](skills/guide/SKILL.md) | 不确定该从哪个技能开始 |
+| [ideate](skills/ideate/SKILL.md) | 需要比较技术方案，再决定方向 |
+| [ui-design](skills/ui-design/SKILL.md) | 规格已批准，界面与交互设计尚未确定 |
+| [ui-review](skills/ui-review/SKILL.md) | 审查已实现的前端界面 |
+| [debug](skills/debug/SKILL.md) | 定位并修复故障 |
+| [optimize](skills/optimize/SKILL.md) | 根据测量结果优化性能 |
+| [commit](skills/commit/SKILL.md) | 提交指定的临时改动 |
+| [autoflow](skills/autoflow/SKILL.md) | 从已批准的规格编排计划、实现与审查 |
+| [refactor](skills/refactor/SKILL.md) | 代码结构拖累修改，需要找出重构候选 |
+| [capture](skills/capture/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
+| [learning-refresh](skills/learning-refresh/SKILL.md) | 已记录的经验与代码现状不一致 |
+| [doc-review](skills/doc-review/SKILL.md) | 检查规格、计划或能力拆分文档 |
+| [simplify](skills/simplify/SKILL.md) | 代码已能运行，需要简化与清理 |
+| [handoff](skills/handoff/SKILL.md) | 暂停工作，留待其他会话继续 |
+
+## 使用示例
+
+### 修复故障
+
+```text
+/debug 购物车总价计算错误，使用优惠券后金额没有变化
+```
+
+定位原因、补充回归验证并提交修复。小修复不必再走一遍需求与计划流程。
+
+### 从规格自动交付
+
+```text
+/autoflow 根据已批准的用户头像上传规格完成开发
+```
+
+需先安装 `autoflow`，准备好已批准的规格，并确定界面决策。它只编排 `plan → execute → code-review`：计划仍需批准，同时授权后续执行与范围内的 Blocking/Important 修复，不代做需求澄清或界面设计。
 
 ## 关键概念
 
+**spec** 定义做什么与如何验收，**plan** 组织任务，**task** 是独立可测试的交付单元。小计划可留在当前会话，完整计划会保存文档与任务说明。
+
 ### 文档结构
 
-每个功能使用日期前缀的目录名:
+功能规格与计划永久保存在 `docs/features/`，经验保存在 `docs/learnings/`；`.coding/` 存放工作记录、报告和用户配置。项目根目录的 `AGENTS.md`、`GLOSSARY.md`、`DESIGN.md` 分别记录项目事实、术语和设计系统，按需创建。
 
-```
+<details>
+<summary>查看具体输出路径</summary>
+
+`YYYYMMDD-<name>` 使用日期与 2～4 个 kebab-case 单词命名；时间戳使用 `YYYYMMDD-HHMM`。
+
+```text
 /
 ├── docs/
-│   ├── features/                        # 功能规格与计划（永久）
-│   │   ├── 20250115-user-auth/
-│   │   │   ├── spec.md                 # 批准的规格
-│   │   │   ├── plan.md                 # 任务索引
-│   │   │   └── ui-spec.md              # 界面规格（ui-design 产出）
-│   │   ├── 20250120-cart-checkout/
-│   │   │   ├── spec.md
-│   │   │   └── plan.md
-│   │   └── 20250125-platform-refactor/
-│   │       └── capability-map.md       # 多模块拆分（clarify 自动检测生成）
-│   ├── learnings/                       # 会话推理沉淀（永久，capture 产出）
-│   │   ├── 20250115-jwt-security.md    # 单主题学习文档
-│   │   └── _archived/                  # 满足归档条件的旧 learning，保留原文
-│   └── adr/                             # 架构决策记录（惰性创建）
-├── .coding/                           # 工作记录、报告与用户配置（按技能组织）
-│   ├── autoflow-state.json              # 三阶段进度；旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
-│   ├── review-lenses.toml               # 用户维护的审查镜头配置
-│   ├── review-lenses.md                 # 同一配置的 Markdown 形式，二选一
-│   ├── features/                        # feature 相关
-│   │   └── 20250115-user-auth/
-│   │       ├── impl/
-│   │       │   ├── progress.md         # 执行账本
-│   │       │   ├── task-1.md           # 任务详细说明
-│   │       │   └── task-2.md
-│   │       └── review-20250115-1430.md # feature 内的 code-review
-│   ├── handoff/                         # 会话交接
-│   │   ├── 20250115-1430.md            # 通用交接
-│   │   └── 20250115-1430-user-auth.md  # 带主题的交接
-│   ├── ideation/                        # 想法生成
-│   │   └── 20250120-1530-realtime-sync.md
-│   ├── optimize/                        # 性能优化实验
-│   │   └── 20250115-1430/
-│   │       ├── baseline.md             # 基线 profile
-│   │       ├── variant-1.md            # 变体测试结果
-│   │       └── summary.md              # 最终报告
-│   ├── refactor/                        # 重构报告
-│   │   └── 20250115-billing.md
-│   ├── review/                          # 独立 code-review
-│   │   └── 20250115-1430-security.md
-│   └── ui-review/                       # UI 评审报告（ui-review 产出）
-│       └── 20250115-1430.md
-├── GLOSSARY.md                          # 术语表（惰性创建）
-├── DESIGN.md                            # 设计系统（ui-design 惰性创建）
-└── AGENTS.md                            # 项目事实
+│   ├── features/YYYYMMDD-<name>/
+│   │   ├── spec.md                     # 批准的规格
+│   │   ├── plan.md                     # 任务索引
+│   │   ├── ui-spec.md                  # 界面规格（有界面设计时）
+│   │   └── capability-map.md           # 能力拆分（大型工作按需产出）
+│   ├── learnings/
+│   │   ├── YYYYMMDD-<topic>.md         # 经验文档
+│   │   └── _archived/                  # 旧经验归档，保留原文
+│   └── adr/                            # 架构决策记录
+└── .coding/
+    ├── features/YYYYMMDD-<name>/
+    │   ├── impl/
+    │   │   ├── progress.md             # 执行账本
+    │   │   └── task-<N>.md              # 任务说明
+    │   └── review-YYYYMMDD-HHMM.md      # 功能内代码审查
+    ├── handoff/YYYYMMDD-HHMM[-<topic>].md
+    ├── ideation/YYYYMMDD-HHMM-<topic>.md
+    ├── optimize/YYYYMMDD-HHMM/          # baseline.md、variant-<N>.md、summary.md
+    ├── refactor/YYYYMMDD-<scope>.md
+    ├── review/YYYYMMDD-HHMM-<topic>.md  # 独立代码审查
+    ├── ui-review/YYYYMMDD-HHMM.md
+    ├── autoflow-state.json             # 旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
+    ├── review-lenses.toml              # 审查镜头配置
+    └── review-lenses.md                # 同一配置的另一形式，二选一
 ```
 
-用户项目是否忽略 `.coding/`、是否自行提交其中的记录或配置，由用户决定；技能不自动设置忽略规则或改变跟踪状态。下文“提交责任”只约束技能自动暂存和提交的范围，不限制用户自己管理这些文件。本开发源仓库的 `.gitignore` 不会随技能安装到用户项目。
+</details>
 
-`ui-review` 的默认报告名与 `optimize` 的默认实验目录遇到同名项时，依次加 `-2`、`-3` 等后缀，不覆盖旧报告。`optimize` 为整次新实验选一个目录，baseline、变体、summary、链接和提交说明都沿用实际路径。
+### 使用约定
 
-### 三层结构
-
-1. **spec** — 问题/目标/范围/方案/约束/验收条件/测试入口
-2. **plan** — 有序任务列表,每个任务有依赖声明
-3. **task** — 独立可测试单元,有:
-   - 明确交付物
-   - 验证命令
-   - Produces/Consumes 接口声明
-   - 文件清单
-
-### TDD 红-绿-重构循环
-
-`execute`、`debug`、`code-review` 共用一份 `tdd.md`:
-1. **RED** — 写失败测试
-2. **GREEN** — 最小代码通过
-3. **REFACTOR** — 清理重复
-
-有 spec 时只通过批准的测试入口(test entry point)测试;无 spec 的小改动或修复先说明入口。回归测试要验证"还原修复后必须变红";无法建立测试时说明替代检查与覆盖缺口。
-
-### 执行与审查
-
-`execute` 一次调用持续完成全部已批准的可执行任务，不区分 default/auto，也不在任务间例行确认。范围变化、未解决的失败或高风险决策仍须停下处理。
-
-每个任务默认由主进程轻量自查当前增量；只有具体风险值得独立判断时，才使用一个只读 reviewer 代替自查。初查后最多一轮修复和一次定向复查，仍有未解决的 Blocking/Important 就停下，不反复展开完整审查。功能级 review base 保持固定，任务审查使用各自的 task base，不累计重审已完成任务。
-
-`code-review` 的 Standards 轴始终检查正确性和基础安全，不依赖 spec、经验库或专审配置；Security 等可选镜头用于深入专审，未启用不代表可以忽略明显安全缺陷。匹配功能的已批准 `ui-spec.md` 和适用 DESIGN.md 约束也是代码/UI 审查输入。
-
-任务内运行聚焦和受影响检查，全量测试放在最终验证；项目 DoD 要求更频繁时从其规定。需要整体独立审查时另行调用 `code-review`，autoflow 则在最后执行一次，重点检查跨任务集成、需求遗漏和整体风险。恢复 autoflow 时核对 spec、plan 及适用 UI/design 输入的批准快照，输入新增、删除或变更都不能沿用旧授权。
-
-### Tracer bullet 任务
-
-垂直切片优先于水平分层:
-- ✅ "用户点登录 → JWT 签发 → 仪表板渲染"
-- ❌ "实现所有 models" + "写所有 routes"
-
-### Domain Modeling
-
-- **GLOSSARY.md** — 术语表,共享语言
-- **ADR** — 架构决策记录(难逆转 + 令人意外 + 有权衡)
-- 内联更新 — 术语确定时立即写入
+- 规格和计划需要批准。`execute` 按测试驱动方式持续完成已批准任务，逐任务自查、验证与提交，最后进行最终验证；遇到范围变化、未解决的失败、歧义或高风险决策会停下。
+- 任务自查不等于整体独立审查。`code-review`、`ui-review` 先出报告，修复需要授权；必要验证无法完成时，须明确接受边界并保留未验证标记。
+- 技能不自动合并、推送或发布，也不删除文档，包括工作记录和审查报告。旧经验满足归档条件时可归档，临时探针和日志仍可清理。
+- `.coding/` 是否忽略或自行提交由用户决定，技能不改变忽略或跟踪规则。
 
 ### 提交责任
 
-写文档的技能自己提交，只 stage 自己的文件，都不 push:
+只暂存各技能负责的文件；工作状态、任务说明和报告不自动提交。
 
-| 技能 | 提交什么 |
-|------|---------|
-| survey、clarify、plan、capture、learning-refresh、ui-design | 自己产出的文档:`AGENTS.md`/`GLOSSARY.md`、spec 或 `capability-map.md`、`plan.md`、learnings、`DESIGN.md` + `ui-spec.md` |
-| execute、debug | 每个任务或每次修复一次代码提交 |
-| simplify、optimize | 简化、优化后的代码 |
-| doc-review | 用户确认后提交原文档的非语义修正；语义改动交回 clarify/plan，不能带着旧 briefs 直接执行 |
-| autoflow | 编排 plan、execute、code-review 各自的提交；spec 是已批准的输入,状态/briefs/报告不提交 |
-| commit | 你指定的临时改动（不 push） |
-| code-review | 报告不提交；经你授权的修复单独提交,不包含被审查的原始改动 |
-| ui-review | 报告不提交；授权修复先验证再单独提交，不包含被审查的原改动。必要验证不可用时须明确接受边界，仍标为未验证 |
-| refactor、handoff、ideate | 不提交；报告与临时文件留在 `.coding/` |
+| 技能 | 提交内容 |
+|------|----------|
+| survey、clarify、plan、capture、learning-refresh、ui-design | 自己产出或更新的项目文档 |
+| execute、debug | 每个任务或每次修复的代码 |
+| simplify、optimize | 简化或优化后的代码 |
+| doc-review | 用户确认后的非语义修正；语义改动交回 clarify/plan 重新批准 |
+| code-review、ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
+| autoflow | 编排 plan、execute、code-review 各自的提交 |
+| commit | 用户指定的临时改动 |
+| refactor、handoff、ideate | 不提交，只留下报告或交接记录 |
 
-## 何时用什么
+## 参考与许可
 
-```
-简单改动(已知范围)
-  → execute
+主要借鉴 [Superpowers](https://github.com/obra/superpowers) 与 [Matt Pocock Skills](https://github.com/mattpocock/skills)。`refer/` 中的项目仅供参考，不随技能安装，也不是运行依赖。
 
-需求不明
-  → clarify (Bounded/Architectural)
-    → Bounded: 局部小改
-    → Architectural: 跨模块/接口
-    → research/spike: 路径内按需验证,不是第三条路径
-
-多步骤工作
-  → plan (按体量选输出档)
-    → Brief: ≤5 文件、单模块 → 任务列表写在会话里,同一会话内接 execute
-    → Full: 其它 → plan.md + task briefs
-  → execute (持续执行全部已批准任务，不逐任务确认)
-    → 遇未解决的检查失败、规格歧义或高风险决策仍停下
-
-已有批准的 spec,希望自动交付
-  → autoflow (plan → execute → code-review)
-    → 批准计划,同时授权自动执行和范围内的 Blocking/Important 修复
-    → 逐任务相关测试、自查、提交和最终验证仍不可跳过，再做一次整体 code-review，最后由你决定集成
-
-有 bug
-  → debug (4 阶段循环)
-
-需要审查他人改动
-  → code-review (Standards + Spec + Learnings)
-
-多模块大型工作
-  → clarify (自动检测并生成 capability-map.md)
-
-代码结构拖累修改
-  → refactor (改进候选)
-
-改动完成
-  → execute 持续完成任务自查、提交与最终验证后读取 finish；这不代表已做整体独立审查，需要时另行调用 code-review
-    → 报告保留分支或由你另行执行本地合并的选项；技能不 merge、push 或发布
-    → 仅明确要求丢弃时移除分支,文档仍保留
-
-改动结束后,想留下推理过程
-  → capture (docs/learnings/,可选)
-
-learnings 与代码库漂移
-  → learning-refresh (审计并刷新 docs/learnings/)
-
-审查规划文档
-  → doc-review (spec/plan/capability-map 完整性检查)
-
-代码能跑但该清理
-  → simplify (提取重复、改进命名、优化效率)
-```
-
-## 示例场景
-
-### 场景 1: 添加简单功能
-
-```
-用户: "添加用户头像上传"
-
-→ guide 路由到 clarify
-→ clarify 问 2-3 个问题(格式?存储?尺寸限制?)
-→ 呈现 spec,用户批准
-→ 保存并提交 docs/features/20250120-avatar-upload/spec.md,停下
-→ 用户确认后调用 plan
-→ 拆分为 3 个 task:
-  1. 安全上传并展示头像（API、存储、UI 与最低校验贯通）
-  2. 上传提示与预览（不绕过服务器校验）
-  3. 图片缩放与缩略图（处理结果可验证）
-→ 呈现计划草稿,用户批准
-→ 保存并提交 plan.md,task briefs 写入 .coding/features/20250120-avatar-upload/impl/(不提交),停下
-→ 用户确认后调用 execute
-→ 持续完成 3 个 task,每个 TDD + 轻量自查 + commit，不逐任务确认
-→ 完成，报告证据；你可保留分支或另行执行本地合并，技能不代办
-```
-
-### 场景 2: Bug 修复
-
-```
-用户: "购物车总价计算错了"
-
-→ guide 路由到 debug
-→ Phase 1: 根因调查(建一条秒级、确定、可无人值守的复现命令)
-→ Phase 2: 模式分析(对比同类正常代码,列出全部差异)
-→ Phase 3: 假设验证("若 X 是原因,改 Y 会让 bug 消失",先排序再验)
-→ Phase 4: 实施
-  - 按 tdd.md 写失败测试
-  - 最小修复
-  - 通过后临时还原修复,确认测试变红,再恢复
-  - 只暂存本次文件后提交
-→ 小修复到此为止,不进入 plan/execute
-```
-
-### 场景 3: 大型跨模块工作
-
-```
-用户: "这个工作太大,跨前端、后端、CI"
-
-→ guide 路由到 clarify (Bounded/Architectural 中选一个)
-→ 选 Architectural（跨多模块）
-→ Phase 1 Step 1: 读代码、read GLOSSARY/AGENTS
-→ Phase 1 Step 1.5 [自动检测]: 发现需要拆分成 3 个独立能力
-  - frontend app
-  - backend API  
-  - CI pipeline
-→ 生成 capability-map.md,用户批准
-→ 用户选第一个模块: frontend
-→ 为该模块调用 clarify (Bounded 或 Architectural),保存 docs/features/YYYYMMDD-<module-name>/spec.md
-→ 然后 plan → execute → code-review
-→ 重复,直到所有模块都完成
-```
-
-## 故障排查
-
-### 技能没触发
-
-技能都需要用户显式调用(`/技能名`)。没有指名技能时,调用 `guide` 由它路由;路由规则见 `skills/guide/SKILL.md`。
-
-若路由目标未安装，`guide` 会提示安装该技能或直接处理请求。直接处理不等于已加载该技能，仍须遵守项目约束与授权；不会自动安装。核心技能缺装应补齐，而不是作为核心精简模式使用。
-
-### subagent 不可用
-
-subagent 仅用于只读调研或审查。运行环境没有委派机制时，在主进程内联完成，并说明独立审查的限制。
-
-### 术语不一致
-
-运行 `survey`,创建 `GLOSSARY.md`。在 clarify 阶段主动建模。
-
-### plan 任务顺序错
-
-检查 `plan.md` 的任务列表和每个 task brief 的 `Depends on` / `Interfaces`(Consumes/Produces)声明。
-
-### task brief 丢了(`.coding/` 被清掉)
-
-`execute` 会按已批准的 spec.md、plan.md、适用的 ui-spec.md 和 DESIGN.md 约束就地重建可执行任务的 brief，并记录 `brief rebuilt from approved inputs`；这些来源仍不足以重建时才会停下来让你重跑 `plan`。已批准 skipped 的任务保留编号与历史，不重建或伪造完成提交。
-
-### execute 跳过 TDD
-
-检查项目是否有测试工具。`execute` 引用 `tdd.md` 执行 RED-GREEN-REFACTOR,配置/文档文件用最强可用检查。
-
-### 会不会自动删东西?
-
-**文档一律不删**:`spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.coding/` 里的账本和 task brief、review 报告,看起来过期也是留下(或由新文档取代),由你决定它离不离开磁盘。
-
-**learning 可以归档,不能删除**:满足共享生命周期规则时移入 `docs/learnings/_archived/`,保留原因与引用关系；条件不明就留在原位并标记待核实。
-
-**不是文档的临时物照常清理**:调试探针和日志,以及你明确要求丢弃的分支。
-
-## 参考项目
-
-本技能集基于两个参考体系提炼:
-
-- **Superpowers** (obra/superpowers) — 完整流程管理,subagent 驱动开发
-- **Matt Pocock Skills** (mattpocock/skills) — 工程基础,语言对齐(domain modeling + GLOSSARY.md)
-
-其余项目以只读 submodule 挂在 `refer/` 下,只作参考,不随技能安装,也不被任何技能依赖:
-
-- **Spec Kit** (github/spec-kit) — 规格驱动开发的工具包
-- **OpenSpec** (Fission-AI/OpenSpec) — spec 框架
-- **BMAD-METHOD** (bmad-code-org/BMAD-METHOD) — Agile AI Driven Development 方法论
-- **ECC** (affaan-m/ECC) — agent harness 编排系统
-- **gstack** (garrytan/gstack) — 个人 agent 开发栈
-- **oh-my-claudecode** (Yeachan-Heo/oh-my-claudecode) — Claude Code 编排插件
-- **Compound Engineering** (EveryInc/compound-engineering-plugin) — 36 个技能,围绕 brainstorm → plan → build → review → capture 循环
-- **Impeccable** (pbakaus/impeccable) — 前端界面设计指导
-- **Agent Skills** (addyosmani/agent-skills) — 生产级工程技能集
-
-当前版本专注本地化开发,极简流程,直线推进。
-
-## 许可
-
-MIT License
+采用 [MIT License](LICENSE)。
