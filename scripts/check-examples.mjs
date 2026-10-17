@@ -286,5 +286,31 @@ const decomposition = read("skills/plan/references/task-decomposition.md");
 assert.ok(!decomposition.includes("May not be testable independently"), "every task must remain independently testable");
 assert.ok(!decomposition.includes('"Add password reset flow" (expands auth system horizontally)'), "password reset is a new vertical journey");
 assert.ok(!read("README.md").includes("1. 上传 API endpoint"), "the README must start with a vertical slice, not isolated layers");
+
+const dod = read("shared/references/definition-of-done.md");
+for (const rule of ["## Unavailable required checks", "partial/blocked", "not a waiver", "Intermediate task commits", "read-only report"]) {
+  assert.ok(dod.includes(rule), `missing completion-gate contract: ${rule}`);
+}
+for (const skill of ["execute", "debug"]) {
+  assert.ok(read(`skills/${skill}/SKILL.md`).includes("Unavailable required checks"), `${skill} must use the shared unavailable-check gate`);
+}
+assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verification"), "autoflow must not advance past missing required verification");
+const tdd = read("shared/references/tdd.md");
+assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
+assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
+assert.ok(read("skills/plan/SKILL.md").includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
+const simplify = read("skills/simplify/SKILL.md");
+const baselineGate = simplify.indexOf("### 2. Check the baseline");
+assert.ok(baselineGate > simplify.indexOf("### 1. Determine scope"));
+for (const ref of ["simplify-dimensions.md", "severity.md", "git-commit.md"]) {
+  assert.ok(simplify.indexOf(ref) > baselineGate, `simplify must delay ${ref} until after the baseline gate`);
+}
+assert.match(read("skills/code-review/SKILL.md"), /When active learning files exist, read `\.\/references\/learnings-format\.md`/, "absent learnings must not load their format");
+assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
+assert.ok(read("skills/capture/SKILL.md").includes("without loading writing or commit references"), "zero-entry capture must stop before write-stage references");
+assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
+assert.ok(finish.includes("Keep is the only permitted outcome"), "keep-only authorization must not require another choice");
+assert.ok(finish.indexOf("Keep is the only permitted outcome") > finish.indexOf("## Entry gate"), "default keep must not bypass verification");
+assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
 console.log("example and contract checks passed: login, async cleanup, loading labels, duplicates, complexity totals, accessibility, continuous execution, bounded task review, pinned review and dispatch ranges, confirmed discard and document contracts");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

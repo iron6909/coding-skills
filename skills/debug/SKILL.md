@@ -83,7 +83,7 @@ Never route a small fix through `clarify`, `plan`, or `execute`.
 
 1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, report the design limitation and recommend `refactor` for a structural review; do not invoke it.
 2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
-3. **Verify the fix**. Run the regression test or justified alternative check, the original reproduction, and the available affected checks (test suite, lint, type-check). Confirm no regressions; list unavailable checks rather than claiming they passed.
+3. **Verify the fix**. Run the regression test or justified alternative check, the original reproduction, and the available affected checks (test suite, lint, type-check). Apply the loaded DoD's Unavailable required checks gate before committing or declaring completion.
 4. **Inspect the diff**. Check for scope creep and accidental files. Remove the temporary probes, logs, and throwaway files (scratch, not documents); every `[DEBUG-...]` line is gone.
 5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Check `git diff --staged` before committing. Do not commit unrelated user changes. Do not push.
 
@@ -132,7 +132,7 @@ Confirm the Definition of Done loaded above, and specifically:
 
 - [ ] the reproduction now passes, and its output was read
 - [ ] the regression test, or justified alternative check, fails without the fix and passes with it
-- [ ] the available affected checks and full suite ran; unavailable checks and their limits are reported
+- [ ] required affected checks and full-suite timing satisfy the loaded DoD, including its Unavailable required checks gate
 - [ ] every `[DEBUG-...]` probe and non-document throwaway file is gone
 - [ ] the commit carries the root cause and verification in its body
 

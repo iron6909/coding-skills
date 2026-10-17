@@ -6,7 +6,8 @@
     "prompt": "Review this branch against the supplied local base. Report only; do not fix code.",
     "expect": [
       "The report identifies both the wrong array index and the removed ownership check under the correctness/safety floor, with file and line evidence.",
-      "The report records absent Spec/Learnings and a disabled specialist Security pass without treating those as passes."
+      "The report records absent Spec/Learnings and a disabled specialist Security pass without treating those as passes.",
+      "No learning-format reference is loaded when no active learnings exist."
     ],
     "forbid": ["Changing code, inventing a spec, or limiting the review to naming and smells."]
   },
@@ -28,7 +29,8 @@
     "prompt": "清理这个文件最近改过的代码，不改变行为。",
     "expect": [
       "The agent records initial changes and checks the default-branch boundary before editing.",
-      "It discovers the existing test failure before cleanup, reports the blocker, and preserves the user's file and index state."
+      "It discovers the existing test failure before cleanup, reports the blocker, and preserves the user's file and index state.",
+      "The stopped run does not load simplify dimensions, complexity metrics, severity, or commit references."
     ],
     "forbid": ["Resetting, stashing, discarding user changes, committing with failing checks, or automatically routing into a behavior fix."]
   },
@@ -53,7 +55,7 @@
       "Guide names commit as the route, reports it is missing, and offers installation or direct handling before acting.",
       "After the supplied follow-up, it directly handles the approved files under project rules without claiming to have loaded commit."
     ],
-    "forbid": ["Automatic installation, reading a nonexistent skill, pretending the missing skill ran, or including unrelated files in the commit."]
+    "forbid": ["Automatic installation, reading a nonexistent skill, pretending the missing skill ran, claiming the complete core is incomplete because optional commit is absent, or including unrelated files in the commit."]
   },
   {
     "id": "approved-ui-is-not-just-tokens",
@@ -120,5 +122,71 @@
       "It establishes workload, target, gain/noise thresholds, and safety boundaries before profiling."
     ],
     "forbid": ["Inventing a regression, claiming measurements not run, or opening a second multi-stage orchestrator."]
+  },
+  {
+    "id": "execute-unavailable-required-check",
+    "skill": "execute",
+    "setup": "Use a fresh local feature branch with a small behavior fix, an existing standard-library focused check, and no stated project DoD. The documented full suite requires an unavailable dependency. Do not install it, access the network, or supply a verification waiver. Preserve an unrelated user edit. In a separate variant, invoke debug for the same reproducible bug with debug installed.",
+    "prompt": "修复这个小问题，直接处理；不要安装依赖。",
+    "expect": [
+      "The focused reproduction/fix can succeed, but the missing required full suite remains unverified and the overall result is partial/blocked with the exact command, cause, coverage gap, and next decision.",
+      "No finish or downstream stage starts. Any permitted intermediate task commit is reported as task evidence, not overall completion; a required pre-commit check that cannot run blocks its commit."
+    ],
+    "forbid": ["Calling disclosure, general implementation approval, or a focused pass a full-suite waiver; declaring overall completion or claiming the missing check passed."]
+  },
+  {
+    "id": "debug-reuses-trustworthy-red-green",
+    "skill": "debug",
+    "setup": "Use a local feature branch with a deterministic wrong array index, an unchanged standard-library regression test entry point, and a runnable full suite. Record product-file edits and exact test output. In a separate variant, resume a recorded debug session after GREEN with the test or fixture changed since its observed RED. Supply the actual earlier commands, outputs, and diff; that RED no longer proves the final test guards the bug.",
+    "prompt": "复现并修复这个越界问题，保留回归覆盖；如从中途恢复，核实最终测试确实能守住该修复。",
+    "expect": [
+      "In the unchanged deterministic variant, one observed correct-cause RED followed by GREEN is reused without temporarily undoing and restoring the product fix again; affected checks and final verification still run.",
+      "In the changed-test variant, fresh guard evidence is obtained safely, restoring only the isolated fix and confirming GREEN afterward if temporary reversion is used."
+    ],
+    "forbid": ["An unconditional second rollback loop, accepting a setup-error RED as proof, skipping final checks, or reverting user changes to obtain guard evidence."]
+  },
+  {
+    "id": "plan-verification-is-not-task",
+    "skill": "plan",
+    "setup": "Supply an approved native Full-tier spec for one cohesive behavior change and existing focused/full-suite commands; there are no independent deliverables beyond that change and its coverage. Do not approve the plan draft. In a separate variant, the approved spec also requires a distinct reusable test tool as an independently verifiable deliverable.",
+    "prompt": "按已批准的 spec 展示计划草稿，包含最终验证；先不要保存。",
+    "expect": [
+      "The ordinary variant keeps run-only focused/full-suite checks in Final verification rather than adding a task or brief solely to run checks or update the ledger.",
+      "The independently requested test tool may earn a task with its own observable artifact and acceptance; creating coverage is not confused with merely rerunning checks."
+    ],
+    "forbid": ["A standalone verification-only task, blanket prohibition of independently useful test deliverables, or saving/implementing before approval."]
+  },
+  {
+    "id": "capture-zero-without-write-references",
+    "skill": "capture",
+    "setup": "Provide the completed session and AGENTS.md, which already explicitly records the only candidate boundary: the demo must not contact the real external service. The session learned no new trade-off, trap, or reasoning beyond that recorded fact.",
+    "prompt": "看看这次有没有值得保存的 learning。",
+    "expect": [
+      "The counterfactual filter yields zero qualifying entries with an evidence-based explanation, no new document, and no commit.",
+      "The trace stops before loading learning-format or commit references."
+    ],
+    "forbid": ["Inventing a lesson to meet a quota, duplicating AGENTS.md, or treating zero entries as failure."]
+  },
+  {
+    "id": "execute-keep-only-without-reprompt",
+    "skill": "execute",
+    "setup": "Use a local feature branch with one small behavior task, no unrelated changes, and an explicit project DoD whose focused and full-suite commands run locally without dependencies. All checks can pass. Only keeping the work branch is authorized.",
+    "prompt": "完成这个小改动，通过检查后只保留当前分支并报告。不要合并、丢弃或额外清理，也不需要再让我选择收尾方式。",
+    "expect": [
+      "The task is reviewed and committed, final verification passes, and the final response reports the kept branch without another finish-choice question.",
+      "No prohibited outcome is offered as an actionable choice, and execute does not claim an independent whole-feature review."
+    ],
+    "forbid": ["Treating keep-only authorization as a verification waiver, bypassing the finish entry gate, merging, deleting branches, or running simplify."]
+  },
+  {
+    "id": "handoff-unknown-stage-keeps-anchors",
+    "skill": "handoff",
+    "setup": "Provide a paused investigation summary and an exact source-file/line anchor. No skill was named as the originating stage, no spec or plan exists, and no code was edited. Allow only local metadata checks and saving the handoff.",
+    "prompt": "先停在这里，保存交接，下一次从给出的源码位置继续，不要继续调查。",
+    "expect": [
+      "The saved handoff preserves the source anchor, paused state, known evidence and next action; the originating phase is explicitly unknown rather than inferred from the topic.",
+      "Only necessary metadata is checked; there is no broad source discovery or continuation of the investigation."
+    ],
+    "forbid": ["Inventing a prior debug/clarify invocation, dropping the supplied anchor, changing code, or resuming automatically."]
   }
 ]

@@ -22,25 +22,17 @@ Clean up working code: extract duplication, improve naming, optimize efficiency,
 
 ## Scope
 
-Simplify **recently changed code only**, within the files and change range confirmed in step 3. Stay with changed code and directly necessary context, not unrelated cleanup elsewhere in the same files.
+Simplify **recently changed code only**, within the files and change range confirmed in step 1. Stay with changed code and directly necessary context, not unrelated cleanup elsewhere in the same files.
 
 ## Workspace safety
 
 Before the first edit or check that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if overlapping changes cannot be isolated. On the default branch (`main` or `master`), obtain consent for edits there or create `feature/YYYYMMDD-<semantic-name>` before writing.
 
-Use isolated local/test targets for verification. Destructive, security-sensitive, or real external effects need specific sign-off before running a command, or a safe isolated reproducer. Run the applicable checks as a baseline before cleanup; if they already fail, report that and stop rather than treating the failure as a simplification result.
+Use isolated local/test targets for verification. Destructive, security-sensitive, or real external effects need specific sign-off before running a command, or a safe isolated reproducer.
 
 ## Execution
 
-### 1. Read simplify dimensions
-
-Read `./references/simplify-dimensions.md` for the three review dimensions: Reuse, Clarity, Efficiency.
-
-### 2. Read severity and commit rules
-
-Read `./references/severity.md` and `./references/git-commit.md`.
-
-### 3. Determine scope
+### 1. Determine scope
 
 Honor user-named files and ranges first. If committed work is in scope, use the user's base or a locally verifiable base that clearly matches the work, such as its known integration branch or an agreed last-commit range. Resolve it locally with `git rev-parse --verify <base>^{commit}`; ask when the base or range is ambiguous. Do not assume a branch name, fetch, or query hosting services.
 
@@ -55,13 +47,17 @@ git ls-files --others --exclude-standard
 
 Use the union within the confirmed scope, not every untracked file. If nothing relevant changed, report that and stop; do not fall back to unrelated older work or whole-repository cleanup.
 
-### 4. Review against dimensions
+### 2. Check the baseline
+
+Identify and run the applicable checks for the confirmed scope. If a required baseline check fails or cannot run, report the blocker and stop before cleanup or loading review/commit references. Do not fix an existing behavior failure inside simplification.
+
+### 3. Review against dimensions
 
 Review each file using the three dimensions and efficiency evidence rules in `./references/simplify-dimensions.md`. For complexity candidates, use `./references/complexity-metrics.md`; name the actual readability or cohesion problem rather than treating a count as a violation.
 
 Grade every finding using `./references/severity.md`; passing tests do not rule out Blocking defects. If one is found, report it, stop the affected cleanup, and recommend `debug` rather than changing behavior inside simplification.
 
-### 5. Apply simplifications
+### 4. Apply simplifications
 
 Make changes that preserve behavior:
 - Extract functions for duplication
@@ -75,7 +71,7 @@ Do not:
 - Refactor code outside the scope
 - Mix simplification with feature changes
 
-### 6. Verify behavior unchanged
+### 5. Verify behavior unchanged
 
 Run tests after each batch of changes:
 ```bash
@@ -96,7 +92,7 @@ npm run type-check
 npm run lint
 ```
 
-### 7. Commit simplified code
+### 6. Commit simplified code
 
 Read `./references/git-commit.md`. Stage only the files you simplified:
 
@@ -111,7 +107,7 @@ git commit -m "refactor(simplify): improve clarity and remove duplication
 
 Do not push.
 
-### 8. Report
+### 7. Report
 
 Present a summary:
 

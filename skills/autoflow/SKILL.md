@@ -50,7 +50,7 @@ Invoke `execute` with the approved inputs, authorization, initial working-tree r
 
 Use the execution ledger as the task-level record; do not maintain a second task list in autoflow state. If execution stops at any of its gates, record the blocker and hand back rather than launching the next stage.
 
-After execution's final verification succeeds, return to this orchestrator before any finish or integration decision. Stage 3 is the run's single independent feature-wide review; execute does not run another one. Failed or stale verification cannot complete Stage 2.
+After execution's final verification succeeds, return to this orchestrator before any finish or integration decision. Stage 3 is the run's single independent feature-wide review; execute does not run another one. Failed, stale, or unavailable required verification cannot complete Stage 2; use execute's DoD result, not the existence of commits.
 
 ## Stage 3: Code review
 

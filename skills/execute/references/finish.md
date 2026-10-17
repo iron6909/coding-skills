@@ -11,13 +11,15 @@ Do not start until:
 
 Execute performs task reviews and final verification, not an independent whole-feature review. Say that explicitly. The user may request `code-review` next; recommend it when useful, but do not invoke it or make it a new mandatory gate here.
 
+If the user already chose to keep the branch, or Keep is the only permitted outcome under their existing instructions, report that it is kept and stop without another choice. This applies only after the entry gate passes; it is not a verification waiver.
+
 ## Confirm the base branch
 
 Find the branch this work forked from; do not assume `main`. Report the current branch, the base branch, and how many commits are ahead.
 
 ## Present the options
 
-Exactly these, in this order:
+Offer the applicable options below in this order; omit outcomes the user has excluded. Omit Discard when this run did not create the work branch.
 
 1. **Keep the branch** — leave it as it is for now.
 2. **User-managed local merge into `<base>`** — report the branch, base, and checks for the user to run after merging. Do not execute the merge. If the user later asks to verify their merged result, re-run those checks; failures remain open and the work branch must be preserved.

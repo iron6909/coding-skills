@@ -248,7 +248,7 @@ Use the repository's existing test tools. Prefer standard library and existing d
 
 For each behavior change, follow the loaded TDD loop and run focused and affected checks. Follow the loaded DoD for full-suite timing; do not repeat the full suite after every intermediate task unless the repository requires it.
 
-After all executable tasks are reviewed and committed, run final verification on the current final code: the test, lint, build, type-check, and cross-task acceptance checks in `plan.md` Final verification. For a session plan, use the approved task list's checks; for a small change, use the request's checks. Apply the loaded DoD and state any unavailable check, substitute, and coverage gap rather than calling it passed.
+After all executable tasks are reviewed and committed, run final verification on the current final code: the test, lint, build, type-check, and cross-task acceptance checks in `plan.md` Final verification. For a session plan, use the approved task list's checks; for a small change, use the request's checks. Apply the loaded DoD, including its Unavailable required checks gate; reporting a gap does not clear that gate.
 
 This is command-based verification, not a whole-diff review or another reviewer/fix wave. A clear in-scope failure goes through the affected task's implementation, review, and separate commit loop, followed by final verification again. Stop for an unresolved failure or decision under the existing gates.
 

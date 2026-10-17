@@ -34,7 +34,7 @@ Leave existing facts and decisions in their own home:
 
 Read `./references/counterfactual-test.md` before evaluating candidates. It owns the quality gate, double-check questions, and examples.
 
-Apply the gate to each candidate: would a competent engineer repeat the mistake or re-derive the reasoning without it? Keep concrete, evidence-backed lessons, not a debugging diary. Uncertainty means skip. Zero qualifying entries is a normal outcome; report it and stop.
+Apply the gate to each candidate: would a competent engineer repeat the mistake or re-derive the reasoning without it? Keep concrete, evidence-backed lessons, not a debugging diary. Uncertainty means skip. Zero qualifying entries is a normal outcome; report it and stop without loading writing or commit references.
 
 ## 3. Write
 

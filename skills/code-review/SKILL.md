@@ -101,15 +101,13 @@ These smells apply when the repo documents no coding standards. Each is a labele
 
 ## Identify the learnings source
 
-Read `docs/learnings/` when it exists. It holds traps, trade-offs, and boundary conditions recorded from earlier sessions.
+Look for active files in `docs/learnings/`. If none exist, record `Learnings: none recorded` and skip the axis and its format reference.
+
+When active learning files exist, read `./references/learnings-format.md` before matching them to this diff. They hold traps, trade-offs, and boundary conditions recorded from earlier sessions.
 
 Match files to this diff by tag and by subject: the modules, tools, and concepts the changed files touch. A learning about a module this diff does not touch is not relevant, however interesting.
 
-This axis asks one question: does the diff repeat a trap the project already paid for, or cross a boundary condition a learning says not to cross? Keep it to that. A learning that merely describes a past decision is not a finding.
-
-If `docs/learnings/` does not exist, record `Learnings: none recorded` and skip the axis. Never invent a standard from a learning.
-
-Read `./references/learnings-format.md` to understand the format and structure of learning files when matching them to this diff.
+This axis asks one question: does the diff repeat a trap the project already paid for, or cross a boundary condition a learning says not to cross? Keep it to that. A learning that merely describes a past decision is not a finding. Never invent a standard from a learning.
 
 ## Configure and run lenses
 

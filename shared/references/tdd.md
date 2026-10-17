@@ -39,7 +39,7 @@ Follow these five steps in order:
 4. **Verify** — run the test and confirm it passes.
 5. **Guard** — run the affected checks and confirm no regression. Follow the applicable Definition of Done for full-suite timing.
 
-Then prove the test guards the fix: revert the fix temporarily, confirm the test fails, restore the fix, and confirm it passes again.
+Do not repeat a trustworthy RED/GREEN cycle: an observed correct-cause failure followed by a pass with the same deterministic test and fixture already proves the guard. If the test or fixture changed after RED, the failure cause was unclear, no trustworthy pre-fix failure was observed, or results are nondeterministic, obtain fresh guard evidence. When safe, temporarily revert only this fix, confirm the intended failure, restore the fix, and confirm it passes. Preserve user changes; if the fix cannot be isolated safely, stop and agree on a safe reproducer. This does not replace affected checks or final verification.
 
 A fix that skips steps 1 and 2 is a guess. A fix that skips step 5 is unverified.
 

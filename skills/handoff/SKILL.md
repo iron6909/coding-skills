@@ -24,6 +24,8 @@ This does not make Brief plans resumable across sessions. If a plan must persist
 
 ### 1. Assess Current State
 
+Use the conversation and supplied artifact paths; verify only the filesystem and Git facts needed for the handoff. Do not infer a skill stage from the topic: record `unknown` when the originating stage is not established. Preserve user-supplied source anchors without broad repository discovery or continuing the paused investigation.
+
 Identify:
 - **Current phase**: Which skill stage are we in? (survey, clarify, plan, execute task N, debug, etc.)
 - **Completed artifacts**: What files exist? (spec.md, plan.md, commits)
@@ -39,7 +41,7 @@ Write `.coding/handoff/YYYYMMDD-HHMM.md`:
 # Handoff: [Feature/Task Name]
 
 **Created**: YYYYMMDD HH:MM
-**Phase**: [survey/clarify/plan/execute/debug/review]
+**Phase**: [known stage and paused state, or unknown]
 
 ## Context
 

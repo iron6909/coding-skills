@@ -53,9 +53,7 @@ If `plan.md` already exists in the spec's directory, this is a revision, usually
 
 Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts. Read the ADRs under `docs/adr/` that touch the affected modules: a plan that contradicts a recorded decision needs to say so, not silently undo it. If the spec mentions research findings or spike validation results, they are constraints on the tasks.
 
-Read `docs/learnings/` (if it exists) and match entries to this work by tag and by subject. A recorded trap that this plan would walk into is a constraint on the tasks; a recorded trade-off is worth knowing before choosing an approach again. Cite the file when a learning shapes a task. Skip the directory when it does not exist — do not treat its absence as a blocker.
-
-Read `./references/learnings-format.md` to understand the format and structure when matching learnings to this plan.
+Look for active files in `docs/learnings/`. If active learning files exist, read `./references/learnings-format.md` before matching them to this work by tag and by subject; otherwise skip that reference. A recorded trap that this plan would walk into is a constraint on the tasks; a recorded trade-off is worth knowing before choosing an approach again. Cite the file when a learning shapes a task. No active learnings is not a blocker.
 
 Read only the code needed to make the plan precise:
 
@@ -100,6 +98,8 @@ If the spec covers independent subsystems, split it into separate plans or state
 
 Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
 
+Run-only verification belongs in Final verification, not a standalone task or brief: rerunning existing checks or updating execute's ledger is not an independent deliverable. A task that creates required tests, tooling, or documentation may still earn its own place when it delivers a distinct, independently verifiable result.
+
 ### Prefer tracer bullet tasks
 
 A tracer bullet task is a vertical slice that cuts through all layers to deliver one observable end-to-end behavior. Examples:
@@ -121,7 +121,6 @@ Every slice must include the validation, authorization, data-integrity protectio
 2. core behavior (tracer bullet slices)
 3. integration and user-facing behavior
 4. additional error paths and compatibility cases
-5. final verification
 
 Do not make separate tasks for every layer when one slice can prove the behavior.
 

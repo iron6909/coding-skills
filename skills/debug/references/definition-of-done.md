@@ -35,6 +35,16 @@ Use this when the repository documents none. An item that genuinely does not app
 - [ ] The commit message follows the repository convention
 - [ ] Documentation, glossary terms, or an ADR this change makes stale is updated
 
+## Unavailable required checks
+
+An unavailable required check is not inapplicable. Missing dependencies, services, credentials, or a supported runtime leave it unverified; disclosure is not a waiver. Preserve the work and report partial/blocked with the exact check, cause, coverage gap, and smallest next decision. Do not declare the affected unit complete or start finish/integration or a downstream stage.
+
+Do not commit a standalone fix or task whose required pre-commit checks cannot run. Intermediate task commits may precede the final full suite only when their own required checks pass and the applicable DoD permits that timing; a missing final check still blocks overall completion.
+
+A verification waiver must come from the user and explicitly name the omitted check, substitute evidence (if any), and accepted coverage gap. General implementation, commit, plan, or keep-branch approval is not a waiver. Record the decision and report completion only within that approved verification boundary; the omitted check remains unrun, not passed. This never authorizes unsafe external effects or bypasses required trust-boundary protections.
+
+A read-only report can be delivered with checks marked unavailable; that does not verify the reviewed implementation or satisfy its acceptance conditions.
+
 ## Reporting
 
 State which Definition of Done applied — the repository's or the default — and name every item that was skipped with its reason. A completion report that neither states the DoD nor records skips is incomplete.
