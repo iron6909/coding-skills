@@ -173,10 +173,14 @@ When a decision passes the three-condition test (hard to reverse + surprising ch
 - "Can we achieve acceptable performance?"
 - "Does this integration pattern work?"
 
+Before any spike edit or state-changing command, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop if overlap cannot be isolated. On the default branch (`main` or `master`), obtain consent or create `feature/YYYYMMDD-<semantic-name>` before repository writes. Use new temporary files, not product files; dependency installation needs approval.
+
+Check target endpoints, credentials, and external effects before running. Use isolated local/test fixtures by default. Destructive, security-sensitive, paid, or real external transactions need specific sign-off or an isolated harness that cannot affect real resources. Clarification approval is not that sign-off. If safe validation is unavailable, stop and report the feasibility gap rather than claiming a result.
+
 **Process**:
-1. Write the smallest code needed to answer the question
+1. Write the smallest code needed to answer the question in the isolated scratch files
 2. Run it and observe the result
-3. Delete the spike code (or save to `.coding/` if user wants to reference it)
+3. Remove only this run's non-document scratch (or retain it under `.coding/` at the user's request); preserve existing files and every document
 4. Write conclusions into the spec (Solution section or new "Feasibility Validation" section)
 
 **Do not** create `spike.md`. Validation findings go into `spec.md`.

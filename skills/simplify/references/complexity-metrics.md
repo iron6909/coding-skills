@@ -377,16 +377,4 @@ Look for:
 - Run tests after each simplification
 - Stop when code is "simple enough" (not "optimal")
 
-## Configuration
-
-Optional threshold overrides in `.coding/simplify-config.toml`:
-
-```toml
-[complexity]
-cyclomatic_threshold = 15  # default: 20
-cognitive_threshold = 12    # default: 15
-nesting_threshold = 3       # default: 4
-length_threshold = 60       # default: 50
-```
-
-Use project-specific thresholds based on team preferences and domain complexity.
+Use project-specific thresholds based on team preferences and domain complexity; prefer the project's existing analyzer configuration over adding a workflow-specific file.

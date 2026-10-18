@@ -30,7 +30,7 @@ Label these findings as correctness or safety under Standards, with code evidenc
 ## Lens interface
 
 Each lens receives:
-- The pinned diff command: `git diff <review_base_sha>...<review_head_sha>`
+- The exact `pinned_diff_command` selected by SKILL.md, retaining its endpoint or branch comparison; do not reconstruct it
 - Commits: `git log <review_base_sha>..<review_head_sha> --oneline`
 - Severity rubric: `./references/severity.md`
 - Context files (spec, standards, learnings, etc.)
@@ -163,7 +163,7 @@ Run lenses in order:
 Review the diff against the correctness and safety floor above and the repository's coding standards.
 
 Standards sources: <list of files>
-Diff command: git diff <review_base_sha>...<review_head_sha>
+Diff command: <pinned_diff_command>
 
 Report findings as JSON array:
 [
@@ -194,7 +194,7 @@ Review the diff against the spec.
 
 Spec: <path, or none available>
 UI/design inputs: <applicable approved paths, or none>
-Diff command: git diff <review_base_sha>...<review_head_sha>
+Diff command: <pinned_diff_command>
 
 Check:
 - Are all acceptance conditions (REQ-N) implemented?
@@ -217,7 +217,7 @@ Report findings as JSON array with same structure as above.
 Review the diff for repeated traps.
 
 Learnings files: <list of relevant files>
-Diff command: git diff <review_base_sha>...<review_head_sha>
+Diff command: <pinned_diff_command>
 
 Check: Does the diff repeat a trap these learnings recorded?
 
@@ -266,8 +266,10 @@ Report findings as JSON array.
 Use the report path selected by SKILL.md. Every lens permits the full severity range; the main reviewer re-grades by impact using the severity reference.
 
 ```markdown
-# Review: <review_base_sha>...<review_head_sha>
+# Review: <pinned range>
 
+**Comparison:** <endpoint | branch>
+**Diff command:** <pinned_diff_command>
 **Review base:** <full review_base_sha>
 **Reviewed head:** <full review_head_sha>
 **Fix range:** <review_head_sha>..<fix_head_sha>, or none

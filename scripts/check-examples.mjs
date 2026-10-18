@@ -38,6 +38,12 @@ for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Exec
   }
 }
 
+const spike = read("skills/clarify/SKILL.md").split("### Step 4: Spike")[1].split("### Step 5:")[0];
+for (const safeguard of ["initial staged and unstaged", "default branch", "credentials", "sign-off", "non-document scratch"]) {
+  assert.ok(spike.includes(safeguard), `spike missing safeguard: ${safeguard}`);
+}
+assert.ok(spike.indexOf("Before") < spike.indexOf("1. Write the smallest"), "spike safety must precede execution");
+
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
 const readme = read("README.md");
@@ -145,6 +151,59 @@ for (const isLoading of [false, true]) {
 }
 assert.ok(!read("skills/code-review/references/lens-performance.md").includes("const len = items.length"), "array-length caching must not be a blanket optimization");
 
+const performance = read("skills/code-review/references/lens-performance.md");
+assert.ok(!performance.includes("const cache = new Map()"), "do not recommend a permanent unbounded profile cache");
+for (const rule of ["bounded cache", "freshness contract", "invalidation", "authorization boundaries"]) {
+  assert.ok(performance.includes(rule), `missing cache contract: ${rule}`);
+}
+const searchExample = blocks("skills/code-review/references/lens-performance.md", "typescript").find((source) => source.includes("// ✅ Cancel previous request"));
+assert.ok(searchExample, "missing request-cancellation example");
+const requests = [], searchResults = [], searchErrors = [];
+const search = runInNewContext(searchExample + "\nsearch", {
+  AbortController,
+  input: { addEventListener() {} },
+  fetch: (url, { signal }) => new Promise((resolve, reject) => {
+    requests.push({ url, signal, resolve, reject });
+    signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+  }),
+  setResults: (results) => searchResults.push(results),
+  showSearchError: (error) => searchErrors.push(error),
+}, { timeout: 1000 });
+const cancelledSearch = search("a");
+const activeSearch = search("a&b");
+assert.equal(requests[0].signal.aborted, true);
+assert.equal(requests[1].url, "/api/search?q=a%26b");
+requests[1].resolve({ ok: true, json: async () => ["new"] });
+await Promise.all([cancelledSearch, activeSearch]);
+assert.deepEqual(searchResults, [["new"]]);
+assert.equal(searchErrors.length, 0, "normal cancellation is not an error");
+const httpFailure = search("http-error");
+requests.at(-1).resolve({ ok: false, status: 503 });
+await httpFailure;
+assert.equal(searchErrors.at(-1).message, "Search failed: 503");
+const networkError = new Error("offline");
+const networkFailure = search("network-error");
+requests.at(-1).reject(networkError);
+await networkFailure;
+assert.equal(searchErrors.at(-1), networkError);
+const jsonError = new SyntaxError("invalid JSON");
+const jsonFailure = search("json-error");
+requests.at(-1).resolve({ ok: true, json: async () => { throw jsonError; } });
+await jsonFailure;
+assert.equal(searchErrors.at(-1), jsonError);
+let finishOldJson;
+const oldJson = new Promise((resolve) => { finishOldJson = resolve; });
+const delayedSearch = search("slow");
+requests.at(-1).resolve({ ok: true, json: () => oldJson });
+await Promise.resolve();
+const latestSearch = search("latest");
+requests.at(-1).resolve({ ok: true, json: async () => ["latest"] });
+await latestSearch;
+finishOldJson(["stale"]);
+await delayedSearch;
+assert.deepEqual(searchResults, [["new"], ["latest"]], "late JSON must not replace newer results");
+assert.equal(searchErrors.length, 3);
+
 const algorithms = blocks("skills/code-review/references/lens-performance.md", "typescript").filter((source) => source.includes("function hasDuplicates"));
 assert.equal(algorithms.length, 2);
 const implementations = algorithms.map((source) => runInNewContext(source + "\nhasDuplicates", {}, { timeout: 1000 }));
@@ -218,15 +277,22 @@ try {
     git("commit", "-qm", `initial ${n}`);
   }
   git("switch", "-qc", "feature/example-check");
-  const reviewBase = git("rev-parse", "HEAD~5").trim();
-  const reviewHead = git("rev-parse", "HEAD").trim();
-  const commands = blocks(reviewFile, "bash").filter((source) => /^git (diff|log) /.test(source));
-  for (const [, command] of read("skills/code-review/references/review-lenses.md").matchAll(/^Diff command: (git diff .+)$/gm)) commands.push(command);
+  const reviewCommands = blocks(reviewFile, "bash").flatMap((source) => source.split("\n"));
+  const resolvers = reviewCommands.filter((source) => /^git rev-parse /.test(source));
+  assert.equal(resolvers.length, 2, "resolve base and head separately");
+  const [reviewBase, reviewHead] = resolvers.map((source) => git(...source.replaceAll("<review-base>", "HEAD~5").replaceAll("<review-head>", "HEAD~2").replaceAll('"', "").split(/\s+/).slice(1)).trim());
+  assert.equal(reviewBase, git("rev-parse", "HEAD~5").trim());
+  assert.equal(reviewHead, git("rev-parse", "HEAD~2").trim(), "explicit historical head must not become HEAD");
+  assert.equal(git("log", `${reviewBase}..${reviewHead}`, "--format=%s").trim(), "initial 5\ninitial 4\ninitial 3");
+  assert.equal(git("show", `${reviewHead}:value`).trim(), "5", "read context at the historical head");
+  assert.ok(read(reviewFile).includes("git show <review_head_sha>:<path>"));
+  const commands = reviewCommands.filter((source) => /^git (diff|log) /.test(source));
+  assert.deepEqual([...lenses.matchAll(/^Diff command: (.+)$/gm)].map(([, command]) => command), Array(3).fill("<pinned_diff_command>"), "every dispatch must preserve the selected comparison");
   const ranges = commands.map((source) => {
-    const args = source.trim().replaceAll("<review-base>", "HEAD~5").replaceAll("<review_base_sha>", reviewBase).replaceAll("<review_head_sha>", reviewHead).split(/\s+/).slice(1);
+    const args = source.replaceAll("<review_base_sha>", reviewBase).replaceAll("<review_head_sha>", reviewHead).split(/\s+/).slice(1);
     return [args, git(...args)];
   });
-  assert.equal(ranges.length, 5, "check the main review commands and all three dispatch templates");
+  assert.equal(ranges.length, 3, "check endpoint diff, branch diff, and the pinned commit log");
   for (let n = 8; n <= 10; n++) {
     writeFileSync(join(fixture, "value"), `${n}\n`);
     git("add", "value");
@@ -234,6 +300,14 @@ try {
   }
   assert.notEqual(git("rev-parse", "HEAD~5").trim(), reviewBase);
   for (const [args, expected] of ranges) assert.equal(git(...args), expected, "the documented review range moved after fix commits");
+  git("switch", "-qc", "comparison-base", reviewBase);
+  writeFileSync(join(fixture, "base-only"), "not part of the reviewed branch\n");
+  git("add", "base-only");
+  git("commit", "-qm", "base-only change");
+  const divergedBase = git("rev-parse", "HEAD").trim();
+  const diffs = ranges.filter(([args]) => args[0] === "diff").map(([args]) => git(...args.map((arg) => arg.replaceAll(reviewBase, divergedBase))));
+  assert.match(diffs[0], /base-only/, "endpoint comparison includes differences on both sides");
+  assert.doesNotMatch(diffs[1], /base-only/, "branch comparison excludes base-only changes");
   git("switch", "-q", "main");
   assert.throws(() => git("branch", "-d", "feature/example-check"));
   const discard = finish.match(/git branch -D <work-branch>/)?.[0];
@@ -274,6 +348,8 @@ assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototy
 assert.ok(!read("skills/refactor/SKILL.md").includes("Never write a refactor report into the repository"), "temporary report writes are allowed; commits are not");
 assert.ok(!read("shared/references/counterfactual-test.md").includes("barely passes"), "generic security advice fails the counterfactual gate");
 const metrics = read("skills/simplify/references/complexity-metrics.md");
+assert.ok(!metrics.includes(".coding/simplify-config.toml"), "reuse project analyzer settings instead of an undocumented config");
+assert.ok(!/\d+ 个真实代理行为场景/.test(readme), "do not hardcode a drifting manual-case count");
 assert.ok(!/Mandatory split|must split|must flatten/.test(metrics), "metrics must not force mechanical splitting");
 // ponytail: sum annotated increments, not a full metric implementation; use the project's analyzer to validate language-specific scoring rules.
 const cognitiveExample = blocks("skills/simplify/references/complexity-metrics.md", "python").find((source) => source.includes("def calculate_discount("));
@@ -291,9 +367,13 @@ const dod = read("shared/references/definition-of-done.md");
 for (const rule of ["## Unavailable required checks", "partial/blocked", "not a waiver", "Intermediate task commits", "read-only report"]) {
   assert.ok(dod.includes(rule), `missing completion-gate contract: ${rule}`);
 }
-for (const skill of ["execute", "debug"]) {
+for (const skill of ["execute", "debug", "optimize"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("Unavailable required checks"), `${skill} must use the shared unavailable-check gate`);
 }
+const optimize = read("skills/optimize/SKILL.md");
+const optimizeDoD = optimize.indexOf("./references/definition-of-done.md");
+assert.ok(optimizeDoD >= 0 && optimizeDoD < optimize.indexOf("## Process"), "optimize must choose checks from the DoD before starting");
+assert.ok(optimize.includes("applicable pre-commit checks pass") && optimize.includes("final verification"), "performance gains must not replace commit or completion checks");
 assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verification"), "autoflow must not advance past missing required verification");
 const tdd = read("shared/references/tdd.md");
 assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
@@ -312,5 +392,5 @@ assert.ok(!guide.includes("a missing core skill is an incomplete installation"),
 assert.ok(finish.includes("Keep is the only permitted outcome"), "keep-only authorization must not require another choice");
 assert.ok(finish.indexOf("Keep is the only permitted outcome") > finish.indexOf("## Entry gate"), "default keep must not bypass verification");
 assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
-console.log("example and contract checks passed: login, async cleanup, loading labels, duplicates, complexity totals, accessibility, continuous execution, bounded task review, pinned review and dispatch ranges, confirmed discard and document contracts");
+console.log("example and contract checks passed: login, async cleanup, loading labels, safe cache guidance, cancellation/error/stale-response handling, duplicates, complexity, accessibility, bounded execution, pinned historical/endpoint/branch review, confirmed discard, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

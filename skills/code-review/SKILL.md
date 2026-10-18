@@ -30,20 +30,30 @@ Read an optional lens's reference only when that lens is enabled:
 
 ## Pin the review base
 
-Ask for the review base if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`).
+Ask for a local base or range if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`, or `A..B` / `A...B`). Ask the user to fetch remote work first; do not fetch it here.
 
-This skill reviews local commits only. Ask the user to fetch or check out remote work first.
+Select the comparison before resolving refs:
 
-Resolve the supplied base and current head once, before review or fixes, and save the full output as `review_base_sha` and `review_head_sha`:
+- A single base means a branch review against current `HEAD`, using three-dot diff semantics.
+- `A..B` means an endpoint comparison from A to B, even when B is not `HEAD`.
+- `A...B` means a branch comparison from A's merge base with B to B.
+
+Require both endpoints in a range; ask if the range or intended comparison is ambiguous. Resolve each endpoint separately, never pass the whole range to `rev-parse`, and never substitute `HEAD` for an explicit endpoint. Save the full outputs as `review_base_sha` and `review_head_sha`:
 
 ```bash
 git rev-parse --verify --end-of-options "<review-base>^{commit}"
-git rev-parse --verify "HEAD^{commit}"
+git rev-parse --verify --end-of-options "<review-head>^{commit}"
 ```
 
-Use those immutable SHAs for every lens and report:
+Select one command as `pinned_diff_command`, using only those immutable SHAs:
 
 ```bash
+# Endpoint comparison (A..B)
+git diff <review_base_sha> <review_head_sha>
+```
+
+```bash
+# Branch comparison (single base or A...B)
 git diff <review_base_sha>...<review_head_sha>
 ```
 
@@ -51,7 +61,9 @@ git diff <review_base_sha>...<review_head_sha>
 git log <review_base_sha>..<review_head_sha> --oneline
 ```
 
-Confirm both commits resolve and the diff is non-empty. Record both SHAs in the report. Never re-evaluate the original expression or replace the reviewed head after fix commits.
+Confirm both commits resolve and the selected diff is non-empty. Record both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to every lens. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
+
+Inspect reviewed code and its callers at `review_head_sha`, for example with `git show <review_head_sha>:<path>`, not a newer or dirty working tree. Do not checkout, stash, or reset user work to obtain that context; mark unavailable historical context explicitly.
 
 ## Identify the spec source
 
@@ -179,7 +191,7 @@ When the fixes are done, record the current full commit SHA as `fix_head_sha` an
 ## Completion report
 
 ```text
-Review: <review_base_sha>...<review_head_sha>
+Review: <pinned range; endpoint or branch comparison>
 Fixes: <review_head_sha>..<fix_head_sha>, or none
 Report: <path of the review file written above>
 Lenses enabled: standards, spec, learnings[, security, performance, ...]

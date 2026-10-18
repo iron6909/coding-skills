@@ -25,6 +25,8 @@ Before the first profile, benchmark, edit, or other command that may write state
 
 Check the command's target environment, credentials, and external effects before running it. Use isolated local/test fixtures by default. Destructive, security-sensitive, paid, or real external transactions need specific sign-off before execution, or a safe isolated harness that cannot affect real resources. Record existing correctness-check failures before attributing any to a variant.
 
+**Load the Definition of Done**: read `./references/definition-of-done.md` before choosing verification commands. Use focused and affected checks for each variant; the loaded DoD decides pre-commit requirements and full-suite timing. Apply its Unavailable required checks gate before committing or declaring completion. Performance gains do not waive correctness checks.
+
 ## Process
 
 ### Phase 1: Profile and Attribute
@@ -126,7 +128,7 @@ One variant at a time.
 **Workflow**:
 1. Recheck the workspace and target-environment safety boundary established before profiling; new side effects need their own authorization.
 2. Implement the variant
-3. Run tests (ensure correctness)
+3. Run the focused and affected tests, lint, type-check, and build checks required by the loaded DoD
 4. Measure performance with same harness as baseline
 5. Document results in `<run-dir>/variant-N.md`, using the directory selected for the baseline
 
@@ -154,7 +156,7 @@ One variant at a time.
 
 ## Correctness
 
-- [ ] All tests pass
+- [ ] Applicable pre-commit checks pass: [commands and results]
 - [ ] Manual verification: [what you checked]
 - [ ] Edge cases tested: [list any specific edge cases]
 
@@ -164,7 +166,7 @@ One variant at a time.
 ```
 
 **Keep or revert**:
-- **Keep** if tests pass, complexity is acceptable, and the measured gain exceeds noise and either meets the agreed minimum gain or reaches the target
+- **Keep** if applicable pre-commit checks pass, complexity is acceptable, and the measured gain exceeds noise and either meets the agreed minimum gain or reaches the target
 - **Revert** if correctness fails, cost is unacceptable, or the gain does not meet those criteria
 - **Iterate** if promising but needs refinement
 
@@ -215,7 +217,9 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 [If target met: monitoring recommendations]
 ```
 
-### Phase 5: Commit
+### Phase 5: Final verification and commit
+
+Run fresh final verification on the final kept code under the loaded DoD before declaring the run complete. Report the applied DoD, commands, results, and any explicitly accepted verification boundary; an unavailable required check remains unrun, not passed.
 
 Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch, staging only this work's code and tests and checking `git diff --staged`. Reports under `.coding/` stay uncommitted. Do not create an empty final commit, merge, or push; report the branch and let the user decide integration.
 

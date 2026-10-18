@@ -64,27 +64,7 @@ const orders = await Order.findAll({ limit: 50, offset: page * 50 });
 ### 2. Caching
 
 #### Missing caching
-Expensive computations or external calls repeated without caching.
-
-**Examples**:
-```typescript
-// ❌ Fetches user on every request
-app.get('/api/profile', async (req, res) => {
-  const user = await User.findById(req.session.userId);
-  res.json(user);
-});
-
-// ✅ Cached
-const cache = new Map();
-app.get('/api/profile', async (req, res) => {
-  let user = cache.get(req.session.userId);
-  if (!user) {
-    user = await User.findById(req.session.userId);
-    cache.set(req.session.userId, user);
-  }
-  res.json(user);
-});
-```
+Flag repeated expensive work only with workload evidence; a database read per profile request is not automatically waste. Reuse an existing bounded cache only with an explicit freshness contract, invalidation for updates and deletion, and keys that preserve tenant and authorization boundaries. If those guarantees cannot be met, keep the uncached read rather than recommending a permanent process-level Map.
 
 #### Stale cache
 Cache never invalidated when underlying data changes.
@@ -243,16 +223,28 @@ function search(query) {
   fetch(`/api/search?q=${query}`).then(results => setResults(results));
 }
 input.addEventListener('input', (e) => search(e.target.value));
-
-// ✅ Cancel previous request
-let controller = new AbortController();
-function search(query) {
-  controller.abort(); // Cancel previous
-  controller = new AbortController();
-  fetch(`/api/search?q=${query}`, { signal: controller.signal })
-    .then(results => setResults(results));
-}
 ```
+
+```typescript
+// ✅ Cancel previous request and handle failures
+let controller;
+async function search(query) {
+  controller?.abort();
+  const current = new AbortController();
+  controller = current;
+  try {
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: current.signal });
+    if (!response.ok) throw new Error(`Search failed: ${response.status}`);
+    const results = await response.json();
+    if (!current.signal.aborted) setResults(results);
+  } catch (error) {
+    if (!current.signal.aborted) showSearchError(error);
+  }
+}
+input.addEventListener('input', (e) => { void search(e.target.value); });
+```
+
+Cancellation is expected, not a user-facing failure. Route other failures through the application's existing error UI, and abort the active controller on teardown. The per-request signal also prevents a late response from replacing newer results.
 
 ### 6. Frontend rendering
 

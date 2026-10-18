@@ -25,6 +25,7 @@ try {
   const registered = join(root, "skills", "execute", "references", "git-commit.md");
   const expected = readFileSync(registered, "utf8");
   assert.equal(readFileSync(join(root, "skills", "simplify", "references", "git-commit.md"), "utf8"), expected);
+  assert.equal(readFileSync(join(root, "skills", "optimize", "references", "definition-of-done.md"), "utf8"), readFileSync(join(root, "skills", "execute", "references", "definition-of-done.md"), "utf8"));
 
   writeFileSync(registered, expected + "\ndrift\n");
   check(1, /drift: skills\/execute\/references\/git-commit\.md/);
