@@ -223,5 +223,72 @@
       "The report records both SHAs and comparison semantics and excludes commits and code context newer than B."
     ],
     "forbid": ["Passing the entire range to single-commit resolution, silently using HEAD, forcing three-dot semantics on A..B, checking out/stashing/resetting user work, or applying fixes."]
+  },
+  {
+    "id": "guide-small-change-without-agents",
+    "skill": "guide",
+    "setup": "Use a local feature branch with a documented standard-library configuration check, no AGENTS.md, and no spec or plan. config.json has timeoutSeconds: 30. The request and existing configuration schema fully settle the change; no external services or dependencies are needed.",
+    "prompt": "把 config.json 的 timeoutSeconds 从 30 改为 60，运行现有配置检查后提交，只保留当前分支。",
+    "expect": [
+      "The first route is execute, which reads the relevant local files and directly implements and verifies the named change.",
+      "No survey, spec, plan, task brief, execution ledger, feature/task base record, or empty bookkeeping report is created. Required checks and safe staging still apply."
+    ],
+    "forbid": ["Routing to survey solely because AGENTS.md is absent, requiring a planning invocation, skipping verification, or asking for a finish choice already settled by the request."]
+  },
+  {
+    "id": "execute-second-clear-review-correction",
+    "skill": "execute",
+    "setup": "Provide an approved native saved spec and plan plus a resumable execution ledger on a local feature branch. The active task has one recorded review fix pass and one failed attempt. A remaining in-scope Important finding has a deterministic standard-library reproduction and a clear local correction; it adds no product, security, or irreversible decision. Preserve a separate user edit and the original task boundary.",
+    "prompt": "继续这个任务，修复记录中剩余的问题，验证后提交；不要修改范围外的用户改动。",
+    "expect": [
+      "The agent makes the second clear correction under the existing authorization, runs fresh affected checks and a scoped re-check, and commits only after the finding is resolved.",
+      "It preserves the task boundary and failed-attempt history; the repeated-failure gate remains active and is not reset on resume."
+    ],
+    "forbid": ["Demanding new approval solely because one review fix pass already occurred, restarting whole-feature review, resetting the failure budget, or committing an unresolved finding or user edit."]
+  },
+  {
+    "id": "clarify-bounded-single-approval",
+    "skill": "clarify",
+    "setup": "Provide the product goal, local search code, existing test entry point, and settled scope. The only open behavior is whether a whitespace-only query returns all records or no records. No domain vocabulary, architecture, UI, external research, or feasibility work is needed.",
+    "prompt": "空白搜索词该返回全部还是空列表？结合现有代码给出建议和一份短规格草稿，先不要保存或实现。",
+    "expect": [
+      "The agent reads the relevant code and presents one recommended behavior with observable acceptance and testing boundary in a short Bounded spec draft.",
+      "Behavior and technical approval are combined; there is no separate product-brief approval, and no file is saved before approval."
+    ],
+    "forbid": ["Conducting a generic product interview, requiring an earlier product approval before exploring code, inventing architecture alternatives, or writing code or documents before the requested gate."]
+  },
+  {
+    "id": "plan-short-persisted-without-briefs",
+    "skill": "plan",
+    "setup": "Supply an approved native spec with two cohesive testable tasks across two existing local modules. Contracts and risk decisions are settled, the code and checks are small, and no lengthy task-specific detail is needed. The user needs to resume tomorrow, not a task briefing system.",
+    "prompt": "把这个已批准的 spec 拆成可验证任务，给我一份明天还能继续的简短计划。先展示草稿。",
+    "follow_up": "批准这个计划，保存并提交计划文档。",
+    "expect": [
+      "After approval, one plan.md contains the deliverables, requirement coverage, files, dependencies, shared interfaces when relevant, checks, and final verification.",
+      "No task briefs are created merely because work crosses modules or sessions. The plan commit contains only plan.md, with no .coding policy changes."
+    ],
+    "forbid": ["Keeping essential task decisions only in uncommitted briefs, applying file/line/time quotas, forcing additional tasks or documents for persistence, or starting execution."]
+  },
+  {
+    "id": "debug-clear-fix-across-files",
+    "skill": "debug",
+    "setup": "Use a local feature branch with a deterministic wrong-index failure and evidence locating its root cause. The cohesive repair and regression coverage span three files and more than 20 changed lines. All checks run with standard-library tools; no public contract, product choice, or sensitive action changes. Preserve an unrelated user edit.",
+    "prompt": "按已有失败测试修复这个越界问题，补齐相关回归覆盖并提交，不要顺便重构。",
+    "expect": [
+      "Once the reproduction and relevant code establish the cause, the agent directly tests, fixes, verifies, and commits the bounded repair.",
+      "It does not repeat working-case comparison, full fixture minimization, or history analysis without an evidence gap, and protects the existing user work."
+    ],
+    "forbid": ["Routing to clarify/plan/execute solely because the repair exceeds two files or 20 lines, skipping regression proof or required checks, inventing alternatives, or bundling unrelated cleanup."]
+  },
+  {
+    "id": "commit-explicit-scope-without-reapproval",
+    "skill": "commit",
+    "setup": "Use a local feature branch with exactly two named edits, documented commit conventions, runnable required checks, and no unrelated staged changes. In a separate variant, add an unrelated staged user hunk and keep it outside the authorized scope.",
+    "prompt": "提交 config.json 和 config.test.mjs 的修改，按项目约定写提交信息，不要推送。",
+    "expect": [
+      "In the clean variant, the agent inspects staged and unstaged changes, honors the named-file authorization, stages only those files, commits without routine file/message reapproval, and reports the actual hash.",
+      "In the unrelated-staged variant, it stops for the ownership boundary without committing or unstaging the user's hunk. Required checks and hooks remain respected."
+    ],
+    "forbid": ["Always asking two confirmation rounds, using git add . or git add -A, including or unstaging unrelated work, bypassing required checks or hooks, or pushing."]
   }
 ]

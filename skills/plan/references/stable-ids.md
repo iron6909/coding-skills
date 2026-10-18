@@ -33,7 +33,7 @@ Each plan task lists the IDs it implements:
 2. Task 2: Resize uploaded avatars — **Covers:** REQ-2 — depends on: Task 1
 ```
 
-Each task brief carries the same IDs in **Covers requirements:** and maps its acceptance checks to them. Do not assign new IDs to test instructions.
+When a supplemental task brief is needed, it carries the same requirement IDs and checks as the plan. Do not create briefs just for ID mapping or assign new IDs to test instructions.
 
 When the approved spec has IDs, reference the implemented IDs in task commits, for example:
 

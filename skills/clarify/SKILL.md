@@ -16,22 +16,22 @@ Read `AGENTS.md` and `CLAUDE.md` for project constraints. Use this skill set's s
 
 ## Choose a path
 
-Pick the smallest path that fits. When unsure, take the heavier path.
+Pick the smallest path the decisions need. If unsure, inspect the relevant code or ask the missing question rather than expanding the process by default.
 
 | Path | Use when | Produces | Phases |
 |------|----------|----------|--------|
-| **Bounded** | Local change: one module, clear behavior, no new interface | short spec.md | Phase 0 + 1 |
-| **Architectural** | New module, cross-project, interface change, frontend+backend+infra, or work that may bundle multiple capabilities | full spec.md with options (auto-assesses multi-capability work) | Phase 0 + 1 + optional decomposition |
+| **Bounded** | A local behavior choice needs clarification, without structural design | short spec.md | Phase 1, then one spec approval |
+| **Architectural** | Module boundaries, public contracts, or several capabilities need design decisions | spec.md with justified choices, or a capability map | Phase 1; Phase 0 only for unsettled product direction |
 
-**Decomposition Assessment:** After exploring the codebase in Phase 1, I will automatically assess whether work bundles multiple independently testable capabilities (distinct consumers/data, independently shippable, independently deletable). If so, I generate a capability-map.md showing module boundaries, dependencies, and build order — you review the map, not the decision to decompose.
+For Bounded work, skip Phase 0 and its product-brief approval. Read the relevant code, ask only what changes the result, and present one short spec for approval. Do not turn one missing behavior decision into a product interview.
 
-If feasibility is unknown and blocks the spec, use Phase 1 Spike step to validate first, then continue writing the spec.
+For Architectural work, assess decomposition after code exploration only when the request bundles independently testable capabilities. If feasibility blocks either path, use the optional Spike step first.
 
 ---
 
-## Phase 0: Product Understanding (Bounded & Architectural paths)
+## Phase 0: Product Understanding (Architectural, when needed)
 
-This phase clarifies the product-level problem, goals, and success criteria before diving into technical details.
+Use this phase only when product direction is unsettled. Honor an already approved direction without another product brief or approval.
 
 ### Ask questions
 
@@ -42,7 +42,7 @@ Focus on product concerns, not technical implementation:
 - What are we explicitly NOT doing? (scope boundaries)
 - What are the constraints? (budget, timeline, compliance, compatibility)
 
-Ask one question per message, then wait. Ask only what changes the spec. Never ask for repository facts; read the code.
+Ask only what changes the spec, grouping related questions in one message when practical. Recommend an answer and explain a non-obvious trade-off. Never ask for repository facts; read the code.
 
 ```text
 Question <N>: <decision>
@@ -95,7 +95,7 @@ Wait for user approval before proceeding to Phase 1.
 
 Read `GLOSSARY.md`, `AGENTS.md`, relevant code, tests, configuration, existing features. Use search tools to locate relevant modules.
 
-**For high-risk scenarios** (security, architecture, data, critical logic), read `./references/elicitation.md` and apply 2-3 relevant techniques to reveal assumptions, edge cases, and failure modes.
+**For high-risk scenarios** (security, architecture, data, critical logic), read `./references/elicitation.md` and use the relevant techniques to resolve assumptions, edge cases, and failure modes.
 
 ### Step 1.5: Decomposition Check (Architectural path only)
 
@@ -144,9 +144,9 @@ After exploring the codebase, assess whether this work bundles several independe
 
 ### Step 2: Domain modeling
 
-While exploring and clarifying, read `./references/domain-modeling.md` and apply it: challenge terms that conflict with `GLOSSARY.md`, sharpen fuzzy ones, stress-test relationships with concrete scenarios, and cross-check user claims against the code. 
+Read `./references/domain-modeling.md` when the request introduces or changes domain terms or relationships. Otherwise skip it; a local behavior choice does not need a modeling exercise.
 
-When a term settles, update `GLOSSARY.md` inline using `./references/glossary-format.md`. 
+When a project-specific term settles, update `GLOSSARY.md` using `./references/glossary-format.md`.
 
 When a decision passes the three-condition test (hard to reverse + surprising choice + meaningful trade-offs), offer an ADR using `./references/adr-format.md`.
 
@@ -215,19 +215,20 @@ Recommend one with clear reasoning. Otherwise, state the single justified approa
 
 ### Spec structure
 
-**All paths include**:
+For **Bounded**, include only the problem/goal, selected change and scope, acceptance conditions with REQ-N IDs, testing boundary, and any applicable constraints. Keep it short and omit empty sections; do not add a separate product brief.
+
+For **Architectural**, use the relevant sections below:
 
 ```markdown
 ## Problem
-[From Phase 0 product understanding]
+[The approved product problem]
 
 ## Goal
-[From Phase 0, what we want to achieve]
+[The approved goal]
 
 ## Solution
 
-[Bounded: the approach]
-[Architectural: compare 2-3 options only when a real choice exists; otherwise state the justified approach]
+[Compare options only when a real choice exists; otherwise state the justified approach]
 
 ### [When comparing options] Option 1: [Name]
 **Approach**: [description]
@@ -264,23 +265,17 @@ Recommend one with clear reasoning. Otherwise, state the single justified approa
 [What gets mocked vs real]
 ```
 
-**Approval Point 2**: "Does this technical approach work?"
-
-Wait for user approval.
+**Spec approval**: Present the resolved behavior, approach, and acceptance checks together, then wait for approval before saving. This is the only approval checkpoint for Bounded clarification; risk-specific spike authorization remains separate.
 
 ---
 
 ## Phase 2: Save spec
 
-### For Bounded or Architectural (single-module work)
+### For work that does not need a capability map
 
 Save to `docs/features/YYYYMMDD-<semantic-name>/spec.md`.
 
-Include both:
-- Phase 0 content (Product Understanding)
-- Phase 1 content (Technical Specification)
-
-For Architectural path, include the full comparison but mark the selected option clearly.
+Save the approved specification once. Incorporate product decisions when Phase 0 was needed, without duplicating its brief. Include an option comparison only when a real choice was evaluated, marking the selected option clearly.
 
 If a spike was run, include the "Feasibility Validation" section with findings.
 
@@ -311,7 +306,7 @@ Reference `./references/git-commit.md` for commit conventions.
 ### Hand off
 
 Tell user:
-- **Bounded/Architectural (single module)**: Give the saved spec path. If layout, component states, or interactions still need decisions, recommend `ui-design`; otherwise recommend `plan`. A frontend change with settled design choices does not require a new `ui-spec.md`.
+- **Bounded/Architectural (single capability)**: Give the saved spec path. Recommend `execute` for a small change already clear enough to implement, `plan` when task decomposition is useful, or `ui-design` when layout, states, or interactions remain unsettled. Settled frontend work does not require a new `ui-spec.md`.
 - **Multi-capability work**: Give the saved map path, module status, and the same conditional recommendation for any approved module spec. Let the user choose the next module or next skill.
 
 Stop after reporting. Do not automatically invoke any next skill.

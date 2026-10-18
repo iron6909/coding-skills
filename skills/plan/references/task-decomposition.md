@@ -17,7 +17,7 @@ Strategies for breaking down features into tasks with optimal order and granular
   - Delivers: Nothing usable until all layers complete
 
 **When to use**:
-- First task (always start with tracer bullet)
+- A new journey needs its first integrated, independently safe slice
 - Feature has distinct user journeys
 - Need early feedback on integration
 - Want to prove technical feasibility
@@ -129,28 +129,24 @@ Task 5: Persist session across refreshes (Horizontal)
 ## Task Granularity Guidelines
 
 ### Too Small
-- Single line changes
-- Renaming only
-- Formatting only
-- Individual test cases (batch them)
+- Splitting one cohesive deliverable into a task per line, rename, or test case
+- Separating implementation and its required regression coverage
 
-**Problem**: Task overhead exceeds value
+**Problem**: Task overhead exceeds value. A small independent user request can still be one task.
 
 ### Too Large
-- Multiple acceptance conditions
-- Multiple user journeys
-- >100 lines changed
-- >3 files touched (guideline, not rule)
-- >2 hours work
+- Independent deliverables with unrelated acceptance checks
+- Several user journeys that can be implemented and verified separately
+- Scope that cannot be explained or reviewed as one coherent change
 
-**Problem**: Hard to review, hard to test, harder to debug if issues
+**Problem**: Unrelated work hides failures and makes review or rollback harder
 
 ### Just Right
-- One testable behavior
-- One acceptance condition (or tightly related set)
-- 20-100 lines changed
-- 30-90 minutes work
-- Clear test that verifies it
+- One coherent, testable behavior
+- One acceptance condition or tightly related set
+- Clear checks that verify the deliverable
+
+File counts, changed lines, and time estimates can inform effort, but are not task quotas. A cohesive change may span several files; a one-line independent fix may be a complete task.
 
 ## Dependency Management
 
@@ -208,7 +204,7 @@ Start with feature spec
 ├─ Is this a new user journey?
 │  └─ YES → Vertical slice (tracer bullet)
 ├─ Does tracer bullet exist?
-│  ├─ NO → Task 1 must be tracer bullet
+│  ├─ NO → Prefer an integrated first slice for a new journey
 │  └─ YES → Can do horizontal fill
 ├─ Is this additional error UX for an already safe journey?
 │  └─ YES → Horizontal task (guidance, recovery, extra cases)
@@ -299,11 +295,9 @@ For each task in your plan:
 - [ ] Has clear acceptance criteria (what changes?)
 - [ ] Has concrete test (how to verify?)
 - [ ] Depends only on earlier tasks or none
-- [ ] Produces something next task can use
-- [ ] Takes 30-90 minutes (rough estimate)
-- [ ] Changes 20-100 lines (guideline)
+- [ ] Delivers a coherent result without unrelated work
 - [ ] Is independently reviewable
-- [ ] First task is a tracer bullet (proves end-to-end)
+- [ ] A new journey's first slice proves integration where needed
 - [ ] Each task includes the minimum safeguards needed to commit it independently
 
 ## Task Interface Documentation
@@ -329,8 +323,8 @@ When tasks depend on each other, document interfaces:
 ## Adjustment During Execution
 
 If during execution you discover:
-- Task is larger than expected → Split into 2 tasks, revise plan
-- Task is blocked by missing dependency → Add new task for dependency
+- A task contains independent deliverables that cannot be reviewed or checked together → Propose a split through plan revision
+- A missing dependency requires a new deliverable → Propose the task and dependency through plan revision
 - An unfinished task is unnecessary → Request cancellation through `plan`'s approved revision process; retain its number, brief, reason, and history as skipped
 
 Use `plan`'s revision process for these adjustments. Do not silently change the approved plan or fabricate a commit/completion for cancelled work.
@@ -409,8 +403,8 @@ Use `plan`'s revision process for these adjustments. Do not silently change the 
 
 **Fill horizontal** to add UX, variations, and cross-cutting improvements beyond the required safety baseline.
 
-**Keep tasks small** (30-90 min) and independently testable.
+**Keep tasks cohesive** and independently testable, not sized to a line or time quota.
 
 **Mark dependencies** explicitly so execution order is clear.
 
-**First task is always tracer bullet** that delivers something demoable.
+**Prefer an integrated first slice** when a new journey needs its boundaries proven. Existing-code, configuration, and documentation work need their own appropriate check, not an invented end-to-end demo.

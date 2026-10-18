@@ -31,10 +31,10 @@ npx skills@latest add iron6909/coding-skills
 
 ## 快速开始
 
-安装后，在 Pi 的项目会话中逐项调用：
+完整功能可在 Pi 的项目会话中按需调用以下阶段，不要求每次全部走完：
 
 ```text
-/coding survey                         # 首次使用，或项目事实过期时
+/coding survey                         # 需要记录或刷新项目事实时
 /coding clarify 添加用户头像上传          # 澄清需求，审阅并制定规格
 /coding plan                           # 审阅并制定计划
 /coding execute
@@ -43,7 +43,7 @@ npx skills@latest add iron6909/coding-skills
 
 也可用 Pi 原生的 `/skill:clarify 添加用户头像上传` 等写法。其他宿主按各自语法调用同名技能，比如 `/clarify`；本包不为 Pi 注册这些短别名。
 
-若界面决策尚未确定，先通过 `/coding ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动可以直接用 `/coding execute`。
+若界面决策尚未确定，先通过 `/coding ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动直接用 `/coding execute`，不要求先建 `AGENTS.md`、规格、计划或执行账本。局部需求只缺少一个行为决定时，`clarify` 使用短规格一次确认，不另做产品审批。
 
 技能需要显式调用，不会自动触发。不知道选哪个时，可使用 `guide`，运行 `/coding guide 添加用户头像上传`，由它选择入口；目标缺装时会提示，不会自动安装。
 
@@ -55,7 +55,7 @@ npx skills@latest add iron6909/coding-skills
 
 | 技能 | 何时使用 |
 |------|----------|
-| [survey](skills/survey/SKILL.md) | 首次接入项目，或需要更新项目事实与术语 |
+| [survey](skills/survey/SKILL.md) | 需要记录或更新项目事实与术语 |
 | [clarify](skills/clarify/SKILL.md) | 澄清需求并形成规格；大型跨模块工作先拆分能力 |
 | [plan](skills/plan/SKILL.md) | 规格已批准，需要拆分可验证的任务 |
 | [execute](skills/execute/SKILL.md) | 执行已批准的计划，或实现范围明确的小改动 |
@@ -100,7 +100,7 @@ npx skills@latest add iron6909/coding-skills
 
 ## 关键概念
 
-**spec** 定义做什么与如何验收，**plan** 组织任务，**task** 是独立可测试的交付单元。小计划可留在当前会话，完整计划会保存文档与任务说明。
+**spec** 定义做什么与如何验收，**plan** 组织任务，**task** 是独立可测试的交付单元。计划可留在当前会话，也可为跨会话使用保存为一份包含任务细节的 `plan.md`；只有任务说明很长时才另拆 brief。文件数、行数或跨模块本身不决定流程重量，风险授权和验证要求仍保留。
 
 ### 文档结构
 
@@ -116,7 +116,7 @@ npx skills@latest add iron6909/coding-skills
 ├── docs/
 │   ├── features/YYYYMMDD-<name>/
 │   │   ├── spec.md                     # 批准的规格
-│   │   ├── plan.md                     # 任务索引
+│   │   ├── plan.md                     # 任务及验证细节
 │   │   ├── ui-spec.md                  # 界面规格（有界面设计时）
 │   │   └── capability-map.md           # 能力拆分（大型工作按需产出）
 │   ├── learnings/
@@ -127,7 +127,7 @@ npx skills@latest add iron6909/coding-skills
     ├── features/YYYYMMDD-<name>/
     │   ├── impl/
     │   │   ├── progress.md             # 执行账本
-    │   │   └── task-<N>.md              # 任务说明
+    │   │   └── task-<N>.md              # 可选的补充任务说明
     │   └── review-YYYYMMDD-HHMM.md      # 功能内代码审查
     ├── handoff/YYYYMMDD-HHMM[-<topic>].md
     ├── ideation/YYYYMMDD-HHMM-<topic>.md
@@ -185,7 +185,7 @@ npm pack --dry-run --json --offline
 
 已在 Windows、Node 24.10.0、Pi 1.3.0 上验证本地安装、SDK 原生展开、资源筛选与重载、来源冲突，以及 CLI 打印、JSON 和 RPC 协议。集成检查使用本地固定响应桩，不证明模型遵守技能指令。TUI 只验证了命令绑定，未做真实终端交互；其他版本与平台未验证。
 
-另使用 `openai/gpt-6.1-sol` 在独立本地仓库验证了 spike 安全边界、优化检查阻塞和历史区间审查，共五个变体，每个变体的新旧版各运行一次。当前版通过本轮适用检查；其余场景与真实并行镜头传递未验证，单次对照不代表通用遵循率。场景定义见 `scripts/workflow-cases.json`。
+此前使用 `openai/gpt-6.1-sol` 在独立本地仓库验证了 spike 安全边界、优化检查阻塞和历史区间审查，共五个变体，每个变体的新旧版各运行一次。本轮轻量路径调整另对六类场景的七个变体完成新旧版各一次实跑，观察到重复审批、空记录和强制任务简报减少；部分检查两版均通过，另有一次环境相关账本写入失败。其余场景与真实并行镜头传递未验证，单次对照不代表通用遵循率。场景定义见 `scripts/workflow-cases.json`，结构检查通过不等于代理行为通过。
 
 ## 参考与许可
 

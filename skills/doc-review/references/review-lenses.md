@@ -50,7 +50,7 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 
 **Solution**:
 - Architectural path: compares viable alternatives by complexity/fit/risk/testability when a real choice exists, then recommends one
-- Bounded path: concrete enough for `plan` to break into tasks
+- Bounded path: concrete enough to implement and verify without forcing a separate planning stage
 - Research or spike results, if used, support the chosen approach rather than forming a separate spec path
 
 **Decisions**:
@@ -72,7 +72,7 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 - Goal, spec path, and approach
 - Tasks: ordered list with dependencies and requirement coverage
 - Final verification commands and expected results
-- Task briefs under `.coding/features/YYYYMMDD-<semantic-name>/impl/`
+- Task details in the plan: deliverables, files, shared interfaces where relevant, and checks; supplemental briefs are optional
 
 ### Specific checks
 
@@ -85,13 +85,13 @@ Check the content below, not extra headings. Scope and decisions may be embedded
 - Each task is independently testable
 - Each has a clear deliverable
 - Dependencies are valid (no circular, no missing prerequisites)
-- Tracer bullet ordering: vertical slices before horizontal layers
+- For a new journey, the first slice proves integration rather than leaving separate layers unusable
 
-**Task briefs** (read from `.coding/`):
-- Each brief states its goal, covered requirements, dependencies, acceptance checks, steps, files, and consumed/produced interfaces
-- Interfaces are consistent (task-2 Consumes what task-1 Produces)
+**Supplemental task briefs** (only when linked):
+- Extra task-specific instructions agree with the plan's goal, requirement coverage, dependencies, files, interfaces, and checks
+- The approved plan retains enough detail to recover the task without the supplemental file
 
-Missing briefs alone do not block a fresh clone: check whether the approved plan and spec contain enough detail for `execute` to rebuild them. Report a missing decision rather than requiring temporary artifacts to be committed.
+Do not require briefs for a self-contained plan. If a legacy plan relies on a missing brief, check which details approved inputs can recover and report only an actual decision gap. Do not require temporary artifacts to be created or committed.
 
 ## capability-map.md (from clarify's decomposition check)
 

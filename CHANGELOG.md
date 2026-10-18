@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.3] - 2026-10-18
+
+### Fixed
+
+- **小改动路径**：范围与验收明确时直接执行，不因缺少 AGENTS.md 强制调查或创建规格、计划。
+- **执行与恢复**：小改动和会话计划省去基线、简报、空 pre-flight 与账本；明确的范围内第二次修复不重复索要审批，保留持久计划的恢复记录与三次失败停点。
+- **局部澄清**：Bounded 跳过独立产品简报，结合代码一次确认行为、方案与验收；领域建模按实际决策需要加载。
+- **计划文档**：保存计划只决定持久性，plan.md 自带任务细节，补充 brief 按需；不再按文件、行数、时长或跨模块机械加重流程，同步文档审查和追溯规则。
+- **调试与提交**：根因明确的修复直接实施，不因跨文件增加阶段；明确提交授权不重复确认范围或消息，仍保护无关暂存工作、必要检查和风险授权。
+
+### Added
+
+- **回归检查**：补充轻量路径契约和六个手工场景，完成七个变体的新旧版单次实跑；保留实际失败与未验证边界，不将结构校验或单次样本当作全面行为通过。
+
 ## [5.1.2] - 2026-10-18
 
 ### Fixed
@@ -344,7 +358,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.1.2...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.1.3...HEAD
+[5.1.3]: https://github.com/iron6909/coding-skills/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/iron6909/coding-skills/compare/v5.1.1...v5.1.2
 [5.0.0]: https://github.com/iron6909/coding-skills/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/iron6909/coding-skills/compare/v4.0.0...v4.0.1

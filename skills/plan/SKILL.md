@@ -1,221 +1,98 @@
 ---
 name: plan
-description: Turn an approved spec into a small, ordered implementation plan. Full tier saves plan.md beside the spec in docs/features and task briefs in .coding; Brief tier keeps the plan in the conversation. Use when a spec is approved and the work has more than one task.
+description: Turn an approved spec into ordered, testable tasks. Keep a Brief plan in conversation or save a Full plan.md beside the spec in docs/features when persistence is needed. Add task briefs in .coding only for lengthy task-specific detail. Use when approved work needs planning.
 disable-model-invocation: true
 ---
 
 # Plan
 
-Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan.
+Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. Do not write product code or start implementation.
 
-Do not write product code or start implementation.
+Read `./references/output-tier.md` to choose between a session-only Brief plan and a saved Full plan. Full normally writes one `plan.md`, even for a short plan that merely needs to survive a pause. Neither tier requires task briefs by default.
 
-**Load the Definition of Done**: read `./references/definition-of-done.md`. The plan must name, in its Final verification section, the commands that decide each DoD item — the plan is where those commands are chosen, so a DoD item with no command behind it becomes an untestable task.
-
-## Choose the output tier
-
-Read `./references/output-tier.md` before writing anything. It decides how much of this skill runs.
-
-| Tier | Produces | This skill does |
-|------|----------|-----------------|
-| **Brief** | a task list in the conversation | Preconditions, Explore, the draft, the approval gate. Then hand to `execute`. |
-| **Full** | `plan.md` and one brief per task | everything below, including Save and Commit |
-
-Brief writes no files: no `plan.md`, no briefs, no ledger. Small work does not cross sessions. If the work must survive to a later session, the tier is Full — decide that now.
-
-The hard floors in `output-tier.md` are not negotiable. Cross-module work, interface changes, anything touching auth, data migration, or an irreversible operation is Full regardless of file count.
-
-Read `output-tier.md` for the floors and the choosing order.
+**Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
 ## Preconditions
 
-Find the approved spec before planning.
+- Read applicable `AGENTS.md` files and the approved spec in full. Use this skill set's format and approval contract.
+- Read an approved `ui-spec.md` beside the spec and relevant `DESIGN.md` constraints when present. Fold these decisions into tasks rather than creating a task per screen.
+- Confirm the problem, scope, selected approach, constraints, acceptance conditions, and testing boundary are settled.
+- If the spec is missing, a draft, or leaves a product decision open, stop and recommend `clarify`. If necessary layout, state, or interaction decisions are missing, recommend `ui-design`. Settled frontend work does not need a UI document merely because it has UI.
 
-- Read the applicable `AGENTS.md` files.
-- Read the approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` in full. Use this skill set's format and approval contract.
-- When `ui-spec.md` sits beside the spec, read it too. It carries interface decisions the spec leaves open — layout per breakpoint, component states, interaction flows — and tasks that skip it will reinvent those decisions one component at a time. Fold them into the relevant tasks rather than making a task per screen.
-- Confirm that the spec states the problem, goal, scope, selected approach, constraints, acceptance conditions, and testing boundary.
-- If the spec is missing, still a draft, or contains unresolved decisions, stop and ask for clarification. If necessary layout, state, or interaction decisions are missing, recommend `ui-design` and stop rather than inventing them in tasks. A settled frontend change does not require `ui-spec.md` merely because it has UI.
-
-The spec is the authority. Do not add new product decisions silently. Record a needed change in the spec first, then plan from the updated spec.
+The spec is the authority. Record a needed product change there through its approval process before planning from it.
 
 ## Revising an existing plan
 
-If `plan.md` already exists in the spec's directory, this is a revision, usually because `clarify` updated the spec. First read `plan.md`, the ledger `.coding/features/YYYYMMDD-<name>/impl/progress.md` (if present), and `git log`.
+Read `plan.md`, `.coding/features/YYYYMMDD-<name>/impl/progress.md` if present, and `git log` before revising:
 
-- Tasks the ledger marks `complete` are history. Do not renumber them, rewrite them, or regenerate their briefs.
-- Revise only unfinished tasks. Add new tasks with the next free number. If a finished task turns out to be wrong, add a corrective task instead of editing it.
-- Cancel an unnecessary unfinished task only through an approved revision: retain its number and history, mark it `skipped: <approved reason>` in the plan, and keep its brief. It is no longer executable or counted as current requirement coverage. Check that active requirements remain covered and dependencies no longer rely on its missing outputs. Do not fabricate completion or a commit for it.
-- Present the revision as a draft (what changed and why) and get approval before overwriting `plan.md` or any brief.
-- After approval, update the affected unfinished executable briefs together with the plan. Preserve completed and skipped briefs. Append `Plan revised: <one-line reason>` to the ledger and commit as `docs(plan): update <name>`.
+- Completed tasks are history. Keep their numbers, content, and any briefs unchanged; add a corrective task if necessary.
+- Revise unfinished tasks and add new tasks with the next free number.
+- Cancel an unnecessary unfinished task only through an approved revision. Retain its number, any brief, and history; mark it `skipped: <approved reason>`. Check active requirement coverage and dependencies without inventing completion or a commit.
+- Present what changed and why, then obtain approval before updating the plan or linked briefs.
+- After approval, reconcile affected unfinished briefs when present, append `Plan revised: <one-line reason>` to an existing ledger, and commit the plan revision. Preserve completed and skipped records.
 
 ## Explore
 
-Read `GLOSSARY.md` (if it exists) before code exploration. Use project terms from the glossary in all plan artifacts. Read the ADRs under `docs/adr/` that touch the affected modules: a plan that contradicts a recorded decision needs to say so, not silently undo it. If the spec mentions research findings or spike validation results, they are constraints on the tasks.
+Read existing `GLOSSARY.md` and ADRs touching the affected area. Research or spike findings in the spec constrain the tasks.
 
-Look for active files in `docs/learnings/`. If active learning files exist, read `./references/learnings-format.md` before matching them to this work by tag and by subject; otherwise skip that reference. A recorded trap that this plan would walk into is a constraint on the tasks; a recorded trade-off is worth knowing before choosing an approach again. Cite the file when a learning shapes a task. No active learnings is not a blocker.
+Look for active files in `docs/learnings/`. If active learning files exist, read `./references/learnings-format.md` before matching by tag and subject; otherwise skip it. Cite a relevant learning when it changes a task; no active learning is not a blocker.
 
-Read only the code needed to make the plan precise:
+Read only the affected code, callers, tests, interfaces, schemas, configuration, and verification commands needed to make tasks precise. Use repository facts rather than asking the user what tools can find.
 
-- affected modules and their callers
-- related tests and test helpers
-- interfaces, schemas, configuration, and build rules
-- existing patterns for similar behavior
-- commands used to test, lint, build, and type-check the affected area
-
-Use repository facts. Do not ask the user for facts that tools can find.
-
-### Large code exploration
-
-Read directly for small changes. Dispatch read-only subagents when the plan needs broad code exploration and retaining all source details in the main context could cause overflow.
-
-**When and how to use subagents**: read `./references/subagent-dispatch.md` for dispatch rules.
-
-Main process owns decomposition and all writes. Keep these categories separate:
-
-- repository fact
-- spec decision
-- plan choice
-- unresolved question
-
-Treat conflicting findings as unresolved until repository evidence or an updated spec settles them.
-
-## Map the change
-
-Before writing tasks, list the change map in working notes:
-
-- files to create, modify, or delete
-- responsibility of each file
-- interfaces that tasks share
-- tests that prove each acceptance condition
-- commands that verify the affected area
-
-Follow existing project boundaries. Do not include a refactor only because it looks cleaner. Include a refactor only when the spec requires it or it makes the requested change safe.
-
-If the spec covers independent subsystems, split it into separate plans or state the dependency clearly. Each plan should produce a testable result.
+Explore directly unless broad read-only investigation would save context. Read `./references/subagent-dispatch.md` only when delegating. The main process owns decomposition and all writes; resolve conflicting findings with evidence or an approved spec decision.
 
 ## Task design
 
-Make each task the smallest useful unit with its own check. A task may include setup, code, tests, and documentation when they form one deliverable.
+A task is one independently testable deliverable, not a file, layer, or line-count budget. Keep a cohesive change together when it has one meaningful check; do not split it to meet a size or time quota.
 
-Run-only verification belongs in Final verification, not a standalone task or brief: rerunning existing checks or updating execute's ledger is not an independent deliverable. A task that creates required tests, tooling, or documentation may still earn its own place when it delivers a distinct, independently verifiable result.
+Run-only verification belongs in Final verification, not a standalone task or brief. Creating required tests, tooling, or documentation can earn a task when it is a distinct requested deliverable.
 
-### Prefer tracer bullet tasks
+For a new user journey, prefer a vertical slice that proves integration early, rather than separate tasks for all models, routes, and UI. Read `./references/task-decomposition.md` when choosing slice boundaries or ordering dependencies is genuinely unclear.
 
-A tracer bullet task is a vertical slice that cuts through all layers to deliver one observable end-to-end behavior. Examples:
-- "User clicks login → JWT issued → dashboard renders"
-- "POST /orders → DB insert → 201 response"
-- "Upload CSV → parse → validation errors shown"
+For each task, name:
 
-Tracer bullet tasks prove integration early and can run independently. Prefer them over horizontal layer tasks ("implement all models", "write all routes").
+- the deliverable and existing REQ-N IDs it covers
+- files and responsibilities
+- dependencies and any shared interfaces, with matching producer/consumer names
+- the observable check and expected result
 
-Read `./references/task-decomposition.md` for detailed strategies on vertical vs horizontal slicing, task granularity, dependency management, and common patterns.
+Every slice includes the input validation, authorization, data integrity, accessibility, and error handling it needs to be safe independently. Reuse verified existing protections; later tasks must not supply missing trust-boundary safeguards.
 
-When a task produces an interface another task consumes, declare it explicitly in the **Interfaces** section of both task briefs (Consumes in one, Produces in the other), and name it in the plan's Tasks line. This records the dependencies between tasks.
+Use a test-first order when the project supports it. For documentation, configuration, or a project without a feasible test harness, name the strongest available check rather than inventing a framework.
 
-### Order tasks by dependency
+Read `./references/stable-ids.md` before mapping requirement coverage and apply its checks before saving. Keep the spec's IDs; do not assign requirement IDs to test instructions.
 
-Every slice must include the validation, authorization, data-integrity protection, and error handling needed to be safe on its own; reuse existing protections where verified. The later error-path work below is additional coverage and UX, not permission to defer a trust boundary.
+## Plan format
 
-1. prerequisites and shared interfaces
-2. core behavior (tracer bullet slices)
-3. integration and user-facing behavior
-4. additional error paths and compatibility cases
+Brief uses a task list in conversation, with each task's files, intended change, and check. Include final verification where it differs from those task checks.
 
-Do not make separate tasks for every layer when one slice can prove the behavior.
-
-Each task is one independently testable unit; internally it may contain multiple steps. Use a test-first order when the project supports it:
-
-1. write the test or verification case
-2. run it and record the expected failure when applicable
-3. implement the smallest change
-4. run the focused check
-5. run the broader affected check
-
-Do not require a failing test when the repository has no test harness or when the work is documentation or configuration only. Name the available check instead.
-
-## Task briefs (Full tier only)
-
-Skip this section on Brief: that tier keeps tasks in the conversation and writes no briefs.
-
-After the plan is approved (see Approval gate) and `plan.md` is written, generate a brief for each task in `.coding/`, using the same `YYYYMMDD-<semantic-name>` as the spec directory:
-
-```bash
-DIR=".coding/features/YYYYMMDD-<semantic-name>/impl"
-mkdir -p "$DIR"
-# Write to $DIR/task-<N>.md
-```
-
-Each brief contains only what that task needs:
-
-```markdown
-# Task <N>: <short name>
-
-**Covers requirements:** REQ-1, REQ-4
-
-**Depends on:** <task numbers or None>
-
-## Goal
-
-<What this task delivers and which requirements it satisfies.>
-
-## Acceptance
-
-- REQ-1: <requirement text from spec> → verify with <check>
-- REQ-4: <requirement text from spec> → verify with <check>
-
-## Steps
-
-1. <one step>
-   - Check: `<command>` → <expected result>
-2. <one step>
-   - Check: `<command>` → <expected result>
-
-## Files
-
-- Create: `<exact path>` — <responsibility>
-- Modify: `<exact path>` — <responsibility>
-- Test: `<exact path>` — <coverage>
-
-## Interfaces
-
-**Consumes from Task <M>:**
-- <interface or value>
-
-**Produces for Task <P>:**
-- <interface or value>
-```
-
-Briefs let execute read task context without loading the full plan. Read `./references/stable-ids.md` before mapping coverage and use its checks before saving. Carry the spec's existing IDs into each brief; do not renumber them or assign requirement IDs to testing instructions.
-
-## Plan format (Full tier only)
-
-Skip this section on Brief: that tier produces no file.
-
-After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lightweight index:
+Full saves the approved tasks in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
 
 ```markdown
 # <Feature name> Implementation Plan
 
 **Goal:** <one sentence>
-
 **Spec:** `docs/features/YYYYMMDD-<semantic-name>/spec.md`
+**Approach:** <short explanation>
 
-**Approach:** <two or three sentences>
+## Constraints
 
-**Constraints:**
+- <applicable constraint>
 
-- <exact constraint>
-
-**Review focus:**
+## Review focus
 
 - <important failure mode and the check that covers it>
 
 ## Tasks
 
-1. Task 1: <short name> — **Covers:** REQ-1, REQ-4 — depends on: None — produces: <interface>
-2. Task 2: <short name> — **Covers:** REQ-2, REQ-3 — depends on: Task 1 — produces: <interface>
-3. Task 3: <short name> — **Covers:** REQ-5 — depends on: Task 2 — produces: <interface>
+### Task 1: <deliverable>
+
+**Covers:** REQ-1, REQ-4
+**Depends on:** None
+**Files:** <exact paths and responsibilities>
+**Change:** <enough detail to implement without inventing a product decision>
+**Interfaces:** <shared producer/consumer contract, when needed>
+**Check:** `<command>` → <expected result and acceptance covered>
 
 ## Final verification
 
@@ -223,97 +100,46 @@ After approval, create `docs/features/YYYYMMDD-<semantic-name>/plan.md` as a lig
 - Run: `<broader command>` → <expected result>
 ```
 
-Omit empty sections. Use exact names and values supported by repository evidence. Write every path from the repository root, and do not invent line numbers.
+Repeat only the tasks needed. Omit empty sections and use repository-relative paths supported by evidence. A saved plan contains task details; it is not merely an index and has no arbitrary line cap.
 
-plan.md is an index. Task details live in `.coding/features/YYYYMMDD-<semantic-name>/impl/task-N.md`. Keep plan.md under 100 lines. Review focus guides the relevant task reviews and, when invoked by the user or `autoflow`, independent `code-review`; it does not add another whole-feature review to execute.
+## Optional task briefs
+
+For lengthy task-specific instructions only, add `.coding/features/YYYYMMDD-<semantic-name>/impl/task-<N>.md` after approval and link it from that task in the plan.
+
+Use the same task number, goal, requirement IDs, dependencies, files, and checks as the plan, followed by any additional steps or examples the task needs. Do not duplicate the spec's requirement text or introduce decisions absent from approved inputs. The plan must remain sufficient to recover the task if this supplemental file is unavailable.
+
+Briefs are work records, not part of the plan commit. The user owns `.coding/` ignore and tracking policy. Do not create a brief for every task merely to fill a template or remove existing briefs when revising a plan.
 
 ## Self-review
 
-Applies to every tier. Before reporting the plan, check it against the spec:
+Before presenting the draft, confirm:
 
-- requirement coverage passes the checklist in `./references/stable-ids.md`
-- every task has one clear deliverable
-- task order respects dependencies
-- shared interfaces use the same names and types everywhere
-- each acceptance condition has an observable check
-- error, empty, boundary, and compatibility cases are covered when relevant
-- commands work from the repository root
-- no task contains an unresolved product decision
-- no step is vague or combines unrelated changes
-- the plan does not add unrequested work, dependencies, or refactors
-- every applicable Definition of Done item has a command that decides it — in Final verification for Full, in the task's own check for Brief
+- active requirements are covered under `./references/stable-ids.md`
+- each task has a clear deliverable, files, and observable check
+- dependencies and shared interfaces match
+- relevant error, empty, boundary, and compatibility cases are covered
+- commands run from the repository root and cover the applicable DoD
+- no task requires an unsettled product decision or adds unrequested scope, dependencies, or refactoring
+- the task details are recoverable from the saved plan, with briefs only where useful
 
-On Brief, also re-check the tier choice itself: if the work turns out to hit a hard floor in `output-tier.md`, move up to Full rather than presenting it.
-
-Fix the plan before presenting it. If a gap requires a product decision, stop and update the spec instead (`clarify` revises an approved spec).
-
-## Common rationalizations
-
-| Rationalization | Reality |
-|-----------------|---------|
-| "The tasks are obvious, I'll skip the briefs" | Briefs are what `execute` reads instead of the whole plan. Without them it rebuilds them from a thin plan. |
-| "I'll decide this detail during implementation" | An unresolved product decision in a task is what stalls `execute` mid-task. Settle it or send it back to `clarify`. |
-| "One big task is simpler than five" | A task is one independently testable unit. One big task cannot be reviewed, committed, or reverted on its own. |
-| "I'll add the refactor while planning this" | Unrequested scope. The plan covers what the spec asks for. |
-| "The spec says it, so I don't need to check the code" | The spec says what should happen; the code says what does. A plan that ignores the code is wrong about the files. |
-| "Approval of the spec covers the plan" | It does not. The plan needs its own approval before anything is written. |
-
-## Red flags
-
-Stop and fix the process when you notice:
-
-- planning from a draft spec, or one with unresolved decisions
-- a task with no check that could fail
-- a task that cannot be committed on its own
-- interfaces named differently in two briefs
-- a horizontal task ("all models", "all routes") replacing a tracer bullet
-- `plan.md` past 100 lines, or carrying task detail that belongs in a brief
-- writing `plan.md` or briefs before the user approved the draft
-- choosing Brief when a hard floor in `output-tier.md` applies
-- a Brief plan the user expects to resume in a later session
+Fix evidence-based gaps directly. If a gap requires a product decision, recommend a spec revision with `clarify` instead of hiding the choice in a task.
 
 ## Approval gate
 
-Applies to every tier. Approval of the spec does not approve the plan.
+Approval of the spec does not approve the plan. Present the task list, approach, verification, and any review focus as a draft in conversation. Write no plan or brief yet.
 
-Present the plan as a draft in the conversation. Write no file yet.
+Wait for approval of that draft. Revise when requested. When called by `autoflow`, the same gate may also record explicit authorization for execution and in-scope Blocking/Important review fixes; spec approval alone does not grant it.
 
-- **Full**: goal, approach, the task list with dependencies, final verification, and review focus.
-- **Brief**: the files to change and what happens in each, the check that will confirm it, as a task list where each task carries its own check.
+After approval, Full writes `plan.md` and only any justified briefs. A committed plan records its approval. Brief writes nothing and remains in conversation.
 
-Wait for the user to approve. If they ask for changes, revise the draft and ask again. When called by `autoflow`, this same gate can also record the user's explicit authorization for autonomous execution and in-scope Blocking/Important review fixes; spec approval alone still does not approve the plan.
+## Commit
 
-On Full, only then write `plan.md` and the task briefs; a committed `plan.md` is what `execute` relies on as the approved plan. On Brief there is nothing to write: the approval is agreement to proceed, and the tier decision is part of what the user is approving.
+For Full, follow `./references/git-commit.md`. Stage only `plan.md`, inspect the staged diff, and use the repository convention or `docs(plan): add <name>` / `docs(plan): update <name>`. Do not stage `.coding/` records or push.
 
-## Commit (Full tier only)
-
-Commit `plan.md`, which is permanent. Task briefs live under `.coding/` and are not part of this skill's commit; the user decides their ignore and versioning policy. Stage only `plan.md`, check `git diff --staged`, and use `docs(plan): add <name>` or the repository's own convention. Do not push.
-
-Read `./references/git-commit.md` for commit rules.
-
-Brief commits nothing here: it writes no plan document. Its commits are the code commits `execute` makes.
+Brief has no plan artifact to commit.
 
 ## Finish
 
-Report by tier.
+Report the tier, approved task list or saved plan path, any supplemental briefs, and the commit when present. Omit empty artifact sections.
 
-Full, after approval, saving, and committing:
-
-```text
-Plan tier: full
-Plan saved: docs/features/YYYYMMDD-<semantic-name>/plan.md
-Task briefs: .coding/features/YYYYMMDD-<name>/impl/task-*.md (<N> tasks)
-Commit: <short hash>
-Next: execute
-```
-
-Brief, after approval:
-
-```text
-Plan tier: brief
-Plan: <the task list, or a one-line pointer to where it was shown>
-Written: nothing (session-only tier)
-Next: execute (same session)
-```
-
-Stop after the plan is approved. Do not automatically invoke `execute` or modify product files. For Brief, say plainly that the plan lives only in this session and `execute` must run before it ends.
+Stop and recommend `execute`; do not invoke it or modify product files. For Brief, state that later resumption needs the task list to be restated or saved. A short saved plan is sufficient; persistence does not require more decomposition.

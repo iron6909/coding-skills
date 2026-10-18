@@ -6,145 +6,71 @@ disable-model-invocation: true
 
 # Debug
 
-Fix the root cause, never the symptom. Do not propose fixes before Phase 1 is complete.
+Fix the root cause, not the symptom. Start with the evidence already available; a clear failure does not need an exhaustive investigation.
 
-For a clear bug, work from one evidence-based hypothesis. For an unclear bug, rank 3-5 hypotheses before adding probes.
-
-Read `GLOSSARY.md` (if it exists), the applicable `AGENTS.md` files, and any ADR touching the failing area first, and use their terms in the fix and the commit message.
+Read existing `GLOSSARY.md`, applicable `AGENTS.md`, and ADRs touching the failing area. Use the project's terms in the fix and commit.
 
 ## Workspace safety
 
-Before adding probes, testing a hypothesis with edits, or running a reproduction that may write state, inspect the current branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve unrelated user work; if it overlaps the investigation and cannot be isolated safely, stop and agree on the boundary first.
+Before adding probes, testing a hypothesis with edits, or running a reproduction that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if overlap cannot be isolated safely.
 
-On the default branch (`main` or `master`), obtain consent for investigation edits there or create `feature/YYYYMMDD-<semantic-name>` before writing. Read-only investigation may proceed without edits. Destructive or security-sensitive actions need specific sign-off before they run, or a safe isolated reproducer that cannot affect real data.
+On the default branch (`main` or `master`), obtain consent for investigation edits or create `feature/YYYYMMDD-<semantic-name>` before writing. Read-only investigation needs no branch change. Destructive or security-sensitive actions require specific sign-off before execution, or a safe isolated reproducer that cannot affect real data.
 
-**Load the Definition of Done**: read `./references/definition-of-done.md` before declaring the fix complete. The fix must satisfy both the project-wide DoD and the reproduction it set out to kill.
+Read `./references/definition-of-done.md` before choosing checks and declaring completion. Apply its Unavailable required checks gate before committing or claiming the fix is done.
 
-## Phase 1: Root cause investigation
+## Phase 1: Establish the failure and cause
 
-Complete this phase before attempting any fix.
+1. Read the actual error, stack trace, and relevant code. Check the caller or data flow needed to explain the symptom.
+2. Reuse an existing failing test or the smallest feasible reproduction command that asserts the user's symptom. Prefer a fast unattended loop, but a slow or manual reproduction is evidence too; report its limits. For a flaky or performance failure, measure a reproduction rate or baseline rather than treating one clean run as proof.
+3. State the evidence-backed cause. If the reproduction and code already establish it, proceed directly to Phase 4. Do not search for working examples, bisect history, or fully minimize a fixture just to complete a checklist.
 
-1. **Read the error completely**. Stack traces, error codes, line numbers, file paths, and warnings. Do not skip warnings.
+If no reproduction is possible, use the reporting gate below rather than changing code on an untested theory.
 
-2. **Build a feedback loop**. One already-running command that reproduces the failure. It is done when all four hold:
-   - it asserts the user's exact symptom, not something nearby
-   - it is deterministic (for a flaky or performance bug, it produces a measured rate or baseline, and the goal is a higher reproduction rate, not a clean one)
-   - it runs in seconds
-   - it runs unattended
+Redact secrets, tokens, and personal data as `<REDACTED>` before showing commands or output.
 
-   Prefer, in order: an existing failing test, a small script that calls the failing path, a CLI or fixture comparison, a headless browser run, a replayed trace, a throwaway harness, a fuzz or property loop, or a manual scripted loop as a last resort. For performance regressions, record a baseline first, then bisect.
+## Phase 2: Investigate only the uncertainty
 
-   If you cannot build the loop, stop and use **If no reproduction is possible**. Do not present an untested theory as a root cause.
+Skip this phase when the cause is already established. Otherwise choose the investigation that can distinguish the credible hypotheses:
 
-3. **Check recent changes**. Run `git diff`, `git log`, and review recent commits. Look for new dependencies, configuration changes, and environment differences.
+- inspect recent diffs, commits, configuration, or environment changes when timing implicates them
+- compare a relevant working case when its differences can explain the failure
+- trace or instrument the uncertain component boundary, not every layer by default
+- reduce a noisy fixture only as far as needed to isolate the failure
+- bisect a regression when history and a usable reproduction make it worthwhile
 
-4. **Instrument each boundary in multi-component systems**. When the system has layers (CI → build → service, API → database), log what enters and leaves each component, verify configuration propagation, and check state at each layer. Prefix every probe with a unique marker such as `[DEBUG-a3f1]` so cleanup can find them all. Run once to see where it breaks, then investigate that component.
+Mark temporary probes with a unique prefix such as `[DEBUG-a3f1]` so they can all be removed. Use isolated local/test targets and the workspace safety gate before running them.
 
-5. **Trace the data flow**. Where does the bad value originate, and what called this with it? Keep tracing up until you reach the source.
+## Phase 3: Test a hypothesis
 
-6. **Minimize the reproduction**. Remove one input, step, or dependency at a time. Keep a change only if the failure remains. Finish when every remaining element is load-bearing: removing any one of them makes the loop pass.
+Rank only credible hypotheses; do not invent a fixed number. Start with the strongest one and state what observation would disprove it. Change one variable at a time, read the result, and update the hypothesis from evidence. Do not stack speculative fixes.
 
-Redact secrets, tokens, and personal data as `<REDACTED>` before showing any command or output.
-
-## Phase 2: Pattern analysis
-
-1. **Find working examples**. Locate similar working code in the same codebase.
-2. **Compare against references**. If implementing a pattern, read the reference implementation completely before applying it.
-3. **List every difference** between the working and broken cases. Do not assume something cannot matter.
-4. **Understand dependencies**: what components, settings, configuration, or environment does this need, and what does it assume?
-
-## Phase 3: Hypothesis and testing
-
-1. **Form ranked hypotheses**, each falsifiable: "If X is the cause, then changing Y makes the bug disappear." For an unclear bug, list 3-5 in ranked order and show the ranking to the user before testing. If the user is unavailable, proceed with the top one.
-2. **Test minimally**. Make the smallest possible change to test one hypothesis. One variable at a time. Do not fix several things at once.
-3. **Verify before continuing**. Did it work?
-   - Yes → Phase 4
-   - No → form a new hypothesis from the new evidence. Do not stack fixes.
-4. **When you do not know**, say "I do not understand X" and investigate or ask.
+When the evidence establishes the cause, proceed to implementation. If a decision or missing input blocks further investigation, report exactly what is needed.
 
 ## Phase 4: Implementation
 
-### Classify the fix size
+### Decide whether the fix needs design
 
-**Small fix** (1-2 files, under about 20 lines, clear boundary):
-- Create a failing regression test, or justify a reproducible alternative check as described below
-- Implement the fix
-- Run checks
-- Commit directly
+A **small fix** has a confirmed cause, clear scope, and an approach within the existing approved behavior and contracts. It can touch several files; line and file counts do not determine its workflow. Test, fix, verify, and commit directly.
 
-**Large fix** (multiple files, interface change, or unclear scope):
-- Stop Phase 4.
-- Write a short summary in the conversation: the confirmed root cause, the approach, and the affected files. Do not save it as a document.
-- Recommend the next skill: `clarify` to turn the summary into an approved spec, then `plan`, then `execute`. Do not invoke them.
+If repair requires an unresolved product choice, a new public contract, or structural redesign, stop and summarize the cause, evidence, proposed approach, and affected files in conversation. Recommend `clarify` for that decision, then `plan` only when decomposition is needed. Do not save a new report or invoke those skills automatically.
 
-Never route a small fix through `clarify`, `plan`, or `execute`.
+Never route a small fix through `clarify`, `plan`, or `execute` merely because it spans files.
 
-### Small fix workflow
+### Fix and verify
 
-1. **Create a failing test**. If the project has no test tooling, a regression test is still the goal where a harness can be reached cheaply; when it genuinely cannot, say what the strongest available check is (the reproduction command from Phase 1, a lint rule, a validation script) and why a test was not added. Read `./references/tdd.md` and follow its **Prove-It pattern**: prove the bug with a failing test, confirm it fails for the right reason, apply the minimal fix, verify the test passes, then run the affected checks for regressions. If no suitable entry point exists, report the design limitation and recommend `refactor` for a structural review; do not invoke it.
-2. **Implement one fix**. Address the confirmed root cause. One change at a time. No bundled refactoring or "while I'm here" improvements.
-3. **Verify the fix**. Run the regression test or justified alternative check, the original reproduction, and the available affected checks (test suite, lint, type-check). Apply the loaded DoD's Unavailable required checks gate before committing or declaring completion.
-4. **Inspect the diff**. Check for scope creep and accidental files. Remove the temporary probes, logs, and throwaway files (scratch, not documents); every `[DEBUG-...]` line is gone.
-5. **Commit**. Run `git status` first and stage only the files this fix touched. Use the repository's commit convention (`AGENTS.md` or `CLAUDE.md`), otherwise Conventional Commits: `fix(scope): <summary>`, with the root cause and the test in the body. Check `git diff --staged` before committing. Do not commit unrelated user changes. Do not push.
+1. **Prove the regression.** Read `./references/tdd.md` and use its Prove-It pattern: observe a correct-cause failure, apply the minimal fix, and confirm the same check passes. Reuse trustworthy failure evidence rather than repeating the cycle. If no feasible test harness exists, justify the strongest reproducible alternative and name the remaining coverage gap; do not install a framework for this workflow.
+2. **Implement one fix.** Address the confirmed cause without unrelated refactoring or extra scope. If a suitable test entry point is missing, explain the design limitation; recommend `refactor` only when structural work is actually needed.
+3. **Verify.** Run the regression check, original reproduction, and applicable affected checks. The same command can serve both regression and reproduction; do not rerun it solely to fill two labels. Follow the loaded DoD for full-suite timing and unavailable required checks. Fresh evidence must apply to the final code.
+4. **Inspect and clean the diff.** Remove only this run's probes, logs, and non-document scratch. Every `[DEBUG-...]` probe is gone. Preserve user changes and all documents.
+5. **Commit.** Follow `./references/git-commit.md`, stage only this fix's changes, and inspect `git diff --staged`. Use repository conventions or `fix(scope): <summary>`, recording the cause and verification. Do not push.
 
 ### If the fix fails
 
-- Fewer than 3 attempts: return to Phase 1 with the new evidence.
-- 3 or more: stop and question the architecture. Do not attempt a fourth fix without discussing it with the user.
-
-Patterns that mean the architecture is wrong rather than the last hypothesis:
-- each fix reveals new shared state or coupling somewhere else
-- fixes require a large refactor
-- each fix creates a new symptom elsewhere
-
-Discuss with the user: is the pattern sound, are we keeping it through inertia, and should we refactor the architecture instead of continuing to patch symptoms?
-
-## Common rationalizations
-
-If you catch yourself thinking any of these, stop and return to Phase 1:
-
-| Rationalization | Reality |
-|-----------------|---------|
-| "Quick fix for now, investigate later" / "Just try changing X" | The first fix sets the pattern, and a guess teaches nothing. |
-| "Issue is simple, skip the process" / "Emergency, no time" | Simple bugs have root causes too, and guess-and-check is slower than the process. |
-| "Add multiple changes, run tests" / "Multiple fixes save time" | You cannot isolate what worked, and stacked fixes cause new bugs. |
-| "Skip the test, I'll verify manually" / "Test after the fix works" | Prefer a failing test. Without a feasible harness, justify a reproducible alternative that proves the bug before the fix and passes afterward. |
-| "I see the problem" / "It's probably X" | Seeing a symptom is not understanding the root cause. |
-| "I do not fully understand but this might work" | Say "I do not understand X" and investigate. |
-| "One more fix attempt" after 2+ failures | Three failures point at the architecture, not the last hypothesis. |
-| Each fix reveals a new problem elsewhere | Same signal: the architecture is wrong. |
-| "It's a flaky test, not a real bug" | Flakiness is a finding. Measure the rate before dismissing it. |
-
-## Red flags
-
-Stop and fix the process when you notice:
-
-- proposing a fix before Phase 1 produced a reproduction
-- more than one variable changed between test runs
-- a `[DEBUG-...]` probe still present in the diff
-- the reproduction weakened so the failure stops appearing
-- three failed fix attempts without questioning the architecture
-- a root cause asserted without evidence from the loop
-
-## Verification
-
-Confirm the Definition of Done loaded above, and specifically:
-
-- [ ] the reproduction now passes, and its output was read
-- [ ] the regression test, or justified alternative check, fails without the fix and passes with it
-- [ ] required affected checks and full-suite timing satisfy the loaded DoD, including its Unavailable required checks gate
-- [ ] every `[DEBUG-...]` probe and non-document throwaway file is gone
-- [ ] the commit carries the root cause and verification in its body
-
-Read `./references/git-commit.md` for commit rules.
+Revisit the evidence the failure changes; do not repeat settled investigation steps. After 3 failed fix attempts, stop before a fourth and discuss the smallest next decision with the user. Repeated coupling, a required redesign, or a new symptom from each fix may indicate a design problem, but failure count alone does not prove the architecture is wrong.
 
 ## If no reproduction is possible
 
-Stop before code changes. Report:
-
-- what you tried, with exact commands and results
-- what evidence is missing
-- the smallest next input needed
+Stop before code changes. Report the exact commands tried, results, missing evidence, and smallest next input needed. A theory without before/after evidence is not a verified root cause.
 
 ## Completion report
 
@@ -152,12 +78,10 @@ Stop before code changes. Report:
 Root cause: <cause and evidence>
 Reproduction: <command or test and result>
 Fix: <short change summary>
-Checks: <commands and results>
+Checks: <commands and fresh results; applicable DoD and any accepted limits>
 Commit: <short hash>
 Remaining: <known gap, or None>
-Next: <for a large fix, the recommended skill; otherwise None>
+Next: <only when a decision or further work is needed>
 ```
 
-Do not claim success without fresh before/after evidence from the regression test or justified alternative and the available affected checks. If a regression test could not be added, name the verification used and the remaining coverage gap; do not describe an alternative check as an automated regression test.
-
-When the investigation turned on something the code does not explain — a trap, a misleading signal, a boundary this fix does not cover — say so in one line and offer `capture` as an optional next step. Do not invoke it. A bug whose root cause surprised you is exactly what `capture` is for; a typo fix is not.
+Do not claim success without trustworthy before/after evidence and the required checks. A justified alternative is not an automated regression test; say what remains unverified. Offer `capture` only for non-obvious reasoning the code and existing documents do not preserve, then stop without invoking another skill.

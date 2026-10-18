@@ -119,4 +119,4 @@ State:
 
 ## Next
 
-If Blocking findings remain unfixed, recommend not starting implementation. When semantic changes or stale downstream artifacts need owner revision, recommend the owner named above and do not recommend execute yet. Only an unchanged or non-semantically corrected approved plan with current briefs (or briefs safely rebuildable from approved inputs) can go directly to `execute`. Otherwise, recommend `plan` for a spec or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.
+If Blocking findings remain unfixed, recommend not starting implementation. When semantic changes or stale downstream artifacts need owner revision, recommend the owner named above and do not recommend execute yet. An unchanged or non-semantically corrected approved plan can go directly to `execute` when its task details are recoverable and any linked briefs are current or safely recoverable. A self-contained plan needs no briefs. Otherwise, recommend `plan` for a spec or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.

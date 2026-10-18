@@ -46,6 +46,9 @@ assert.ok(spike.indexOf("Before") < spike.indexOf("1. Write the smallest"), "spi
 
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
+const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
+assert.ok(routing.indexOf("small change with clear scope and acceptance checks") >= 0 && routing.indexOf("small change with clear scope and acceptance checks") < routing.indexOf("use `survey`"), "clear small work must route before workspace documentation");
+assert.ok(routing.includes("Missing `AGENTS.md` alone does not require a survey"), "missing instructions must not force document creation");
 const readme = read("README.md");
 const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((label) => {
   const section = readme.split(`### ${label}`)[1]?.split("\n#")[0] ?? "";
@@ -222,11 +225,14 @@ const execute = read("skills/execute/SKILL.md");
 assert.ok(!/\bmodes?\b|5 task review-fix rounds/i.test(execute), "execute must not retain modes or the five-round review loop");
 assert.ok(execute.includes("After each task is committed, continue directly to the next executable task"), "execute must continue between tasks");
 assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>"), "task reviews must include current staged and unstaged changes, not earlier tasks");
-assert.ok(execute.includes("Task <N>: review fix pass —"), "the fix allowance must survive a resumed run");
+assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed planned run");
+assert.ok(execute.includes("Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events"), "small work must skip bookkeeping, not move it into conversation");
 const taskReview = execute.split("## Task review\n")[1].split("\n## ")[0];
-for (const rule of ["Review inline by default", "one fix pass and one scoped re-check", "Do not restart the full task review", "Stop before committing or advancing"]) {
+for (const rule of ["Review inline by default", "scoped re-check", "A second clear in-scope correction does not need new approval", "Stop before committing or advancing"]) {
   assert.ok(taskReview.includes(rule), `missing task-review rule: ${rule}`);
 }
+assert.ok(!taskReview.includes("at most one fix pass"), "review pass count alone must not force another approval");
+assert.ok(execute.includes("3 failed implementation or review-fix attempts") && execute.includes("do not reset the count on resume"), "clear corrections still need a persistent failure budget");
 assert.ok(execute.includes("Stop and ask the user for explicit sign-off on that specific risk"), "continuous execution must retain risk approval");
 for (const file of ["skills/guide/SKILL.md", "skills/autoflow/SKILL.md", "README.md"]) {
   assert.ok(!/execute auto|Pass `auto`|传\s*`?auto`?|逐任务停下确认/.test(read(file)), `stale execute mode in ${file}`);
@@ -341,6 +347,8 @@ const debug = read("skills/debug/SKILL.md");
 const workspaceGate = debug.indexOf("## Workspace safety");
 assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "workspace safety must precede probes and hypothesis edits");
 assert.ok(debug.includes("initial staged and unstaged"), "debug must preserve pre-existing work before probing");
+assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
+assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
 assert.ok(finish.includes("typed `discard`"), "force deletion must retain explicit discard confirmation");
 const ideate = read("skills/ideate/SKILL.md");
 assert.ok(ideate.includes("numeric suffix"), "ideation reports must not overwrite collisions");
@@ -378,7 +386,18 @@ assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verifi
 const tdd = read("shared/references/tdd.md");
 assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
 assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
-assert.ok(read("skills/plan/SKILL.md").includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
+const plan = read("skills/plan/SKILL.md");
+assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
+assert.ok(plan.includes("A saved plan contains task details") && plan.includes("Neither tier requires task briefs by default"), "a short persisted plan must be usable without task briefs");
+assert.ok(read("skills/doc-review/references/review-lenses.md").includes("Do not require briefs for a self-contained plan"), "document review must not restore mandatory task briefs");
+const outputTier = read("skills/plan/references/output-tier.md");
+assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
+const clarify = read("skills/clarify/SKILL.md");
+assert.ok(clarify.includes("For Bounded work, skip Phase 0") && clarify.includes("only approval checkpoint for Bounded clarification"), "local clarification must combine behavior and technical approval");
+assert.ok(!clarify.includes("When unsure, take the heavier path"), "uncertainty needs investigation, not automatic process escalation");
+const commit = read("skills/commit/SKILL.md");
+assert.ok(commit.includes("Do not ask again for file or message approval unless the user requested a preview"), "explicit commit scope must not require routine reapproval");
+assert.ok(commit.includes("scope is ambiguous") && commit.includes("git diff --staged") && commit.includes("Respect required checks and hooks"), "commit shortcuts must retain scope, staging, and check safeguards");
 const simplify = read("skills/simplify/SKILL.md");
 const baselineGate = simplify.indexOf("### 2. Check the baseline");
 assert.ok(baselineGate > simplify.indexOf("### 1. Determine scope"));

@@ -42,7 +42,7 @@ Ask once for approval of both:
 
 An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved input snapshots and the authorization using the state reference. Changed inputs require renewed approval; do not carry authorization over silently.
 
-`plan` then saves and commits `plan.md`. Its task briefs stay under `.coding/` and are not part of that commit; the user decides whether to ignore or version them. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
+`plan` then saves and commits `plan.md`, including task details. Supplemental task briefs are optional; when useful they stay under `.coding/` and are not part of that commit. The user decides whether to ignore or version them. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
 
 ## Stage 2: Execute
 

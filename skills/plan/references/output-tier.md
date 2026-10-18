@@ -1,56 +1,16 @@
 # Output tier
 
-Read this before writing anything. The tier decides how much of `plan` runs.
-
-## What the tier decides
-
-Three things, and nothing else:
-
-- whether `plan.md` is written
-- whether task briefs are written
-- whether the plan outlives the session that made it
-
-The tier does not weaken the approval gate. Every tier presents a draft and waits for the user's approval before anything happens.
-
-## The two tiers
+Choose persistence, not a larger process. Both tiers present a draft and wait for approval before writing or implementation.
 
 | Tier | Use when | Produces |
 |------|----------|----------|
-| **Brief** | at most 5 files, one module, does not hit any hard floor | a task list in the conversation. No files. |
-| **Full** | everything else | `plan.md`, plus one brief per task in `.coding/` |
+| **Brief** | The task list fits the conversation and does not need to be saved | Approved tasks and checks in conversation; no files |
+| **Full** | The user wants a saved plan, later resumption, or an autoflow run | One `plan.md` containing task details and final verification |
 
-## Hard floors
+A short plan may use Full simply to survive a pause. Cross-module work, file count, or a security-sensitive edit does not by itself require more documents. Risk determines the necessary decisions, sign-off, and verification, not the number of plan files.
 
-Never choose Brief when the work does any of this. One item is enough to force Full, however few files are involved:
+On Full, add task briefs only when lengthy task-specific instructions would obscure the plan or overflow the executor's useful context. Keep each task's deliverable, requirement coverage, files, interfaces, and checks in `plan.md`; a brief carries extra detail, not the only copy of a decision.
 
-- crosses a module boundary, or touches more than one module
-- adds or changes an interface another module consumes
-- touches authentication, authorization, permissions, secrets, or access control
-- migrates, rewrites, or deletes stored data
-- changes a public API, wire format, schema, or build or release path
-- cannot be undone with `git revert`
-- has an acceptance condition you cannot state as an observable check
-- leaves you unsure which module owns the change
+Brief has no ledger or briefs. If its conversation is lost, the user can restate the remaining tasks; do not require a Full replan merely because context was compressed. If persistence is already wanted, choose Full now rather than relying on memory.
 
-File count is a hint, not the rule. A one-line edit to a permission check is Full.
-
-## Brief writes nothing
-
-Small work does not cross sessions, so there is nothing to persist. The conversation is the artifact; when the session ends, it is gone. That is the intent, not a gap.
-
-Two consequences follow:
-
-- **Same session only.** Brief hands off to `execute` in the session that produced it. If the work must survive to a later session, it is Full — say so now rather than half-writing a plan the next session cannot find.
-- **No ledger and no briefs.** `execute` keeps its ledger facts in the conversation for Brief, the way it already does for a small change.
-
-## Choosing
-
-In order:
-
-1. Check the hard floors. If one applies, the tier is Full. Stop.
-2. If the work touches at most 5 files in one module, Brief.
-3. Otherwise, Full.
-
-An approved spec does not make the work Full. A Bounded spec for a two-file change is still Brief work: the spec governs what to build, the tier governs how much plan machinery to spend on it.
-
-When nothing is settled — no spec, no agreed scope — this is not planning. A clear small change goes to `execute`; anything else goes to `clarify`.
+An unresolved acceptance condition or ownership question is a decision to settle before planning, not a reason to select a heavier tier. A clear small change can go directly to `execute` without a plan; unclear requirements go to `clarify`.
