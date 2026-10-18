@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.2] - 2026-10-18
+
+### Fixed
+
+- **可行性实验**：clarify 在实验前保护既有改动并检查分支、凭据与外部副作用，只清理本轮非文档临时文件，不将需求确认视为真实交易授权。
+- **优化验证**：optimize 遵循项目 DoD，缺失或失败的必要检查阻止提交与完成，性能收益不能替代最终验证。
+- **历史审查**：code-review 区分 `A..B` 端点比较与 `A...B` 分支比较，保留显式历史终点及其代码上下文，各审查镜头沿用同一固定范围。
+- **性能示例**：移除无界陈旧缓存正例，请求取消示例处理 HTTP、网络、JSON 错误，并防止迟到结果覆盖新结果。
+- **配置与说明**：simplify 沿用项目已有分析器配置，不再建议未登记的配置文件，README 补充真实行为验证边界。
+
+### Added
+
+- **回归检查**：补充请求取消、历史区间与提交门槛回归检查，并新增三个手工场景；真实代理对照限于本轮五个变体，不代表其余场景通过。
+
 ## [5.1.1] - 2026-10-17
 
 ### Fixed
@@ -330,7 +344,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.1.2...HEAD
+[5.1.2]: https://github.com/iron6909/coding-skills/compare/v5.1.1...v5.1.2
 [5.0.0]: https://github.com/iron6909/coding-skills/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/iron6909/coding-skills/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/iron6909/coding-skills/compare/v3.0.0...v4.0.0
