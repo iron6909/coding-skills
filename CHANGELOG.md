@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2026-10-19
+
+### Breaking Changes
+
+- **验证入口**：`spike` 仅处理设计阶段候选方案的关键可行性问题，所有结果均交回 `ideate`，后续规格、计划或实施发现设计前提失效时须先返回 `ideate`，不再直接组织实验。
+- **材料归属**：`spike` 只保存实验输入与证据，不再内化完整外部设计或维护 `proposal.md`，未收敛的设计交给 `ideate`，就绪设计仍可直接进入 `spec`，已有文档保持原样。
+
+### Changed
+
+- **方案收敛**：`ideate` 区分验证对象与最终选型，依据验证证据更新候选和取舍，候选全部失败时重新设计或请求调整约束，不将证据不足当作失败或通过。
+- **验证记录**：报告保存工作量边界与停止原因，明确范围内的安全探针不重复要求审批，高风险操作仍需专项授权。
+
+### Added
+
+- **回归检查**：新增五个手工场景并更新契约自检，41 个场景定义通过结构检查，新路由尚未进行独立代理实跑。
+
 ## [6.0.1] - 2026-10-19
 
 ### Fixed
@@ -389,7 +405,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v6.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/iron6909/coding-skills/compare/v6.0.1...v7.0.0
+[6.0.1]: https://github.com/iron6909/coding-skills/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/iron6909/coding-skills/compare/v5.1.3...v6.0.0
 [5.1.3]: https://github.com/iron6909/coding-skills/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/iron6909/coding-skills/compare/v5.1.1...v5.1.2
