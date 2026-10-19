@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.2] - 2026-10-19
+
+### Fixed
+
+- **产品与界面契约**：明确规格先确定产品行为、业务状态、接口、约束与验收，UI 设计只补充表现层；保留外部设计中已定的界面细节，并阻止从冲突输入继续规划。
+- **澄清与方案边界**：既选方案内的用户决定留在 `spec`，只有方案需要重新选择或事实性可行性前提未成立时返回 `ideate`；删除重新选型、放宽约束和扩大范围的澄清示例。
+- **修订与规则归属**：规格修订读取既有 UI、设计约束和受影响计划，只报告需要对齐的下游文档，不续用冲突的批准；ADR 判据只由其格式引用维护。
+- **跨平台自检**：同步器和示例检查兼容 CRLF 检出，内容未变化时不重写共享引用，避免纯换行误报。
+
+### Added
+
+- **回归检查**：新增三个手工场景与产品/UI 边界契约断言；46 个场景定义通过结构检查，同步器回归、示例、扩展自检与离线打包检查通过，新增场景尚未进行代理行为实跑。
+
 ## [7.0.1] - 2026-10-19
 
 ### Fixed
@@ -417,7 +430,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.2...HEAD
+[7.0.2]: https://github.com/iron6909/coding-skills/compare/v7.0.1...v7.0.2
+[7.0.1]: https://github.com/iron6909/coding-skills/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/iron6909/coding-skills/compare/v6.0.1...v7.0.0
 [6.0.1]: https://github.com/iron6909/coding-skills/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/iron6909/coding-skills/compare/v5.1.3...v6.0.0
