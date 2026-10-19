@@ -19,7 +19,7 @@ Read `./references/output-tier.md` to choose between a session-only Brief plan a
 - Confirm the problem, scope, selected approach, constraints, acceptance conditions, and testing boundary are settled.
 - If the spec is missing, a draft, or leaves a product decision open, stop and recommend `spec`. If new evidence leaves a load-bearing design premise unresolved or invalidates it, stop dependent planning and recommend `ideate` with the affected claim and evidence. Do not organize feasibility probes or hide the unknown in an executable task; any changed design must return through specification approval before planning resumes. If necessary layout, state, or interaction decisions are missing, recommend `ui-design`. Settled frontend work does not need a UI document merely because it has UI.
 
-The spec is the authority. Record a needed product change there through its approval process before planning from it.
+The spec is the product authority. Record a needed product change there through its approval process before planning from it. Stop dependent planning if UI/design inputs conflict with that contract: recommend `spec` if the product contract must change, otherwise `ui-design` to realign the presentation. Do not silently plan from contradictory inputs.
 
 ## Revising an existing plan
 

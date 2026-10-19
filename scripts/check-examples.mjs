@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runInNewContext } from "node:vm";
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const blocks = (path, language) => [...read(path).matchAll(new RegExp(`\`\`\`${language}\\r?\\n([\\s\\S]*?)\\r?\\n\`\`\``, "g"))].map((match) => match[1]);
 
 let manifest;
@@ -432,6 +432,25 @@ assert.ok(outputTier.includes("A short plan may use Full simply to survive a pau
 const spec = read("skills/spec/SKILL.md");
 assert.ok(spec.includes("only routine specification approval checkpoint") && spec.includes("short spec and one approval"), "local requirement decisions need one contract approval, not a separate product stage");
 assert.ok(spec.includes("Do not require `ideate`, `spike`") && spec.includes("Do not write product code, run experiments"), "ready designs must go directly to spec without experiments");
+assert.ok(spec.includes("A missing user decision") && spec.includes("even when security-critical") && spec.includes("a factual feasibility premise"), "spec must distinguish important behavior decisions from unsupported feasibility premises");
+assert.ok(!spec.includes("critical contract lacks applicable evidence"), "an important contract decision alone must not force an ideate detour");
+for (const rule of ["complete product contract", "they cannot override it", "Deferring an open presentation choice never permits dropping supplied, settled UI decisions", "jointly govern implementation"]) {
+  assert.ok(designInput.includes(rule), `missing product/UI authority boundary: ${rule}`);
+}
+assert.ok(spec.includes("## Remaining presentation decisions") && spec.includes("Recommend `ui-design` first"), "spec must name deferred presentation decisions and resolve them before dependent planning");
+const specRevision = spec.split("## Revisions\n")[1].split("\n## ")[0];
+for (const input of ["required internal appendices in full", "approved `ui-spec.md`", "`DESIGN.md`", "affected plan tasks"]) {
+  assert.ok(specRevision.includes(input), `spec revision must inspect ${input}`);
+}
+assert.ok(specRevision.includes("Spec approval does not renew approval of conflicting UI decisions or a stale plan") && specRevision.includes("Do not edit UI documents, tasks, or execution records here"), "spec revision must report stale downstream inputs without renewing their approval or editing them");
+const uiDesign = read("skills/ui-design/SKILL.md");
+assert.ok(uiDesign.includes("stop and recommend `spec` for that decision before UI approval"), "UI approval must not change the product contract");
+assert.ok(plan.includes("Do not silently plan from contradictory inputs") && plan.includes("otherwise `ui-design` to realign the presentation"), "planning must stop for product/UI conflicts and name the affected owner");
+const elicitation = read("skills/spec/references/elicitation.md");
+assert.doesNotMatch(elicitation, /Don't accept the first answer|First Principles|Counterfactual Thinking|Constraint Relaxation|Alternatives emerge/, "spec elicitation must not prescribe reopening selected mechanisms or relaxing agreed scope");
+assert.ok(elicitation.includes("These techniques do not authorize comparing replacement approaches, relaxing agreed constraints, or running experiments"), "elicitation techniques must stay within the spec readiness boundary");
+assert.ok(read("skills/spec/references/adr-format.md").includes("All three of these must be true"), "ADR eligibility must remain in its owning reference");
+assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
 assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
 for (const skill of ["spec", "plan", "execute", "autoflow", "debug", "optimize", "refactor"]) {

@@ -6,20 +6,21 @@ disable-model-invocation: true
 
 # Spec
 
-Formalize the selected design into the complete design and acceptance contract for the user's requested delivery scope. Approach generation and selection belong to `ideate`. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
+Formalize the selected approach into the product design and acceptance contract for the user's requested delivery scope. Approach generation and selection belong to `ideate`. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
 
 Do not write product code, run experiments, create `plan.md` or capability maps, split work into features or tasks, or start another skill.
 
 ## Inputs and readiness
 
-Read `./references/design-input.md` before accepting supplied material or writing documents. It owns scope reuse, workspace safety, full internalization, provenance, and the source-loss check. External designs are inputs to absorb, not execution contracts to link to.
+Read `./references/design-input.md` before accepting supplied material or writing documents. It owns scope reuse, workspace safety, full internalization, provenance, and the source-loss check. External designs are inputs to absorb, not execution contracts to link to. Apply the reference's product/UI authority boundary when identifying presentation decisions that may remain open.
 
 Read the relevant code, tests, configuration, existing `GLOSSARY.md`, and ADRs. Read an existing proposal and its relevant design evidence when supplied. Use the repository's facts rather than asking the user what inspection can answer.
 
 Choose the smallest next action:
 
 - A selected approach with no blocking feasibility unknown can become a spec directly. Do not require `ideate`, `spike`, or a product brief just because the project is new or large.
-- If approach comparison is still needed, a design premise has failed, or a question that could change the selected technology, architecture, or critical contract lacks applicable evidence, recommend `ideate`. State the candidate, exact unsettled question, constraints, and available evidence, then stop before approving or saving a new formal spec. Do not generate alternatives, write `proposal.md`, or organize feasibility experiments here. An obvious local choice needs no invented alternatives.
+- A missing user decision about behavior, interfaces, or constraints belongs here within the selected approach, even when security-critical. For example, settle session expiry policy with the user; it is not a factual claim that needs feasibility evidence.
+- If approach comparison or replacement is needed, or a factual feasibility premise on which the selected approach depends is unresolved or contradicted, recommend `ideate`. State the candidate, exact unsettled question, constraints, and available evidence, then stop before approving or saving a new formal spec. Do not generate alternatives, write `proposal.md`, or organize feasibility experiments here. An obvious local choice needs no invented alternatives.
 
 Ordinary code or documentation inspection belongs here. Future checks of the finished product belong in Acceptance and Testing Boundary, not in a pre-spec experiment campaign.
 
@@ -38,7 +39,7 @@ Ask related questions together when practical, recommend an answer, and explain 
 
 For concrete security, data, or architectural risks, read the relevant techniques in `./references/elicitation.md`. It is not a mandatory interview checklist.
 
-Read `./references/domain-modeling.md` when terms or relationships need definition. Propose settled glossary changes using `./references/glossary-format.md`. Offer an ADR using `./references/adr-format.md` only when the decision is hard to reverse, surprising without context, and the result of a real trade-off. Save these changes with the spec's approval, not as speculative facts.
+Read `./references/domain-modeling.md` when terms or relationships need definition. Propose settled glossary changes using `./references/glossary-format.md`. Read `./references/adr-format.md` when considering an ADR; it owns eligibility and format. Save these changes with the spec's approval, not as speculative facts.
 
 ## Draft the specification
 
@@ -71,6 +72,9 @@ For a small change, include only the problem, chosen behavior and scope, REQ-N a
 ## Testing Boundary
 <entry points, real versus mocked dependencies, and what must be checked>
 
+## Remaining presentation decisions
+<open layout, visual treatment, or component interaction details for ui-design; omit when settled>
+
 ## Required internal appendices
 <explicit local document paths only when needed; these are part of the contract>
 
@@ -81,6 +85,12 @@ For a small change, include only the problem, chosen behavior and scope, REQ-N a
 The spec is not an experiment plan or a production acceptance report. Record testable targets without claiming they have been achieved. Do not leave a load-bearing design choice as “validate later”; return it to `ideate` before formalizing the contract.
 
 Preserve precise implementation-relevant content from supplied designs. Do not shorten a detailed design into an outline that sends implementers back to an external original or an old proposal. The specification can be long when its content earns that space; appendices do not create separate specifications or approval cycles.
+
+## Revisions
+
+Before revising, read the current spec and its required internal appendices in full, any approved `ui-spec.md`, applicable `DESIGN.md` constraints, and affected plan tasks with relevant briefs or execution records when present.
+
+Preserve unaffected decisions, stable IDs, and history; do not re-interview or revalidate everything. Present affected UI decisions and plan tasks with the proposed contract changes. Spec approval does not renew approval of conflicting UI decisions or a stale plan. Identify the needed `ui-design` and `plan` revisions before dependent work resumes; unaffected decisions keep their approval. Do not edit UI documents, tasks, or execution records here.
 
 ## Review and approval
 
@@ -99,19 +109,17 @@ Present the resolved contract and any glossary, ADR, or appendix changes togethe
 
 Save the approved contract to `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal appendices. Read `./references/git-commit.md`, stage only these documents and approved glossary or ADR changes by exact path, and inspect the staged diff. Stop if unrelated changes are staged. Use the repository convention or `docs(spec): add <name>` / `docs(spec): update <name>`. Do not push.
 
-For a revision, preserve unaffected decisions, stable IDs, and history. New evidence may require revising the affected contract; it does not require re-interviewing or revalidating everything. Identify any affected plan tasks for `plan` to reconcile after approval. Do not edit tasks or execution records here.
-
 ## Finish
 
-Report the saved spec, required appendices, approval, and commit. Recommend `plan` when task decomposition is useful, `execute` for a ready small change, or `ui-design` when layout, states, or interactions still need decisions. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
+Report the saved spec, required appendices, approval, and commit. Recommend `ui-design` first when presentation decisions remain or existing UI decisions need realignment with the revised contract. Otherwise recommend `plan` when task decomposition or reconciliation is needed, or `execute` for a ready small change. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
 
 ## References
 
-- `./references/design-input.md` — read before accepting materials or writing; owns preservation and source independence.
+- `./references/design-input.md` — read before accepting materials or writing; owns preservation, product/UI authority, and source independence.
 - `./references/elicitation.md` — read for concrete high-risk decision gaps, not a fixed interview.
 - `./references/domain-modeling.md` — read when defining or changing domain terms and relationships.
 - `./references/glossary-format.md` — read before proposing glossary changes.
-- `./references/adr-format.md` — read before proposing an ADR.
+- `./references/adr-format.md` — read when considering an ADR; owns eligibility and format.
 - `./references/stable-ids.md` — read before assigning acceptance IDs and before saving revisions.
 - `./references/git-commit.md` — read before staging and committing approved documents.
 - `./references/subagent-dispatch.md` — read only when broad read-only investigation is authorized and useful; otherwise inspect directly.

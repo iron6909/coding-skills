@@ -1,40 +1,16 @@
 # Elicitation Techniques
 
-Advanced questioning methods for high-risk specifications. Use these when:
-- Architectural risks (cross-module contracts, new integrations)
-- Security-sensitive features (auth, permissions, data access)
-- Data handling (migrations, transformations, deletions)
-- Critical business logic (payments, compliance, auditing)
-- High uncertainty or novel approaches
-
-## When to Apply
-
-Not every spec needs deep elicitation. Use this for:
-- **High-risk scenarios**: Security, data integrity, cross-system integration
-- **Architectural decisions**: Framework choices, patterns that are hard to reverse
-- **Novel territory**: First time implementing something in this codebase
-- **User expresses uncertainty**: "I'm not sure if..." or "What if..."
-
-Skip for:
-- Simple, well-understood changes
-- Bounded local modifications
-- When user clearly knows what they want
+Focused questioning for unresolved behavior within a selected approach, especially security, data integrity, cross-module contracts, integrations, and critical business rules. Skip techniques when the relevant behavior is already settled, not merely because the user sounds confident.
 
 ## Core Techniques
 
-### 1. Socratic Questioning
+### 1. Targeted Questions
 
-Ask questions that reveal assumptions and gaps. Don't accept the first answer—dig deeper.
+Ask what can settle the actual gap; stop when it is answered. Clarify the goal and applicable obligations without inferring new scope or reopening an agreed mechanism.
 
-**Layers of "why"**:
-- Surface: "We need user authentication"
-- Why: "So users can have private data"
-- Why: "Because we're storing sensitive information"
-- Why: "To comply with privacy regulations"
-- → **Real requirement**: Compliance-grade access control
-
-**Challenge assumptions**:
-- "You mentioned JWT tokens. What made you choose that over sessions?"
+**Examples**:
+- "For the selected session-based authentication, when should an inactive session expire?"
+- "Which privacy obligations apply to this data?"
 - "If we store passwords, what happens when a user's account is compromised?"
 - "You said 'users' — do we mean all users, or specific roles?"
 
@@ -59,34 +35,12 @@ Imagine the feature is live and has failed catastrophically. Work backward to id
 - "Feature works in testing but fails at scale"
 - "Edge case we didn't consider caused data corruption"
 
-**Convert to spec requirements**:
-- Failure: "Migration deleted data" → Requirement: Backup verification step + rollback procedure
-- Failure: "Auth bypass" → Requirement: Explicit permission checks, audit logging
-- Failure: "Rate limits" → Requirement: Circuit breaker, graceful degradation
+**Clarify required outcomes**:
+- Failure: "Migration deleted data" → What must be preserved, and what recovery outcome is required?
+- Failure: "Auth bypass" → Which roles may access which records, and what must be audited?
+- Failure: "Rate limits" → What should the user observe, and when may a request be retried?
 
-### 3. First Principles
-
-Strip away assumptions and rebuild from fundamental truths.
-
-**Process**:
-1. State the goal without implementation details
-2. Ask: "What are the fundamental constraints?"
-3. Ask: "What must be true for this to work?"
-4. Rebuild requirements from these foundations
-
-**Example**:
-- Initial: "Add a cache layer with Redis"
-- First principle: "We need faster read performance for frequently accessed data"
-- Constraints: "Data must be eventually consistent. Budget is limited."
-- Alternatives emerge: "In-memory cache? Edge CDN? Query optimization?"
-- → Better solution might not be Redis at all
-
-**Questions**:
-- "What problem are we actually solving?"
-- "What constraints are immutable (regulations, physics, budget)?"
-- "What are we assuming that might not be true?"
-
-### 4. Edge Case Exploration
+### 3. Edge Case Exploration
 
 Systematically probe boundaries and exceptional conditions.
 
@@ -106,40 +60,12 @@ Systematically probe boundaries and exceptional conditions.
 - "What if the database is read-only?"
 - "What if the user's session expires mid-operation?"
 
-### 5. Counterfactual Thinking
-
-Ask "what if the opposite were true?"
-
-**Examples**:
-- Requirement: "Users must upload a photo"
-  - Counterfactual: "What if photo upload is optional?" → Reveals if it's truly mandatory
-- Requirement: "Real-time sync"
-  - Counterfactual: "What if we sync once per hour?" → Tests if "real-time" is justified
-- Requirement: "Store everything in a single table"
-  - Counterfactual: "What if we normalize into multiple tables?" → Exposes trade-offs
-
-### 6. Constraint Relaxation
-
-Temporarily remove a constraint to see what becomes possible.
-
-**Process**:
-1. Identify stated constraints
-2. Ask: "What if this constraint didn't exist?"
-3. Explore the solution space
-4. Decide if the constraint is truly necessary
-
-**Example**:
-- Constraint: "Must work offline"
-- Relaxation: "What if we only support online mode for v1?"
-- Insight: Offline support adds 3x complexity; defer to v2
-- Decision: Relax constraint, ship faster, validate demand first
-
-### 7. Analogy and Comparison
+### 4. Analogy and Comparison
 
 Compare to similar features in this codebase or industry.
 
 **Questions**:
-- "How does our existing authentication work? Should this follow the same pattern?"
+- "What authentication behavior does the existing code establish, and what must remain compatible?"
 - "GitHub has a similar feature—how do they handle X?"
 - "We built a file upload feature last year. What lessons apply here?"
 
@@ -148,7 +74,7 @@ Compare to similar features in this codebase or industry.
 - Avoid repeating mistakes
 - Surface differences that matter
 
-### 8. Failure Mode Analysis
+### 5. Failure Mode Analysis
 
 Enumerate ways the system can fail and how to handle them.
 
@@ -165,7 +91,7 @@ Enumerate ways the system can fail and how to handle them.
 - How do we recover?
 - What's the user experience?
 
-### 9. Stakeholder Mapping
+### 6. Stakeholder Mapping
 
 Identify who is affected and what they need.
 
@@ -186,7 +112,7 @@ Identify who is affected and what they need.
 
 Use only the technique that can settle a real decision gap. A local behavior may need one boundary example; an architectural risk may benefit from a pre-mortem or stakeholder check. Do not set a question quota or reopen a settled choice to complete a technique.
 
-Distinguish a missing behavior decision from a feasibility unknown. Settle the former with the user here. For an unknown that could change the selected design, identify the affected premise and available evidence, then recommend `ideate`; do not organize feasibility experiments inside `spec`.
+Use `spec`'s readiness boundary for behavior decisions versus factual feasibility premises. These techniques do not authorize comparing replacement approaches, relaxing agreed constraints, or running experiments.
 
 ## Output Integration
 
@@ -210,21 +136,21 @@ Pre-mortem revealed:
 - "User can't log out on other devices"
 - "Tokens never expire"
 
-First principles:
+Confirmed goal and constraints:
 - Goal: "Prove user identity securely"
-- Constraints: "GDPR compliance, works across devices"
+- Constraints: The user's applicable privacy obligations and supported devices
 
-Edge cases:
-- User forgets password (reset flow needed)
-- Token expires mid-session (refresh mechanism)
-- User changes password (invalidate old tokens?)
+Edge cases to resolve when in scope:
+- User forgets password: is reset part of this delivery?
+- Token expires mid-session: must unfinished input survive re-authentication?
+- User changes password: which existing sessions must be invalidated?
 
-Stakeholders:
-- End users: "Need password reset"
-- Ops: "Need token expiry monitoring"
-- Compliance: "Need audit trail of auth events"
+Stakeholder questions:
+- End users: Which recovery journeys are required?
+- Ops: Which failures need to be observable?
+- Compliance: Which authentication events must be retained, and for how long?
 
-**Result**: Much richer spec with security measures, edge case handling, and operational requirements.
+**Result**: Include only agreed, in-scope outcomes and constraints in the spec, not every plausible feature raised during questioning.
 
 ## Red Flags That Trigger Elicitation
 

@@ -27,6 +27,12 @@ try {
   assert.equal(readFileSync(join(root, "skills", "simplify", "references", "git-commit.md"), "utf8"), expected);
   assert.equal(readFileSync(join(root, "skills", "optimize", "references", "definition-of-done.md"), "utf8"), readFileSync(join(root, "skills", "execute", "references", "definition-of-done.md"), "utf8"));
 
+  const crlf = expected.replace(/\r?\n/g, "\r\n");
+  writeFileSync(registered, crlf);
+  check(0);
+  assert.equal(run().status, 0);
+  assert.equal(readFileSync(registered, "utf8"), crlf, "checkout line endings alone must not rewrite a reference");
+
   writeFileSync(registered, expected + "\ndrift\n");
   check(1, /drift: skills\/execute\/references\/git-commit\.md/);
   assert.equal(run().status, 0);
@@ -47,7 +53,7 @@ try {
   const source = join(root, "shared", "references", "git-commit.md");
   rmSync(source);
   check(1, /missing source: shared\/references\/git-commit\.md/);
-  console.log("sync-references checks passed: normal, simplify, drift, unmapped, missing source");
+  console.log("sync-references checks passed: normal, simplify, CRLF, drift, unmapped, missing source");
 } finally {
   rmSync(root, { recursive: true, force: true });
 }

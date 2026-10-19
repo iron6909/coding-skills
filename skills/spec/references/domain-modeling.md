@@ -32,10 +32,4 @@ Once a term is settled, propose its `GLOSSARY.md` update using `./references/glo
 
 ### Offer ADRs sparingly
 
-Offer an ADR only when **all three** hold:
-
-1. **Hard to reverse**: changing your mind later has a meaningful cost.
-2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
-3. **The result of a real trade-off**: genuine alternatives existed and one was picked for specific reasons.
-
-If any one fails, skip the ADR. Use the format in `./references/adr-format.md`.
+Use the eligibility criteria and format in `./references/adr-format.md` before proposing an ADR.

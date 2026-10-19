@@ -56,7 +56,7 @@ Use the first matching rule:
 16. If the user requests a small change with clear scope and acceptance checks, use `execute` directly. Missing `AGENTS.md` alone does not require a survey; read the relevant code and commands as needed. Do not use this shortcut for unfinished planned work or unresolved product decisions.
 17. If the user asks to establish or refresh workspace facts (commands, structure, conventions), use `survey`.
 18. If scope, behavior, interfaces, constraints, or acceptance need definition, or a supplied design needs internalization without a feasibility blocker, use `spec`. Do not route a whole system through repeated per-module specifications.
-19. If an approved spec still needs layout, component-state, or interaction decisions, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
+19. If an approved spec still needs layout, presentation-state, or interaction details within its settled product behavior, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
 20. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
 21. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
 22. If the approved work is clear and ready for code changes, use `execute`.

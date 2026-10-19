@@ -1,6 +1,6 @@
 ---
 name: ui-design
-description: Turn an approved spec's frontend surfaces into design specifications before coding. Creates DESIGN.md at the project root when the project has none, and ui-spec.md beside the spec. Use when a spec involves frontend UI and layout, component states, or interaction flows still need deciding.
+description: Turn an approved spec's frontend surfaces into design specifications before coding. Creates DESIGN.md at the project root when the project has none, and ui-spec.md beside the spec. Use when a spec involves frontend UI and layout, presentation states, or interaction details within the approved product behavior still need deciding.
 disable-model-invocation: true
 ---
 
@@ -8,11 +8,11 @@ disable-model-invocation: true
 
 Decide the interface before anyone writes code. Runs between `spec` (which produces `spec.md`) and `plan` (which breaks the work into tasks).
 
-This skill decides what the interface is: arrangement, components, states, and the tokens behind them. It does not choose implementation tasks, and it writes no application code.
+This skill refines the approved product contract into interface arrangement, components, presentation states, interaction details, and tokens. If a proposed UI decision changes or conflicts with the product contract, stop and recommend `spec` for that decision before UI approval. It does not choose implementation tasks, and it writes no application code.
 
 ## When to invoke
 
-- `spec.md` describes frontend surfaces and layout, states, or interactions are still open
+- `spec.md` describes frontend surfaces and presentation decisions remain within its approved product behavior
 - The project has no `DESIGN.md`, so a new interface would invent a palette or type scale ad hoc
 - A visual decision has more than one defensible answer and the spec does not settle it
 

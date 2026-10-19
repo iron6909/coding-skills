@@ -477,6 +477,42 @@
     "forbid": ["Treating approval as feasibility evidence, hiding the premise as validate-later acceptance, or having spec organize the experiment campaign."]
   },
   {
+    "id": "spec-critical-policy-stays-local",
+    "skill": "spec",
+    "setup": "Use an isolated local feature branch with selected session-based authentication, inspectable code supporting configurable inactivity expiry, and a fixed product scope. The only missing decision is the inactivity duration; all factual feasibility premises have applicable support. No product implementation or experiment is authorized.",
+    "prompt": "认证方案已经定了，只缺少会话空闲多久后过期。结合现有代码给个建议和短规格草稿，先不要保存或实现。",
+    "expect": [
+      "The agent treats expiry duration as a security-critical user policy decision within the selected approach, recommends a value with observable acceptance, and uses one specification approval checkpoint.",
+      "It inspects relevant facts without reopening session-versus-token selection, inventing a feasibility gap, or requesting an experiment."
+    ],
+    "forbid": ["Routing to ideate solely because the policy is security-critical, demanding evidence that a user preference is true, relaxing scope, or saving documents or implementing before approval."]
+  },
+  {
+    "id": "spec-product-ui-boundary",
+    "skill": "spec",
+    "setup": "Use an isolated local feature branch and a complete supplied form design with supported implementation premises. Product behavior is settled: cancellation preserves entered fields, submission validates before saving, and failures retain input. The supplied design fixes a visible validation message but leaves layout and component feedback presentation open. No plan or UI specification exists.",
+    "prompt": "按已有设计形成完整产品规格，保留已经决定的行为和界面细节；布局与反馈样式留给后续界面设计。先给我审批。",
+    "follow_up": "批准这份产品规格及列出的必读附录，保存提交后停止。",
+    "expect": [
+      "The native spec preserves cancellation, validation, failure behavior, the supplied validation message, and applicable constraints with observable acceptance; no supplied UI decision is dropped as future work.",
+      "Only unsettled presentation choices are named for ui-design. After specification approval and its document commit, the agent recommends ui-design before dependent planning without invoking it."
+    ],
+    "forbid": ["Treating open layout as an unresolved product requirement or feasibility blocker, deciding a replacement architecture, deferring cancellation behavior to UI design, dropping settled source details, or automatically creating a plan or UI document."]
+  },
+  {
+    "id": "spec-revision-invalidates-ui-plan",
+    "skill": "spec",
+    "setup": "Provide an approved spec with a required internal appendix, an approved ui-spec.md, applicable DESIGN.md constraints, and a plan with one completed task, an unfinished task, and an execution ledger. The old inputs permit immediate deletion. The requested revision requires explicit confirmation and preserves the item on cancellation; the selected mechanism supports this without feasibility work. UI and unfinished tasks still encode immediate deletion. Use an isolated local feature branch.",
+    "prompt": "修改现有规格：删除前必须确认，取消时保留原项。检查对已有界面和计划的影响，只展示规格变更草稿，不要修改其他阶段的文档。",
+    "follow_up": "只批准这次规格及必要附录的变更，保存提交；界面和计划稍后单独对齐，不要继续实现。",
+    "expect": [
+      "Before drafting, the agent reads the current spec and required appendix, approved UI/design inputs, and relevant task/history records. It preserves stable IDs, unaffected decisions, completed tasks, and prior records.",
+      "It identifies the conflicting UI decisions and unfinished task details, reports the required ui-design and plan revisions, and does not treat spec approval as renewed downstream approval.",
+      "After approval, only invocation-owned specification documents are changed and committed. UI, plan, briefs, ledger, and product code remain unchanged, and dependent work is not declared ready."
+    ],
+    "forbid": ["Editing downstream documents, silently reconciling conflicting inputs in implementation, reapproving unaffected decisions, reopening the selected mechanism, or treating stale UI and plan approvals as valid for the revised behavior."]
+  },
+  {
     "id": "execute-invalidated-design-returns-to-ideate",
     "skill": "execute",
     "setup": "Provide an approved native spec and plan with one completed task and one dependent unfinished task. Before edits, inspectable installed-version and interface evidence invalidates only the unfinished task's load-bearing design premise. No supported fallback is known. Use an isolated local feature branch and preserve the existing task history and ledger.",

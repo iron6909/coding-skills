@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Keeps the few genuinely shared reference files byte-identical across the
-// skills that ship them. A skill is installed as a directory, so a skill can
+// Keeps shared reference content in sync, ignoring checkout line endings.
+// A skill is installed as a directory, so a skill can
 // never read a sibling skill's files; every consumer needs its own copy.
 //
 // Source of truth: shared/references/
@@ -45,11 +45,11 @@ for (const [file, skills] of Object.entries(MAP)) {
     drift++;
     continue;
   }
-  const expected = HEADER.replace("%s", file) + readFileSync(source, "utf8");
+  const expected = HEADER.replace("%s", file) + readFileSync(source, "utf8").replace(/\r\n/g, "\n");
 
   for (const skill of skills) {
     const target = join(ROOT, "skills", skill, "references", file);
-    const actual = existsSync(target) ? readFileSync(target, "utf8") : null;
+    const actual = existsSync(target) ? readFileSync(target, "utf8").replace(/\r\n/g, "\n") : null;
 
     if (actual === expected) continue;
 
