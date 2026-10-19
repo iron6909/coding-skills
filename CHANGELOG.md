@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2026-10-19
+
+### Breaking Changes
+
+- **技能入口**：移除 `clarify`，由 `spec` 固化正式契约，独立 `spike` 保存阻断性可行性问题的实验事实；不保留旧入口别名。使用方须更新安装组合和调用入口，已定且无阻断未知的设计直接进入 `spec`，不强制经过 ideate 或 spike。
+- **提议保存**：`ideate` 改为在 `docs/features/YYYYMMDD-<semantic-name>/proposal.md` 保存候选、推荐与选择历史。旧 `.coding/ideation/`、capability map 和其他历史文档保留，不自动迁移或删除。
+- **恢复状态**：autoflow 状态升为 schema v3，规格及全部必读内部附录作为一个批准单元，以 `approval.spec_appendix_blobs` 保存附录快照，无附录也须显式记录空映射。旧状态或不完整快照不得直接复用执行授权；保留旧记录，核验当前输入后重新确认。
+
+### Added
+
+- **可行性证据**：新增自包含 `spike` 技能，独立保存 Supported、Not supported、Inconclusive 结果、方法、输入、版本和限制；选型证据不等于产品实现或验收。
+- **外部材料内化**：首个接收技能保存完整接口、字段、DDL、状态、错误、安全、边界及验收，并检查逐节覆盖和断源可用性，不以摘要或外部链接替代内部契约。
+- **行为回归**：补充拆分、整范围规划、材料内化和附录失效等场景，现有 33 个场景定义通过结构检查；完成首轮十四次单模型执行及另一次 ideate 持久化补测，保留原夹具阻塞、实际审批和未覆盖边界，不将结构检查或单次观察当作通用遵循率。
+
+### Changed
+
+- **规格与计划分工**：`spec` 保留整范围契约，不生成 capability map、子 feature 规格或实施批次；只有 `plan` 拆解全部批准范围的实施任务，不逐模块重复澄清或重做已有选型实验。
+- **路由与批准边界**：同步 guide、文档/代码/UI 审查、执行与交接的输入规则；autoflow 仍只从批准规格进入 plan→execute→code-review，不自动增加 ideate、spike 或 spec 阶段。确认选型、批准规格或基线检查均不替代后续批准和具体风险授权。
+
 ## [5.1.3] - 2026-10-18
 
 ### Fixed
@@ -358,7 +377,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v5.1.3...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/iron6909/coding-skills/compare/v5.1.3...v6.0.0
 [5.1.3]: https://github.com/iron6909/coding-skills/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/iron6909/coding-skills/compare/v5.1.1...v5.1.2
 [5.0.0]: https://github.com/iron6909/coding-skills/compare/v4.0.1...v5.0.0
