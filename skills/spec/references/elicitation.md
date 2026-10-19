@@ -186,7 +186,7 @@ Identify who is affected and what they need.
 
 Use only the technique that can settle a real decision gap. A local behavior may need one boundary example; an architectural risk may benefit from a pre-mortem or stakeholder check. Do not set a question quota or reopen a settled choice to complete a technique.
 
-Distinguish a missing behavior decision from a feasibility unknown. Settle the former with the user here. For an unknown that could change the selected design and needs an experiment, identify the question and recommend `spike`; do not run validation inside `spec`.
+Distinguish a missing behavior decision from a feasibility unknown. Settle the former with the user here. For an unknown that could change the selected design, identify the affected premise and available evidence, then recommend `ideate`; do not organize feasibility experiments inside `spec`.
 
 ## Output Integration
 

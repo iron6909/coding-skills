@@ -16,7 +16,8 @@ Check content, not a mandatory number of headings. Older documents may use equiv
 - Candidate approaches are genuinely distinct and grounded; no padding of the option count.
 - The recommendation explains meaningful trade-offs, risks, and reversibility.
 - Selection is explicit or marked unselected; silence is not approval.
-- Blocking feasibility questions are distinguished from later implementation acceptance.
+- Candidate-specific feasibility questions precede final selection and are distinguished from later implementation acceptance.
+- Returned evidence updates the comparison; an unresolved premise is not treated as support or as a proven rejection.
 - Imported interfaces, constraints, lifecycle rules, and acceptance details remain recoverable internally.
 - Earlier candidates and changed selections are preserved, not overwritten.
 
@@ -24,17 +25,18 @@ A proposal is allowed to contain uncertainty. Do not require it to satisfy the f
 
 ## spike.md
 
-- Each question names its deciding criterion and dependent design decision.
+- Each question names its candidate, deciding criterion, and dependent design decision; choosing a probe target is not final selection.
 - The method tests the actual unknown rather than a mocked substitute.
-- Commands, versions, environment, inputs, observations, and relevant failure cases support the conclusion.
+- Commands, versions, environment, inputs, effort boundary, stopping reason, observations, and relevant failure cases support the conclusion.
 - Supported, Not supported, and Inconclusive results remain distinct; completing a run is not passing every hypothesis.
 - Performance and quality claims are bounded by the representative data and hardware actually tested.
 - Reproduction content is durable locally rather than available only through a scratch path, raw log, or external service.
 - Later runs preserve earlier observations and identify superseded conclusions.
 - New evidence or changed conditions identify affected conclusions without inventing a whole-system guarantee.
-- Evidence does not silently update an approved contract or authorize product implementation.
+- Every outcome returns to `ideate` for design decisions, not directly to specification, planning, or implementation.
+- The report owns evidence, not `proposal.md` or a complete external design import.
 
-Do not rerun a probe or rewrite its observations during document review. Missing experimental evidence belongs to `spike`, not to a cosmetic correction or user acceptance of an unsupported claim.
+Do not rerun a probe or rewrite its observations during document review. A correction to this design-stage evidence report belongs to `spike`; missing support for a downstream design premise returns to `ideate`, not a cosmetic correction or acceptance of an unsupported claim.
 
 ## spec.md
 
@@ -79,7 +81,7 @@ Do not rerun a probe or rewrite its observations during document review. Missing
 - Dependencies are valid and producer/consumer contracts agree.
 - A new journey's first slice proves integration with its required safeguards.
 - Completed feasibility experiments are not scheduled again as unfinished work; product implementation and regression checks are not mistaken for completed probes.
-- A newly found design-invalidating unknown is a blocker for targeted spike/spec work, not a hidden executable task.
+- A newly found unresolved or invalidated design premise stops dependent planning and returns to `ideate`, not a hidden executable task or a direct probe request.
 - Linked briefs agree with the plan; a self-contained plan requires no briefs.
 - Existing completion, cancellation, and stable-ID history remain intact.
 

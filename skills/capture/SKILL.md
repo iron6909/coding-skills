@@ -27,7 +27,7 @@ Leave existing facts and decisions in their own home:
 | Stack, commands, conventions | `AGENTS.md`, via `survey` |
 | Project-specific vocabulary | `GLOSSARY.md`, via `spec` |
 | Hard-to-reverse architectural decisions | An ADR, via `spec` |
-| Feasibility observations and their limits | `spike.md`, via `spike` |
+| Design-stage feasibility observations and their limits | `spike.md`, via `spike` |
 | Feature requirements and decisions | The spec and its required internal appendices |
 | Implementation tasks and steps | `plan.md` and task briefs |
 

@@ -67,7 +67,7 @@ For every candidate, write:
 Rules:
 
 - Every candidate must survive the deletion test or produce a concrete friction that is visible in the code. Drop anything that is only stylistic preference.
-- Do not propose interfaces at this stage. Choosing the interface belongs to `spec`, after any blocking feasibility question is answered.
+- Do not propose interfaces at this stage. Comparing interface shapes belongs to `ideate`; `spec` formalizes the settled, supported choice.
 - Check each candidate against the ADRs. If an ADR forbids it, say so and drop it, unless the friction is real enough that the decision deserves to be reopened. Then say that explicitly instead of listing the candidate as a normal option.
 - Prefer deleting a module over adding one. Prefer merging two shallow modules over inventing an abstraction over both.
 - Do not propose a rewrite. Propose the smallest structural change that removes the friction.
@@ -92,8 +92,8 @@ Then stop and ask which candidate to pursue. Do not start refactoring.
 
 Recommend the next skill and let the user invoke it. Do not invoke it yourself.
 
-- A structural change that needs design work → `spec`. Carry the candidate's problem, evidence, and proposal in as input.
-- A change small enough to describe in one message → `execute`.
-- A change needing comparison of interfaces or seams → `ideate`. If a selected shape has a blocking feasibility unknown, recommend `spike` before `spec` formalizes it.
+- A structural change with a settled, supported approach needing a formal contract → `spec`. Carry the candidate's problem, evidence, and proposal in as input.
+- A change small enough to describe in one message, with settled scope and checks → `execute`.
+- An unresolved shape, comparison of interfaces or seams, or failed design premise → `ideate`. Do not organize feasibility probes here.
 
 Never start the work in this skill. Structure findings are cheap to produce and expensive to act on; the user decides.

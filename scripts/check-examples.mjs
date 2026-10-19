@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { runInNewContext } from "node:vm";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-const blocks = (path, language) => [...read(path).matchAll(new RegExp("```" + language + "\\r?\\n([\\s\\S]*?)\\r?\\n```", "g"))].map((match) => match[1]);
+const blocks = (path, language) => [...read(path).matchAll(new RegExp(`\`\`\`${language}\\r?\\n([\\s\\S]*?)\\r?\\n\`\`\``, "g"))].map((match) => match[1]);
 
 let manifest;
 try {
@@ -40,9 +40,13 @@ for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Exec
 
 const spike = read("skills/spike/SKILL.md");
 const designInput = read("shared/references/design-input.md");
-for (const safeguard of ["initial staged and unstaged", "default branch", "credentials", "sign-off", "non-document scratch"]) {
+for (const safeguard of ["initial staged and unstaged", "default branch"]) {
+  assert.ok(designInput.includes(safeguard), `spike workspace reference missing safeguard: ${safeguard}`);
+}
+for (const safeguard of ["credentials", "sign-off", "non-document scratch"]) {
   assert.ok(spike.includes(safeguard), `spike missing safeguard: ${safeguard}`);
 }
+assert.ok(spike.includes("apply the workspace check in `./references/design-input.md`"), "spike must apply shared workspace safety without duplicating it");
 assert.ok(spike.indexOf("## Safety before experiments") < spike.indexOf("## Gather evidence"), "spike safety must precede execution");
 for (const rule of ["Do not require an approved spec or plan", "Supported", "Not supported", "Inconclusive", "Do not mock the dimension being tested", "preserve previous methods, failures, and conclusions"]) {
   assert.ok(spike.includes(rule), `missing independent spike contract: ${rule}`);
@@ -50,6 +54,12 @@ for (const rule of ["Do not require an approved spec or plan", "Supported", "Not
 for (const rule of ["untrusted input", "section by section", "schemas and constraints", "same directory", "original material became unavailable", "not need the original source, proposal, spike report, or conversation"]) {
   assert.ok(designInput.includes(rule), `missing design preservation contract: ${rule}`);
 }
+assert.ok(spike.includes("Accept a candidate, its blocking design question, constraints, and a deciding criterion") && spike.includes("A prior `ideate` invocation is not required"), "spike needs a bounded design question, not prior workflow history");
+assert.ok(spike.includes("Do not take downstream work as a probe request") && spike.includes("with their existing workflow"), "spike must not absorb routine downstream verification or invent a design detour");
+assert.ok(spike.includes("effort boundary>") && spike.includes("why the run stopped"), "spike evidence must preserve its effort boundary and stopping reason");
+assert.ok(spike.split("## Finish")[1].includes("Recommend `ideate` for every outcome"), "even supported evidence must return to design rather than approve delivery");
+assert.ok(spike.includes("Do not edit `proposal.md`") && spike.includes("Commit only the report and its necessary internal appendices"), "spike owns evidence, not proposals or contracts");
+assert.ok(designInput.includes("It does not own `proposal.md` or import a complete external design") && designInput.includes("recommend `ideate` and stop before experiments"), "full external design imports belong to design-document owners, not spike");
 
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
@@ -170,7 +180,7 @@ for (const rule of ["bounded cache", "freshness contract", "invalidation", "auth
 const searchExample = blocks("skills/code-review/references/lens-performance.md", "typescript").find((source) => source.includes("// ✅ Cancel previous request"));
 assert.ok(searchExample, "missing request-cancellation example");
 const requests = [], searchResults = [], searchErrors = [];
-const search = runInNewContext(searchExample + "\nsearch", {
+const search = runInNewContext(`${searchExample}\nsearch`, {
   AbortController,
   input: { addEventListener() {} },
   fetch: (url, { signal }) => new Promise((resolve, reject) => {
@@ -217,7 +227,7 @@ assert.equal(searchErrors.length, 3);
 
 const algorithms = blocks("skills/code-review/references/lens-performance.md", "typescript").filter((source) => source.includes("function hasDuplicates"));
 assert.equal(algorithms.length, 2);
-const implementations = algorithms.map((source) => runInNewContext(source + "\nhasDuplicates", {}, { timeout: 1000 }));
+const implementations = algorithms.map((source) => runInNewContext(`${source}\nhasDuplicates`, {}, { timeout: 1000 }));
 const item = {};
 for (const values of [[], [1], [1, 2], [1, 1, 1], [NaN, NaN], [0, -0], ["1", 1], [{}, {}], [item, item], new Array(2)]) {
   for (const fn of implementations) assert.equal(fn(values), new Set(values).size !== values.length);
@@ -363,7 +373,10 @@ assert.ok(finish.includes("typed `discard`"), "force deletion must retain explic
 const ideate = read("skills/ideate/SKILL.md");
 assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
 assert.ok(ideate.includes("rejected approaches and conflicting constraints") && ideate.includes("or why none fits"), "a proposal must preserve why no candidate fits");
-assert.ok(ideate.includes("already selected and no new evidence invalidates it"), "only still-supported selections may bypass ideation");
+assert.ok(ideate.includes("already selected and no new evidence invalidates it") && ideate.includes("a ready, supported choice goes directly to `spec`"), "supported selections need no repeated ideation");
+assert.ok(ideate.includes("Choosing a probe target is not final selection") && ideate.includes("stop before final selection or a specification handoff"), "candidate probes must precede final approach selection");
+assert.ok(ideate.includes("Inconclusive evidence leaves its premise unresolved, not disproved or supported") && ideate.includes("If evidence rules out all current candidates, revise them within the requested scope"), "ideation must consume evidence, distinguish gaps from rejection, and reconsider failed candidates");
+assert.ok(ideate.includes("An updated proposal does not revise an approved contract or authorize resuming work"), "reopened design must not bypass downstream approvals");
 assert.ok(ideate.includes("keep earlier candidates") && designInput.includes("Append a changed selection") && designInput.includes("different scope needs a distinct semantic directory"), "proposals must preserve prior work and separate different scopes");
 assert.ok(!ideate.includes("different topic") && ideate.includes("./references/design-input.md"), "ideation must use the shared delivery-scope rules, not create directories per topic");
 assert.ok(ideate.includes("run experiments or product acceptance checks") && !ideate.includes("perform validation"), "ideation must forbid experiments and product acceptance, not read-only fact checks");
@@ -415,6 +428,12 @@ assert.ok(spec.includes("only routine specification approval checkpoint") && spe
 assert.ok(spec.includes("Do not require `ideate`, `spike`") && spec.includes("Do not write product code, run experiments"), "ready designs must go directly to spec without experiments");
 assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
+for (const skill of ["spec", "plan", "execute", "autoflow", "debug", "optimize", "refactor"]) {
+  assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);
+  for (const file of readdirSync(new URL(`../skills/${skill}/`, import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
+    assert.doesNotMatch(read(`skills/${skill}/${file}`), /(?:recommend (?:a targeted )?|needs (?:targeted )?|goes to )`spike`/, `${skill}/${file} must not send downstream work directly to spike`);
+  }
+}
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   assert.ok(!/`clarify`|skills\/clarify\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
 }

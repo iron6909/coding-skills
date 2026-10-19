@@ -22,11 +22,12 @@ Distinguish observed repository facts, user decisions, proposed choices, and unv
 
 ## Internalize external designs
 
-The first skill receiving external design material saves the content needed by later work in this system:
+External design material is internalized by the skill that owns the design document:
 
-- `ideate` uses `proposal.md` for candidate approaches and their trade-offs.
-- `spike` internalizes a supplied candidate design in `proposal.md` before experiments. This is input capture, not a second ideation stage; do not redesign it during import.
-- `spec`, when no feasibility blocker remains, absorbs the material directly into `spec.md` after approval. Do not create a proposal merely to copy it again.
+- `ideate` uses `proposal.md` for candidate approaches, trade-offs, and designs whose choices or feasibility remain open.
+- `spec`, when the selected design has no feasibility blocker, absorbs the material directly into `spec.md` after approval. Do not create a proposal merely to copy it again.
+
+`spike` records only the candidate assumptions and inputs needed to interpret or reproduce its evidence. It does not own `proposal.md` or import a complete external design. If supplied material needs full design internalization, recommend `ideate` and stop before experiments. A complete candidate question, constraints, and deciding criterion can be supplied directly without a prior `ideate` invocation.
 
 Preserve every in-scope detail that could change implementation or verification: behavior, exclusions, interfaces and fields, schemas and constraints, state transitions, security and lifecycle rules, error cases, limits, and acceptance conditions. Keep precise code or schema fragments when prose would lose meaning. Resolve conflicting sources explicitly instead of silently selecting one.
 

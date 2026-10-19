@@ -11,8 +11,8 @@ Choose the smallest suitable skill for the user's current request, then follow t
 ## Skills
 
 - `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
-- `ideate`: compare candidate approaches and save a proposal with trade-offs and a recommendation.
-- `spike`: validate blocking feasibility questions and save evidence with its tested conditions and limits.
+- `ideate`: develop and converge candidate approaches, consuming design evidence before selection.
+- `spike`: answer bounded candidate-design feasibility questions and return evidence to `ideate`.
 - `spec`: clarify requirements and internalize designs into one approved contract for the requested scope.
 - `plan`: own implementation decomposition into phases and testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
 - `execute`: continuously implement approved tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
@@ -41,12 +41,12 @@ Use the first matching rule:
 1. If the user explicitly names a skill, use it.
 2. If the user asks to pause work and save state (signals: "create a handoff", "save state", "I need to stop here", "hand this off"), use `handoff`.
 3. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
-4. If the user reports a failure, error, broken behavior, or regression, use `debug`, including performance regressions even when they ask for profiling or optimization.
+4. If the user reports a failure, error, broken behavior, or regression, use `debug`, including performance regressions even when they ask for profiling or optimization. An already identified failed design premise goes to `ideate` instead.
 5. If the user asks for systematic performance optimization with measurement and no regression (signals: "optimize performance", "improve latency", "reduce memory usage", and mentions profiling or targets), use `optimize`.
 6. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.
 7. If the user asks to review a branch, commit range, or completed feature (signals: "review this branch", "audit these commits", "review the implementation"), use `code-review`. Per-task reviews inside `execute` remain part of that skill.
-8. If the user asks to validate a selected approach's blocking feasibility unknown that could change technology, architecture, or a critical contract, use `spike`. A question or supplied design is enough; no approved spec is required. Ordinary inspection and future product acceptance do not by themselves require a spike.
-9. If the user says "not sure how to implement" or "explore options", or needs to compare genuinely different approaches, use `ideate`. Already-selected external designs do not need ideation merely to enter this system.
+8. If the user asks for a design-stage probe with a candidate, blocking feasibility question, constraints, and deciding criterion, use `spike`; its evidence returns to `ideate`. No prior skill invocation is required. A design premise that failed during later work goes to `ideate` first, not directly to a probe. Routine inspection and product acceptance are not spike work.
+9. If the user says "not sure how to implement" or "explore options", needs to compare approaches, lacks the inputs for a bounded design probe, or needs to revisit a failed design premise, use `ideate`. A ready, supported external design can go directly to `spec`.
 10. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `spec`.
 11. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `capture`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
 12. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.

@@ -1,12 +1,12 @@
 ---
 name: spec
-description: Clarify requirements and internalize supplied designs into one approved spec.md in docs/features/YYYYMMDD-<semantic-name>/. Use when behavior, scope, interfaces, or acceptance need definition. Send blocking feasibility unknowns to spike; leave all implementation slicing to plan.
+description: Clarify requirements and internalize supplied designs into one approved spec.md in docs/features/YYYYMMDD-<semantic-name>/. Use when a settled approach needs behavior, scope, interfaces, or acceptance formalized. Return unresolved approach decisions or failed design premises to ideate; leave all implementation slicing to plan.
 disable-model-invocation: true
 ---
 
 # Spec
 
-Define the complete design and acceptance contract for the user's requested delivery scope. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
+Formalize the selected design into the complete design and acceptance contract for the user's requested delivery scope. Approach generation and selection belong to `ideate`. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
 
 Do not write product code, run experiments, create `plan.md` or capability maps, split work into features or tasks, or start another skill.
 
@@ -14,17 +14,16 @@ Do not write product code, run experiments, create `plan.md` or capability maps,
 
 Read `./references/design-input.md` before accepting supplied material or writing documents. It owns scope reuse, workspace safety, full internalization, provenance, and the source-loss check. External designs are inputs to absorb, not execution contracts to link to.
 
-Read the relevant code, tests, configuration, existing `GLOSSARY.md`, and ADRs. Read an existing proposal or spike report when supplied. Use the repository's facts rather than asking the user what inspection can answer.
+Read the relevant code, tests, configuration, existing `GLOSSARY.md`, and ADRs. Read an existing proposal and its relevant design evidence when supplied. Use the repository's facts rather than asking the user what inspection can answer.
 
 Choose the smallest next action:
 
 - A selected approach with no blocking feasibility unknown can become a spec directly. Do not require `ideate`, `spike`, or a product brief just because the project is new or large.
-- If comparing genuinely different approaches is the missing decision, recommend `ideate`. Do not recreate its option-generation workflow here. An obvious local choice needs no invented alternatives.
-- If an unanswered question could change the selected technology, architecture, or critical contract and existing evidence cannot settle it, recommend `spike`. Preserve the candidate and the exact question in `proposal.md`, commit that input and its necessary internal appendices using the safeguards below, then stop before approving or saving a new formal spec. Do not perform the experiment here.
+- If approach comparison is still needed, a design premise has failed, or a question that could change the selected technology, architecture, or critical contract lacks applicable evidence, recommend `ideate`. State the candidate, exact unsettled question, constraints, and available evidence, then stop before approving or saving a new formal spec. Do not generate alternatives, write `proposal.md`, or organize feasibility experiments here. An obvious local choice needs no invented alternatives.
 
-A spike needs a question, constraints, and a deciding criterion, not a prior approved spec. Ordinary code or documentation inspection is not a reason for a separate spike. Future checks of the finished product belong in Acceptance and Testing Boundary, not in a pre-spec experiment campaign.
+Ordinary code or documentation inspection belongs here. Future checks of the finished product belong in Acceptance and Testing Boundary, not in a pre-spec experiment campaign.
 
-When relying on spike evidence, check its conclusion and tested version, data, environment, and conditions. An unsupported or inconclusive result cannot support the dependent design claim. A changed relevant input requires targeted revalidation, not a claim that the old result still applies. Use an evidence-backed fallback only when the user accepts its changed contract.
+When relying on design evidence, check its conclusion and tested version, data, environment, and conditions. An unsupported or inconclusive result cannot support the dependent design claim. A changed relevant input cannot silently inherit an old result; return an unresolved design premise to `ideate`. Do not choose a fallback here.
 
 ## Resolve the contract
 
@@ -79,7 +78,7 @@ For a small change, include only the problem, chosen behavior and scope, REQ-N a
 <source versions, internal coverage locations, and approved exclusions when importing>
 ```
 
-The spec is not an experiment plan or a production acceptance report. Record testable targets without claiming they have been achieved. Do not leave a load-bearing design choice as “validate later”; settle it through spike or adopt an approved, supported alternative first.
+The spec is not an experiment plan or a production acceptance report. Record testable targets without claiming they have been achieved. Do not leave a load-bearing design choice as “validate later”; return it to `ideate` before formalizing the contract.
 
 Preserve precise implementation-relevant content from supplied designs. Do not shorten a detailed design into an outline that sends implementers back to an external original or an old proposal. The specification can be long when its content earns that space; appendices do not create separate specifications or approval cycles.
 

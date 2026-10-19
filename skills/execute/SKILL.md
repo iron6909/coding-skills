@@ -51,7 +51,7 @@ For each executable task, in dependency order:
 
 After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
 
-If a task description needs a correction that repository evidence settles within approved scope, make the smallest correction and continue; record it in the ledger only for planned work. A product or spec change requires approval: stop and recommend `spec`, then `plan` where needed. If evidence first requires resolving a design-invalidating feasibility unknown, recommend `spike` for that question; do not run it inside execution or silently change the contract. Completed tasks remain history. Cancelling a task also requires an approved plan revision; never silently skip it because a later task seems to cover it.
+If a task description needs a correction that repository evidence settles within approved scope, make the smallest correction and continue; record it in the ledger only for planned work. A product or spec change requires approval: stop and recommend `spec`, then `plan` where needed. If evidence leaves a load-bearing design premise unresolved or invalidates it, stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently change the contract; a changed design and affected plan need their approvals before execution resumes. Completed tasks remain history. Cancelling a task also requires an approved plan revision; never silently skip it because a later task seems to cover it.
 
 ## Task review
 
@@ -95,7 +95,7 @@ Start the ledger with:
 
 Resolve the feature's `review_base` from the caller or existing ledger to a full commit SHA. Only a new standalone run without a base uses `git rev-parse HEAD`. Keep it fixed for any later whole-feature review. Each task records its own `task_base` at start; an interrupted task reuses its original base and starting state. For a repository without a commit, record `none` and compare against the initial file state. Missing or ambiguous resumed boundaries require clarification, not a new `HEAD` base.
 
-Read task details from `plan.md`. Follow an explicit brief link when present; do not create briefs merely because an `impl/` directory exists. If a linked brief is missing, recover only details supported by the approved spec, plan, UI/design inputs, and repository evidence. Record what was recovered. If task details remain missing, stop for a plan revision. A missing product contract belongs to `spec`; a design-invalidating feasibility gap needs targeted `spike` evidence. Do not invent either.
+Read task details from `plan.md`. Follow an explicit brief link when present; do not create briefs merely because an `impl/` directory exists. If a linked brief is missing, recover only details supported by the approved spec, plan, UI/design inputs, and repository evidence. Record what was recovered. If task details remain missing, stop for a plan revision. A missing product contract belongs to `spec`; a failed or unresolved design premise returns to `ideate`, not an implementation-time probe. Do not invent either.
 
 Before dependent tasks run, check the shared interfaces their task descriptions declare. Record actual conflicts and evidence-based rulings, not empty pre-flight rows. An independent or single task needs no interface pre-flight.
 

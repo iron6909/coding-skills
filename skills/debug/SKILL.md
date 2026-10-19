@@ -52,7 +52,7 @@ When the evidence establishes the cause, proceed to implementation. If a decisio
 
 A **small fix** has a confirmed cause, clear scope, and an approach within the existing approved behavior and contracts. It can touch several files; line and file counts do not determine its workflow. Test, fix, verify, and commit directly.
 
-If repair requires an unresolved product choice, a new public contract, or structural redesign, stop and summarize the cause, evidence, proposed approach, and affected files in conversation. Recommend `spec` for that decision, or `spike` first if a selected design has a blocking feasibility unknown, then `plan` only when decomposition is needed. Do not save a new report or invoke those skills automatically.
+If repair requires an unresolved product choice, a new public contract, or structural redesign, stop and summarize the cause, evidence, proposed approach, and affected files in conversation. Recommend `ideate` when the approach or a load-bearing premise needs reconsideration; use `spec` to formalize a settled, supported change, then `plan` only when decomposition is needed. Do not turn debugging into design-feasibility experiments. Do not save a new report or invoke those skills automatically.
 
 Never route a small fix through `spec`, `plan`, or `execute` merely because it spans files.
 
