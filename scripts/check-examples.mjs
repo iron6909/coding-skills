@@ -361,7 +361,14 @@ assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root caus
 assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
 assert.ok(finish.includes("typed `discard`"), "force deletion must retain explicit discard confirmation");
 const ideate = read("skills/ideate/SKILL.md");
-assert.ok(ideate.includes("preserve earlier candidates and append changed selections") && designInput.includes("different scope needs a distinct semantic directory"), "proposals must preserve prior work and separate different scopes");
+assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
+assert.ok(ideate.includes("rejected approaches and conflicting constraints") && ideate.includes("or why none fits"), "a proposal must preserve why no candidate fits");
+assert.ok(ideate.includes("already selected and no new evidence invalidates it"), "only still-supported selections may bypass ideation");
+assert.ok(ideate.includes("keep earlier candidates") && designInput.includes("Append a changed selection") && designInput.includes("different scope needs a distinct semantic directory"), "proposals must preserve prior work and separate different scopes");
+assert.ok(!ideate.includes("different topic") && ideate.includes("./references/design-input.md"), "ideation must use the shared delivery-scope rules, not create directories per topic");
+assert.ok(ideate.includes("run experiments or product acceptance checks") && !ideate.includes("perform validation"), "ideation must forbid experiments and product acceptance, not read-only fact checks");
+const dispatch = read("shared/references/subagent-dispatch.md");
+assert.ok(dispatch.includes("For exploration") && dispatch.includes("only when the invoking skill calls for independent review") && dispatch.includes("exploration alone does not add a review stage"), "shared dispatch guidance must not turn exploration into independent review");
 assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
 assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
 assert.ok(!read("skills/refactor/SKILL.md").includes("Never write a refactor report into the repository"), "temporary report writes are allowed; commits are not");

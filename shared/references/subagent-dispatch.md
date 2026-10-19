@@ -1,13 +1,13 @@
 # Subagent Dispatch
 
-Use read-only subagents only when exploration would overflow the main context: many files to check, several independent modules, or work that crosses stack boundaries. Otherwise read directly.
+For exploration, use read-only subagents only when the work would overflow the main context: many files to check, several independent modules, or work that crosses stack boundaries. Otherwise read directly.
 
 ## Dispatch
 
 - Split by clear boundary: module + callers, tests + conventions, interfaces + config.
 - Give each subagent one narrow read-only task. Ask it to report: boundary, files, behavior, constraints, test approach, evidence paths, unknowns, conflicts.
 - Run independent subagents in parallel with whatever delegation mechanism the harness provides. If none exists, explore inline.
-- Read reports by file path. Summarize plan-relevant findings; do not paste full reports into the main context.
+- Read reports by file path. Summarize decision-relevant findings; do not paste full reports into the main context.
 
 ## Constraints
 
@@ -23,7 +23,7 @@ Use read-only subagents only when exploration would overflow the main context: m
 
 ## Independent review
 
-Review is the other reason to dispatch, and the reason is different: not context, but independence. A fresh reader has not seen the author's reasoning, so it questions what the author assumed.
+Use this section only when the invoking skill calls for independent review; exploration alone does not add a review stage. The reason is independence, not context: a fresh reader has not seen the author's reasoning, so it questions what the author assumed.
 
 - Use one reviewer per axis or per change, and give it the diff command, the spec or task brief, and the review base. Do not give it your own conclusion.
 - Ask for findings, each with a file path and line, a severity, and the evidence that shows it. Nothing else.

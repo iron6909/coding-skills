@@ -373,5 +373,39 @@
       "When entered through guide, the initial route is ideate and the installed skill is actually read."
     ],
     "forbid": ["Treating a recommendation or silence as selection, requiring a product/spec approval before comparing approaches, running a prototype, writing spec.md or plan.md, automatically invoking another skill, or changing historical documents or ignore policy."]
+  },
+  {
+    "id": "ideate-no-viable-approach",
+    "skill": "ideate",
+    "setup": "Use an isolated local feature branch with an export tool, two permitted output formats, and inspectable consumer contracts proving each format violates a hard requirement. No other format, relaxed constraint, dependency installation, or product code change is authorized. No selection or feasibility experiment is needed.",
+    "prompt": "比较这两种允许的导出格式，保留给定的所有硬约束，保存判断依据。不要写规格、做实验或修改消费者。",
+    "expect": [
+      "The proposal records both rejected approaches, the evidence and reason each fails, and the conflicting constraints; its recommendation explains that no approach fits and its selection remains unset.",
+      "The proposal is saved and committed before asking which constraints may change. The agent stops without forcing a selection or recommending a next skill."
+    ],
+    "forbid": ["Inventing a viable recommendation, silently relaxing constraints, padding the candidate list, running experiments, requesting a choice among rejected approaches, or handing off to spec as if the design were ready."]
+  },
+  {
+    "id": "ideate-reopen-invalidated-selection",
+    "skill": "ideate",
+    "setup": "Provide an existing proposal with a selected approach and its earlier candidates, plus a completed spike whose Not supported result invalidates that choice under the current versions and constraints. Supply inspectable evidence for an alternative. Use an isolated local feature branch; no formal spec is approved and no new experiment is needed.",
+    "prompt": "原来选的方案已被这份 spike 报告否定。保持交付范围和未受影响的决定，重新比较可选方案并保存，先不要替我选择。",
+    "expect": [
+      "The agent uses the invalidating evidence to reopen the affected choice instead of skipping ideation because an earlier selection exists.",
+      "It preserves prior candidates, the earlier selection and spike observations, and records the revised comparison and recommendation in the same proposal. No replacement is treated as selected without the user choosing it.",
+      "The proposal update is committed without repeating the settled experiment, reopening unrelated decisions, or automatically invoking another skill."
+    ],
+    "forbid": ["Routing back to spike solely because a prior selection exists, forwarding the rejected design to spec, silently replacing the historical selection, rewriting experiment facts, or claiming that the recommendation approves a replacement."]
+  },
+  {
+    "id": "ideate-new-topic-reuses-delivery-scope",
+    "skill": "ideate",
+    "setup": "Use an isolated local feature branch with an established dated docs/features directory for an offline export delivery scope. Its proposal preserves a selected output format and earlier candidates. Compression within that same scope is still undecided; provide inspectable code and constraints for comparing compression approaches on a later date.",
+    "prompt": "继续同一离线导出范围，格式保持原决定；这次只比较压缩策略，更新已有提议，先不要选定或实现。",
+    "expect": [
+      "The agent reuses the established scope directory and proposal despite the new technical topic and later date; it preserves earlier candidates and the settled format decision.",
+      "The compression comparison and recommendation are saved and committed in that proposal, with compression explicitly unselected until the user chooses. No experiment or formal spec is produced."
+    ],
+    "forbid": ["Creating a new semantic directory per technical topic or date, overwriting the earlier comparison or selection, reopening the settled format choice, or treating that format choice as a reason to skip the unresolved compression comparison."]
   }
 ]
