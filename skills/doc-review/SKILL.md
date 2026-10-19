@@ -1,19 +1,21 @@
 ---
 name: doc-review
-description: Review an existing spec.md, plan.md, or capability-map.md for gaps, contradictions, feasibility, and unclear terms. Use when asked to audit or improve a planning document. Fix minor issues in place; report decisions needed before larger edits. Not for code review—use code-review.
+description: Review a proposal.md, spike.md, spec.md, plan.md, or legacy capability-map.md for gaps, contradictions, evidence limits, and unclear terms. Use when asked to audit or improve a planning document. Fix minor issues in place; report decisions needed before larger edits. Not for code review—use code-review.
 disable-model-invocation: true
 ---
 
 # doc-review
 
-Review one existing planning document before implementation. Creating a spec belongs to `clarify`; creating a plan belongs to `plan`.
+Review one existing design or planning document. Creating a proposal, feasibility report, specification, or plan belongs to `ideate`, `spike`, `spec`, or `plan` respectively. This review does not run experiments or approve implementation.
 
 ## Scope
 
 Review one document at a time. Supported types:
-- `spec.md` (from `clarify`)
+- `proposal.md` (from `ideate`, or an internalized candidate design)
+- `spike.md` (from `spike`)
+- `spec.md` (from `spec`)
 - `plan.md` (from `plan`)
-- `capability-map.md` (from `clarify`'s Architectural decomposition check)
+- `capability-map.md` (legacy context; not a required decomposition stage)
 
 Output: edit the document in place to fix minor issues, report blocking/important issues for user decision.
 
@@ -38,9 +40,11 @@ Read the full document. Note:
 
 ### 4. Read dependencies
 
-- For spec: read any cited ADRs, learnings, GLOSSARY.md
-- For plan: read the corresponding spec.md, applicable approved UI/design inputs, and existing task briefs/ledger to check whether execution details still match
-- For capability-map: read any linked feature specs
+- For proposal: read relevant project constraints and any internalized design appendices
+- For spike: read the candidate and reproduction evidence; check versions and conditions, but do not rerun experiments here
+- For spec: read its required internal appendices, cited ADRs, learnings, GLOSSARY.md, and evidence needed to assess critical claims; check source preservation rather than requiring external originals downstream
+- For plan: read the corresponding spec.md and required internal appendices, applicable approved UI/design inputs, and existing task briefs/ledger to check whether execution details still match
+- For a legacy capability-map: read linked specifications as historical context; do not require a new map or per-module spec cycle
 
 ### 5. Classify findings
 
@@ -89,7 +93,7 @@ For Blocking and Important findings:
 
 Do not proceed to commit until user confirms.
 
-Semantic changes belong to the document's owner, even when the user accepts the recommendation: recommend `clarify` for spec/capability-map decisions, or `plan`'s revision process for task acceptance, deliverables, requirement coverage, dependencies, or cancellations. Report the accepted proposal; do not apply it here or edit downstream briefs/ledger. If semantic changes are requested or already present, mark the downstream plan/briefs as needing revision in the completion report, not ready for execute. Only `plan` reconciles unfinished briefs and records `Plan revised` after approval.
+Semantic changes belong to the document's owner, even when the user accepts the recommendation: recommend `ideate` for candidate choices, `spike` for new or corrected feasibility evidence, `spec` for formal design decisions, or `plan`'s revision process for task acceptance, deliverables, requirement coverage, dependencies, or cancellations. Never rewrite experiment observations, conditions, or conclusions as a minor wording fix. Legacy capability-map decisions must be adopted into the requested scope's specification rather than starting another decomposition cycle. Report the accepted proposal; do not apply it here or edit downstream briefs/ledger. If semantic changes are requested or already present, mark the downstream plan/briefs as needing revision in the completion report, not ready for execute. Only `plan` reconciles unfinished briefs and records `Plan revised` after approval.
 
 ### 9. Commit
 
@@ -119,4 +123,4 @@ State:
 
 ## Next
 
-If Blocking findings remain unfixed, recommend not starting implementation. When semantic changes or stale downstream artifacts need owner revision, recommend the owner named above and do not recommend execute yet. An unchanged or non-semantically corrected approved plan can go directly to `execute` when its task details are recoverable and any linked briefs are current or safely recoverable. A self-contained plan needs no briefs. Otherwise, recommend `plan` for a spec or `clarify` for the next selected module of a capability map. Stop after reporting; do not invoke the next skill.
+If Blocking findings remain unfixed, recommend not starting implementation. When semantic changes or stale downstream artifacts need owner revision, recommend the owner named above and do not recommend execute yet. An unchanged or non-semantically corrected approved plan can go directly to `execute` when its task details are recoverable and any linked briefs are current or safely recoverable. A self-contained plan needs no briefs. Otherwise, recommend `plan` for an approved spec, `spec` for a ready selected design, or `spike` for unresolved blocking feasibility. A completed report with negative or inconclusive evidence is not a ready specification. For a legacy capability-map, recommend defining the requested scope with `spec`, not a mandatory next module. Stop after reporting; do not invoke the next skill.

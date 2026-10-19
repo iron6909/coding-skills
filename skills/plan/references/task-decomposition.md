@@ -20,7 +20,7 @@ Strategies for breaking down features into tasks with optimal order and granular
 - A new journey needs its first integrated, independently safe slice
 - Feature has distinct user journeys
 - Need early feedback on integration
-- Want to prove technical feasibility
+- Need early feedback on product integration under the settled design
 
 **Advantages**:
 - Testable immediately (end-to-end)
@@ -78,7 +78,7 @@ Task 1: User can safely create and view TODO
 - Test: create, refresh, see it; reject invalid text and unauthorized access
 ```
 
-**Outcome**: Something demoable, proves architecture works
+**Outcome**: A demoable implemented path with checked integration; not proof of every architecture claim
 
 ### Phase 2: Error Handling (Horizontal Fill)
 

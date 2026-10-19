@@ -1,229 +1,78 @@
 ---
 name: ideate
-description: Generate and evaluate grounded technical ideas before committing to one direction. Use when exploring solution space, comparing approaches, or the user says "not sure how to do this" with a clear problem. Output - ranked options with trade-offs in .coding/ideation/.
+description: Compare grounded technical approaches and save candidates, trade-offs, and a recommendation in docs/features/YYYYMMDD-<semantic-name>/proposal.md. Use when the solution direction is open. Do not run experiments or define the formal specification; a selected approach goes to spike only for blocking feasibility unknowns, otherwise to spec.
 disable-model-invocation: true
 ---
 
 # Ideate
 
-Generate and evaluate technical ideas when the solution space is large or unclear.
+Find a suitable approach before committing to a design contract. The output is a proposal, not evidence that the approach works and not an approved specification.
 
-## When to use
+Do not write product code, build prototypes, create tasks, or invoke another skill. If the approach is already settled, skip ideation: recommend `spike` for a blocking feasibility question or `spec` for a ready design. Supplied external designs do not require an ideation stage merely to enter this system.
 
-- User says "not sure how to implement" but problem is clear
-- Need to compare multiple technical approaches
-- Solution space is large (e.g., real-time communication, state management architecture)
-- Want "surprising alternatives" or creative directions
-- Multiple viable paths exist and unclear which fits best
+## Ground the question
 
-## Do not use
+Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, workspace safety, input internalization, and preservation. Keep the whole requested scope; do not select its first module or phase by default.
 
-- **Problem unclear** → use `clarify` Phase 0 (product understanding) first
-- **Only one obvious approach** → skip to `clarify` directly
-- **Pure research without idea generation** → use `clarify` with research step
-- **Need to validate one specific approach** → use `clarify` with spike step
+Read relevant code, patterns, constraints, `GLOSSARY.md`, ADRs, and active learnings when available. Ask only for missing intent, scope, or deciding constraints; do not send the user to another skill just to answer one question. Avoid repeating decisions they already settled.
 
-## Process
+Explore directly. Read `./references/subagent-dispatch.md` only for authorized broad read-only investigation that would save context. If unavailable, inspect inline. Search primary sources for decision-relevant facts when available; otherwise state which compatibility or maturity claims remain unverified. Do not add a search dependency or claim an experiment ran.
 
-### Phase 0: Grounding
+## Compare viable approaches
 
-Read existing code, constraints, and patterns to understand the context.
+Generate only genuinely distinct contenders grounded in the goal and constraints. Usually two or three suffice; one surviving approach is acceptable. Do not pad the option count or compare alternatives to a direction the user already selected without invalidating evidence.
 
-**What to gather**:
-- Current architecture and patterns
-- Existing similar features (how did we solve related problems?)
-- Technical constraints (performance, compatibility, budget)
-- `GLOSSARY.md` terms relevant to this domain
-- Recent learnings from `docs/learnings/` if applicable
+For each contender, capture:
 
-**For large codebases**: Dispatch read-only subagents to scan relevant modules and return findings. See `./references/subagent-dispatch.md` for when and how.
+- the mechanism and the outcome it enables
+- fit with existing code and constraints
+- meaningful benefits, costs, failure modes, and reversibility
+- evidence already available and any assumptions that could change the choice
 
-**For external research**: Search the web for best practices, case studies, and library comparisons when available. If search is unavailable, continue with local and user-supplied material. Mark external maturity, compatibility, and similar claims as unverified where evidence is missing; carry those gaps into the options and recommendation. Do not add a search dependency or imply external validation.
+Stress-test the deciding trade-offs through code and documentation inspection, not prototypes. Prefer deletion, existing patterns, the standard library, native platform features, and installed dependencies before adding machinery. Separate the selected approach's critical unknowns from ordinary future implementation checks.
 
-**Grounding output**: Brief summary (1 paragraph) of:
-- What exists today
-- What constraints we must respect
-- What patterns we already follow
+Rank the survivors and recommend one. Do not rewrite a rich supplied design into a shallow option summary that loses its interfaces, constraints, or acceptance details; preserve its load-bearing content under the input reference.
 
----
+## Save the proposal
 
-### Phase 1: Divergent Thinking
-
-Generate only genuinely distinct, viable approaches grounded in the constraints. Usually 2-3 are enough; add more only when they could change the decision. Do not pad the count with implausible options.
-
-**How to generate ideas**:
-- Start with the obvious approach (what most developers would try)
-- Add creative alternatives (what if we flip the constraint?)
-- Consider surprising directions (what would experts in other domains do?)
-- Think about extremes (what if we optimize for simplicity vs performance?)
-
-**For each approach, capture**:
-- **Name**: Short, memorable label
-- **Core idea**: One sentence describing the approach
-- **Key benefit**: Why this could work well
-- **Key concern**: What could go wrong
-
-**Evaluation criteria**:
-- Complexity (how hard to implement and maintain?)
-- Fit (how well does it match existing code?)
-- Risk (what's the failure mode?)
-- Reversibility (how hard to back out if wrong?)
-
-**Evidence gathering**:
-- Read code to understand feasibility
-- Search the web for external evidence when available (library maturity, case studies)
-- Check existing learnings for related patterns
-
-Use Phase 2 to narrow the options through deeper investigation.
-
----
-
-### Phase 2: Convergent Thinking
-
-Keep the viable contenders, normally 2-3, and stress-test each one. If only one survives, explain why; do not invent a competitor. Reuse a direction the user already selected unless new evidence reopens the choice.
-
-**Stress tests**:
-- **What could go wrong?** (failure modes, edge cases)
-- **What are the hidden costs?** (maintenance, complexity, dependencies)
-- **How well does it fit existing code?** (patterns, style, architecture)
-- **What would make this the wrong choice?** (when to avoid)
-
-**Deeper investigation**:
-- Read more specific code if needed
-- Search for negative experiences with this approach when available
-- Check compatibility with existing constraints
-
-**Discard weaker options**:
-- Too risky with unclear upside
-- Doesn't fit existing patterns
-- Hidden costs too high
-- Better options exist
-
-**Rank the survivors** by (benefit / cost) ratio, considering:
-- Implementation effort
-- Maintenance burden
-- Risk of failure
-- Fit with existing code
-
----
-
-### Phase 3: Output
-
-Save to `.coding/ideation/YYYYMMDD-HHMM-<topic>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Use the actual saved path for the handoff and later selection entry. Repeat the option block and ranking only for the surviving approaches; do not invent an option to fill the template:
+Save `docs/features/YYYYMMDD-<semantic-name>/proposal.md`:
 
 ```markdown
-# Ideation: [Topic]
+# <Name> Proposal
 
-**Date**: YYYYMMDD
-**Context**: [One paragraph: problem, constraints, existing patterns]
+## Problem and scope
+<the outcome, constraints, and explicit exclusions>
 
----
-
-## Generated Approaches
-
-### Option 1: [Name]
-
-**Approach**: [2-3 sentence description]
-
-**Pros**:
-- [Benefit 1]
-- [Benefit 2]
-
-**Cons**:
-- [Drawback 1]
-- [Drawback 2]
-
-**Risks**:
-- [What could go wrong]
-
-**Fit**: [How well it matches existing code: High/Medium/Low]
-
-**Evidence**: [Supporting findings from code/web/learnings]
-
----
-
-### Option 2: [Name]
-
-**Approach**: [2-3 sentence description]
-
-**Pros**:
-- [Benefit 1]
-- [Benefit 2]
-
-**Cons**:
-- [Drawback 1]
-- [Drawback 2]
-
-**Risks**:
-- [What could go wrong]
-
-**Fit**: [How well it matches existing code: High/Medium/Low]
-
-**Evidence**: [Supporting findings from code/web/learnings]
-
----
-
-[Add another option block only if a third approach survived]
-
----
+## Candidate approaches
+<only actual contenders: mechanism, benefits, costs, fit, risks, and evidence>
 
 ## Recommendation
+<the recommended approach and deciding trade-offs>
 
-[Rank the options with clear reasoning]
+## Selection
+<the user's choice and reason, or explicitly not selected>
 
-1. **Option X** - Best fit because [reasoning: considers complexity, fit, risk]
-2. **Option Y** - Viable alternative if [condition when this becomes better]
-[Rank a third survivor only when one exists]
+## Feasibility questions
+<only unanswered questions that could change the chosen design, when any>
 
-## Trade-offs
-
-[Key trade-off between top 2 options, helping user choose]
-
-## Next Steps
-
-User selects one option → route to `clarify` for detailed specification.
+## Provenance and preservation
+<source versions, internal coverage, and approved exclusions when importing>
 ```
 
----
+Omit irrelevant empty sections. Read an existing proposal before updating it; preserve earlier candidates and append changed selections rather than overwriting history. A different topic gets a distinct semantic directory. Legacy ideation reports remain in place and need no automatic migration.
 
-### Phase 4: Hand Off
+Read `./references/git-commit.md`, stage only this proposal and necessary internal appendices by exact path, inspect the staged diff, and commit using the repository convention or `docs(ideate): record <topic>`. Stop for unrelated staged changes. Do not push.
 
-Present the saved ideation to user:
+## Selection and handoff
 
-"I recommend [N] surviving technical approaches for [topic]:
+Present the surviving options, recommendation, saved path, and commit. Ask which approach to pursue unless the user already selected one; do not infer selection from silence. A proposal can remain unselected without blocking its preservation.
 
-1. **[Option 1 name]**: [One sentence]. Best fit because [short reason].
-2. **[Option 2 name]**: [One sentence]. Alternative if [condition].
-[Repeat only for the actual survivors.]
+When the user selects, append the choice and reason to the same proposal and commit that update. Recommend one next skill: `spike` if a blocking feasibility question needs evidence, otherwise `spec`. Do not require an experiment for a choice already supported by applicable evidence, or another option-selection approval when the choice is known.
 
-Full analysis saved to `<actual saved report path>`.
-
-**Which approach should we pursue?**"
-
-Wait for user to select. Do not automatically invoke `clarify`.
-
-After selection, append the chosen approach and the user's reason to the saved ideation. Give its path and recommend a separate `clarify` invocation using that choice as context. Stop here; do not create a spec or invoke another skill.
-
----
-
-## Notes
-
-- **Ideation results are temporary** (`.coding/`) - not committed to git
-- **The selected approach gets formalized** in `clarify` → `spec.md`
-- **Keep ideation focused**: 30-60 minutes, not exhaustive exploration
-- **Use read-only subagents** for code/web exploration when needed
-- **Do not build prototypes** during ideation - that's validation (clarify's spike step)
-
----
-
-## Integration with other skills
-
-- **Before ideate**: If problem is unclear, use `clarify` Phase 0 (product understanding) first
-- **After ideate**: Record the selection and recommend `clarify` for specification; do not invoke it
-- **Parallel to ideate**: User may investigate topics independently, then reference findings in ideation
-
----
+Stop after reporting. Do not create a specification, perform validation, or start implementation. A proposal's selection does not approve its future specification or product code.
 
 ## References
 
-- `./references/subagent-dispatch.md` - When and how to dispatch read-only subagents for large codebases
+- `./references/design-input.md` — read before accepting material or writing; owns scope, input preservation, and workspace safety.
+- `./references/subagent-dispatch.md` — read only for authorized broad read-only exploration; otherwise inspect directly.
+- `./references/git-commit.md` — read before staging and committing the proposal or a selection update.

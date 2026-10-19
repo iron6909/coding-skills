@@ -41,7 +41,7 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.coding/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
 
-- `.coding/` holds work records and user-maintained configuration. In consuming projects, users decide whether to ignore or commit it; skills must not change ignore or tracking rules automatically. Keep permanent `spec.md` and `plan.md` under `docs/features/`, never `.coding/`.
+- `.coding/` holds work records and user-maintained configuration. In consuming projects, users decide whether to ignore or commit it; skills must not change ignore or tracking rules automatically. Keep permanent proposals, spike evidence, specifications, and plans under `docs/features/`, never `.coding/`.
 - Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
 
 ## Documents are never deleted
@@ -104,7 +104,7 @@ When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual ev
 
 ## Conventions
 
-- **Commits**: Conventional Commits with a scope, for example `docs(clarify): add capability map for multi-module initiative`. One logical change per commit.
+- **Commits**: Conventional Commits with a scope, for example `docs(spec): define knowledge-base contract`. One logical change per commit.
 - **Branches**: `feature/YYYYMMDD-<name>`.
 - **Testing**: no application test suite; use the small standard-library self-checks and consistency checks above.
 - **Linting**: respect existing config. No new linter rules without approval.

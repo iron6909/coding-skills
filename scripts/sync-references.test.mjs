@@ -32,12 +32,13 @@ try {
   assert.equal(run().status, 0);
   check(0);
 
-  const skill = join(root, "skills", "ideate", "SKILL.md");
+  const skill = join(root, "skills", "guide", "SKILL.md");
   const skillText = readFileSync(skill, "utf8");
-  const orphan = join(root, "skills", "ideate", "references", "git-commit.md");
+  const orphan = join(root, "skills", "guide", "references", "git-commit.md");
+  mkdirSync(dirname(orphan), { recursive: true });
   writeFileSync(orphan, expected);
   writeFileSync(skill, skillText + "\nRead ./references/git-commit.md before committing.\n");
-  check(1, /unmapped: skills\/ideate\/references\/git-commit\.md/);
+  check(1, /unmapped: skills\/guide\/references\/git-commit\.md/);
   assert.equal(run().status, 1, "write mode must also reject an unregistered synced copy");
   rmSync(orphan);
   writeFileSync(skill, skillText);

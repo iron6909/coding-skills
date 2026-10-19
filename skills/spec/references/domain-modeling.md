@@ -1,8 +1,8 @@
 # Domain Modeling
 
-Actively build and sharpen the project's domain model while clarifying a request. Challenge terms, stress-test them with scenarios, and update `GLOSSARY.md` and ADRs inline.
+Actively build and sharpen the project's domain model while clarifying a request. Challenge terms, stress-test them with scenarios, and propose corresponding `GLOSSARY.md` and ADR changes for specification approval.
 
-This discipline *changes* the model. Reading `GLOSSARY.md` to use its terms is a one-line habit every skill that writes code, plans, or documents shares; what is specific to `clarify` is challenging and updating it.
+This discipline *changes* the model. Reading `GLOSSARY.md` to use its terms is a one-line habit every skill that writes code, plans, or documents shares; what is specific to `spec` is challenging and updating it.
 
 ## Files
 
@@ -28,7 +28,7 @@ When the user states how something works, check whether the code agrees. Surface
 
 ### Update GLOSSARY.md inline
 
-Once a term is settled, update `GLOSSARY.md` right away. Do not batch. Use the format in `./references/glossary-format.md`.
+Once a term is settled, propose its `GLOSSARY.md` update using `./references/glossary-format.md`. Save approved glossary changes with the specification; do not record a speculative term as an agreed contract.
 
 ### Offer ADRs sparingly
 

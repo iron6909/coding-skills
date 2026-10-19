@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # UI Design
 
-Decide the interface before anyone writes code. Runs between `clarify` (which produces `spec.md`) and `plan` (which breaks the work into tasks).
+Decide the interface before anyone writes code. Runs between `spec` (which produces `spec.md`) and `plan` (which breaks the work into tasks).
 
 This skill decides what the interface is: arrangement, components, states, and the tokens behind them. It does not choose implementation tasks, and it writes no application code.
 
@@ -31,7 +31,7 @@ Skip this skill when the spec already fixes the visual direction, or when the ch
 
 1. Check the project root for `DESIGN.md`. When it exists, read it and treat it as the authority: Phase 1 is skipped.
 2. When it is missing, extract what the code already ships — CSS custom properties, a Tailwind or theme config, component styles. A working project usually has a de facto system. Record it instead of replacing it.
-3. Read `spec.md` in full, confirm it is approved, and list every surface it mentions. Stop for approval if it is still a draft.
+3. Read `spec.md` and all its required internal appendices in full, confirm the contract is approved, and list every surface it mentions. Stop for approval if it is still a draft.
 4. Read `./references/design-principles.md` and identify each surface's mode, even when `DESIGN.md` exists. Record modes in the relevant `ui-spec.md` surface descriptions, not as a single product-wide choice.
 
 State what you found before proposing anything. A project with an inferred system and one with none need different questions.

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Use one of three execution inputs:
 
-- **Planned work:** read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` and `plan.md` in full. The spec defines behavior; the plan defines tasks and their checks. Read a task brief only when the plan links one.
+- **Planned work:** read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`, its required internal appendices, and `plan.md` in full. The spec defines behavior; the plan defines tasks and their checks. Do not fill contract gaps from external originals or a proposal. Read a task brief only when the plan links one.
 - **Session plan:** use the approved task list in this conversation. The spec path, if any, still governs behavior.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
@@ -51,7 +51,7 @@ For each executable task, in dependency order:
 
 After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
 
-If a task description needs a correction that repository evidence settles within approved scope, make the smallest correction and continue; record it in the ledger only for planned work. A product or spec change requires approval: stop and recommend `clarify`, then `plan` where needed. Completed tasks remain history. Cancelling a task also requires an approved plan revision; never silently skip it because a later task seems to cover it.
+If a task description needs a correction that repository evidence settles within approved scope, make the smallest correction and continue; record it in the ledger only for planned work. A product or spec change requires approval: stop and recommend `spec`, then `plan` where needed. If evidence first requires resolving a design-invalidating feasibility unknown, recommend `spike` for that question; do not run it inside execution or silently change the contract. Completed tasks remain history. Cancelling a task also requires an approved plan revision; never silently skip it because a later task seems to cover it.
 
 ## Task review
 
@@ -95,7 +95,7 @@ Start the ledger with:
 
 Resolve the feature's `review_base` from the caller or existing ledger to a full commit SHA. Only a new standalone run without a base uses `git rev-parse HEAD`. Keep it fixed for any later whole-feature review. Each task records its own `task_base` at start; an interrupted task reuses its original base and starting state. For a repository without a commit, record `none` and compare against the initial file state. Missing or ambiguous resumed boundaries require clarification, not a new `HEAD` base.
 
-Read task details from `plan.md`. Follow an explicit brief link when present; do not create briefs merely because an `impl/` directory exists. If a linked brief is missing, recover only details supported by the approved spec, plan, UI/design inputs, and repository evidence. Record what was recovered. If a product decision is missing, stop and recommend a plan revision rather than inventing it.
+Read task details from `plan.md`. Follow an explicit brief link when present; do not create briefs merely because an `impl/` directory exists. If a linked brief is missing, recover only details supported by the approved spec, plan, UI/design inputs, and repository evidence. Record what was recovered. If task details remain missing, stop for a plan revision. A missing product contract belongs to `spec`; a design-invalidating feasibility gap needs targeted `spike` evidence. Do not invent either.
 
 Before dependent tasks run, check the shared interfaces their task descriptions declare. Record actual conflicts and evidence-based rulings, not empty pre-flight rows. An independent or single task needs no interface pre-flight.
 
@@ -121,7 +121,7 @@ Record failed attempts and review progress so interruption cannot reset the fail
 
 ## Resume
 
-For planned work, read the current approved spec, plan, ledger, applicable UI/design inputs, and any linked briefs. Compare recorded commits and task state with the working tree and Git history. Resume from the first executable task without a verified `complete` entry. A task is cancelled only when the current approved plan marks it `skipped` with a reason; a ledger entry alone cannot cancel it. Retain its number, any brief, and history without inventing a completion or commit.
+For planned work, read the current approved spec and required internal appendices, plan, ledger, applicable UI/design inputs, and any linked briefs. Compare recorded commits and task state with the working tree and Git history. Resume from the first executable task without a verified `complete` entry. A task is cancelled only when the current approved plan marks it `skipped` with a reason; a ledger entry alone cannot cancel it. Retain its number, any brief, and history without inventing a completion or commit.
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 

@@ -311,6 +311,6 @@ Reference `./references/git-commit.md` for commit conventions.
 - **Before optimize**: Use `debug` if it's a regression (performance used to be better)
 - **Before optimize**: Use `execute` if it's a simple known fix (add an index, fix N+1 query)
 - **After optimize**: Recommend `capture` for non-obvious insights, if any
-- **If a risky approach needs a spike**: Stop and recommend `clarify` for validation
+- **If a risky approach needs a spike**: Stop and recommend `spike` for validation
 
 Report the saved summary, measurements, checks, commits, and current branch, then stop. Do not invoke another skill.

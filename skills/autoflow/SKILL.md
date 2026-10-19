@@ -14,7 +14,7 @@ The called skills own their planning, testing, review, and commit rules. Autoflo
 
 Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
 
-1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `clarify` or `ui-design`; do not invoke either.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` and its required internal appendices. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `spec` or `ui-design`; do not invoke either. A blocking feasibility unknown needs `spike` outside this orchestrator, not a new automated stage.
 2. Inspect the branch, staged and unstaged changes, and untracked files. Record the initial state. Never commit, stash, reset, or overwrite unrelated user work. If it cannot be isolated safely, stop and ask.
 3. Confirm the target branch. On the default branch, get consent to work there or create `feature/YYYYMMDD-<semantic-name>`. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
 4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
@@ -64,7 +64,7 @@ Apply the review skill's fix verification and separate commits, followed by one 
 
 Stop for a missing approval, changed approved inputs, an unresolved execution gate, unsafe working-tree overlap, failed checks without a clear in-scope fix, or any required high-risk sign-off. Preserve the branch, commits, state, ledger, briefs, and reports.
 
-Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `clarify` and stop; it is outside this orchestrator.
+Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `spec` and stop; it is outside this orchestrator.
 
 Do not run destructive rollback commands or remove documents. Explain the current state and let the user decide recovery or integration.
 

@@ -35,15 +35,16 @@ npx skills@latest add iron6909/coding-skills
 
 ```text
 /coding survey                         # 需要记录或刷新项目事实时
-/coding clarify 添加用户头像上传          # 澄清需求，审阅并制定规格
+/coding spike 验证候选方案的关键假设       # 仅有阻塞性可行性未知时
+/coding spec 添加用户头像上传             # 澄清需求，批准整体规格
 /coding plan                           # 审阅并制定计划
 /coding execute
 /coding code-review                    # 需要整体独立审查时另行调用
 ```
 
-也可用 Pi 原生的 `/skill:clarify 添加用户头像上传` 等写法。其他宿主按各自语法调用同名技能，比如 `/clarify`；本包不为 Pi 注册这些短别名。
+也可用 Pi 原生的 `/skill:spec 添加用户头像上传` 等写法。其他宿主按各自语法调用同名技能，比如 `/spec`；本包不为 Pi 注册这些短别名。`clarify` 已拆为 `spec` 与 `spike`，不保留旧入口；已有规格、计划和历史记录继续保留。
 
-若界面决策尚未确定，先通过 `/coding ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动直接用 `/coding execute`，不要求先建 `AGENTS.md`、规格、计划或执行账本。局部需求只缺少一个行为决定时，`clarify` 使用短规格一次确认，不另做产品审批。
+需要比较方案时先用 `ideate`；选定方案后，仅在关键可行性未知会改变设计时使用 `spike`，否则直接用 `spec`。外部设计也按此选择入口，由首个接收它的技能完整内化，不要求先运行 `ideate`。若界面决策尚未确定，先通过 `/coding ui-design` 或其他明确批准的设计解决，再制定计划。已知范围与验收条件的小改动直接用 `/coding execute`，不要求先建项目文档。局部需求只缺少一个行为决定时，`spec` 使用短规格一次确认，不另做产品审批。
 
 技能需要显式调用，不会自动触发。不知道选哪个时，可使用 `guide`，运行 `/coding guide 添加用户头像上传`，由它选择入口；目标缺装时会提示，不会自动安装。
 
@@ -51,12 +52,13 @@ npx skills@latest add iron6909/coding-skills
 
 ### 核心技能
 
-以下五个技能整体安装，不要求每次全部调用。
+以下六个技能整体安装，不要求每次全部调用；`spike` 是可选验证入口，不是写规格前的必经阶段。
 
 | 技能 | 何时使用 |
 |------|----------|
 | [survey](skills/survey/SKILL.md) | 需要记录或更新项目事实与术语 |
-| [clarify](skills/clarify/SKILL.md) | 澄清需求并形成规格；大型跨模块工作先拆分能力 |
+| [spike](skills/spike/SKILL.md) | 验证会改变设计的关键假设，保存证据与适用边界 |
+| [spec](skills/spec/SKILL.md) | 澄清需求，内化已有设计，形成整体正式规格；不拆开发批次 |
 | [plan](skills/plan/SKILL.md) | 规格已批准，需要拆分可验证的任务 |
 | [execute](skills/execute/SKILL.md) | 执行已批准的计划，或实现范围明确的小改动 |
 | [code-review](skills/code-review/SKILL.md) | 对本地分支改动做整体独立审查 |
@@ -66,7 +68,7 @@ npx skills@latest add iron6909/coding-skills
 | 技能 | 何时使用 |
 |------|----------|
 | [guide](skills/guide/SKILL.md) | 不确定该从哪个技能开始 |
-| [ideate](skills/ideate/SKILL.md) | 需要比较技术方案，再决定方向 |
+| [ideate](skills/ideate/SKILL.md) | 比较技术方案，保存候选方案、取舍和推荐 |
 | [ui-design](skills/ui-design/SKILL.md) | 规格已批准，界面与交互设计尚未确定 |
 | [ui-review](skills/ui-review/SKILL.md) | 审查已实现的前端界面 |
 | [debug](skills/debug/SKILL.md) | 定位并修复故障 |
@@ -76,7 +78,7 @@ npx skills@latest add iron6909/coding-skills
 | [refactor](skills/refactor/SKILL.md) | 代码结构拖累修改，需要找出重构候选 |
 | [capture](skills/capture/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
 | [learning-refresh](skills/learning-refresh/SKILL.md) | 已记录的经验与代码现状不一致 |
-| [doc-review](skills/doc-review/SKILL.md) | 检查规格、计划或能力拆分文档 |
+| [doc-review](skills/doc-review/SKILL.md) | 检查方案、验证报告、规格、计划或历史能力拆分文档 |
 | [simplify](skills/simplify/SKILL.md) | 代码已能运行，需要简化与清理 |
 | [handoff](skills/handoff/SKILL.md) | 暂停工作，留待其他会话继续 |
 
@@ -100,11 +102,17 @@ npx skills@latest add iron6909/coding-skills
 
 ## 关键概念
 
-**spec** 定义做什么与如何验收，**plan** 组织任务，**task** 是独立可测试的交付单元。计划可留在当前会话，也可为跨会话使用保存为一份包含任务细节的 `plan.md`；只有任务说明很长时才另拆 brief。文件数、行数或跨模块本身不决定流程重量，风险授权和验证要求仍保留。
+**proposal** 是候选方案，**spike** 是验证证据，**spec** 是正式设计与验收契约，**plan** 是实施任务安排。只有 `plan` 拆解开发工作；模块职责属于规格，开发批次属于计划，大型系统不要求逐模块建立子规格。
+
+`spike` 只解决会改变选型、架构或关键契约的未知，不代做完整产品验收。规格可以定义尚待实现的验收目标，但不能把未经验证的猜测写成已成立的事实。验证失败或证据不足时，不批准依赖该假设的规格。
+
+**task** 是独立可测试的交付单元。计划可留在当前会话，也可为跨会话使用保存为一份包含任务细节的 `plan.md`；只有任务说明很长时才另拆 brief。阶段只是同一计划的任务分组。文件数、行数或跨模块本身不决定流程重量，风险授权和验证要求仍保留。
 
 ### 文档结构
 
-功能规格与计划永久保存在 `docs/features/`，经验保存在 `docs/learnings/`；`.coding/` 存放工作记录、报告和用户配置。项目根目录的 `AGENTS.md`、`GLOSSARY.md`、`DESIGN.md` 分别记录项目事实、术语和设计系统，按需创建。
+同一交付范围的方案、验证报告、规格与计划永久保存在 `docs/features/`，按需生成，不要求四份齐全。外部设计的所有实施所需内容必须进入内部文档；原路径和 URL 仅作溯源。正式规格批准后，规划与开发不再依赖原件、候选方案或会话；必要的内部附录与规格一同保存、提交并明确列为必读。
+
+经验保存在 `docs/learnings/`；`.coding/` 存放工作记录、报告和用户配置。项目根目录的 `AGENTS.md`、`GLOSSARY.md`、`DESIGN.md` 分别记录项目事实、术语和设计系统，按需创建。
 
 <details>
 <summary>查看具体输出路径</summary>
@@ -115,10 +123,12 @@ npx skills@latest add iron6909/coding-skills
 /
 ├── docs/
 │   ├── features/YYYYMMDD-<name>/
-│   │   ├── spec.md                     # 批准的规格
-│   │   ├── plan.md                     # 任务及验证细节
+│   │   ├── proposal.md                 # 可选：候选方案或待验证外部设计的内部版本
+│   │   ├── spike.md                    # 可选：验证证据、结论与边界；后续实验追加
+│   │   ├── spec.md                     # 批准的整体规格
+│   │   ├── plan.md                     # 任务及验证细节，可按阶段分组
 │   │   ├── ui-spec.md                  # 界面规格（有界面设计时）
-│   │   └── capability-map.md           # 能力拆分（大型工作按需产出）
+│   │   └── <appendix>.md               # 必要时的内部附录，由所属文档明确引用
 │   ├── learnings/
 │   │   ├── YYYYMMDD-<topic>.md         # 经验文档
 │   │   └── _archived/                  # 旧经验归档，保留原文
@@ -130,7 +140,6 @@ npx skills@latest add iron6909/coding-skills
     │   │   └── task-<N>.md              # 可选的补充任务说明
     │   └── review-YYYYMMDD-HHMM.md      # 功能内代码审查
     ├── handoff/YYYYMMDD-HHMM[-<topic>].md
-    ├── ideation/YYYYMMDD-HHMM-<topic>.md
     ├── optimize/YYYYMMDD-HHMM/          # baseline.md、variant-<N>.md、summary.md
     ├── refactor/YYYYMMDD-<scope>.md
     ├── review/YYYYMMDD-HHMM-<topic>.md  # 独立代码审查
@@ -142,8 +151,11 @@ npx skills@latest add iron6909/coding-skills
 
 </details>
 
+旧 `.coding/ideation/` 报告和 `capability-map.md` 保留为历史资料，不再默认生成，也不自动迁移或删除。
+
 ### 使用约定
 
+- 候选方案不等于规格，验证结论不等于实施授权。`spike` 先约定问题、判据和安全边界，再如实保存结果；不额外要求批准实验事实。具体高风险操作仍需专项授权。
 - 规格和计划需要批准。`execute` 按测试驱动方式持续完成已批准任务，逐任务自查、验证与提交，最后进行最终验证；遇到范围变化、未解决的失败、歧义或高风险决策会停下。
 - 任务自查不等于整体独立审查。`code-review`、`ui-review` 先出报告，修复需要授权；必要验证无法完成时，须明确接受边界并保留未验证标记。
 - 技能不自动合并、推送或发布，也不删除文档，包括工作记录和审查报告。旧经验满足归档条件时可归档，临时探针和日志仍可清理。
@@ -155,14 +167,14 @@ npx skills@latest add iron6909/coding-skills
 
 | 技能 | 提交内容 |
 |------|----------|
-| survey、clarify、plan、capture、learning-refresh、ui-design | 自己产出或更新的项目文档 |
+| survey、ideate、spike、spec、plan、capture、learning-refresh、ui-design | 自己产出或更新的项目文档与必要内部附录 |
 | execute、debug | 每个任务或每次修复的代码 |
 | simplify、optimize | 简化或优化后的代码 |
-| doc-review | 用户确认后的非语义修正；语义改动交回 clarify/plan 重新批准 |
+| doc-review | 用户确认后的非语义修正；语义改动交回 ideate/spike/spec/plan 各自处理，不改写实验事实 |
 | code-review、ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
 | autoflow | 编排 plan、execute、code-review 各自的提交 |
 | commit | 用户指定的临时改动 |
-| refactor、handoff、ideate | 不提交，只留下报告或交接记录 |
+| refactor、handoff | 不提交，只留下报告或交接记录 |
 
 ## Pi 入口与边界
 
@@ -185,7 +197,7 @@ npm pack --dry-run --json --offline
 
 已在 Windows、Node 24.10.0、Pi 1.3.0 上验证本地安装、SDK 原生展开、资源筛选与重载、来源冲突，以及 CLI 打印、JSON 和 RPC 协议。集成检查使用本地固定响应桩，不证明模型遵守技能指令。TUI 只验证了命令绑定，未做真实终端交互；其他版本与平台未验证。
 
-此前使用 `openai/gpt-6.1-sol` 在独立本地仓库验证了 spike 安全边界、优化检查阻塞和历史区间审查，共五个变体，每个变体的新旧版各运行一次。本轮轻量路径调整另对六类场景的七个变体完成新旧版各一次实跑，观察到重复审批、空记录和强制任务简报减少；部分检查两版均通过，另有一次环境相关账本写入失败。其余场景与真实并行镜头传递未验证，单次对照不代表通用遵循率。场景定义见 `scripts/workflow-cases.json`，结构检查通过不等于代理行为通过。
+此前使用 `openai/gpt-6.1-sol` 在独立本地仓库验证了 spike 安全边界、优化检查阻塞和历史区间审查，共五个变体，每个变体的新旧版各运行一次。此前轻量路径调整另对六类场景的七个变体完成新旧版各一次实跑，观察到重复审批、空记录和强制任务简报减少；部分检查两版均通过，另有一次环境相关账本写入失败。这些历史结果不证明本次技能拆分后的行为。新的拆分、外部材料内化和真实并行镜头传递尚未进行模型行为实跑，单次对照也不代表通用遵循率。场景定义见 `scripts/workflow-cases.json`，结构检查通过不等于代理行为通过。
 
 ## 参考与许可
 

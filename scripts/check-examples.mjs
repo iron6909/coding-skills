@@ -38,11 +38,18 @@ for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Exec
   }
 }
 
-const spike = read("skills/clarify/SKILL.md").split("### Step 4: Spike")[1].split("### Step 5:")[0];
+const spike = read("skills/spike/SKILL.md");
+const designInput = read("shared/references/design-input.md");
 for (const safeguard of ["initial staged and unstaged", "default branch", "credentials", "sign-off", "non-document scratch"]) {
   assert.ok(spike.includes(safeguard), `spike missing safeguard: ${safeguard}`);
 }
-assert.ok(spike.indexOf("Before") < spike.indexOf("1. Write the smallest"), "spike safety must precede execution");
+assert.ok(spike.indexOf("## Safety before experiments") < spike.indexOf("## Gather evidence"), "spike safety must precede execution");
+for (const rule of ["Do not require an approved spec or plan", "Supported", "Not supported", "Inconclusive", "Do not mock the dimension being tested", "preserve previous methods, failures, and conclusions"]) {
+  assert.ok(spike.includes(rule), `missing independent spike contract: ${rule}`);
+}
+for (const rule of ["untrusted input", "section by section", "schemas and constraints", "same directory", "original material became unavailable", "not need the original source, proposal, spike report, or conversation"]) {
+  assert.ok(designInput.includes(rule), `missing design preservation contract: ${rule}`);
+}
 
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
@@ -54,7 +61,7 @@ const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((labe
   const section = readme.split(`### ${label}`)[1]?.split("\n#")[0] ?? "";
   return [...section.matchAll(/\]\(skills\/([\w-]+)\/SKILL\.md\)/g)].map(([, name]) => name);
 });
-assert.deepEqual(coreSkills, ["survey", "clarify", "plan", "execute", "code-review"], "the core must contain exactly the five main-workflow skills");
+assert.deepEqual(coreSkills, ["survey", "spike", "spec", "plan", "execute", "code-review"], "README must identify the six core skills, including optional feasibility validation");
 const installedSkills = readdirSync(new URL("../skills/", import.meta.url), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
 assert.deepEqual([...coreSkills, ...auxiliarySkills].sort(), installedSkills, "every skill must be classified once as core or auxiliary");
 for (const skill of installedSkills) {
@@ -62,12 +69,13 @@ for (const skill of installedSkills) {
   assert.match(source, new RegExp(`^name: ${skill}$`, "m"), `${skill} must retain its portable name`);
   assert.match(source, /^disable-model-invocation: true$/m, `${skill} must remain explicitly invoked`);
 }
-assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/clarify"), "the quick start must work without optional guide");
+assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/coding spec"), "the quick start must work without optional guide");
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-for (const skill of ["clarify", "plan", "execute", "autoflow"]) {
+assert.ok(!installedSkills.includes("clarify"), "the retired entry must not remain as a second implementation or alias");
+for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
 for (const skill of ["code-review", "ui-review"]) {
@@ -330,7 +338,9 @@ try {
 } catch (error) {
   assert.fail(`Invalid autoflow state example: ${error.message}`);
 }
-assert.equal(state.version, 2, "the expanded approval snapshot needs a distinct schema version");
+assert.equal(state.version, 3, "required internal appendices need a distinct approval snapshot schema");
+assert.deepEqual(state.approval.spec_appendix_blobs, {}, "explicitly record an empty appendix snapshot when no appendix is required");
+assert.ok(read("skills/autoflow/references/state-management.md").includes("snapshot all contract documents"), "recovery must validate required internal appendices as well as spec.md");
 for (const input of ["spec", "plan", "ui_spec", "design"]) {
   assert.ok(Object.hasOwn(state, input), `missing approved input path: ${input}`);
   assert.ok(Object.hasOwn(state.approval, `${input}_blob`), `missing approved input snapshot: ${input}`);
@@ -351,7 +361,8 @@ assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root caus
 assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
 assert.ok(finish.includes("typed `discard`"), "force deletion must retain explicit discard confirmation");
 const ideate = read("skills/ideate/SKILL.md");
-assert.ok(ideate.includes("numeric suffix"), "ideation reports must not overwrite collisions");
+assert.ok(ideate.includes("preserve earlier candidates and append changed selections") && designInput.includes("different scope needs a distinct semantic directory"), "proposals must preserve prior work and separate different scopes");
+assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
 assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
 assert.ok(!read("skills/refactor/SKILL.md").includes("Never write a refactor report into the repository"), "temporary report writes are allowed; commits are not");
 assert.ok(!read("shared/references/counterfactual-test.md").includes("barely passes"), "generic security advice fails the counterfactual gate");
@@ -389,12 +400,17 @@ assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
 assert.ok(plan.includes("A saved plan contains task details") && plan.includes("Neither tier requires task briefs by default"), "a short persisted plan must be usable without task briefs");
-assert.ok(read("skills/doc-review/references/review-lenses.md").includes("Do not require briefs for a self-contained plan"), "document review must not restore mandatory task briefs");
+assert.ok(read("skills/doc-review/references/review-lenses.md").includes("a self-contained plan requires no briefs"), "document review must not restore mandatory task briefs");
 const outputTier = read("skills/plan/references/output-tier.md");
 assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
-const clarify = read("skills/clarify/SKILL.md");
-assert.ok(clarify.includes("For Bounded work, skip Phase 0") && clarify.includes("only approval checkpoint for Bounded clarification"), "local clarification must combine behavior and technical approval");
-assert.ok(!clarify.includes("When unsure, take the heavier path"), "uncertainty needs investigation, not automatic process escalation");
+const spec = read("skills/spec/SKILL.md");
+assert.ok(spec.includes("only routine specification approval checkpoint") && spec.includes("short spec and one approval"), "local requirement decisions need one contract approval, not a separate product stage");
+assert.ok(spec.includes("Do not require `ideate`, `spike`") && spec.includes("Do not write product code, run experiments"), "ready designs must go directly to spec without experiments");
+assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
+assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
+for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
+  assert.ok(!/`clarify`|skills\/clarify\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+}
 const commit = read("skills/commit/SKILL.md");
 assert.ok(commit.includes("Do not ask again for file or message approval unless the user requested a preview"), "explicit commit scope must not require routine reapproval");
 assert.ok(commit.includes("scope is ambiguous") && commit.includes("git diff --staged") && commit.includes("Respect required checks and hooks"), "commit shortcuts must retain scope, staging, and check safeguards");

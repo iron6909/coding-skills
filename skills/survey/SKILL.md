@@ -22,7 +22,7 @@ This skill only surveys the workspace and records what it finds:
 
 Do not clarify a feature, design an implementation, split tasks, write code, create `.coding`, install dependencies, or edit project configuration.
 
-Do not create ADRs. `clarify` creates them later, when it records an important design decision.
+Do not create ADRs. `spec` creates them later, when it records an important design decision.
 
 **Document roles and formats**: read `./references/project-documents.md` for how AGENTS.md, GLOSSARY.md, and ADRs relate, and `./references/glossary-format.md` for the glossary format. Write the glossary in that format rather than inventing a local one.
 
@@ -163,7 +163,7 @@ Report:
 Survey complete.
 Files: <AGENTS.md path, GLOSSARY.md path if created> — <commit short hash>
 Unknowns: <list, or None>
-Next: clarify (or execute for a ready small change)
+Next: spec (or execute for a ready small change)
 ```
 
-Stop after the survey. Let `clarify`, `plan`, `execute`, or `debug` handle the next development step.
+Stop after the survey. Let `ideate`, `spike`, `spec`, `plan`, `execute`, or `debug` handle the next development step.

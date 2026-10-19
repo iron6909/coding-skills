@@ -1,7 +1,7 @@
 # Elicitation Techniques
 
 Advanced questioning methods for high-risk specifications. Use these when:
-- Architectural path (cross-module changes, new integrations)
+- Architectural risks (cross-module contracts, new integrations)
 - Security-sensitive features (auth, permissions, data access)
 - Data handling (migrations, transformations, deletions)
 - Critical business logic (payments, compliance, auditing)
@@ -182,25 +182,11 @@ Identify who is affected and what they need.
 - What could go wrong for them?
 - What constraints do they impose?
 
-## Applying Techniques in Clarify
+## Applying Techniques in Spec
 
-### Bounded Path
-Light elicitation:
-- Edge case exploration (5-10 probing questions)
-- Failure mode analysis (what can go wrong)
+Use only the technique that can settle a real decision gap. A local behavior may need one boundary example; an architectural risk may benefit from a pre-mortem or stakeholder check. Do not set a question quota or reopen a settled choice to complete a technique.
 
-### Architectural Path
-Deep elicitation:
-- Pre-mortem (imagine failure scenarios)
-- First principles (challenge assumptions)
-- Constraint relaxation (are these constraints real?)
-- Stakeholder mapping (who else is affected?)
-
-### Optional research/spike validation (either path)
-Use focused elicitation within Bounded or Architectural work when feasibility needs validation; this is not a third path:
-- Socratic questioning (why this approach?)
-- Analogy (has anyone solved this before?)
-- Counterfactual (what if we don't do this?)
+Distinguish a missing behavior decision from a feasibility unknown. Settle the former with the user here. For an unknown that could change the selected design and needs an experiment, identify the question and recommend `spike`; do not run validation inside `spec`.
 
 ## Output Integration
 
@@ -210,7 +196,7 @@ Elicitation findings should surface in the spec as:
 2. **Non-goals** section: Explicitly out of scope (from boundary questions)
 3. **Edge cases** subsection: Enumerated exceptional conditions
 4. **Failure modes** subsection: How system degrades
-5. **Open questions**: Unresolved issues needing user decision
+5. **Unresolved decisions**: Keep these in the conversation or candidate proposal; resolve blocking questions before approving the formal spec
 
 ## Example: Authentication Feature
 
@@ -242,7 +228,7 @@ Stakeholders:
 
 ## Red Flags That Trigger Elicitation
 
-Watch for these signals during clarify:
+Watch for these signals while defining the specification:
 - User says "should be simple" for something that sounds complex
 - Vague requirements ("fast", "secure", "scalable")
 - First time doing something (no reference implementation)
@@ -260,6 +246,6 @@ Watch for these signals during clarify:
 
 ## Notes
 
-These techniques are tools, not a checklist. Pick 2-3 most relevant for the situation. High-risk specs might use several; simple changes might use none.
+These techniques are tools, not a checklist. Use one only when it helps settle an actual decision. High-risk specs might use several; simple changes might use none.
 
 The goal is a spec that anticipates problems before they happen, not to delay shipping with endless questions.

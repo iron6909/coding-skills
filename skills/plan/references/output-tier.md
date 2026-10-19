@@ -13,4 +13,4 @@ On Full, add task briefs only when lengthy task-specific instructions would obsc
 
 Brief has no ledger or briefs. If its conversation is lost, the user can restate the remaining tasks; do not require a Full replan merely because context was compressed. If persistence is already wanted, choose Full now rather than relying on memory.
 
-An unresolved acceptance condition or ownership question is a decision to settle before planning, not a reason to select a heavier tier. A clear small change can go directly to `execute` without a plan; unclear requirements go to `clarify`.
+An unresolved acceptance condition or ownership question is a decision to settle before planning, not a reason to select a heavier tier. A clear small change can go directly to `execute` without a plan; unclear requirements go to `spec`. A blocking feasibility unknown goes to `spike`, not to a heavier planning tier.

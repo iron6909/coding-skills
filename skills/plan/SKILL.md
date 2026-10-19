@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Plan
 
-Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. Do not write product code or start implementation.
+Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. This skill alone decomposes delivery work into phases and tasks. Do not write product code or start implementation.
 
 Read `./references/output-tier.md` to choose between a session-only Brief plan and a saved Full plan. Full normally writes one `plan.md`, even for a short plan that merely needs to survive a pause. Neither tier requires task briefs by default.
 
@@ -14,10 +14,10 @@ Read `./references/output-tier.md` to choose between a session-only Brief plan a
 
 ## Preconditions
 
-- Read applicable `AGENTS.md` files and the approved spec in full. Use this skill set's format and approval contract.
+- Read applicable `AGENTS.md` files, the approved spec, and every explicitly required internal appendix in full. Use this skill set's format and approval contract. The contract must remain usable without external originals, proposals, or the conversation.
 - Read an approved `ui-spec.md` beside the spec and relevant `DESIGN.md` constraints when present. Fold these decisions into tasks rather than creating a task per screen.
 - Confirm the problem, scope, selected approach, constraints, acceptance conditions, and testing boundary are settled.
-- If the spec is missing, a draft, or leaves a product decision open, stop and recommend `clarify`. If necessary layout, state, or interaction decisions are missing, recommend `ui-design`. Settled frontend work does not need a UI document merely because it has UI.
+- If the spec is missing, a draft, or leaves a product decision open, stop and recommend `spec`. If a newly discovered feasibility unknown could invalidate its design, recommend a targeted `spike` before `spec` revises the affected contract. Do not hide that unknown in an executable task. If necessary layout, state, or interaction decisions are missing, recommend `ui-design`. Settled frontend work does not need a UI document merely because it has UI.
 
 The spec is the authority. Record a needed product change there through its approval process before planning from it.
 
@@ -33,7 +33,7 @@ Read `plan.md`, `.coding/features/YYYYMMDD-<name>/impl/progress.md` if present, 
 
 ## Explore
 
-Read existing `GLOSSARY.md` and ADRs touching the affected area. Research or spike findings in the spec constrain the tasks.
+Read existing `GLOSSARY.md` and ADRs touching the affected area. Adopted evidence limits in the spec constrain the tasks. Consult an internal spike report only to reassess evidence, not to recover requirements missing from the contract.
 
 Look for active files in `docs/learnings/`. If active learning files exist, read `./references/learnings-format.md` before matching by tag and subject; otherwise skip it. Cite a relevant learning when it changes a task; no active learning is not a blocker.
 
@@ -44,6 +44,10 @@ Explore directly unless broad read-only investigation would save context. Read `
 ## Task design
 
 A task is one independently testable deliverable, not a file, layer, or line-count budget. Keep a cohesive change together when it has one meaningful check; do not split it to meet a size or time quota.
+
+Plan the whole approved delivery scope. A large system may group tasks by milestone or phase in one plan, with continuous task numbering and explicit dependencies. These are headings, not another feature hierarchy or approval cycle. Do not create capability maps, child specs, or require repeated `spec` invocations per module. Split delivery here, not the design contract.
+
+Do not schedule completed selection experiments again as unfinished work. Product implementation, permanent regression coverage, and final acceptance still need tasks or checks; an exploratory probe does not prove those are complete.
 
 Run-only verification belongs in Final verification, not a standalone task or brief. Creating required tests, tooling, or documentation can earn a task when it is a distinct requested deliverable.
 
@@ -122,7 +126,7 @@ Before presenting the draft, confirm:
 - no task requires an unsettled product decision or adds unrequested scope, dependencies, or refactoring
 - the task details are recoverable from the saved plan, with briefs only where useful
 
-Fix evidence-based gaps directly. If a gap requires a product decision, recommend a spec revision with `clarify` instead of hiding the choice in a task.
+Fix evidence-based gaps directly. If a gap requires a product decision, recommend a revision with `spec` instead of hiding the choice in a task. Preserve unaffected decisions; a targeted feasibility finding does not justify redesigning the whole system.
 
 ## Approval gate
 

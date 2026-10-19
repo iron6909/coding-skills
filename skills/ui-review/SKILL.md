@@ -46,7 +46,7 @@ When there is no `DESIGN.md`, the baseline is what the code most consistently do
 
 Identify each surface's visitor mode using `./references/ui-review-checklist.md` before applying aesthetic checks. Approved tokens do not exempt an accessibility failure.
 
-When the review matches a feature, read its approved `ui-spec.md` and originating spec. Check the approved layouts, breakpoints, component states, and interactions separately from design-system consistency; matching tokens does not prove those decisions were implemented. If no matching UI spec exists, state that and continue the ordinary interface review without inventing one.
+When the review matches a feature, read its approved `ui-spec.md`, originating spec, and all required internal appendices. Check the approved layouts, breakpoints, component states, and interactions separately from design-system consistency; matching tokens does not prove those decisions were implemented. If no matching UI spec exists, state that and continue the ordinary interface review without inventing one.
 
 Then read enough of the code to know the framework and where styles live — component files, stylesheets, theme config.
 

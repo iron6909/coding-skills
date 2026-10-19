@@ -1,138 +1,94 @@
 # Document Review Lenses
 
-Checks to apply when reviewing planning documents, organized by document type.
+Check content, not a mandatory number of headings. Older documents may use equivalent section names.
 
 ## All document types
 
-### Completeness
-- All required sections present
-- No placeholders or TODOs left unresolved
-- Frontmatter complete (date, title, status if used)
+- The intended scope, terms, and applicable constraints are clear and consistent.
+- Required content and local dependencies are present; there are no unresolved placeholders masquerading as decisions.
+- Repository facts, user choices, hypotheses, observations, and conclusions are distinguished.
+- Links are navigable, but links alone do not preserve required source content.
+- No approval or readiness label claims more than the available evidence establishes.
 
-### Consistency
-- Terminology matches GLOSSARY.md
-- Cross-references valid (cited files/ADRs exist)
-- No contradictions between sections
+## proposal.md
 
-### Clarity
-- Each sentence has one clear meaning
-- Technical terms defined or glossed
-- Examples provided where helpful
+- The problem, delivery scope, and deciding constraints are clear.
+- Candidate approaches are genuinely distinct and grounded; no padding of the option count.
+- The recommendation explains meaningful trade-offs, risks, and reversibility.
+- Selection is explicit or marked unselected; silence is not approval.
+- Blocking feasibility questions are distinguished from later implementation acceptance.
+- Imported interfaces, constraints, lifecycle rules, and acceptance details remain recoverable internally.
+- Earlier candidates and changed selections are preserved, not overwritten.
 
-## spec.md (from clarify)
+A proposal is allowed to contain uncertainty. Do not require it to satisfy the formal spec's readiness gate or treat it as permission to implement.
+
+## spike.md
+
+- Each question names its deciding criterion and dependent design decision.
+- The method tests the actual unknown rather than a mocked substitute.
+- Commands, versions, environment, inputs, observations, and relevant failure cases support the conclusion.
+- Supported, Not supported, and Inconclusive results remain distinct; completing a run is not passing every hypothesis.
+- Performance and quality claims are bounded by the representative data and hardware actually tested.
+- Reproduction content is durable locally rather than available only through a scratch path, raw log, or external service.
+- Later runs preserve earlier observations and identify superseded conclusions.
+- New evidence or changed conditions identify affected conclusions without inventing a whole-system guarantee.
+- Evidence does not silently update an approved contract or authorize product implementation.
+
+Do not rerun a probe or rewrite its observations during document review. Missing experimental evidence belongs to `spike`, not to a cosmetic correction or user acceptance of an unsupported claim.
+
+## spec.md
 
 ### Required content
 
-Check the content below, not extra headings. Scope and decisions may be embedded in the product brief, Solution, Constraints, or linked ADRs. Accept equivalent section names in older specs.
-
-- Problem: what needs to change and why
-- Goal: the outcome
-- Scope: what's included and excluded
-- Solution: chosen approach, with alternatives compared when competing approaches exist
-- Decisions: confirmed choices, with ADRs if needed
-- Constraints: limits and non-negotiables
-- Acceptance: observable outcomes
-- Testing Boundary: approved test entry points and mocked versus real dependencies
+- Problem and goal: the intended outcome and users.
+- Scope and non-goals: the complete requested delivery boundary.
+- Design: selected approach, module responsibilities, decision rationale, and relevant evidence limits.
+- Interfaces and data: contracts, schemas, states, and lifecycle needed for implementation.
+- Constraints and failure behavior: security, integrity, compatibility, accessibility, limits, and rejected cases.
+- Acceptance: observable REQ-N outcomes, including relevant boundary and error cases.
+- Testing Boundary: entry points and real versus mocked dependencies.
+- Required internal appendices, when needed, explicitly named as part of the contract.
+- Provenance and preservation when source material was internalized.
 
 ### Specific checks
 
-**Problem**:
-- Grounds the need (evidence, not opinion)
-- Clear trigger: what makes this urgent or valuable now
+- A small settled behavior needs only a short contract, not an interview or invented alternatives.
+- Critical design claims have applicable evidence; failed or inconclusive spikes do not establish them.
+- Future acceptance targets are not presented as already measured results.
+- Required content has been fully absorbed from external sources and proposals, not replaced by a summary and a link.
+- If original sources disappeared, the spec and its required internal appendices would still contain the complete implementation contract.
+- Source versions and actual content agree; filenames alone do not establish a version.
+- Stable requirement IDs retain their meaning and revision history.
+- The spec defines modules and contracts, not child features, task sequencing, or a mandatory first-phase-only scope.
+- Important decisions explain real trade-offs; offer an ADR only when its three conditions apply.
 
-**Goal**:
-- Measurable or observable outcome
-- Not just "implement X" (what changes for users/system?)
-
-**Scope**:
-- Explicit boundaries: what's in, what's out
-- Edge cases and deferred work named
-
-**Solution**:
-- Architectural path: compares viable alternatives by complexity/fit/risk/testability when a real choice exists, then recommends one
-- Bounded path: concrete enough to implement and verify without forcing a separate planning stage
-- Research or spike results, if used, support the chosen approach rather than forming a separate spec path
-
-**Decisions**:
-- Hard-to-reverse or surprising choices explained
-- ADR created for decisions that meet the criteria (hard to reverse + unexpected + has trade-offs)
-
-**Acceptance**:
-- Each criterion has concrete inputs → expected outputs
-- Error cases and edge cases covered
-- Not just "works" — specific observable behavior
-
-**Testing Boundary**:
-- Test entry points identified (functions/endpoints to test)
-- Clear how to verify each acceptance criterion
-
-## plan.md (from plan)
+## plan.md
 
 ### Required content (Full tier)
-- Goal, spec path, and approach
-- Tasks: ordered list with dependencies and requirement coverage
-- Final verification commands and expected results
-- Task details in the plan: deliverables, files, shared interfaces where relevant, and checks; supplemental briefs are optional
+
+- Goal, approved spec path, approach, and applicable constraints.
+- Ordered tasks with deliverables, dependencies, requirement coverage, files, interfaces where needed, and observable checks.
+- Final verification commands and expected results.
+- Sufficient task detail in the plan itself; supplemental briefs are optional.
 
 ### Specific checks
 
-**Context**:
-- Captures the goal and approach concisely
-- Names the approved spec this implements
-- Records relevant constraints and review focus without requiring empty sections
+- Tasks cover the approved scope without recovering requirements from external originals or candidates.
+- Phases or milestones group continuously numbered tasks; they do not create another feature/spec approval hierarchy.
+- Each task is independently testable and safe to review and commit.
+- Dependencies are valid and producer/consumer contracts agree.
+- A new journey's first slice proves integration with its required safeguards.
+- Completed feasibility experiments are not scheduled again as unfinished work; product implementation and regression checks are not mistaken for completed probes.
+- A newly found design-invalidating unknown is a blocker for targeted spike/spec work, not a hidden executable task.
+- Linked briefs agree with the plan; a self-contained plan requires no briefs.
+- Existing completion, cancellation, and stable-ID history remain intact.
 
-**Tasks**:
-- Each task is independently testable
-- Each has a clear deliverable
-- Dependencies are valid (no circular, no missing prerequisites)
-- For a new journey, the first slice proves integration rather than leaving separate layers unusable
+For a missing legacy brief, report only details approved inputs cannot recover; do not require empty replacement records.
 
-**Supplemental task briefs** (only when linked):
-- Extra task-specific instructions agree with the plan's goal, requirement coverage, dependencies, files, interfaces, and checks
-- The approved plan retains enough detail to recover the task without the supplemental file
+## Legacy capability-map.md
 
-Do not require briefs for a self-contained plan. If a legacy plan relies on a missing brief, check which details approved inputs can recover and report only an actual decision gap. Do not require temporary artifacts to be created or committed.
-
-## capability-map.md (from clarify's decomposition check)
-
-### Required sections
-- Problem: why this multi-module work exists
-- Modules: list of capabilities/components to build
-- Dependencies: which modules depend on which, declared in the module table
-- Build order: sequence that respects dependencies
-- Notes: cross-module considerations
-
-### Specific checks
-
-**Problem**:
-- Describes a multi-module challenge (not solvable in one spec)
-- Clear why this needs coordination
-
-**Modules**:
-- Each module states its name, outcome/scope, acceptance criteria, and dependencies
-- Clear boundaries between modules
-- No overlapping responsibilities
-
-**Dependencies**:
-- Valid (no circular, no missing prerequisites)
-- Match the Scope statements (if module-A depends on module-B, module-A's Scope should mention using module-B's output)
-
-**Build order**:
-- Respects dependencies (no module comes before its prerequisite)
-- Ideally has some parallel tracks (not purely serial)
-- Foundation modules come first
-
-
-## Feasibility checks (all types)
-
-- No undefined terms (check GLOSSARY.md, offer to add if missing)
-- No impossible constraints (e.g., "zero latency", "100% uptime on local dev")
-- Testing strategy is possible (tools exist, entry points reachable)
-- Acceptance criteria are verifiable (not subjective judgments)
-- Dependencies cited actually exist (ADRs, learnings, external docs)
+Check existing scope, acceptance, boundaries, dependency consistency, and links to approved specifications. Preserve it as historical context. Do not require creating a new map, choosing one module, or repeating a spec cycle per module. Formal design decisions belong to `spec`; implementation decomposition belongs to `plan`.
 
 ## When to stop
 
-- A document has 3+ Blocking findings: recommend rewriting the section, not patching
-- A finding requires a decision: don't invent it, report to user
-- Evidence is missing and you can't infer it: do not fabricate it; grade the gap by impact using `./references/severity.md`, including whether acceptance remains verifiable
+Report decision gaps rather than inventing answers. Grade missing evidence by its effect using `./references/severity.md`; an ordinary unsupported claim is not automatically Blocking. Recommend correcting a whole incoherent section instead of accumulating cosmetic patches. User acceptance cannot manufacture experiment results or satisfy a missing implementation contract.

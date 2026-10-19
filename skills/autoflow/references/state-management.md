@@ -6,11 +6,11 @@ Read this before starting a persisted run or resuming one. State coordinates the
 
 Use `.coding/autoflow-state.json`. Dry-run never writes state. Keep the record after completion or interruption; do not expire or auto-delete it.
 
-Use schema version 2 below; handle older records under Resume rather than silently upgrading them. The example shows an approved plan with execution in progress:
+Use schema version 3 below; handle older records under Resume rather than silently upgrading them. The example shows an approved plan with execution in progress:
 
 ```json
 {
-  "version": 2,
+  "version": 3,
   "spec": "docs/features/20261012-user-login/spec.md",
   "plan": "docs/features/20261012-user-login/plan.md",
   "ui_spec": "docs/features/20261012-user-login/ui-spec.md",
@@ -20,6 +20,7 @@ Use schema version 2 below; handle older records under Resume rather than silent
   "mode": "auto",
   "approval": {
     "spec_blob": "<git hash-object output for the approved spec>",
+    "spec_appendix_blobs": {},
     "plan_blob": "<git hash-object output for the approved plan>",
     "ui_spec_blob": "<git hash-object output for the approved UI spec>",
     "design_blob": "<git hash-object output for the approved design constraints>",
@@ -39,6 +40,7 @@ Use schema version 2 below; handle older records under Resume rather than silent
 - Stage status is `pending`, `in_progress`, `complete`, or `stopped`. `review` names the `code-review` stage.
 - On a new run, stages are `pending`, approval blob IDs are null, and fix/execution authorization is false. Record each approved input revision once verified; record the plan revision and authorization only after the user's gate is satisfied. Use `git hash-object -- "<path>"` to identify file contents without writing objects.
 - `ui_spec` and `design` record the applicable input paths, or null when absent or not applicable. Before authorization, capture their approved blob IDs too; an absent input keeps a null path and blob. Record absence explicitly so a newly applicable file cannot silently enter an approved run.
+- `spec_appendix_blobs` maps every required internal appendix path to its approved blob ID. Record `{}` explicitly when none exist. Re-resolve the complete appendix set from the spec and its required appendices; snapshot all contract documents, not only `spec.md`. An added, missing, changed, or newly required appendix invalidates the old input approval.
 - State records authorization; it does not grant it. If prior approval cannot be established, ask rather than trusting a boolean alone.
 - The execution ledger owns task numbers, reviews, checks, and commits. Do not copy a `current_task` or a completed-task list into state.
 
@@ -54,15 +56,15 @@ Completion requires evidence:
 
 | Stage | Evidence |
 |-------|----------|
-| plan | Current approved spec, plan, and applicable UI/design snapshots, including recorded absence; saved plan and commit; required authorization |
+| plan | Current approved spec, all required internal appendix snapshots, plan, and applicable UI/design snapshots, including recorded absence; saved plan and commit; required authorization |
 | execute | Ledger, per-task self-checks or risk-based independent reviews and commits for executable tasks, approved cancellations, and fresh final verification satisfy `execute`; no built-in whole-feature review is required |
 | review | Report for the whole feature diff, authorized fix commits if any, fresh checks, and no unresolved Blocking or Important finding |
 
 ## Resume
 
-1. Parse and validate the schema, supported version, statuses, paths, and review-base commit. Missing UI/design snapshot fields make an old record incomplete, not proof those inputs were absent. If state is malformed, legacy, or incomplete, leave it unchanged and ask before reconstructing it from verified artifacts.
+1. Parse and validate the schema, supported version, statuses, paths, and review-base commit. Missing appendix or UI/design snapshot fields make an old record incomplete, not proof those inputs were absent. If state is malformed, legacy, or incomplete, leave it unchanged and ask before reconstructing it from verified artifacts.
 2. Confirm the recorded branch is current, referenced commits remain reachable, and initial unrelated user changes will not be overwritten. A missing branch, changed history, or unsafe overlap is a blocker.
-3. Re-resolve and read the spec, plan, and applicable `ui-spec.md` and `DESIGN.md`. Compare their paths, presence, and blob IDs with the approved snapshots. If an applicable input was added, removed, or changed, stop for its owner to clarify or revise it and renew plan/execution approval. Do not silently reuse authorization or treat a previously absent input as already approved.
+3. Re-resolve and read the spec, its complete required internal appendix set, plan, and applicable `ui-spec.md` and `DESIGN.md`. Compare their paths, presence, and blob IDs with the approved snapshots. If an applicable input was added, removed, or changed, stop for its owner to clarify or revise it and renew plan/execution approval. Do not silently reuse authorization or treat a previously absent input as already approved.
 4. Reconcile claimed stage completion with the evidence above. A complete flag is a pointer to inspect, not permission to skip verification.
 5. For execution, read the ledger and Git history and let `execute` determine the first unfinished executable task from the current approved plan, excluding approved skipped tasks without inventing commits. Inspect manual commits and re-run affected checks; never mark a task or stage complete merely because a commit appeared.
 6. Resume the first stage not verified complete. Preserve a prior review report and use the review skill's collision-safe naming for a new one.

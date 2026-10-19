@@ -27,8 +27,8 @@ This does not make Brief plans resumable across sessions. If a plan must persist
 Use the conversation and supplied artifact paths; verify only the filesystem and Git facts needed for the handoff. Do not infer a skill stage from the topic: record `unknown` when the originating stage is not established. Preserve user-supplied source anchors without broad repository discovery or continuing the paused investigation.
 
 Identify:
-- **Current phase**: Which skill stage are we in? (survey, clarify, plan, execute task N, debug, etc.)
-- **Completed artifacts**: What files exist? (spec.md, plan.md, commits)
+- **Current phase**: Which skill stage are we in? (survey, ideate, spike, spec, plan, execute task N, debug, etc.)
+- **Completed artifacts**: What files exist? (proposal.md, spike.md, spec.md, plan.md, commits)
 - **In-progress work**: What's partially done? Is there an unsaved spec draft to preserve?
 - **Blockers**: What's preventing progress? (missing info, user decision needed, external dependency)
 - **Next steps**: What should happen when work resumes?
@@ -77,7 +77,7 @@ Write `.coding/handoff/YYYYMMDD-HHMM.md`:
 2. [Second thing]
 3. [What comes after that]
 
-**Skill to invoke**: [Specific skill name to resume, e.g., `execute`, `debug`, `clarify`]
+**Skill to invoke**: [Specific skill name to resume, e.g., `execute`, `debug`, `spike`, `spec`]
 
 ## Open Questions
 
@@ -162,22 +162,22 @@ Current state:
   - Invoke: execute
 ```
 
-**Scenario 2**: Handing off during clarify
+**Scenario 2**: Handing off during spec
 ```
 User: "Save state, I need to discuss requirements with the team"
 
 Current state:
-- Had clarify session, drafted spec
+- Had spec session, drafted the contract
 - User hasn't approved yet
 - Need decision on authentication approach
 
 → Create handoff showing:
-  - Phase: clarify (awaiting approval)
+  - Phase: spec (awaiting approval)
   - Current: unapproved spec draft preserved in the handoff, not a completed spec
   - Blocker: user reviewing with team
   - Open question: OAuth vs JWT decision
   - Next: finalize spec and commit
-  - Invoke: clarify
+  - Invoke: spec
 ```
 
 **Scenario 3**: Context limit approaching
@@ -199,11 +199,11 @@ Current state:
 
 ## Integration with Other Skills
 
-- **After clarify**: Handoff before approval if user needs time to review
+- **During spec**: Handoff before approval if user needs time to review
 - **During execute**: Handoff between tasks or mid-task if work pauses
 - **After debug**: Handoff if root cause is found but fix needs approval
-- **Multi-module work**: Handoff after completing each module in a capability-map
+- **During spike**: Preserve answered questions, tested conditions, and remaining evidence gaps without treating them as an approved spec
 
 ## Notes
 
-File artifacts (spec.md, plan.md, progress.md) already provide most continuity. Use handoff only when session state (current task, blockers, next actions) would otherwise be lost.
+File artifacts (proposal.md, spike.md, spec.md, plan.md, progress.md) already provide most continuity. Use handoff only when session state (current task, blockers, next actions) would otherwise be lost.

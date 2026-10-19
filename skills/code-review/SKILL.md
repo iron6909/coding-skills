@@ -73,6 +73,8 @@ Look for the originating spec in this order:
 2. `docs/features/YYYYMMDD-<semantic-name>/spec.md` matching the branch name or a commit scope
 3. Ask the user for the originating approved spec. If none exists, report that; do not invent a spec or an external-format substitute
 
+Read the originating spec and every required internal appendix as one contract. Give the Spec lens that complete input; external originals, proposals, and experiment logs cannot fill missing requirements.
+
 For a feature UI review, also read the matching approved `ui-spec.md` and applicable `DESIGN.md` constraints. Pass them to the Spec lens to check approved layouts, breakpoints, states, and interactions, separately from design-system consistency. If no matching UI spec exists, say so without blocking an ordinary code review. Do not claim rendered or interaction checks passed from source inspection alone.
 
 When a plan is supplied, read it and use its Review focus as context for the enabled lenses. It does not enable optional lenses or replace the spec as authority.

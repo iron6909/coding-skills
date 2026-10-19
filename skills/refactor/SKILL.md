@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: Review the shape of existing code and propose structural improvements for an already-chosen target. Use when the user names a specific area to refactor, or when the codebase is hard to change in a known area. For greenfield architecture, use clarify's Architectural path. For bug fixes, use debug. Produces ranked candidates in .coding/refactor/YYYYMMDD-<scope>.md, not code.
+description: Review the shape of existing code and propose structural improvements for an already-chosen target. Use when the user names a specific area to refactor, or when the codebase is hard to change in a known area. For greenfield design, use spec; for comparing approaches, use ideate. For bug fixes, use debug. Produces ranked candidates in .coding/refactor/YYYYMMDD-<scope>.md, not code.
 disable-model-invocation: true
 ---
 
@@ -20,7 +20,7 @@ Use `refactor` when:
 - Code works but feels brittle, shallow, or scattered
 
 **Not** for:
-- Greenfield architecture (new modules, new projects) → use `clarify`'s Architectural path
+- Greenfield architecture (new modules, new projects) → use `spec`, or `ideate` when the approach is unsettled
 - Bug fixes → use `debug`
 - General code cleanup → use `simplify`
 
@@ -67,7 +67,7 @@ For every candidate, write:
 Rules:
 
 - Every candidate must survive the deletion test or produce a concrete friction that is visible in the code. Drop anything that is only stylistic preference.
-- Do not propose interfaces at this stage. Choosing an interface is the next step, and `clarify` owns it.
+- Do not propose interfaces at this stage. Choosing the interface belongs to `spec`, after any blocking feasibility question is answered.
 - Check each candidate against the ADRs. If an ADR forbids it, say so and drop it, unless the friction is real enough that the decision deserves to be reopened. Then say that explicitly instead of listing the candidate as a normal option.
 - Prefer deleting a module over adding one. Prefer merging two shallow modules over inventing an abstraction over both.
 - Do not propose a rewrite. Propose the smallest structural change that removes the friction.
@@ -92,8 +92,8 @@ Then stop and ask which candidate to pursue. Do not start refactoring.
 
 Recommend the next skill and let the user invoke it. Do not invoke it yourself.
 
-- A structural change that needs design work → `clarify`. Carry the candidate's problem, evidence, and proposal in as input.
+- A structural change that needs design work → `spec`. Carry the candidate's problem, evidence, and proposal in as input.
 - A change small enough to describe in one message → `execute`.
-- A change whose shape is still unclear (which interface, which seam) → offer `clarify` with spike to try two shapes.
+- A change needing comparison of interfaces or seams → `ideate`. If a selected shape has a blocking feasibility unknown, recommend `spike` before `spec` formalizes it.
 
 Never start the work in this skill. Structure findings are cheap to produce and expensive to act on; the user decides.
