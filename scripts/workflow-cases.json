@@ -360,5 +360,18 @@
       "A changed, missing, added, or unsnapshotted contract input blocks reuse of the old authorization, and legacy state is treated as incomplete rather than implicitly approved."
     ],
     "forbid": ["Checking only spec.md, silently treating missing snapshot fields as no appendices, trusting changed inputs, or adding spike/spec as automatic orchestrator stages."]
+  },
+  {
+    "id": "ideate-proposal-is-not-spec-approval",
+    "skill": "ideate",
+    "setup": "Provide an existing local export tool and grounded constraints for choosing JSON Lines versus a JSON array. No choice has been made, no feasibility experiment is needed, and the user requests candidate comparison only. Use an isolated feature branch with no unrelated staged changes.",
+    "prompt": "比较适合这个离线导出工具的方案，保存候选、取舍和推荐，先不要写规格或实现。",
+    "follow_up": "选择 JSON Lines，理由是现有逐行消费者可以直接复用。记录选择并提交后停止，不要做实验或编写正式规格。",
+    "expect": [
+      "A permanent proposal preserves grounded candidates and their trade-offs, is explicitly unselected initially, and is committed before asking for the user's selection.",
+      "At the actual selection gate, the supplied choice is appended to the same proposal and committed without erasing the earlier candidates. With no blocking feasibility unknown, the next recommendation is spec rather than a compulsory spike.",
+      "When entered through guide, the initial route is ideate and the installed skill is actually read."
+    ],
+    "forbid": ["Treating a recommendation or silence as selection, requiring a product/spec approval before comparing approaches, running a prototype, writing spec.md or plan.md, automatically invoking another skill, or changing historical documents or ignore policy."]
   }
 ]
