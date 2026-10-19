@@ -56,14 +56,20 @@ for (const rule of ["untrusted input", "section by section", "schemas and constr
 }
 assert.ok(spike.includes("Accept a candidate, its blocking design question, constraints, and a deciding criterion") && spike.includes("A prior `ideate` invocation is not required"), "spike needs a bounded design question, not prior workflow history");
 assert.ok(spike.includes("Do not take downstream work as a probe request") && spike.includes("with their existing workflow"), "spike must not absorb routine downstream verification or invent a design detour");
+assert.ok(spike.includes("routine inspection unrelated to a candidate-design decision") && spike.includes("design premise discovered during downstream work"), "spike exclusions must not reject bounded design questions or source-based evidence");
+assert.ok(spike.includes("candidate, question, or dependent design decision cannot be established") && spike.includes("ask here for missing constraints or a deciding criterion"), "spike must distinguish an unframed question from missing details it can clarify locally");
+assert.ok(!spike.includes("If an intended design probe lacks the required inputs"), "missing details alone must not force an ideate detour");
 assert.ok(spike.includes("effort boundary>") && spike.includes("why the run stopped"), "spike evidence must preserve its effort boundary and stopping reason");
+assert.ok(spike.includes("another session can reconstruct the probe and inputs from the report and its appendices alone") && spike.includes("complete runnable probe and exact inputs or a deterministic fixture generator"), "scratch cleanup requires self-contained reproduction, not just selected snippets");
 assert.ok(spike.split("## Finish")[1].includes("Recommend `ideate` for every outcome"), "even supported evidence must return to design rather than approve delivery");
 assert.ok(spike.includes("Do not edit `proposal.md`") && spike.includes("Commit only the report and its necessary internal appendices"), "spike owns evidence, not proposals or contracts");
 assert.ok(designInput.includes("It does not own `proposal.md` or import a complete external design") && designInput.includes("recommend `ideate` and stop before experiments"), "full external design imports belong to design-document owners, not spike");
+assert.ok(designInput.includes("For `spike`, read only material needed to frame, interpret, or reproduce the bounded design evidence") && designInput.includes("The following full-design preservation and import checks apply to `ideate` and `spec`, not `spike`"), "shared input rules must scope spike reading separately from full design imports");
 
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
 const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
+assert.ok(routing.includes("missing constraints or a deciding criterion can be clarified there") && !routing.includes("lacks the inputs for a bounded design probe"), "guide must not divert a framed spike question solely because a constraint or criterion is missing");
 assert.ok(routing.indexOf("small change with clear scope and acceptance checks") >= 0 && routing.indexOf("small change with clear scope and acceptance checks") < routing.indexOf("use `survey`"), "clear small work must route before workspace documentation");
 assert.ok(routing.includes("Missing `AGENTS.md` alone does not require a survey"), "missing instructions must not force document creation");
 const readme = read("README.md");

@@ -14,7 +14,7 @@ Read `./references/design-input.md` before accepting material or writing. It own
 
 Accept a candidate, its blocking design question, constraints, and a deciding criterion. A prior `ideate` invocation is not required. Do not require an approved spec or plan. Choosing a candidate for investigation is not final selection.
 
-Do not take downstream work as a probe request. Leave routine inspection, implementation checks, debugging, optimization, and product acceptance with their existing workflow. A failed or unresolved design premise must first return to `ideate`; that reopened design may supply a new candidate question here. If an intended design probe lacks the required inputs, recommend `ideate` to frame it and stop.
+Do not take downstream work as a probe request. Leave routine inspection unrelated to a candidate-design decision, implementation checks, debugging, optimization, and product acceptance with their existing workflow. A failed or unresolved design premise discovered during downstream work must first return to `ideate`; that reopened design may supply a new candidate question here.
 
 Read the relevant code, contracts, existing evidence, and constraints. State:
 
@@ -22,7 +22,7 @@ Read the relevant code, contracts, existing evidence, and constraints. State:
 - the criterion that would support or reject the hypothesis
 - the smallest method, representative inputs, environment, and effort boundary that can decide it
 
-Ask only for missing constraints or a criterion that materially changes the answer. If the facts are already settled by applicable existing evidence, cite that evidence and avoid a redundant experiment. Do not expand a narrow question into building the system.
+If the candidate, question, or dependent design decision cannot be established from the request and relevant material, recommend `ideate` to frame it and stop. Otherwise ask here for missing constraints or a deciding criterion that materially changes the answer; do not invent them or require an `ideate` detour. If the facts are already settled by applicable existing evidence, cite that evidence and avoid a redundant experiment. Do not expand a narrow question into building the system.
 
 Start with the most consequential uncertainty. Related questions may share one run and report; do not require a new invocation or approval per question. Report when an answer makes another experiment unnecessary.
 
@@ -77,9 +77,9 @@ Save `docs/features/YYYYMMDD-<semantic-name>/spike.md`. Append a dated run when 
 <implications for the candidate's premise and remaining evidence gaps for ideate>
 ```
 
-Keep the minimum reproduction commands, fixture description, and decision-rich snippets in the report or an explicitly named local Markdown appendix. A temporary file path, inaccessible service, or raw log alone is not durable evidence. Redact credentials, tokens, and personal data. Do not claim the system's implementation or acceptance suite has passed.
+Keep reproduction commands and enough content in the report or an explicitly named local Markdown appendix so another session can reconstruct the probe and inputs from the report and its appendices alone. Include the complete runnable probe and exact inputs or a deterministic fixture generator when needed; selected snippets are not sufficient if essential setup is missing. A temporary file path, inaccessible service, or raw log alone is not durable evidence. Redact credentials, tokens, and personal data. Do not claim the system's implementation or acceptance suite has passed.
 
-Remove only this run's non-document scratch after preserving the reproduction, or retain it at the user's request. Preserve all documents and existing user files. Do not edit `proposal.md`, a spec, plan, glossary, or ADR, or promote probe code directly into product code.
+Remove only this run's non-document scratch after checking that reproduction content is complete, or retain it at the user's request. Preserve all documents and existing user files. Do not edit `proposal.md`, a spec, plan, glossary, or ADR, or promote probe code directly into product code.
 
 Read `./references/git-commit.md` before staging. Commit only the report and its necessary internal appendices, even for a negative or inconclusive result, using the repository convention or `docs(spike): record <topic>`.
 

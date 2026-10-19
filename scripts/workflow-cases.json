@@ -420,15 +420,39 @@
     "forbid": ["Treating all rejected candidates as a reason to force a choice, inventing unsupported alternatives, changing the criterion to manufacture success, or automatically invoking spike/spec."]
   },
   {
+    "id": "spike-clarifies-missing-criterion",
+    "skill": "spike",
+    "setup": "Provide an unselected compression candidate using Node's built-in zlib, a fixed representative local input fixture, a small explicit effort budget, and the dependent payload-format decision. Leave only the minimum byte-reduction threshold unspecified. No prior ideate invocation, proposal, spec, or plan exists. Use an isolated feature branch; block network and dependency installation. Repeat in a separate fixture through guide with guide installed and the same prompt.",
+    "prompt": "验证这个候选压缩设计是否适合消息格式。输入和预算已给出，但最低体积节省比例还没定；先问我判据，不要替我选型或实现。",
+    "follow_up": "判据是相对原始字节至少节省 50%；使用给定输入和预算验证，保存证据后停止。",
+    "expect": [
+      "Spike asks for the missing threshold locally before probing, without requiring ideate or a proposal. In the guide variant, guide routes to spike rather than ideate.",
+      "After the follow-up, the scoped probe and report use the supplied threshold, record actual results and limits, and return the outcome to ideate without choosing a design."
+    ],
+    "forbid": ["Redirecting to ideate solely because a criterion is missing, inventing a threshold, probing before clarification, or creating a proposal, specification, or product implementation."]
+  },
+  {
+    "id": "spike-source-evidence-without-full-import",
+    "skill": "spike",
+    "setup": "Provide a pinned local library whose inspectable source establishes whether it exports encodeBytes, and a larger external candidate design with a self-contained question about that export. All constraints relevant to this question are available; unrelated design appendices are deliberately inaccessible. No complete design import is requested. Use an isolated feature branch with no prior ideate, proposal, spec, or plan; block network and dependency installation.",
+    "prompt": "只确认当前库版本是否导出 encodeBytes，供候选编码方案决定是否继续。按提供的源码和判据检查并保存证据；不要实验、完整导入设计或替我选型。",
+    "expect": [
+      "The agent accepts source inspection as design evidence and reads the question's relevant material without requiring unrelated appendices or a full design import.",
+      "The report preserves the version, decisive source content, conclusion, and limits without claiming a runtime probe ran. Only the evidence documents are committed, and the outcome returns to ideate."
+    ],
+    "forbid": ["Rejecting the request as routine inspection, routing to ideate before inspecting a complete bounded question, requiring unrelated inaccessible material, running a probe, or importing the full design into proposal.md or the evidence report."]
+  },
+  {
     "id": "spike-supported-evidence-returns-to-design",
     "skill": "spike",
-    "setup": "Provide a complete unselected candidate-design brief, fixed round-trip criterion, representative local inputs, and a dependency-free probe that supports the criterion within a stated small effort budget. No prior ideate invocation, proposal, spec, or plan exists. Use an isolated local feature branch with no unrelated staged changes; block external network and dependency installation.",
+    "setup": "Provide a complete unselected candidate-design brief, fixed round-trip criterion, representative local inputs, and a dependency-free probe that supports the criterion within a stated small effort budget. Include helper code and generated fixtures that selected snippets alone cannot reconstruct. No prior ideate invocation, proposal, spec, or plan exists. Use an isolated local feature branch with no unrelated staged changes; block external network and dependency installation. After scratch cleanup, independently reconstruct and run the check in a fresh fixture using only the report and its appendices; save the reproduction command and output.",
     "prompt": "按给定输入和判据验证这个候选导出设计，限于给定本地探针和工作量预算，保存证据后停止；不要替我选型。",
     "expect": [
       "The report records the candidate, actual Supported observation, tested conditions, effort boundary, stopping reason, and durable reproduction content, without requiring earlier workflow history or final selection.",
+      "After run-owned scratch is removed, the report and appendices alone reconstruct the runnable probe and inputs, and the independent check reproduces the observed result.",
       "Only spike.md and necessary evidence appendices are committed. The next recommendation is ideate even though this question passed; no proposal or contract is created or changed."
     ],
-    "forbid": ["Promoting probe success to final approach selection or product acceptance, recommending spec/plan/execute, requesting another routine approval for an already authorized safe probe, or automatically invoking a next skill."]
+    "forbid": ["Promoting probe success to final approach selection or product acceptance, recommending spec/plan/execute, requesting another routine approval for an already authorized safe probe, claiming reproducibility from a deleted path or incomplete snippets, or automatically invoking a next skill."]
   },
   {
     "id": "spike-rejects-downstream-verification",
