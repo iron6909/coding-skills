@@ -121,33 +121,10 @@ for (const item of workflowCases) {
   for (const key of ["expect", "forbid"]) assert.ok(Array.isArray(item[key]) && item[key].length > 0 && item[key].every((value) => typeof value === "string" && value.trim()), `${item.id}: missing ${key}`);
 }
 
-const loginExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes("app.post('/api/login'"));
-assert.equal(loginExamples.length, 1);
-for (const source of loginExamples) {
-  for (const [body, status] of [
-    [{ email: "user@example.com", password: "wrong" }, 401],
-    [{ email: "user@example.com", password: "correct" }, 200],
-    [{ email: "missing@example.com", password: "correct" }, 401],
-    [{ email: [], password: "correct" }, 400],
-    [{ email: "user@example.com", password: {} }, 400],
-    [undefined, 400],
-  ]) {
-    let handler;
-    let signed = 0;
-    runInNewContext(source, {
-      app: { post: (_path, fn) => { handler = fn; } },
-      db: { findUser: (email) => email === "user@example.com" ? { id: 7, passwordHash: "test-only" } : null },
-      bcrypt: { compare: async (password) => password === "correct" },
-      jwt: { sign: ({ userId }) => { assert.equal(userId, 7); signed++; return "test-token"; } },
-      SECRET: "test-only",
-    }, { timeout: 1000 });
-    const res = { code: 200, status(code) { this.code = code; return this; }, json(value) { this.body = value; return this; } };
-    await handler({ body }, res);
-    assert.equal(res.code, status, `login response for ${JSON.stringify(body)}`);
-    assert.equal(signed, status === 200 ? 1 : 0);
-    assert.equal(res.body.token, status === 200 ? "test-token" : undefined);
-  }
-}
+const endpointExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes(".post('/api/login')"));
+assert.equal(endpointExamples.length, 1, "keep one public-interface test example");
+for (const check of ["toBe(200)", "toBe(401)", "toBeUndefined()"]) assert.ok(endpointExamples[0].includes(check), `missing endpoint assertion: ${check}`);
+assert.ok(!strategy.includes("app.post("), "test strategy should not carry a production endpoint implementation");
 
 const cleanupExample = blocks("skills/execute/references/testing-strategy.md", "javascript").find((source) => source.includes("beforeEach("));
 assert.ok(cleanupExample, "missing test-isolation example");
@@ -248,15 +225,23 @@ assert.ok(!security.includes("// ❌ XSS vulnerability\n<div>{user.bio}</div>"))
 const execute = read("skills/execute/SKILL.md");
 assert.ok(!/\bmodes?\b|5 task review-fix rounds/i.test(execute), "execute must not retain modes or the five-round review loop");
 assert.ok(execute.includes("After each task is committed, continue directly to the next executable task"), "execute must continue between tasks");
-assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>"), "task reviews must include current staged and unstaged changes, not earlier tasks");
-assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed planned run");
+assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>") && execute.includes("only a candidate diff"), "the task-base diff is a candidate, not an ownership filter");
+for (const rule of ["captured task-start contents", "isolated task increment", "Task <N>: starting state —", "never copy secrets into records"]) assert.ok(execute.includes(rule), `missing change-boundary rule: ${rule}`);
+assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed persisted plan");
 assert.ok(execute.includes("Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events"), "small work must skip bookkeeping, not move it into conversation");
+assert.ok(execute.includes("any failed-attempt count") && execute.includes("do not assume zero"), "lightweight recovery must retain or ask for the failure count");
+assert.ok(execute.includes("**Persisted plan:**") && !execute.includes("**Planned work:**"), "name the persistence distinction explicitly");
+assert.ok(execute.includes("supplied directly by the user") && execute.includes("without a spec"), "session plans must state whether directly supplied plans need a spec");
+const exceptions = execute.split("## Exceptions and handoffs\n")[1]?.split("\n## ")[0] ?? "";
+for (const rule of ["already satisfied", "no new commit", "empty commit", "Existing coverage", "`plan`", "`spec`", "`ideate`"]) assert.ok(exceptions.includes(rule), `missing exception route: ${rule}`);
 const taskReview = execute.split("## Task review\n")[1].split("\n## ")[0];
 for (const rule of ["Review inline by default", "scoped re-check", "A second clear in-scope correction does not need new approval", "Stop before committing or advancing"]) {
   assert.ok(taskReview.includes(rule), `missing task-review rule: ${rule}`);
 }
 assert.ok(!taskReview.includes("at most one fix pass"), "review pass count alone must not force another approval");
 assert.ok(execute.includes("3 failed implementation or review-fix attempts") && execute.includes("do not reset the count on resume"), "clear corrections still need a persistent failure budget");
+assert.ok(execute.includes("Count one failed attempt per implementation or fix cycle") && execute.includes("Expected TDD RED is not a failed attempt"), "count failed implementation cycles, not expected RED or individual failing assertions");
+assert.ok(taskReview.includes("stricter commit gate than the shared severity defaults"), "distinguish impact grading from execute's commit policy");
 assert.ok(execute.includes("Stop and ask the user for explicit sign-off on that specific risk"), "continuous execution must retain risk approval");
 for (const file of ["skills/guide/SKILL.md", "skills/autoflow/SKILL.md", "README.md"]) {
   assert.ok(!/execute auto|Pass `auto`|传\s*`?auto`?|逐任务停下确认/.test(read(file)), `stale execute mode in ${file}`);
@@ -294,9 +279,9 @@ if (python.error?.code === "ENOENT") {
 const reviewFile = "skills/code-review/SKILL.md";
 const finish = read("skills/execute/references/finish.md");
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
+const gitEnv = { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" };
 const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Example checks", "-c", "user.email=checks@example.invalid", "-c", "commit.gpgsign=false", ...args], {
-  encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 10000,
-  env: { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" },
+  encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 10000, env: gitEnv,
 });
 try {
   writeFileSync(join(fixture, "global-config"), "");
@@ -338,12 +323,29 @@ try {
   const diffs = ranges.filter(([args]) => args[0] === "diff").map(([args]) => git(...args.map((arg) => arg.replaceAll(reviewBase, divergedBase))));
   assert.match(diffs[0], /base-only/, "endpoint comparison includes differences on both sides");
   assert.doesNotMatch(diffs[1], /base-only/, "branch comparison excludes base-only changes");
-  git("switch", "-q", "main");
-  assert.throws(() => git("branch", "-d", "feature/example-check"));
-  const discard = finish.match(/git branch -D <work-branch>/)?.[0];
-  assert.ok(discard, "confirmed discard needs a narrow exception for an unmerged branch");
-  git(...discard.replace("<work-branch>", "feature/example-check").split(/\s+/).slice(1));
-  assert.equal(git("branch", "--list", "feature/example-check").trim(), "");
+  git("switch", "-q", "feature/example-check");
+  const taskFile = join(fixture, "task-file");
+  writeFileSync(taskFile, "user-staged: old\nuser-unstaged: old\ntask: old\n");
+  git("add", "task-file");
+  git("commit", "-qm", "task baseline");
+  const taskBase = git("rev-parse", "HEAD").trim();
+  writeFileSync(taskFile, "user-staged: changed\nuser-unstaged: old\ntask: old\n");
+  git("add", "task-file");
+  const startingContents = "user-staged: changed\nuser-unstaged: changed\ntask: old\n";
+  writeFileSync(taskFile, startingContents);
+  const startingSnapshot = join(fixture, "task-start");
+  writeFileSync(startingSnapshot, startingContents);
+  writeFileSync(taskFile, startingContents.replace("task: old", "task: changed"));
+  const candidateDiff = git("diff", taskBase, "--", "task-file");
+  for (const change of ["user-staged: changed", "user-unstaged: changed", "task: changed"]) assert.ok(candidateDiff.includes(`+${change}`), `candidate diff must expose ${change}`);
+  const increment = spawnSync("git", ["-C", fixture, "diff", "--no-index", "--unified=0", "--", startingSnapshot, taskFile], { encoding: "utf8", timeout: 10000, env: gitEnv });
+  if (increment.error) throw increment.error;
+  assert.equal(increment.status, 1, increment.stderr); // git diff returns 1 for a non-empty increment.
+  assert.match(increment.stdout, /^\+task: changed$/m);
+  assert.doesNotMatch(increment.stdout, /^[+-]user-/m, "review only the task-start-to-current increment, not pre-existing user changes");
+  assert.match(git("diff", "--cached", "--", "task-file"), /^\+user-staged: changed$/m, "review must preserve the user's index");
+  assert.match(git("diff", "--", "task-file"), /^\+user-unstaged: changed$/m, "review must preserve the user's unstaged changes");
+  assert.equal(git("branch", "--show-current").trim(), "feature/example-check");
 } finally {
   rmSync(fixture, { recursive: true, force: true });
 }
@@ -375,7 +377,7 @@ assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "w
 assert.ok(debug.includes("initial staged and unstaged"), "debug must preserve pre-existing work before probing");
 assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
 assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
-assert.ok(finish.includes("typed `discard`"), "force deletion must retain explicit discard confirmation");
+assert.ok(!/git branch -[dD]|## Present the options|typed `discard`/.test(finish), "execute must not carry a branch-disposal workflow");
 const ideate = read("skills/ideate/SKILL.md");
 assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
 assert.ok(ideate.includes("rejected approaches and conflicting constraints") && ideate.includes("or why none fits"), "a proposal must preserve why no candidate fits");
@@ -482,8 +484,8 @@ assert.match(read("skills/code-review/SKILL.md"), /When active learning files ex
 assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
 assert.ok(read("skills/capture/SKILL.md").includes("without loading writing or commit references"), "zero-entry capture must stop before write-stage references");
 assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
-assert.ok(finish.includes("Keep is the only permitted outcome"), "keep-only authorization must not require another choice");
-assert.ok(finish.indexOf("Keep is the only permitted outcome") > finish.indexOf("## Entry gate"), "default keep must not bypass verification");
+assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
+assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");
 assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
-console.log("example and contract checks passed: login, async cleanup, loading labels, safe cache guidance, cancellation/error/stale-response handling, duplicates, complexity, accessibility, bounded execution, pinned historical/endpoint/branch review, confirmed discard, spike safety and completion gates");
+console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, safe cache guidance, cancellation/error/stale-response handling, duplicates, complexity, accessibility, bounded execution, task-owned increments, pinned historical/endpoint/branch review, branch-preserving handoff, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

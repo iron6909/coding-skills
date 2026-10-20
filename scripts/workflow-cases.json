@@ -170,13 +170,13 @@
   {
     "id": "execute-keep-only-without-reprompt",
     "skill": "execute",
-    "setup": "Use a local feature branch with one small behavior task, no unrelated changes, and an explicit project DoD whose focused and full-suite commands run locally without dependencies. All checks can pass. Only keeping the work branch is authorized.",
+    "setup": "Use a local feature branch with one small behavior task, no unrelated changes, and an explicit project DoD whose focused and full-suite commands run locally without dependencies. All checks can pass. Only keeping the work branch is authorized. In a separate variant, supply an approved persisted spec and plan with the same deliverable and omit any finish preference; keeping the branch is still the default.",
     "prompt": "完成这个小改动，通过检查后只保留当前分支并报告。不要合并、丢弃或额外清理，也不需要再让我选择收尾方式。",
     "expect": [
       "The task is reviewed and committed, final verification passes, and the final response reports the kept branch without another finish-choice question.",
-      "No prohibited outcome is offered as an actionable choice, and execute does not claim an independent whole-feature review."
+      "Both variants retain the branch without a finish menu, and execute does not claim an independent whole-feature review."
     ],
-    "forbid": ["Treating keep-only authorization as a verification waiver, bypassing the finish entry gate, merging, deleting branches, or running simplify."]
+    "forbid": ["Treating branch retention as a verification waiver, bypassing final verification or the DoD, offering merge or discard menus, deleting branches, or running simplify."]
   },
   {
     "id": "handoff-unknown-stage-keeps-anchors",
@@ -569,5 +569,38 @@
       "It recommends plan rather than spec or ideate for this scheduling defect, preserves approved inputs and user work, and does not implement the later task early or silently rewrite dependencies."
     ],
     "forbid": ["Calling a semantic task/dependency change a harmless description correction, rewriting approved inputs, implementing before revision approval, or reopening a settled design premise."]
+  },
+  {
+    "id": "execute-task-increment-excludes-user-hunks",
+    "skill": "execute",
+    "setup": "Provide an approved one-task persisted spec and plan on a feature branch. The task file already has distinct staged and unstaged user hunks unrelated to the task's clear local change. Existing focused checks and the DoD run locally. Resume a separate variant after task edits using the recorded starting patches and untracked contents, not just task_base.",
+    "prompt": "执行这个任务，保留文件中我原有的修改；只审查并提交本任务新增的改动。",
+    "expect": [
+      "The task-start contents identify the task increment; the task-base path diff is only a candidate and still contains the initial user hunks.",
+      "Task review and any delegated reviewer receive the isolated increment with other code as context. The resumed variant reuses the recorded boundary and preserves the user's index and worktree changes."
+    ],
+    "forbid": ["Treating ownership of a path as ownership of every hunk, sending the raw candidate diff as the owned task diff, staging user changes, or reconstructing an ambiguous boundary by assuming a clean task start."]
+  },
+  {
+    "id": "execute-already-satisfied-request",
+    "skill": "execute",
+    "setup": "Use a fresh feature branch whose existing implementation and tests already return an empty list for a blank search query. The request is clear, no spec or plan is needed, and all required checks are runnable. Preserve an unrelated user edit. In a separate variant, supply an approved persisted plan that still lists this behavior as an unfinished task; no plan-revision approval is provided.",
+    "prompt": "把空白搜索词的结果设为空列表，运行现有检查后报告。",
+    "expect": [
+      "The small-request variant reviews existing behavior, runs fresh final checks and the applicable DoD, and reports already satisfied with implementation/test evidence and no new commit.",
+      "The planned variant stops for an approved plan revision that retains task history and moves proven behavior to Existing coverage; it does not silently cancel or complete the task."
+    ],
+    "forbid": ["Manufacturing edits or an empty commit, declaring completion from old check output, asking for unnecessary small-request planning, or revising/cancelling a planned task without approval."]
+  },
+  {
+    "id": "execute-lightweight-resume-failure-budget",
+    "skill": "execute",
+    "setup": "Resume a small request or approved session task list with no ledger. Task results record two failed implementation cycles plus expected TDD RED runs and multiple failed assertions within each cycle. A clear in-scope local correction can now pass all required checks. In separate variants, record three failed cycles, or provide a handoff whose failure count is unknown. No high-risk action or new scope is involved.",
+    "prompt": "继续剩下的修复，保留之前的任务结果，按原有范围完成检查并报告。",
+    "expect": [
+      "The two-cycle variant resumes under the existing authorization, counting cycles once and excluding expected RED; it retains the count without creating a ledger and may commit only after fresh checks and review pass.",
+      "The three-cycle variant requests the user's decision before another implementation attempt. The unknown-count variant asks for the missing count instead of assuming zero or forcing a persisted replan."
+    ],
+    "forbid": ["Resetting the count on resume, counting expected RED or each failed assertion as an implementation attempt, starting a fourth attempt without sign-off, or creating feature bookkeeping for lightweight work."]
   }
 ]

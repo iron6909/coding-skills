@@ -64,22 +64,7 @@ test('POST /api/login rejects an incorrect password', async () => {
 });
 ```
 
-A corresponding implementation still validates at the trust boundary; a green happy-path test does not justify omitting that check. Use the server's existing async error handling:
-
-```javascript
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body ?? {};
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    return res.status(400).json({ error: 'Invalid credentials' });
-  }
-  const user = await db.findUser(email);
-  if (user && await bcrypt.compare(password, user.passwordHash)) {
-    const token = jwt.sign({ userId: user.id }, SECRET);
-    return res.json({ token });
-  }
-  res.status(401).json({ error: 'Invalid credentials' });
-});
-```
+These assertions do not replace malformed-input, permission, or error-path checks. Verify the implementation's trust-boundary protections through the same public interface; do not infer safety from a green happy path.
 
 ## Coverage and reporting
 
