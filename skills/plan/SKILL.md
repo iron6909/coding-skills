@@ -23,7 +23,9 @@ The spec is the product authority. Record a needed product change there through 
 
 ## Revising an existing plan
 
-Read `plan.md`, `.coding/features/YYYYMMDD-<name>/impl/progress.md` if present, and `git log` before revising:
+Read the current approved task list and available task results before revising. For Full, also read `plan.md`, any execution ledger, and relevant Git history. For Brief, revise the conversation plan without creating files; use Git evidence when needed to confirm completed work.
+
+Changes to deliverables, task boundaries, requirement coverage, dependencies, shared contracts, or verification guarantees need this revision process even when product scope is unchanged. Repository-proven path/name corrections and equivalent commands that preserve those meanings may be recorded by `execute` without rewriting the approved plan.
 
 - Completed tasks are history. Keep their numbers, content, and any briefs unchanged; add a corrective task if necessary.
 - Revise unfinished tasks and add new tasks with the next free number.
@@ -68,9 +70,7 @@ Read `./references/stable-ids.md` before mapping requirement coverage and apply 
 
 ## Plan format
 
-Brief uses a task list in conversation, with each task's files, intended change, and check. Include final verification where it differs from those task checks.
-
-Full saves the approved tasks in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
+Use the same task fields below for both tiers, including requirement coverage, dependencies, and shared interfaces when needed. Brief keeps them, any existing coverage, and final verification in conversation. Full saves them in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
 
 ```markdown
 # <Feature name> Implementation Plan
@@ -86,6 +86,10 @@ Full saves the approved tasks in `docs/features/YYYYMMDD-<semantic-name>/plan.md
 ## Review focus
 
 - <important failure mode and the check that covers it>
+
+## Existing coverage
+
+- REQ-N: <existing implementation and test paths; final verification check>
 
 ## Tasks
 
@@ -124,7 +128,7 @@ Before presenting the draft, confirm:
 - relevant error, empty, boundary, and compatibility cases are covered
 - commands run from the repository root and cover the applicable DoD
 - no task requires an unsettled product decision or adds unrequested scope, dependencies, or refactoring
-- the task details are recoverable from the saved plan, with briefs only where useful
+- the task details are recoverable from the conversation for Brief or from `plan.md` for Full, with briefs only where useful
 
 Fix evidence-based gaps directly. If a gap requires a product decision, recommend a revision with `spec` instead of hiding the choice in a task. Preserve unaffected decisions; a targeted feasibility finding does not justify redesigning the whole system.
 
@@ -135,6 +139,10 @@ Approval of the spec does not approve the plan. Present the task list, approach,
 Wait for approval of that draft. Revise when requested. When called by `autoflow`, the same gate may also record explicit authorization for execution and in-scope Blocking/Important review fixes; spec approval alone does not grant it.
 
 After approval, Full writes `plan.md` and only any justified briefs. A committed plan records its approval. Brief writes nothing and remains in conversation.
+
+## Before saving
+
+Before any Full-plan, brief, or existing-ledger write, inspect the branch and record the initial staged, unstaged, and relevant untracked content. On `main` or `master`, obtain consent or create `feature/YYYYMMDD-<semantic-name>` before writing. Preserve user edits, including edits in plan and brief files; if overlap cannot be isolated safely, stop and agree on the boundary before writing. Draft approval does not authorize overwriting or committing unrelated work.
 
 ## Commit
 
