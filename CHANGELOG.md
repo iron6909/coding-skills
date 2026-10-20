@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.3] - 2026-10-20
+
+### Fixed
+
+- **计划写入保护**：`plan` 保存文档前检查分支与既有改动，保留用户内容，不能安全分离的重叠修改先停止。
+- **需求覆盖**：`Covers` 表示建立或保持验收条件，已有行为可凭实现、测试证据及最终复核覆盖，不虚构开发任务或完成历史。
+- **执行纠错边界**：`execute` 可纠正语义不变的路径、名称和等价命令，不改写获批输入；交付物、任务边界、需求覆盖、依赖、共享契约或验证保证变化仍须计划修订审批。
+- **任务拆分**：按内聚交付物与真实依赖组织任务，不再套用分层分类或固定补齐阶段。
+- **会话计划**：Brief 与 Full 保留相同的需求覆盖、依赖、接口和验证信息，Brief 在会话中修订，不强制保存文档或升级档位。
+
+### Added
+
+- **回归检查**：新增四个手工场景与契约自检，合并后共 50 个场景定义；修复分支四场景新旧对照完成 10 次代理运行，新版 17/17 项、旧版 16/17 项通过，仅限单模型、Windows、每例一次，合并后未重跑代理行为。
+
 ## [7.0.2] - 2026-10-19
 
 ### Fixed
@@ -430,7 +444,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.2...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.3...HEAD
+[7.0.3]: https://github.com/iron6909/coding-skills/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/iron6909/coding-skills/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/iron6909/coding-skills/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/iron6909/coding-skills/compare/v6.0.1...v7.0.0
