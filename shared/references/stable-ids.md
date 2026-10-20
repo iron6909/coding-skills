@@ -22,7 +22,7 @@ Use stable IDs to trace acceptance conditions from spec to tasks, tests, and com
 
 ## Task and commit references
 
-Each plan task lists the IDs it implements:
+Each plan task lists the acceptance conditions it is responsible for establishing or preserving under **Covers:**. This includes necessary regression coverage or supporting tooling; it does not claim every cited behavior is newly implemented.
 
 ```markdown
 ## Tasks
@@ -33,13 +33,19 @@ Each plan task lists the IDs it implements:
 
 When a supplemental task brief is needed, it carries the same requirement IDs and checks as the plan. Do not create briefs just for ID mapping or assign new IDs to test instructions.
 
-When the approved spec has IDs, reference the implemented IDs in task commits, for example:
+When the approved spec has IDs, reference the IDs whose implementation or regression coverage the task changes, and describe that change accurately, for example:
 
 ```text
 feat(avatar): safely upload and display avatar (REQ-1, REQ-3, REQ-4)
 ```
 
 Code comments may cite an ID when it explains a non-obvious decision. Do not add comments solely to label every implementation line.
+
+## Existing behavior
+
+When repository evidence shows an active requirement needs no implementation work, record its ID, existing implementation/test paths, and required final verification check in the plan's Existing coverage. Do not invent a development task, completed task, or historical commit. Naming a future check does not claim it has passed.
+
+If existing behavior needs a change or new regression coverage, include that deliverable in a task instead. Existing coverage does not waive verification or excuse a missing acceptance condition.
 
 ## Revisions
 
@@ -72,13 +78,13 @@ Before saving a spec:
 Before saving a plan:
 
 - [ ] Every executable task lists its **Covers:** IDs
-- [ ] Every active REQ-N is covered by an executable task or a completed task that still satisfies it; skipped tasks do not count
+- [ ] Every active REQ-N is covered by an executable task, a completed task that still satisfies it, or existing behavior with implementation/test evidence and a final verification check; skipped tasks do not count
 - [ ] No unfinished executable task covers a retired or non-existent ID
 - [ ] Completed task coverage remains unchanged as history, even when an ID is later retired
 
 Before a task commit:
 
-- [ ] If the approved spec has IDs, the message references the IDs implemented
+- [ ] If the approved spec has IDs, the message references the IDs whose implementation or regression coverage changed
 - [ ] Any ID cited in code still refers to the intended condition
 
 ## Existing specs without IDs

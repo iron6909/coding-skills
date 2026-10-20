@@ -429,6 +429,13 @@ assert.ok(plan.includes("A saved plan contains task details") && plan.includes("
 assert.ok(read("skills/doc-review/references/review-lenses.md").includes("a self-contained plan requires no briefs"), "document review must not restore mandatory task briefs");
 const outputTier = read("skills/plan/references/output-tier.md");
 assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
+assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write") && plan.includes("Preserve user edits") && plan.includes("obtain consent or create"), "saved-plan writes need workspace protection before staging");
+assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
+assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the approved plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
+const stableIds = read("shared/references/stable-ids.md");
+assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");
+assert.ok(stableIds.includes("or existing behavior with implementation/test evidence and a final verification check"), "requirement coverage must include unchanged existing behavior");
+assert.ok(!decomposition.includes("Horizontal Filling") && decomposition.includes("several tightly related acceptance conditions") && decomposition.includes("not automatic follow-up tasks"), "decomposition must follow cohesive approved work rather than a layer/phase taxonomy");
 const spec = read("skills/spec/SKILL.md");
 assert.ok(spec.includes("only routine specification approval checkpoint") && spec.includes("short spec and one approval"), "local requirement decisions need one contract approval, not a separate product stage");
 assert.ok(spec.includes("Do not require `ideate`, `spike`") && spec.includes("Do not write product code, run experiments"), "ready designs must go directly to spec without experiments");

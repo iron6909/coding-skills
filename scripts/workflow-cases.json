@@ -486,5 +486,52 @@
       "It preserves completed history, product code, and the approved contract and plan. A changed design requires specification and affected-plan approval before execution can resume."
     ],
     "forbid": ["Turning the unknown into an implementation probe, silently selecting a fallback, rewriting the spec or plan, cancelling unfinished work without plan approval, or automatically invoking another skill."]
+  },
+  {
+    "id": "plan-existing-coverage-and-write-safety",
+    "skill": "plan",
+    "setup": "Provide an approved native spec with an already implemented CSV requirement and one new JSON deliverable, plus an approved unfinished plan. There is no historical task for CSV. Start on master with a distinct unstaged user note in plan.md and an unrelated user file. Existing local implementation and checks are inspectable. The user wants a saved revision, not implementation.",
+    "prompt": "按已批准规格和现有实现重新核对这份计划，给我一份明天能继续的简短修订草稿，先不要保存或实施。",
+    "follow_up": "批准你展示的计划修订，保存并仅提交这次计划修改，然后停止。现有用户改动仍属于用户。",
+    "expect": [
+      "CSV coverage identifies existing implementation/test evidence and a final check without a fabricated development or completed task; the new JSON deliverable has REQ coverage and an observable check.",
+      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected; a feature branch or explicit default-branch consent is established.",
+      "User edits remain intact and outside the plan commit. Unsafe overlap blocks writing; otherwise the approved plan revision is selectively committed without product implementation, mandatory briefs, or ignore-policy changes."
+    ],
+    "forbid": ["Overwriting or committing user edits, writing on the default branch without consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
+  },
+  {
+    "id": "plan-session-contract-and-revision",
+    "skill": "plan",
+    "setup": "Supply an approved native spec for two related local CLI journeys with settled interfaces, two cohesive deliverables, and existing checks. Request a session-only plan. After its approval, ask in the same session to add an already in-scope boundary check to the second task and approve that revision only at its gate.",
+    "prompt": "按这份已批准规格拆出当前会话使用的计划，写清依赖、接口和检查，不需要保存。先展示草稿。",
+    "follow_up": "批准这份会话计划，不保存、不提交，也不开始实施。",
+    "expect": [
+      "The conversation plan preserves REQ coverage, files, deliverables, dependencies, shared interfaces, and final checks without inventing a fixed error/polish phase.",
+      "The later session revision retains task identity and unaffected content, presents the changed check for approval, and does not require a plan.md, ledger, brief, or Full-tier upgrade."
+    ],
+    "forbid": ["Saving planning artifacts, making commits or product changes, dropping task-contract fields because the plan is Brief, adding unrequested delivery phases, or silently accepting the revision."]
+  },
+  {
+    "id": "execute-equivalent-path-correction",
+    "skill": "execute",
+    "setup": "Provide an approved spec and one-task persisted plan on a feature branch. Git history proves that the exact configuration file and test command named by the plan were renamed without semantic changes. The requested configuration change is clear; all required checks are local and runnable. Preserve an unrelated user edit.",
+    "prompt": "执行这份已批准计划，按仓库现状完成任务、验证并提交；不要修改范围外的用户改动。",
+    "expect": [
+      "Repository-proven path and equivalent-command corrections are recorded in the execution ledger without rewriting the approved plan or briefs or requesting a semantic replan.",
+      "The bounded task is implemented, freshly checked, reviewed, and selectively committed; final verification passes and unrelated user changes remain intact."
+    ],
+    "forbid": ["Treating a pure rename as a product decision, changing verification guarantees, rewriting approved inputs, committing unrelated user edits, or claiming checks passed without running them."]
+  },
+  {
+    "id": "execute-semantic-plan-correction-needs-approval",
+    "skill": "execute",
+    "setup": "Provide an approved spec and two-task persisted plan on a feature branch. All design choices are settled, but repository evidence shows that the first task consumes a shared producer assigned to the later task while the plan declares the opposite dependency. Correcting this needs a task-boundary or dependency change, not a filename or equivalent-command correction. No revision approval is supplied.",
+    "prompt": "继续执行这个已批准计划；发现与代码不一致的地方请明确指出，不要替我改变已批准安排。",
+    "expect": [
+      "The agent identifies the concrete producer/consumer and dependency conflict and stops dependent implementation for plan revision even though product scope is unchanged.",
+      "It recommends plan rather than spec or ideate for this scheduling defect, preserves approved inputs and user work, and does not implement the later task early or silently rewrite dependencies."
+    ],
+    "forbid": ["Calling a semantic task/dependency change a harmless description correction, rewriting approved inputs, implementing before revision approval, or reopening a settled design premise."]
   }
 ]

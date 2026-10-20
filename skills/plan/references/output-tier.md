@@ -1,6 +1,6 @@
 # Output tier
 
-Choose persistence, not a larger process. Both tiers present a draft and wait for approval before writing or implementation.
+Choose persistence, not a larger process. Both tiers use the task content and approval gate in SKILL.md; neither drops requirement coverage, dependencies, or verification. Only Full uses saved-plan records and commits.
 
 | Tier | Use when | Produces |
 |------|----------|----------|
