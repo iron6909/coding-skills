@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.4] - 2026-10-20
+
+### Fixed
+
+- **任务差异归属**：`execute` 明确按任务起始状态识别新增改动，不将同文件内的初始用户修改当作任务差异，恢复时保留边界证据且不把秘密写入账本。
+- **无需修改的请求**：小请求已经满足时仍复核现有行为并完成必要验证，不制造改动或空提交；计划内任务则先经批准修订计划，保留历史并记录既有覆盖。
+- **失败预算**：按实现或修复循环累计失败，正常的 TDD RED 不计入，轻量任务恢复时保留计数，未知次数先询问而不默认归零。
+- **执行约定**：区分持久化计划与用户直接提供的会话清单，集中异常分流，并说明严重程度分级与本阶段提交门槛的区别。
+
+### Changed
+
+- **收尾与引用**：执行结束统一保留分支，不再提供合并或丢弃菜单；测试策略保留公开接口示例，删除不属于其职责的登录实现。
+
+### Added
+
+- **回归检查**：新增真实 Git 任务增量隔离回归与三个手工场景，53 个定义通过结构检查，同步器、示例契约、适配器和离线打包检查通过，新增场景尚未进行代理行为实跑。
+
 ## [7.0.3] - 2026-10-20
 
 ### Fixed
@@ -444,7 +461,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.3...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.4...HEAD
+[7.0.4]: https://github.com/iron6909/coding-skills/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/iron6909/coding-skills/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/iron6909/coding-skills/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/iron6909/coding-skills/compare/v7.0.0...v7.0.1
