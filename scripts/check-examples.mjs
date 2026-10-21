@@ -329,6 +329,21 @@ assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "s
 assert.doesNotMatch(debug, /initial staged and unstaged|default branch|Redact secrets/, "debug must delegate generic safety to the shared reference");
 assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
 assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
+for (const [pattern, rule] of [
+  [/^description: .*commit a verified small fix\./m, "disclose its commit contract"],
+  [/cause and how it produces the symptom/, "state causal evidence separately from fix verification"],
+  [/repeat count or observation window, and acceptance criterion before implementation/, "define a measurement criterion before a nondeterministic fix"],
+  [/repeat the baseline workload under comparable conditions.*before\/after.*one clean run is not proof/, "verify nondeterministic fixes with comparable repeated measurements"],
+  [/Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach/, "route missing product decisions to spec"],
+  [/recommend `ideate` when approaches need comparison or replacement.*unresolved or invalidated/, "route unsettled approaches or design premises to ideate"],
+  [/Count one failed attempt per implementation-and-verification cycle.*not per failed assertion/, "count failed fix cycles, not assertions"],
+  [/Expected TDD RED, rejected investigation hypotheses, and unavailable checks are not failed fix attempts/, "exclude expected RED, investigation, and unavailable checks from the failure budget"],
+  [/Retain the count.*across resumes.*ask if unknown rather than assuming zero/, "preserve or recover the failure count on resume"],
+]) assert.match(debug, pattern, `debug must ${rule}`);
+assert.doesNotMatch(debug, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
+const debugFailureStep = debug.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
+assert.match(debugFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");
+assert.doesNotMatch(debugFailureStep, /apply the minimal fix|confirm the same check passes/, "the failure-evidence step must not duplicate implementation and verification");
 assert.ok(!/git branch -[dD]|## Present the options|typed `discard`/.test(finish), "execute must not carry a branch-disposal workflow");
 const ideate = read("skills/ideate/SKILL.md");
 assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
