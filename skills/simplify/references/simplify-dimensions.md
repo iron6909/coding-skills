@@ -1,268 +1,67 @@
-# Simplify Dimensions
+# Simplification dimensions
 
-Three dimensions for code simplification. Check each dimension against the code in scope.
+Use these to judge candidates, not to generate a quota of changes. A worthwhile simplification reduces the reader's work without moving complexity elsewhere.
 
-## 1. Reuse (extract duplication)
+## Behavior-preservation boundary
 
-Look for logic repeated in multiple places. Duplication hides intent and causes divergence.
+Preserve the inputs accepted or rejected, return values and data shapes, observable identity and ownership, error types/messages/statuses, side effects, and their ordering. Public APIs and compatibility are behavior, not style. If preserving them is uncertain, leave the candidate unchanged.
 
-### What to look for
+Never remove or weaken trust-boundary validation, security checks, data-loss protection, or accessibility affordances. Keep comments that explain non-obvious constraints. Passing tests are evidence for covered cases, not proof of equivalence for every input.
 
-**Repeated blocks** (5+ similar lines in 2+ places):
-```typescript
-// Bad: duplicated validation in multiple routes
-app.post('/users', (req, res) => {
-  if (!req.body.email || !req.body.email.includes('@')) {
-    return res.status(400).json({ error: 'Invalid email' });
-  }
-  if (!req.body.password || req.body.password.length < 8) {
-    return res.status(400).json({ error: 'Password too short' });
-  }
-  // ...
-});
+## Reuse: use what already exists
 
-app.post('/login', (req, res) => {
-  if (!req.body.email || !req.body.email.includes('@')) {
-    return res.status(400).json({ error: 'Invalid email' });
-  }
-  if (!req.body.password || req.body.password.length < 8) {
-    return res.status(400).json({ error: 'Password too short' });
-  }
-  // ...
-});
+Look in this order:
 
-// Good: extract common validation
-function validateCredentials(email, password) {
-  if (!email || !email.includes('@')) {
-    throw new Error('Invalid email');
-  }
-  if (!password || password.length < 8) {
-    throw new Error('Password too short');
-  }
-}
-```
+1. **Existing project helpers and conventions.** Search for an equivalent operation before creating another helper; name the symbol and verify its contract.
+2. **Standard-library, runtime, or platform capabilities.** Use them only when input, error, coercion, locale, ordering, and serialization semantics match. A downstream guarantee does not authorize removing a protective check.
+3. **Genuinely duplicated logic.** Extract only when callers share the same contract and a meaningful name or shared implementation removes more work than the indirection adds.
 
-**Similar functions** are not automatically duplication. Small queries such as `get_user_by_id`, `get_post_by_id`, and `get_comment_by_id` can preserve useful domain boundaries. Keep fixed table names and bound query values; do not replace them with a generic helper that interpolates an arbitrary SQL identifier. Share a genuinely repeated operation only when its callers have the same contract.
+Similar-looking domain operations may have different contracts. Keep useful separation and deliberate duplication; do not replace fixed SQL identifiers and bound values with arbitrary identifier interpolation. Do not add a dependency or speculative abstraction to remove a few repeated lines.
 
-**Copy-pasted error handling**:
+## Clarity: reduce the reader's work
+
+- Use established domain names, not conversation history, misleading verbs, or personal naming preferences. Keep idiomatic short names.
+- Flatten control flow only when the return, error, and effect paths stay the same.
+- Extract a cohesive responsibility when its name helps the caller; keep a cohesive function intact when extraction adds parameter passing or indirection.
+- Name values whose domain meaning needs explanation, not every literal.
+- Remove wrappers, state, imports, exports, or branches only after verifying that they are unnecessary. Account for dynamic use, re-exports, and framework conventions; uncertainty is a reason to skip, not proof of dead code.
+
+Do not trade explicit code for dense expressions, merge unrelated responsibilities, or erase useful testability boundaries. Counts alone do not establish a clarity problem.
+
+## Efficiency: eliminate demonstrable waste
+
+Remove redundant work only when inputs are unchanged, results remain equivalent, and reducing or moving the work cannot change errors, effects, or ordering. Consider empty collections and paths where the work previously never ran.
+
+Do not label multiple passes over a collection waste merely because they are multiple passes. Do not replace a tiny array with a set, hoist a fallible call, introduce shared buffers, cache resources, or parallelize effects just on an assumed speedup. Preserve readability and resource ownership.
+
+Latency, throughput, memory, and cost gains need measurements. Systematic profiling, cache policies, pooling, and concurrency redesign belong to `optimize`, not this cleanup. Without measurements, describe only the redundant operation removed, not a performance gain.
+
+## Example: flattening without changing responses
+
+This example changes control-flow shape only. It keeps both response paths, their messages, the saved value's identity, and errors thrown by the response or save operations.
+
 ```javascript
-// Bad: same try-catch in every API call
-async function fetchUser(id) {
-  try {
-    const res = await fetch(`/api/users/${id}`);
-    return await res.json();
-  } catch (err) {
-    console.error('API error:', err);
-    throw new Error('Failed to fetch user');
-  }
-}
-
-async function fetchPost(id) {
-  try {
-    const res = await fetch(`/api/posts/${id}`);
-    return await res.json();
-  } catch (err) {
-    console.error('API error:', err);
-    throw new Error('Failed to fetch post');
-  }
-}
-
-// Good: wrap fetch once
-async function apiGet(path) {
-  try {
-    const res = await fetch(path);
-    return await res.json();
-  } catch (err) {
-    console.error('API error:', err);
-    throw new Error(`Failed to fetch ${path}`);
-  }
-}
-```
-
-### When not to extract
-
-- Duplication is coincidental (looks similar but serves different purposes)
-- Extraction creates more indirection than it removes
-- The repeated code is simpler than a parameterized version
-
-## 2. Clarity (improve readability)
-
-Make code easier to understand on first read.
-
-### What to look for
-
-**Verbose or misleading names**:
-```rust
-// Bad
-let d = get_data(u);
-let flag = check(x);
-
-// Good
-let user_profile = fetch_user_profile(user_id);
-let is_authenticated = verify_token(token);
-```
-
-**Long functions** (>50 lines with distinct sections):
-```python
-# Bad: 80-line function doing 3 things
-def process_order(order):
-    # 20 lines: validate order
-    if not order.items:
-        raise ValueError("Empty order")
-    for item in order.items:
-        if item.quantity <= 0:
-            raise ValueError("Invalid quantity")
-    # 30 lines: calculate totals
-    subtotal = sum(item.price * item.quantity for item in order.items)
-    tax = subtotal * 0.08
-    shipping = 5.0 if subtotal < 50 else 0.0
-    total = subtotal + tax + shipping
-    # 30 lines: save to database
-    # ...
-
-# Good: split into 3 functions
-def validate_order(order):
-    # validation logic
-    pass
-
-def calculate_order_total(order):
-    # calculation logic
-    pass
-
-def save_order(order, total):
-    # persistence logic
-    pass
-```
-
-**Magic numbers**:
-```javascript
-// Bad
-if (age >= 18 && age < 65) {
-  discount = price * 0.1;
-}
-setTimeout(checkStatus, 86400000);
-
-// Good
-const ADULT_MIN_AGE = 18;
-const RETIREMENT_AGE = 65;
-const ADULT_DISCOUNT = 0.1;
-const MS_PER_DAY = 86400000;
-
-if (age >= ADULT_MIN_AGE && age < RETIREMENT_AGE) {
-  discount = price * ADULT_DISCOUNT;
-}
-setTimeout(checkStatus, MS_PER_DAY);
-```
-
-**Deep nesting** (>3 levels):
-```typescript
-// Bad
-if (user) {
-  if (user.isActive) {
-    if (user.permissions.includes('admin')) {
-      if (action === 'delete') {
-        // do something
-      }
+function createLabelBefore(label, reply, save) {
+  if (label === null) {
+    return reply.status(400).json({ error: "Missing label" });
+  } else {
+    if (label === "") {
+      return reply.status(400).json({ error: "Empty label" });
+    } else {
+      return save(label);
     }
   }
 }
 
-// Good: early returns
-if (!user || !user.isActive) return;
-if (!user.permissions.includes('admin')) return;
-if (action !== 'delete') return;
-// do something
-```
-
-### When not to change
-
-- Short names are idiomatic (e.g., `i` for loop index, `err` for error)
-- The function is a pure algorithm that's clear at its current length
-- Breaking up the function requires passing many parameters
-
-## 3. Efficiency (optimize obvious waste)
-
-Remove statically demonstrable redundant work only when behavior and readability are preserved. Claims of latency, throughput, or memory gains require measurements; recommend `optimize` for systematic performance work.
-
-### What to look for
-
-**Redundant loops**:
-```python
-# Bad: two passes over the same list
-active_users = [u for u in users if u.is_active]
-admin_users = [u for u in users if u.role == 'admin']
-
-# Good: one pass
-active_users = []
-admin_users = []
-for user in users:
-    if user.is_active:
-        active_users.append(user)
-    if user.role == 'admin':
-        admin_users.append(user)
-```
-
-**Repeated computation**: Hoist only when the inputs stay unchanged and reducing calls has no observable side effects.
-```javascript
-// Bad: calculateDiscount called every iteration
-for (const item of cart.items) {
-  item.finalPrice = item.price - calculateDiscount(user);
-}
-
-// Good: calculate once
-const discount = calculateDiscount(user);
-for (const item of cart.items) {
-  item.finalPrice = item.price - discount;
+function createLabelAfter(label, reply, save) {
+  if (label === null) {
+    return reply.status(400).json({ error: "Missing label" });
+  }
+  if (label === "") {
+    return reply.status(400).json({ error: "Empty label" });
+  }
+  return save(label);
 }
 ```
 
-**Inefficient data structure**:
-```typescript
-// Bad: O(n) lookup for every request
-const allowedIds = [1, 5, 7, 12, 20, 34, 51];
-if (allowedIds.includes(userId)) {
-  // ...
-}
-
-// Good: O(1) lookup
-const allowedIds = new Set([1, 5, 7, 12, 20, 34, 51]);
-if (allowedIds.has(userId)) {
-  // ...
-}
-```
-
-**Unnecessary allocations**:
-```rust
-// Bad: allocates a new Vec every call
-fn process_items(items: &[Item]) -> Vec<String> {
-    let mut result = Vec::new();
-    for item in items {
-        result.push(format!("{}: {}", item.id, item.name));
-    }
-    result
-}
-
-// Good: reuse buffer (if calling frequently)
-fn process_items_into(items: &[Item], buffer: &mut Vec<String>) {
-    buffer.clear();
-    for item in items {
-        buffer.push(format!("{}: {}", item.id, item.name));
-    }
-}
-```
-
-### When not to optimize
-
-- Neither redundant work nor a measured bottleneck has been established
-- Optimization makes code significantly harder to read
-- The code is not in a hot path (runs once at startup, user-triggered only)
-- Premature optimization (the algorithm is O(n) and n is always <10)
-
-## Prioritization
-
-If you find issues across all three dimensions:
-1. Fix **Reuse** first (duplication causes bugs)
-2. Then **Clarity** (readability helps maintenance)
-3. Finally **Efficiency** (only when safe and obvious)
-
-Always verify tests pass after each change.
+By contrast, replacing the response with a thrown error, an object result with a `Map`, or an owned result with a caller-managed buffer changes a contract. Do not present those as equivalent simplifications.

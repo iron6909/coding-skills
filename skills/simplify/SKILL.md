@@ -1,28 +1,12 @@
 ---
 name: simplify
-description: Simplify recently changed code for reuse, clarity, and efficiency while preserving behavior. Use after implementation and before review, when asked to clean up or simplify code, or when execute reports Minor findings that need cleanup. Not for fixing bugs—use debug for that.
+description: Simplify working code in an explicit scope or recent changes for reuse, clarity, and efficiency while preserving behavior. Use after implementation, before review, or for deferred cleanup. Commit verified simplifications; use debug for bugs and optimize for measured performance work.
 disable-model-invocation: true
 ---
 
 # simplify
 
-Clean up working code: extract duplication, improve naming, optimize efficiency, and remove dead code—without changing behavior.
-
-## When to use
-
-- After completing implementation but before final review
-- User asks to "clean up", "simplify", "refactor for clarity", or "optimize"
-- `execute` reported Minor findings (small duplications, verbose names, local inefficiencies)
-- Code works and tests pass, but it's harder to read or maintain than it should be
-
-**Not** for:
-- Fixing bugs → use `debug`
-- Structural changes (module boundaries, architecture) → use `refactor`
-- Adding features or changing behavior → use `execute`
-
-## Scope
-
-Simplify **recently changed code only**, within the files and change range confirmed in step 1. Stay with changed code and directly necessary context, not unrelated cleanup elsewhere in the same files.
+Make working code easier to understand and maintain, not merely shorter. Keep feature work, behavior fixes, and structural redesign out of the cleanup.
 
 ## Workspace safety
 
@@ -32,103 +16,34 @@ Read `./references/repository-changes.md` before the first edit or check that ma
 
 ### 1. Determine scope
 
-Honor user-named files and ranges first. If committed work is in scope, use the user's base or a locally verifiable base that clearly matches the work, such as its known integration branch or an agreed last-commit range. Resolve it locally with `git rev-parse --verify <base>^{commit}`; ask when the base or range is ambiguous. Do not assume a branch name, fetch, or query hosting services.
+A user-named scope is authoritative, even when it has no recent diff. A named file covers that file unless the request restricts it to changed lines; a directory, function, or range is bounded the same way. Reading callers outside the scope is allowed; editing them, including import/export lines, is not. Skip a candidate if its required changes do not fit.
 
-Include the requested staged and unstaged changes, plus clearly related untracked files. A working-tree-only request needs no commit baseline. Inspect candidates with the applicable commands:
+Without an explicit scope, inspect relevant staged and unstaged diffs plus clearly related untracked files. Include committed work only with the user's base or a locally verifiable base that clearly matches the work. Resolve it with `git rev-parse --verify <base>^{commit}`; ask when the base or range is ambiguous. A working-tree-only request needs no commit baseline. Do not assume a branch name, fetch, or query hosting services.
 
-```bash
-git diff --name-only <base>...HEAD --  # only when this committed range is in scope
-git diff --name-only --cached --
-git diff --name-only --
-git ls-files --others --exclude-standard
-```
-
-Use the union within the confirmed scope, not every untracked file. If nothing relevant changed, report that and stop; do not fall back to unrelated older work or whole-repository cleanup.
+Inspect hunks and necessary context, not just filenames. Do not fall back to unrelated older work or whole-repository cleanup. If there is no candidate code, or only documentation, generated or vendored files, dependencies, lockfiles, or mechanical churn, report no simplification needed and stop before baseline checks or review references. In a mixed scope, retain only the substantive code.
 
 ### 2. Check the baseline
 
 Identify and run the applicable checks for the confirmed scope. If a required baseline check fails or cannot run, report the blocker and stop before cleanup or loading review/commit references. Do not fix an existing behavior failure inside simplification.
 
-### 3. Review against dimensions
+### 3. Review and apply
 
-Review each file using the three dimensions and efficiency evidence rules in `./references/simplify-dimensions.md`. For complexity candidates, use `./references/complexity-metrics.md`; name the actual readability or cohesion problem rather than treating a count as a violation.
+Read `./references/simplify-dimensions.md` for the reuse, clarity, efficiency, and behavior-preservation rules. Review inline across all three dimensions; this is cleanup, not an independent code review. Apply worthwhile candidates in small batches; skip unsafe or low-value ones and respect deliberate duplication or abstractions supported by project context.
 
-Grade every finding using `./references/severity.md`; passing tests do not rule out Blocking defects. If one is found, report it, stop the affected cleanup, and recommend `debug` rather than changing behavior inside simplification.
+Read `./references/complexity-metrics.md` only when an existing analyzer finding or a complexity candidate needs interpretation. Do not turn the cleanup into a measurement or scoring exercise.
 
-### 4. Apply simplifications
+Use `./references/severity.md` to describe a finding's impact, not to choose its workflow. Existing behavior failures stop the affected cleanup and belong to `debug`, regardless of severity. Structural redesign belongs to `refactor`; systematic performance work belongs to `optimize`; requested behavior or API changes belong to `execute`. Missing required verification follows the DoD gate, not an assumed bug diagnosis. Report these separately from optional cleanup and recommend the appropriate skill without invoking it.
 
-Make changes that preserve behavior:
-- Extract functions for duplication
-- Rename variables and functions
-- Replace magic values with named constants
-- Simplify conditionals
-- Remove dead code (unreachable branches, unused imports)
+### 4. Verify
 
-Do not:
-- Change public APIs without user confirmation
-- Refactor code outside the scope
-- Mix simplification with feature changes
+Run focused and affected checks after each batch; the loaded DoD controls final checks and full-suite timing. Keep existing assertions intact. Add a small behavior check when a critical transformation lacks coverage; if equivalence still cannot be established, skip it rather than weakening tests, types, or safety protections.
 
-### 5. Verify behavior unchanged
+If simplification causes a failure, correct it within the original scope or roll back only this run's safely isolated batch under the shared safety rules, then rerun the affected checks. An unavailable required check still blocks committing or declaring completion under the DoD.
 
-Run tests after each batch of changes:
-```bash
-# Use the project's test command
-npm test
-# or
-pytest
-# or
-cargo test
-```
+### 5. Commit and report
 
-If tests fail, roll back this batch under the shared safety rules and rerun the checks. Simplification must not break tests.
+No worthwhile changes, or all simplifications reverted: report no change and make no commit. Otherwise read `./references/git-commit.md` and commit only this run's verified simplifications, using the repository's convention (`refactor(simplify): ...` when Conventional Commits applies).
 
-Also run type-check and lint:
-```bash
-# Examples
-npm run type-check
-npm run lint
-```
+Report in the conversation: the actual scope, meaningful changes, skipped candidates and blockers, check commands and fresh outcomes, the applied DoD and its skips or accepted limits, and the commit if any. Do not create a separate report, fill empty categories, or invent performance gains.
 
-### 6. Commit simplified code
-
-Read `./references/git-commit.md`. Stage only the files you simplified:
-
-```bash
-git add <file1> <file2>...
-git commit -m "refactor(simplify): improve clarity and remove duplication
-
-- Extracted common validation logic into validateInput()
-- Renamed getUserData -> fetchAuthenticatedUser
-- Removed unused imports in 3 files"
-```
-
-### 7. Report
-
-Present a summary:
-
-```
-## Simplification Report
-
-**Scope**: 5 files changed in current branch
-
-**Reuse**:
-- Extracted `validateInput()` from 3 call sites (auth.ts, profile.ts, settings.ts)
-- Unified error handling in API routes
-
-**Clarity**:
-- Renamed `getUserData` → `fetchAuthenticatedUser`
-- Split 80-line `processOrder` into 3 functions
-- Replaced magic number 86400 with `SECONDS_PER_DAY`
-
-**Efficiency**:
-- Cached database connection in request handler (eliminates 50ms/request overhead)
-- Replaced nested loops in searchUsers with Set lookup (O(n²) → O(n))
-
-**Tests**: All passing
-**Committed**: refactor(simplify): improve clarity and remove duplication
-```
-
-## Next
-
-Report the saved changes, checks, and commit, then stop. Recommend `code-review` if an independent review is useful; do not invoke it.
+Stop after delivery. Recommend `code-review` if independent review is useful; do not invoke it.

@@ -198,34 +198,44 @@ for (const file of ["skills/guide/SKILL.md", "skills/autoflow/SKILL.md", "README
   assert.ok(!/execute auto|Pass `auto`|传\s*`?auto`?|逐任务停下确认/.test(read(file)), `stale execute mode in ${file}`);
 }
 assert.ok(read("shared/references/definition-of-done.md").includes("full suite ran on the final completed change or standalone fix"), "full-suite timing must agree with continuous execution");
-const taxExamples = blocks("skills/simplify/references/complexity-metrics.md", "python").filter((source) => source.includes("def calculate_tax("));
-assert.equal(taxExamples.length, 2);
-// ponytail: use a local Python interpreter; report a skip if absent. Install Python when this example coverage is required.
-const python = spawnSync(process.platform === "win32" ? "python" : "python3", ["-c", `
-import json, math, sys
-implementations = []
-for source in json.load(sys.stdin):
-    namespace = {}
-    exec(source, namespace)
-    implementations.append(namespace["calculate_tax"])
-for country in ["US", "UK", "DE", "FR", None, [], {}]:
-    for amount in [0, 1, -100, 1e308, float("nan")]:
-        before, after = [fn(country, amount) for fn in implementations]
-        if before is None:
-            assert after is None, (country, amount, before, after)
-        elif math.isnan(before):
-            assert math.isnan(after), (country, amount, before, after)
-        else:
-            assert before == after, (country, amount, before, after)
-print("tax examples preserve behavior, including unknown and unhashable country values")
-`], { input: JSON.stringify(taxExamples), encoding: "utf8", timeout: 10000 });
-if (python.error?.code === "ENOENT") {
-  console.log("SKIP: Python tax examples (Python interpreter unavailable)");
-} else {
-  if (python.error) throw python.error;
-  assert.equal(python.status, 0, python.stderr);
-  console.log(python.stdout.trim());
+const labelExample = blocks("skills/simplify/references/simplify-dimensions.md", "javascript").find((source) => source.includes("function createLabelBefore("));
+assert.ok(labelExample, "missing behavior-preserving simplification example");
+const labelImplementations = runInNewContext(`${labelExample}\n({ before: createLabelBefore, after: createLabelAfter })`, {}, { timeout: 1000 });
+const behaviorFailure = new Error("effect failed");
+const replyResult = Symbol("reply result");
+const observeLabel = (fn, label, failAt) => {
+  const events = [];
+  const effect = (kind, value) => {
+    events.push([kind, value]);
+    if (kind === failAt) throw behaviorFailure;
+  };
+  const reply = {
+    status(code) { effect("status", code); return this; },
+    json(body) { effect("json", body); return replyResult; },
+  };
+  try {
+    const result = fn(label, reply, (value) => { effect("save", value); return value; });
+    return { result, error: null, events };
+  } catch (error) {
+    return { result: undefined, error, events };
+  }
+};
+for (const label of [null, "", "label", undefined, 0, false, [], {}, Symbol("label")]) {
+  for (const failAt of [undefined, "status", "json", "save"]) {
+    const before = observeLabel(labelImplementations.before, label, failAt);
+    const after = observeLabel(labelImplementations.after, label, failAt);
+    assert.deepEqual(after, before, "preserve returns, response bodies, thrown errors and effect order");
+    assert.equal(after.result, before.result, "preserve result identity, not just equal values");
+    assert.equal(after.error, before.error, "propagate the original thrown error");
+  }
 }
+const missingLabel = observeLabel(labelImplementations.after, null);
+assert.equal(missingLabel.result, replyResult);
+assert.deepEqual(missingLabel.events.map(([kind]) => kind), ["status", "json"]);
+assert.equal(missingLabel.events[0][1], 400);
+assert.equal(missingLabel.events[1][1].error, "Missing label");
+assert.equal(observeLabel(labelImplementations.after, "label", "save").error, behaviorFailure);
+console.log("simplification example preserves responses, result identity, errors and effect order");
 
 const reviewFile = "skills/code-review/SKILL.md";
 const finish = read("skills/execute/references/finish.md");
@@ -365,11 +375,8 @@ const metrics = read("skills/simplify/references/complexity-metrics.md");
 assert.ok(!metrics.includes(".coding/simplify-config.toml"), "reuse project analyzer settings instead of an undocumented config");
 assert.ok(!/\d+ 个真实代理行为场景/.test(readme), "do not hardcode a drifting manual-case count");
 assert.ok(!/Mandatory split|must split|must flatten/.test(metrics), "metrics must not force mechanical splitting");
-// ponytail: sum annotated increments, not a full metric implementation; use the project's analyzer to validate language-specific scoring rules.
-const cognitiveExample = blocks("skills/simplify/references/complexity-metrics.md", "python").find((source) => source.includes("def calculate_discount("));
-assert.ok(cognitiveExample, "missing cognitive-complexity example");
-const increments = [...cognitiveExample.matchAll(/# (\+[^\n]+)/g)].map(([, annotation]) => Number(annotation.match(/= \+(\d+)/)?.[1] ?? annotation.match(/^\+(\d+)/)[1]));
-assert.equal(increments.reduce((sum, value) => sum + value, 0), Number(cognitiveExample.match(/Total cognitive complexity: (\d+)/)[1]), "complexity annotations must add up to the stated total");
+assert.doesNotMatch(metrics, /Complexity Score|npm install|pip install|## Reporting Format/, "complexity hints must not create a scoring, installation or reporting workflow");
+assert.match(metrics, /existing analyzer/, "interpret project analyzer findings rather than introduce another analyzer");
 assert.ok(!read("skills/simplify/SKILL.md").includes("Blocking findings should not exist here"), "passing tests must not suppress Blocking findings");
 assert.ok(!read("skills/doc-review/references/review-lenses.md").includes("mark as Important"), "missing evidence must be graded by impact");
 const decomposition = read("skills/plan/references/task-decomposition.md");
@@ -444,9 +451,16 @@ assert.ok(commit.includes("scope is ambiguous") && commit.includes("git diff --s
 const simplify = read("skills/simplify/SKILL.md");
 const baselineGate = simplify.indexOf("### 2. Check the baseline");
 assert.ok(baselineGate > simplify.indexOf("### 1. Determine scope"));
-for (const ref of ["simplify-dimensions.md", "severity.md", "git-commit.md"]) {
+for (const ref of ["simplify-dimensions.md", "complexity-metrics.md", "severity.md", "git-commit.md"]) {
   assert.ok(simplify.indexOf(ref) > baselineGate, `simplify must delay ${ref} until after the baseline gate`);
 }
+for (const [pattern, rule] of [
+  [/A user-named scope is authoritative.*no recent diff/, "honor explicit scopes without requiring recent changes"],
+  [/only documentation, generated or vendored files.*stop before baseline checks or review references/, "skip non-code scopes before checks and review"],
+  [/regardless of severity/, "separate problem type from severity"],
+  [/No worthwhile changes.*no commit/, "treat no-change as a valid result"],
+  [/Report in the conversation/, "avoid inventing a report artifact"],
+]) assert.match(simplify, pattern, `simplify must ${rule}`);
 assert.match(read("skills/code-review/SKILL.md"), /When active learning files exist, read `\.\/references\/learnings-format\.md`/, "absent learnings must not load their format");
 assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
 assert.ok(read("skills/capture/SKILL.md").includes("without loading writing or commit references"), "zero-entry capture must stop before write-stage references");
@@ -454,5 +468,5 @@ assert.ok(!guide.includes("a missing core skill is an incomplete installation"),
 assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
 assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");
 assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
-console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, complexity, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving handoff, spike safety and completion gates");
+console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving handoff, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

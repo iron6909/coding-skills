@@ -25,7 +25,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `capture`: record the non-obvious reasoning, traps, and boundary conditions from a finished session into `docs/learnings`.
 - `learning-refresh`: audit and refresh the learnings store in `docs/learnings/` for staleness.
 - `doc-review`: review a proposal, spike report, spec, plan, or legacy capability map for gaps and contradictions.
-- `simplify`: simplify settled, recently changed code for clarity, reuse, quality, and efficiency.
+- `simplify`: clean up working code in an explicit scope or recent changes for reuse, clarity, and efficiency without changing behavior.
 - `handoff`: create a lightweight session handoff for multi-session continuity, capturing current phase and next steps.
 - `ui-design`: turn an approved frontend spec into `ui-spec.md`, establishing `DESIGN.md` if absent.
 - `ui-review`: review implemented frontend UI for design quality, consistency, accessibility, and performance.
