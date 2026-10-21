@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0] - 2026-10-21
+
+### Breaking Changes
+
+- **整体代码审查**：`code-review` 使用单个独立审查者覆盖全部检查，结果只在会话内反馈，重点由本次请求或计划提供，不读取镜头配置或保存报告。
+- **自动恢复**：`autoflow` 使用 schema v4 保存审查与修复提交定位，反馈丢失或 HEAD 变化时从原基线重新只读审查，状态不保存反馈，重新审查也不追加修复授权。
+
+### Changed
+
+- **反馈裁定与修复**：主代理核实意见、重定严重度并说明驳回和排除理由，经授权修复保留用户改动、单独提交且仅做一次定向复查。
+
+### Added
+
+- **回归验证**：57 个场景定义通过结构检查，九类场景完成 17 次主代理运行和 9 个审查会话，16 个有效变体符合预期；修复变体仅在明确批准的 CRLF 验证边界内通过，未覆盖浏览器、启动失败注入及其他模型和平台。
+
 ## [7.0.4] - 2026-10-20
 
 ### Fixed
@@ -461,7 +476,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v7.0.4...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.0...HEAD
+[8.0.0]: https://github.com/iron6909/coding-skills/compare/v7.0.4...v8.0.0
 [7.0.4]: https://github.com/iron6909/coding-skills/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/iron6909/coding-skills/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/iron6909/coding-skills/compare/v7.0.1...v7.0.2
