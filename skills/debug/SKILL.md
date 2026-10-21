@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Reproduce a failure, find its root cause, apply a tested fix, and verify it. Use for bugs, test failures, build failures, integration problems, and performance regressions.
+description: Reproduce a failure, find its root cause, and commit a verified small fix. Use for bugs, test failures, build failures, integration problems, and performance regressions.
 disable-model-invocation: true
 ---
 
@@ -17,8 +17,8 @@ Read `./references/definition-of-done.md` before choosing checks and declaring c
 ## Phase 1: Establish the failure and cause
 
 1. Read the actual error, stack trace, and relevant code. Check the caller or data flow needed to explain the symptom.
-2. Reuse an existing failing test or the smallest feasible reproduction command that asserts the user's symptom. Prefer a fast unattended loop, but a slow or manual reproduction is evidence too; report its limits. For a flaky or performance failure, measure a reproduction rate or baseline rather than treating one clean run as proof.
-3. State the evidence-backed cause. If the reproduction and code already establish it, proceed directly to Phase 4. Do not search for working examples, bisect history, or fully minimize a fixture just to complete a checklist.
+2. Reuse an existing failing test or the smallest feasible reproduction command that asserts the user's symptom. Prefer a fast unattended loop, but a slow or manual reproduction is evidence too; report its limits. For a flaky or performance failure, choose a representative workload, repeat count or observation window, and acceptance criterion before implementation; measure the failure rate or performance baseline. State workload-based defaults when unspecified and let the user adjust them.
+3. State the evidence-backed cause and how it produces the symptom. If the reproduction and code already establish it, proceed directly to Phase 4. Do not search for working examples, bisect history, or fully minimize a fixture just to complete a checklist.
 
 If no reproduction is possible, use the reporting gate below rather than changing code on an untested theory.
 
@@ -46,15 +46,15 @@ When the evidence establishes the cause, proceed to implementation. If a decisio
 
 A **small fix** has a confirmed cause, clear scope, and an approach within the existing approved behavior and contracts. It can touch several files; line and file counts do not determine its workflow. Test, fix, verify, and commit directly.
 
-If repair requires an unresolved product choice, a new public contract, or structural redesign, stop and summarize the cause, evidence, proposed approach, and affected files in conversation. Recommend `ideate` when the approach or a load-bearing premise needs reconsideration; use `spec` to formalize a settled, supported change, then `plan` only when decomposition is needed. Do not turn debugging into design-feasibility experiments. Do not save a new report or invoke those skills automatically.
+If repair requires an unresolved product choice, a new public contract, or structural redesign, stop and summarize the cause, evidence, proposed approach, and affected files in conversation. Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach; recommend `ideate` when approaches need comparison or replacement, or a load-bearing design premise is unresolved or invalidated. Recommend `plan` only when the approved change needs decomposition or an existing plan needs reconciliation. Do not turn debugging into design-feasibility experiments. Do not save a new report or invoke those skills automatically.
 
 Never route a small fix through `spec`, `plan`, or `execute` merely because it spans files.
 
 ### Fix and verify
 
-1. **Prove the regression.** Read `./references/tdd.md` and use its Prove-It pattern: observe a correct-cause failure, apply the minimal fix, and confirm the same check passes. Reuse trustworthy failure evidence rather than repeating the cycle. If no feasible test harness exists, justify the strongest reproducible alternative and name the remaining coverage gap; do not install a framework for this workflow.
+1. **Establish the failure check.** Read `./references/tdd.md` and establish or reuse trustworthy failure evidence under its Prove-It rules. If no feasible test harness exists, justify the strongest reproducible alternative and name the remaining coverage gap; do not install a framework for this workflow.
 2. **Implement one fix.** Address the confirmed cause without unrelated refactoring or extra scope. If a suitable test entry point is missing, explain the design limitation; recommend `refactor` only when structural work is actually needed.
-3. **Verify.** Run the regression check, original reproduction, and applicable affected checks. The same command can serve both regression and reproduction; do not rerun it solely to fill two labels. Follow the loaded DoD for full-suite timing and unavailable required checks. Fresh evidence must apply to the final code.
+3. **Verify.** Run the regression check, original reproduction, and applicable affected checks. The same command can serve both regression and reproduction; do not rerun it solely to fill two labels. For flaky or performance failures, repeat the baseline workload under comparable conditions and report before/after failure rates or metrics, sample counts or observation windows, and the acceptance result; one clean run is not proof. Follow the loaded DoD for full-suite timing and unavailable required checks. Fresh evidence must apply to the final code.
 4. **Inspect and clean the diff.** Apply the shared cleanup gate to this fix before committing.
 5. **Commit.** Follow `./references/git-commit.md`. Use repository conventions or `fix(scope): <summary>`, recording the cause and verification.
 
@@ -62,9 +62,11 @@ Never route a small fix through `spec`, `plan`, or `execute` merely because it s
 
 Revisit the evidence the failure changes; do not repeat settled investigation steps. After 3 failed fix attempts, stop before a fourth and discuss the smallest next decision with the user. Repeated coupling, a required redesign, or a new symptom from each fix may indicate a design problem, but failure count alone does not prove the architecture is wrong.
 
+Count one failed attempt per implementation-and-verification cycle that ends with the target failure or a fix-caused required-check failure, not per failed assertion. Expected TDD RED, rejected investigation hypotheses, and unavailable checks are not failed fix attempts; unavailable checks follow the DoD gate. Retain the count for the same failure across resumes; recover it from the conversation or handoff, and ask if unknown rather than assuming zero.
+
 ## If no reproduction is possible
 
-Stop before code changes. Report the exact commands tried, results, missing evidence, and smallest next input needed. A theory without before/after evidence is not a verified root cause.
+Stop before code changes. Report the exact commands tried, results, missing evidence, and smallest next input needed.
 
 ## Completion report
 
