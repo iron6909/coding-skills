@@ -21,6 +21,10 @@ assert.equal(manifest.type, "module");
 assert.deepEqual(manifest.peerDependencies, { "@earendil-works/pi-coding-agent": "*" }, "Pi provides the host, not a bundled runtime dependency");
 assert.ok(!manifest.dependencies, "the adapter must not add runtime packages");
 assert.deepEqual(manifest.files, ["extensions", "skills", "README.md", "LICENSE"], "publish resources and user-facing documents, not development rules");
+for (const command of ["node scripts/sync-references.mjs --check", "node scripts/sync-references.test.mjs", "node scripts/check-examples.mjs", "node scripts/check-simplify-trace.mjs --self-test", "node scripts/pi-extension.test.mjs", "git diff --check", "npm pack --dry-run --json --offline"]) {
+  assert.ok(manifest.scripts?.check?.split(" && ").includes(command), `npm run check must include ${command}`);
+}
+assert.ok(read("AGENTS.md").includes("npm run check"), "document the one-command development check");
 
 // ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
 const review = read("skills/code-review/SKILL.md");
@@ -444,6 +448,7 @@ for (const skill of ["spec", "plan", "execute", "autoflow", "debug", "optimize",
 }
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   assert.ok(!/`clarify`|skills\/clarify\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+  assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 const commit = read("skills/commit/SKILL.md");
 assert.ok(commit.includes("Do not ask again for file or message approval unless the user requested a preview"), "explicit commit scope must not require routine reapproval");
@@ -460,6 +465,11 @@ for (const [pattern, rule] of [
   [/regardless of severity/, "separate problem type from severity"],
   [/No worthwhile changes.*no commit/, "treat no-change as a valid result"],
   [/Report in the conversation/, "avoid inventing a report artifact"],
+  [/Run inline from scope through delivery without routine reapproval/, "automatically finish the authorized cleanup without routine approval stops"],
+  [/Ask only for an unresolved scope\/base, safety or ownership conflict, or a required verification\/commit decision/, "preserve real decision gates"],
+  [/Until all required baseline checks pass, do not edit code or load review\/commit references/, "make baseline success a prerequisite, not merely stop on a known failure"],
+  [/wait for all final check results and confirm the DoD before reading `\.\/references\/git-commit\.md`/, "defer commit guidance until verified changes actually need committing"],
+  [/do not run this read in parallel with checks/, "keep verification results and commit guidance behind a serial gate"],
 ]) assert.match(simplify, pattern, `simplify must ${rule}`);
 assert.match(read("skills/code-review/SKILL.md"), /When active learning files exist, read `\.\/references\/learnings-format\.md`/, "absent learnings must not load their format");
 assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");

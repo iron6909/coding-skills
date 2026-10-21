@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # simplify
 
-Make working code easier to understand and maintain, not merely shorter. Keep feature work, behavior fixes, and structural redesign out of the cleanup.
+Run inline from scope through delivery without routine reapproval. The invocation authorizes behavior-preserving cleanup, not feature work, behavior fixes, or structural redesign. Ask only for an unresolved scope/base, safety or ownership conflict, or a required verification/commit decision.
 
 ## Workspace safety
 
@@ -24,7 +24,7 @@ Inspect hunks and necessary context, not just filenames. Do not fall back to unr
 
 ### 2. Check the baseline
 
-Identify and run the applicable checks for the confirmed scope. If a required baseline check fails or cannot run, report the blocker and stop before cleanup or loading review/commit references. Do not fix an existing behavior failure inside simplification.
+Run the applicable checks for the confirmed scope. Until all required baseline checks pass, do not edit code or load review/commit references; a blocked cleanup needs no review. If a required check fails or cannot run, report the blocker and stop without fixing the existing failure.
 
 ### 3. Review and apply
 
@@ -42,7 +42,7 @@ If simplification causes a failure, correct it within the original scope or roll
 
 ### 5. Commit and report
 
-No worthwhile changes, or all simplifications reverted: report no change and make no commit. Otherwise read `./references/git-commit.md` and commit only this run's verified simplifications, using the repository's convention (`refactor(simplify): ...` when Conventional Commits applies).
+No worthwhile changes, or all simplifications reverted: report no change and make no commit. Otherwise, wait for all final check results and confirm the DoD before reading `./references/git-commit.md`; do not run this read in parallel with checks. Commit only this run's verified simplifications, using the repository's convention (`refactor(simplify): ...` when Conventional Commits applies).
 
 Report in the conversation: the actual scope, meaningful changes, skipped candidates and blockers, check commands and fresh outcomes, the applied DoD and its skips or accepted limits, and the commit if any. Do not create a separate report, fill empty categories, or invent performance gains.
 

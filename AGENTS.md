@@ -90,14 +90,10 @@ Update all of these in the same commit:
 ## Checks before committing
 
 ```bash
-node scripts/sync-references.mjs --check                     # copies in sync, references named, no dead link
-node scripts/sync-references.test.mjs                        # synchronizer regression checks
-node scripts/check-examples.mjs                              # executable examples, text contracts, scenario schema
-node scripts/pi-extension.test.mjs                           # adapter contracts; use Pi's required Node version
-npm pack --dry-run --json --offline                          # inspect exact published resources, no development content
-grep -rn '\.\./' skills --include=*.md | grep -v '\.\.\.'    # expect no output
-grep -n 'disable-model-invocation' skills/*/SKILL.md         # one hit per skill, all true
+npm run check
 ```
+
+The command runs consistency, synchronizer, executable-example, native simplify-trace self-checks, adapter, portability, and Git whitespace checks, then prints the offline package manifest for inspection. Use Pi's required Node version. It does not run agent evaluations or prove agent behavior.
 
 Extension changes also need real-host loading, dispatch, filtering, source-conflict, reload, and non-UI checks in isolated local fixtures under `tmp/`. Record the actual host/platform and unverified surfaces.
 

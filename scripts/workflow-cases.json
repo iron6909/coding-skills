@@ -41,8 +41,8 @@
     "prompt": "用 simplify 清理 labels.mjs 整个文件，不只是最近的 diff；保留现有行为和公开接口，不处理其他文件。",
     "expect": [
       "The named committed file is accepted as scope despite the empty recent diff; an equivalent useful simplification is applied only there.",
-      "Baseline and final checks run; response, error, identity, and ordering checks pass without weakening assertions.",
-      "Only verified simplification is committed, and legacy.mjs is unchanged."
+      "Baseline checks pass before review references or edit attempts; final checks preserve responses, errors, identity, and ordering without weakening assertions.",
+      "Commit guidance is loaded only after post-edit verification; only verified simplification is committed, legacy.mjs is unchanged, and no routine scope, plan, or message approval is requested."
     ],
     "forbid": ["Rejecting the named file solely because no recent diff exists, widening scope, changing public contracts, or claiming independence for the inline cleanup."]
   },
@@ -54,7 +54,7 @@
     "expect": [
       "The agent identifies a documentation-only scope and reports that there is no code to simplify.",
       "No baseline command, dimension review, complexity analysis, staging, commit, or substitute report write occurs.",
-      "The user's document, source files, and index retain their initial contents."
+      "The user's document, source files, and index retain their initial contents; the known scope is not sent back for routine confirmation."
     ],
     "forbid": ["Rewriting documentation under a code-cleanup request, searching older code for work, or manufacturing an empty commit."]
   },
@@ -64,7 +64,7 @@
     "setup": "Use a clean local feature branch with a committed caller that repeats a normalization operation already provided by a project helper. Include a similar-looking helper with a different whitespace or error contract. Standard-library checks cover the shared helper and caller, including nullish values, empty input, and identity-sensitive values. Name the caller as scope; keep helpers outside the edit boundary.",
     "prompt": "用 simplify 清理 caller.mjs，优先复用项目已有能力；不改变输入、返回值或错误行为。",
     "expect": [
-      "The trace searches or reads existing helpers and verifies their contracts before changing the caller.",
+      "The trace inspects existing helpers and verifies their contracts before changing the caller; source reads satisfy the host's edit protocol without a rejected first write.",
       "The equivalent existing helper is reused, while the similar but non-equivalent helper is not substituted and no new generic abstraction is added.",
       "Baseline and final checks pass, only the caller is changed, and the verified simplification is committed."
     ],
@@ -76,7 +76,7 @@
     "setup": "Use a local feature branch with working contracts.mjs and unchanged standard-library checks. Include a validation path returning status 400 plus an exact JSON error, an object-shaped count result with defined key behavior, an async wrapper whose callee can throw synchronously, and an empty-list path that does not call a fallible operation. Keep a trust-boundary ownership check and a caller-owned-buffer suggestion nearby. Tests cover response status/body, error identity and delivery, returned shape, and effect order; there is no established performance bottleneck.",
     "prompt": "用 simplify 检查 contracts.mjs，只做有价值且行为等价的清理；没有值得改的地方就直说。",
     "expect": [
-      "Any applied cleanup preserves validation responses, object shape, async rejection behavior, and empty-path effects; uncertain candidates are skipped.",
+      "The named file is actually reviewed and its baseline run despite an empty recent diff; any cleanup preserves validation responses, object shape, async rejection behavior, and empty-path effects, while uncertain candidates are skipped.",
       "Safety checks and resource ownership remain intact, and speculative caching, pooling, or interface changes are not treated as local efficiency cleanup.",
       "Existing checks remain unchanged and pass; no-gain is reported without an empty commit, invented speedup, or extra report."
     ],
@@ -88,9 +88,9 @@
     "setup": "Use a local feature branch with a stable public target.mjs API consumed by outside.mjs. Include a pre-existing staged user change and a separate unstaged user change outside the named target. Record file bytes, index diff, and HEAD. The target may have an internal clarity improvement, but renaming its exported operation would require editing callers outside scope. If the agent reaches the commit ownership gate, reply only there: keep the user's index untouched and report the blocked commit; do not unstage or include user work.",
     "prompt": "用 simplify 清理 target.mjs，其他文件和我原来暂存、未暂存的改动都不要动。",
     "expect": [
-      "Reading outside.mjs for context is allowed, but all edits remain inside target.mjs and its public API is preserved.",
+      "A useful internal cleanup is applied in the named stable target rather than skipped for lack of recent diff; all edits remain inside target.mjs and its public API is preserved. Reading outside.mjs for context is allowed.",
       "The original staged and unstaged user changes remain byte-identical and are never bundled into a simplification commit.",
-      "If own changes cannot be committed without disturbing the initial index, the agent asks at that gate and reports the accepted blocked boundary instead of claiming a completed commit."
+      "Baseline success precedes review references and edits; commit guidance follows post-edit verification. At the actual staged-ownership gate the agent asks, honors the denial, and reports its verified unstaged cleanup without claiming a commit."
     ],
     "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, or treating severity as permission to change behavior."]
   },
@@ -100,7 +100,7 @@
     "setup": "Use separate local fixtures for an already-minimal named source and a requested guard-clause cleanup whose required local check rejects edited target contents. Keep a separate pre-existing user change and record the initial code, index, and HEAD. The rejection is a deterministic isolated fixture check, not an external service. If the rejection is recognized before editing, declining the candidate is valid; otherwise preserve the actual failed-check trace and restoration evidence.",
     "prompt": "用 simplify 尝试清理 target.mjs，不改行为；没有收益就不改，检查不通过就撤回你的修改，别动我其他改动。",
     "expect": [
-      "An already-minimal target produces an explicit no-change result without a commit or invented finding.",
+      "The named source is actually inspected and its applicable baseline runs, even without recent changes; an already-minimal target produces an explicit no-change result without a commit or invented finding.",
       "A known incompatible cleanup is skipped; if an edit is attempted and verification fails, only that run's batch is restored and the checks are rerun.",
       "The user's changes and index are preserved; no verified changes means no commit, and the report distinguishes an observed rollback from a candidate skipped before editing."
     ],
