@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.1] - 2026-10-21
+
+### Fixed
+
+- **写库安全与交付**：19 个可写入仓库的技能共用分支与初始改动保护、副作用授权、脱敏、清理及交付规则，覆盖代码、文档、报告和工作记录；纯路由 `guide` 不加载写入规则。
+- **验证与提交门槛**：`simplify`、`ui-review`、`commit` 接入共享 DoD，`ui-design`、`ui-review` 接入共享提交规则，保留各技能自己的审批、验证、产物与提交范围。
+
+### Changed
+
+- **规则归属**：从调试、执行、审查和设计输入等文档中提取重复规则，通过同步器分发自包含引用，不额外生成报告、扩大授权或新增开发阶段。
+
+### Added
+
+- **契约自检**：检查写库技能的共享规则入口与副本一致性；引用同步、同步器回归、示例契约、适配器和离线打包检查通过，本轮未进行代理行为实跑。
+
 ## [8.0.0] - 2026-10-21
 
 ### Breaking Changes
@@ -476,7 +491,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.1...HEAD
+[8.0.1]: https://github.com/iron6909/coding-skills/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/iron6909/coding-skills/compare/v7.0.4...v8.0.0
 [7.0.4]: https://github.com/iron6909/coding-skills/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/iron6909/coding-skills/compare/v7.0.2...v7.0.3
