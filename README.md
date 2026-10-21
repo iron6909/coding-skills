@@ -39,7 +39,7 @@ npx skills@latest add iron6909/coding-skills
 /coding spec 添加用户头像上传             # 澄清需求，批准整体规格
 /coding plan                           # 审阅并制定计划
 /coding execute
-/coding code-review                    # 需要整体独立审查时另行调用
+/coding code-review                    # 整体独立审查，结果直接在会话内反馈
 ```
 
 也可用 Pi 原生的 `/skill:spec 添加用户头像上传` 等写法。其他宿主按各自语法调用同名技能，比如 `/spec`；本包不为 Pi 注册这些短别名。`clarify` 已拆为 `spec` 与 `spike`，不保留旧入口；已有规格、计划和历史记录继续保留。
@@ -61,7 +61,7 @@ npx skills@latest add iron6909/coding-skills
 | [spec](skills/spec/SKILL.md) | 澄清需求，内化已有设计，形成整体正式规格；不拆开发批次 |
 | [plan](skills/plan/SKILL.md) | 规格已批准，需要拆分可验证的任务 |
 | [execute](skills/execute/SKILL.md) | 执行已批准的计划，或实现范围明确的小改动 |
-| [code-review](skills/code-review/SKILL.md) | 对本地分支改动做整体独立审查 |
+| [code-review](skills/code-review/SKILL.md) | 整体独立审查本地分支或提交区间，在会话内反馈 |
 
 ### 辅助技能
 
@@ -98,7 +98,7 @@ npx skills@latest add iron6909/coding-skills
 /coding autoflow 根据已批准的用户头像上传规格完成开发
 ```
 
-需先安装 `autoflow`，准备好已批准的规格，并确定界面决策。它只编排 `plan → execute → code-review`：计划仍需批准，同时授权后续执行与范围内的 Blocking/Important 修复，不代做需求澄清或界面设计。
+需先安装 `autoflow`，准备好已批准的规格，并确定界面决策。它只编排 `plan → execute → code-review`：计划仍需批准，同时授权后续执行与范围内的 Blocking/Important 修复，不代做需求澄清或界面设计。审查结果留在会话，状态只记录阶段和审查、修复提交定位。恢复时若反馈已丢失或代码已变化，重新进行只读审查，不能仅凭完成标记认定通过。
 
 ## 关键概念
 
@@ -141,21 +141,19 @@ npx skills@latest add iron6909/coding-skills
 │   └── adr/                            # 架构决策记录
 └── .coding/
     ├── features/YYYYMMDD-<name>/
-    │   ├── impl/
-    │   │   ├── progress.md             # 执行账本
-    │   │   └── task-<N>.md              # 可选的补充任务说明
-    │   └── review-YYYYMMDD-HHMM.md      # 功能内代码审查
+    │   └── impl/
+    │       ├── progress.md             # 执行账本
+    │       └── task-<N>.md              # 可选的补充任务说明
     ├── handoff/YYYYMMDD-HHMM[-<topic>].md
     ├── optimize/YYYYMMDD-HHMM/          # baseline.md、variant-<N>.md、summary.md
     ├── refactor/YYYYMMDD-<scope>.md
-    ├── review/YYYYMMDD-HHMM-<topic>.md  # 独立代码审查
     ├── ui-review/YYYYMMDD-HHMM.md
-    ├── autoflow-state.json             # 旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
-    ├── review-lenses.toml              # 审查镜头配置
-    └── review-lenses.md                # 同一配置的另一形式，二选一
+    └── autoflow-state.json             # 旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
 ```
 
 </details>
+
+`code-review` 的审查重点通过本次请求或计划的 Review focus 提供，结果只在会话内交付，不生成审查文档。
 
 旧 `.coding/ideation/` 报告和 `capability-map.md` 保留为历史资料，不再默认生成，也不自动迁移或删除。
 
@@ -163,7 +161,8 @@ npx skills@latest add iron6909/coding-skills
 
 - 候选方案不等于规格，验证结论不等于选型或实施授权。`spike` 先明确候选、问题、判据和安全边界，再如实保存结果；不额外要求批准实验事实。具体高风险操作仍需专项授权。
 - 规格和计划需要批准。`execute` 按测试驱动方式持续完成已批准任务，逐任务自查、验证与提交，最后进行最终验证并保留分支，不再提供分支处置菜单；遇到范围变化、未解决的失败、歧义或高风险决策会停下。
-- 任务自查不等于整体独立审查。`code-review`、`ui-review` 先出报告，修复需要授权；必要验证无法完成时，须明确接受边界并保留未验证标记。
+- 任务自查不等于整体独立审查。`code-review` 使用单个独立审查者，主代理核实并裁定反馈，不按镜头拆分；无法委派时明确标注内联自查，由用户决定是否接受独立性限制。
+- `code-review` 只在会话内交付结果，`ui-review` 仍保存报告。两者修复都需要授权；必要验证无法完成时，须明确接受边界并保留未验证标记。
 - 技能不自动合并、推送或发布，也不删除文档，包括工作记录和审查报告。旧经验满足归档条件时可归档，临时探针和日志仍可清理。
 - `.coding/` 是否忽略或自行提交由用户决定，技能不改变忽略或跟踪规则。
 
@@ -177,7 +176,8 @@ npx skills@latest add iron6909/coding-skills
 | execute、debug | 每个任务或每次修复的代码 |
 | simplify、optimize | 简化或优化后的代码 |
 | doc-review | 用户确认后的非语义修正；语义改动交回 ideate/spike/spec/plan 各自处理，不改写实验事实 |
-| code-review、ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
+| code-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；不生成审查报告 |
+| ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
 | autoflow | 编排 plan、execute、code-review 各自的提交 |
 | commit | 用户指定的临时改动 |
 | refactor、handoff | 不提交，只留下报告或交接记录 |
@@ -211,7 +211,9 @@ npm pack --dry-run --json --offline
 
 本次 `spike` 边界修订使用同一模型在独立本地夹具实跑六类场景的七个变体，每个变体一次，另用全新会话仅凭报告重建并运行探针。24 项预声明检查与独立复现均通过，覆盖就地补问判据、源码取证、报告可重建、三类结论、普通验收拒绝，以及外部效果与用户改动保全，不代表其他问题或生产环境已验证。
 
-本轮没有新旧版对照，单次观察不等于通用遵循率。完整执行与审查闭环、真实并行镜头传递及其他模型、平台仍未实跑。场景定义见 `scripts/workflow-cases.json`，结构检查通过不等于代理行为通过。
+本次 `code-review` 改造在 Windows 上使用 Pi 1.3.0 和 `openai/gpt-6.1-sol` 实跑九类场景，完成 17 次主代理运行和 9 个审查会话，核验 16 个有效变体的 58 项行为证据与 141 项机械检查。原内联夹具发现额外缺陷，保留诊断并另建干净夹具补测；授权修复只在显式批准的 CRLF 验证边界内通过。
+
+上述单次观察不等于通用遵循率。本轮没有新旧版对照，也未实跑全部 57 个场景；实际浏览器、审查者启动失败注入和独立的一般修复同意对话仍未验证，其他模型、平台也未验证。场景定义见 `scripts/workflow-cases.json`，结构检查通过不等于代理行为通过。
 
 ## 参考与许可
 

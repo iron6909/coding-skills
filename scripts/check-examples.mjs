@@ -23,12 +23,23 @@ assert.ok(!manifest.dependencies, "the adapter must not add runtime packages");
 assert.deepEqual(manifest.files, ["extensions", "skills", "README.md", "LICENSE"], "publish resources and user-facing documents, not development rules");
 
 // ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
-const lenses = read("skills/code-review/references/review-lenses.md");
-assert.ok(lenses.includes("## Correctness and safety floor (always)"), "every review needs a correctness/safety floor");
-for (const check of ["boundary conditions", "error handling", "test effectiveness", "trust boundaries", "data loss"]) {
-  assert.ok(lenses.includes(check), `missing review floor: ${check}`);
+const review = read("skills/code-review/SKILL.md");
+const reviewer = read("skills/code-review/references/code-reviewer.md");
+assert.doesNotMatch(review + reviewer, /review-lenses|legacy configuration|backward compatibility with/i, "the review contract must describe current behavior, not version compatibility");
+for (const check of ["boundary conditions", "error handling", "Test effectiveness", "trust boundaries", "data loss"]) {
+  assert.ok(reviewer.includes(check), `missing comprehensive review check: ${check}`);
 }
-assert.ok(lenses.includes("explicit user request for this run"), "a requested specialist lens must not require a config file");
+for (const rule of ["one fresh read-only subagent", "never the whole session history", "inline self-review (no independent reviewer)", "A failed delegation is a blocker", "Rule explicitly on every item", "Explain rejected findings with technical evidence", "stricter readiness gate"]) {
+  assert.ok(review.includes(rule), `missing review coordination rule: ${rule}`);
+}
+for (const rule of ["Do not write review reports or persist findings", "Review alone does not authorize code changes", "preserve user hunks", "one scoped re-check", "automatic second fix wave"]) {
+  assert.ok(review.includes(rule), `missing review boundary: ${rule}`);
+}
+for (const rule of ["Diff command: <pinned_diff_command>", "Do not dispatch a second reviewer", "author\'s rationale never grades its own correctness", "### Declined to judge", "**Ready**, **Needs fixes**, or **Unverified**"]) {
+  assert.ok(reviewer.includes(rule), `missing reviewer contract: ${rule}`);
+}
+const reviewReferences = readdirSync(new URL("../skills/code-review/references/", import.meta.url));
+assert.deepEqual(reviewReferences.filter((file) => /^(lens-|review-lenses\.|subagent-dispatch\.)/.test(file)), [], "retired lens and axis-dispatch references must not ship");
 for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Execution"], ["ui-review", "1. Resolve any open design decision"]]) {
   const source = read(`skills/${skill}/SKILL.md`);
   const gate = source.indexOf("## Workspace safety");
@@ -97,7 +108,8 @@ for (const skill of ["spec", "plan", "execute", "autoflow"]) {
 for (const skill of ["code-review", "ui-review"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("approved `ui-spec.md`"), `${skill} must check applicable approved UI decisions`);
 }
-for (const config of ["review-lenses.toml", "review-lenses.md"]) assert.ok(readme.includes(config), `README must document ${config}`);
+assert.ok(readme.includes("审查重点通过本次请求或计划的 Review focus 提供"), "README must describe the current review inputs");
+assert.ok(readme.includes("`code-review` 只在会话内交付结果，`ui-review` 仍保存报告"), "code-review output changes must not remove UI review reports");
 
 const strategy = read("skills/execute/references/testing-strategy.md");
 assert.ok(!/Recommended ratio|Coverage targets|Dependencies can be mocked/.test(strategy), "test selection must follow risk, not universal quotas or mockability");
@@ -153,75 +165,6 @@ assert.ok(loadingLabel, "the loading button must retain a text label in both sta
 for (const isLoading of [false, true]) {
   assert.ok(runInNewContext(loadingLabel, { isLoading }, { timeout: 1000 }).trim(), "button name must not disappear while loading");
 }
-assert.ok(!read("skills/code-review/references/lens-performance.md").includes("const len = items.length"), "array-length caching must not be a blanket optimization");
-
-const performance = read("skills/code-review/references/lens-performance.md");
-assert.ok(!performance.includes("const cache = new Map()"), "do not recommend a permanent unbounded profile cache");
-for (const rule of ["bounded cache", "freshness contract", "invalidation", "authorization boundaries"]) {
-  assert.ok(performance.includes(rule), `missing cache contract: ${rule}`);
-}
-const searchExample = blocks("skills/code-review/references/lens-performance.md", "typescript").find((source) => source.includes("// ✅ Cancel previous request"));
-assert.ok(searchExample, "missing request-cancellation example");
-const requests = [], searchResults = [], searchErrors = [];
-const search = runInNewContext(`${searchExample}\nsearch`, {
-  AbortController,
-  input: { addEventListener() {} },
-  fetch: (url, { signal }) => new Promise((resolve, reject) => {
-    requests.push({ url, signal, resolve, reject });
-    signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
-  }),
-  setResults: (results) => searchResults.push(results),
-  showSearchError: (error) => searchErrors.push(error),
-}, { timeout: 1000 });
-const cancelledSearch = search("a");
-const activeSearch = search("a&b");
-assert.equal(requests[0].signal.aborted, true);
-assert.equal(requests[1].url, "/api/search?q=a%26b");
-requests[1].resolve({ ok: true, json: async () => ["new"] });
-await Promise.all([cancelledSearch, activeSearch]);
-assert.deepEqual(searchResults, [["new"]]);
-assert.equal(searchErrors.length, 0, "normal cancellation is not an error");
-const httpFailure = search("http-error");
-requests.at(-1).resolve({ ok: false, status: 503 });
-await httpFailure;
-assert.equal(searchErrors.at(-1).message, "Search failed: 503");
-const networkError = new Error("offline");
-const networkFailure = search("network-error");
-requests.at(-1).reject(networkError);
-await networkFailure;
-assert.equal(searchErrors.at(-1), networkError);
-const jsonError = new SyntaxError("invalid JSON");
-const jsonFailure = search("json-error");
-requests.at(-1).resolve({ ok: true, json: async () => { throw jsonError; } });
-await jsonFailure;
-assert.equal(searchErrors.at(-1), jsonError);
-let finishOldJson;
-const oldJson = new Promise((resolve) => { finishOldJson = resolve; });
-const delayedSearch = search("slow");
-requests.at(-1).resolve({ ok: true, json: () => oldJson });
-await Promise.resolve();
-const latestSearch = search("latest");
-requests.at(-1).resolve({ ok: true, json: async () => ["latest"] });
-await latestSearch;
-finishOldJson(["stale"]);
-await delayedSearch;
-assert.deepEqual(searchResults, [["new"], ["latest"]], "late JSON must not replace newer results");
-assert.equal(searchErrors.length, 3);
-
-const algorithms = blocks("skills/code-review/references/lens-performance.md", "typescript").filter((source) => source.includes("function hasDuplicates"));
-assert.equal(algorithms.length, 2);
-const implementations = algorithms.map((source) => runInNewContext(`${source}\nhasDuplicates`, {}, { timeout: 1000 }));
-const item = {};
-for (const values of [[], [1], [1, 2], [1, 1, 1], [NaN, NaN], [0, -0], ["1", 1], [{}, {}], [item, item], new Array(2)]) {
-  for (const fn of implementations) assert.equal(fn(values), new Set(values).size !== values.length);
-}
-
-const accessibility = read("skills/code-review/references/lens-accessibility.md");
-assert.ok(accessibility.includes("dialog.showModal()"));
-assert.ok(accessibility.includes('<form method="dialog">'));
-assert.ok(!accessibility.includes("onkeydown=\"if(event.key==='Enter')"));
-const security = read("skills/code-review/references/lens-security.md");
-assert.ok(!security.includes("// ❌ XSS vulnerability\n<div>{user.bio}</div>"));
 const execute = read("skills/execute/SKILL.md");
 assert.ok(!/\bmodes?\b|5 task review-fix rounds/i.test(execute), "execute must not retain modes or the five-round review loop");
 assert.ok(execute.includes("After each task is committed, continue directly to the next executable task"), "execute must continue between tasks");
@@ -302,7 +245,7 @@ try {
   assert.equal(git("show", `${reviewHead}:value`).trim(), "5", "read context at the historical head");
   assert.ok(read(reviewFile).includes("git show <review_head_sha>:<path>"));
   const commands = reviewCommands.filter((source) => /^git (diff|log) /.test(source));
-  assert.deepEqual([...lenses.matchAll(/^Diff command: (.+)$/gm)].map(([, command]) => command), Array(3).fill("<pinned_diff_command>"), "every dispatch must preserve the selected comparison");
+  assert.deepEqual([...reviewer.matchAll(/^Diff command: (.+)$/gm)].map(([, command]) => command), ["<pinned_diff_command>"], "the single reviewer must receive the selected comparison unchanged");
   const ranges = commands.map((source) => {
     const args = source.replaceAll("<review_base_sha>", reviewBase).replaceAll("<review_head_sha>", reviewHead).split(/\s+/).slice(1);
     return [args, git(...args)];
@@ -356,7 +299,14 @@ try {
 } catch (error) {
   assert.fail(`Invalid autoflow state example: ${error.message}`);
 }
-assert.equal(state.version, 3, "required internal appendices need a distinct approval snapshot schema");
+assert.equal(state.version, 4, "conversation-only reviews need a distinct recovery schema");
+assert.ok(!Object.hasOwn(state, "review_report"), "state must not depend on a saved review report");
+for (const field of ["review_head", "fix_head"]) assert.equal(state[field], null, `${field} starts explicitly empty`);
+const recovery = read("skills/autoflow/references/state-management.md");
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "does not authorize a second fix wave", "If state is invalid or incomplete, stop"]) {
+  assert.ok(recovery.includes(rule), `missing conversation-only recovery gate: ${rule}`);
+}
+assert.ok(read("skills/autoflow/SKILL.md").includes("acceptance of the stated inline-review limitation"), "autoflow must not call self-review independent assurance");
 assert.deepEqual(state.approval.spec_appendix_blobs, {}, "explicitly record an empty appendix snapshot when no appendix is required");
 assert.ok(read("skills/autoflow/references/state-management.md").includes("snapshot all contract documents"), "recovery must validate required internal appendices as well as spec.md");
 for (const input of ["spec", "plan", "ui_spec", "design"]) {
@@ -364,13 +314,7 @@ for (const input of ["spec", "plan", "ui_spec", "design"]) {
   assert.ok(Object.hasOwn(state.approval, `${input}_blob`), `missing approved input snapshot: ${input}`);
 }
 assert.ok(read("skills/autoflow/references/state-management.md").includes("added, removed, or changed"), "recovery must detect presence changes as well as modified contents");
-for (const lens of ["accessibility", "i18n", "performance"]) {
-  const source = read(`skills/code-review/references/lens-${lens}.md`);
-  assert.ok(source.includes("Severity (blocking, important, minor)"), `${lens} must permit the full severity range`);
-}
-assert.ok(accessibility.includes("14pt bold"), "large bold text has a separate WCAG threshold");
-assert.ok(!security.includes("// ✅ Validated and sanitized"), "extension and metadata size checks alone do not validate uploads");
-for (const rule of ["decode", "server-generated", "exclusive", "outside"]) assert.ok(security.includes(rule), `missing upload safeguard: ${rule}`);
+
 const debug = read("skills/debug/SKILL.md");
 const workspaceGate = debug.indexOf("## Workspace safety");
 assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "workspace safety must precede probes and hypothesis edits");
@@ -487,5 +431,5 @@ assert.ok(!guide.includes("a missing core skill is an incomplete installation"),
 assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
 assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");
 assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
-console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, safe cache guidance, cancellation/error/stale-response handling, duplicates, complexity, accessibility, bounded execution, task-owned increments, pinned historical/endpoint/branch review, branch-preserving handoff, spike safety and completion gates");
+console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, complexity, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving handoff, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

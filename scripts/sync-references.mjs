@@ -21,7 +21,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const MAP = {
   "glossary-format.md": ["survey", "spec"],
   "design-input.md": ["ideate", "spike", "spec"],
-  "subagent-dispatch.md": ["survey", "spec", "plan", "code-review", "execute", "refactor", "ideate"],
+  "subagent-dispatch.md": ["survey", "spec", "plan", "execute", "refactor", "ideate"],
   "tdd.md": ["execute", "debug", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "debug", "optimize"],
   "severity.md": ["execute", "code-review", "simplify", "doc-review", "ui-review"],

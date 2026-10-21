@@ -56,7 +56,7 @@ Keep lifecycle metadata in the same YAML frontmatter: `last_verified` when check
 
 ## Matching and reading learnings
 
-**When to read**: during `plan` (task selection) and `code-review` (Learnings axis).
+**When to read**: during `plan` (task selection) and `code-review` (matching recorded traps to the diff).
 
 Search active files directly under `docs/learnings/`; `_archived/` is history, not the default matching set.
 
