@@ -43,7 +43,7 @@ Examples:
 
 ## 4. Apply changes
 
-Apply the canonical format when editing a learning; do not migrate unrelated files. Preserve its reasoning and record why a claim changed. Before a move, resolve inbound citations, add archival metadata, and check for destination collisions as specified by the archival gates.
+Read `./references/repository-changes.md` before editing or moving a learning. Apply the canonical format when editing a learning; do not migrate unrelated files. Preserve its reasoning and record why a claim changed. Before a move, resolve inbound citations, add archival metadata, and check for destination collisions as specified by the archival gates.
 
 Consolidation and supersession never imply deletion. When a move is not safe or approved, leave the original in place with a pointer to the primary or replacement file.
 
@@ -57,7 +57,7 @@ git diff --staged
 git commit -m "docs(learnings): refresh against current codebase"
 ```
 
-Omit paths that do not apply. Check that each moved document survives at its destination and no unrelated user edits are staged. Do not push.
+Omit paths that do not apply. Check that each moved document survives at its destination and no unrelated user edits are staged.
 
 ## 6. Report and stop
 

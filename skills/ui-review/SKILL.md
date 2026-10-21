@@ -28,9 +28,9 @@ Use the impact criteria in `./references/ui-review-checklist.md`. Detection conf
 
 ## Workspace safety
 
-A read-only audit can proceed without a branch change. Before authorized fixes or checks that may write application state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content and existing check failures. Preserve user work; stop if overlapping changes cannot be separated safely. On the default branch (`main` or `master`), obtain consent for code edits there or create `feature/YYYYMMDD-<semantic-name>` before editing.
+Read `./references/repository-changes.md` before saving the report, running state-changing checks, or applying authorized fixes. Code inspection alone needs no branch change; saving the report is a repository write.
 
-Use isolated local/test fixtures for any state-changing verification. Destructive, security-sensitive, or real external effects need specific sign-off before execution; review or fix permission is not permission to affect real resources. Any rollback must undo only this run's changes, never the user's initial work.
+Read `./references/definition-of-done.md` before choosing verification for code fixes; it owns unavailable required checks and explicit verification waivers.
 
 ## Phase 0: Scope
 
@@ -111,8 +111,8 @@ When the user approves fixes:
 
 1. Resolve any open design decision with the user before changing code. Work in severity order, Blocking first, and make the smallest change that fixes each finding.
 2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.
-3. If necessary verification is unavailable, explain the gap. Commit with limited verification only if the user explicitly accepts that boundary; the report must still say unverified, not verified.
-4. After verification, commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the actual report path in the body. Stage only this finding's changes, excluding the original reviewed work and unrelated user changes. If unrelated changes are staged or cannot be separated safely, stop and ask; do not unstage or commit them. Do not push or commit the report.
+3. Apply the loaded DoD's unavailable-check gate; accepted limits remain explicitly unverified in the report, not verified.
+4. After verification, read `./references/git-commit.md` and commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the actual report path in the body. Stage only this finding's changes, excluding the original reviewed work. Do not commit the report.
 
 Report verified fixes, unverified changes, and remaining findings. Post-commit rechecks are welcome but do not replace the checks before committing.
 

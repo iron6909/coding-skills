@@ -12,7 +12,7 @@ Do not write product code, run experiments, create `plan.md` or capability maps,
 
 ## Inputs and readiness
 
-Read `./references/design-input.md` before accepting supplied material or writing documents. It owns scope reuse, workspace safety, full internalization, provenance, and the source-loss check. External designs are inputs to absorb, not execution contracts to link to. Apply the reference's product/UI authority boundary when identifying presentation decisions that may remain open.
+Read `./references/design-input.md` before accepting supplied material or writing documents. It owns scope reuse, full internalization, provenance, and the source-loss check. External designs are inputs to absorb, not execution contracts to link to. Apply the reference's product/UI authority boundary when identifying presentation decisions that may remain open.
 
 Read the relevant code, tests, configuration, existing `GLOSSARY.md`, and ADRs. Read an existing proposal and its relevant design evidence when supplied. Use the repository's facts rather than asking the user what inspection can answer.
 
@@ -107,7 +107,7 @@ Present the resolved contract and any glossary, ADR, or appendix changes togethe
 
 ## Save and commit
 
-Save the approved contract to `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal appendices. Read `./references/git-commit.md`, stage only these documents and approved glossary or ADR changes by exact path, and inspect the staged diff. Stop if unrelated changes are staged. Use the repository convention or `docs(spec): add <name>` / `docs(spec): update <name>`. Do not push.
+Read `./references/repository-changes.md` before saving the approved contract or changing a glossary or ADR. Save `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal appendices. Follow `./references/git-commit.md` for only these documents and approved glossary or ADR changes. Use the repository convention or `docs(spec): add <name>` / `docs(spec): update <name>`.
 
 ## Finish
 

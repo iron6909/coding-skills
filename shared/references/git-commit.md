@@ -40,9 +40,3 @@ docs(spec): add user authentication
 docs(plan): add login-flow
 fix(auth): prevent token expiry race
 ```
-
-## Do not push
-
-No skill pushes. Commits stay local; the user decides separately when to push.
-
-Do not merge or publish either. The commit stays on the current branch until the user decides what to do with it.

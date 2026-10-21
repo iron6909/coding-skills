@@ -142,11 +142,11 @@ After approval, Full writes `plan.md` and only any justified briefs. A committed
 
 ## Before saving
 
-Before any Full-plan, brief, or existing-ledger write, inspect the branch and record the initial staged, unstaged, and relevant untracked content. On `main` or `master`, obtain consent or create `feature/YYYYMMDD-<semantic-name>` before writing. Preserve user edits, including edits in plan and brief files; if overlap cannot be isolated safely, stop and agree on the boundary before writing. Draft approval does not authorize overwriting or committing unrelated work.
+Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`. Draft approval does not authorize overwriting or committing unrelated work.
 
 ## Commit
 
-For Full, follow `./references/git-commit.md`. Stage only `plan.md`, inspect the staged diff, and use the repository convention or `docs(plan): add <name>` / `docs(plan): update <name>`. Do not stage `.coding/` records or push.
+For Full, follow `./references/git-commit.md`. Stage only `plan.md`, inspect the staged diff, and use the repository convention or `docs(plan): add <name>` / `docs(plan): update <name>`. Do not stage `.coding/` records.
 
 Brief has no plan artifact to commit.
 

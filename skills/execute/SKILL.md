@@ -16,15 +16,9 @@ Both plan inputs require settled, approved scope and verification. Persistence a
 
 ## Workspace safety
 
-Before editing or running a check that may write state:
+Read `./references/repository-changes.md` before editing, writing records, or running checks that may change state. It owns the repository-wide safety, cleanup, and delivery rules; the task-specific boundaries and doubt-driven checkpoints below still apply.
 
-- read applicable `AGENTS.md`, existing `GLOSSARY.md`, and ADRs touching the affected area; use the project's terms
-- read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` constraints
-- inspect the branch; on the default branch (`main` or `master`), get consent or create `feature/YYYYMMDD-<semantic-name>` before writing
-- record the initial `git status --short`, staged and unstaged diffs, and relevant untracked content
-- identify the existing test, lint, build, and type-check commands
-
-Preserve initial user changes, including changes in task files. If overlap cannot be isolated safely, stop and agree on the boundary before editing or staging. Use isolated local/test targets; check the doubt-driven checkpoints below before any potentially side-effecting action, including verification commands.
+Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` constraints. Identify the existing test, lint, build, and type-check commands.
 
 **Load TDD discipline**: when changing behavior in a project that supports tests, read `./references/tdd.md`. Configuration, documentation, or generated files use the strongest available check instead. Do not add a test framework or dependency for this workflow.
 
@@ -156,7 +150,5 @@ Before claiming completion, confirm the task loop or already-satisfied small-req
 For a small change or session plan, report the change or already-satisfied evidence, checks and results, commit or no new commit, current branch, and any remaining gap. Omit empty bookkeeping sections.
 
 For persisted plans, also report the plan path, completed and skipped tasks, ledger path, actual rulings, cleared risk checkpoints, and deferred findings.
-
-Keep logs bounded: save large output and show only the relevant errors and paths. Do not revert user work, delete documents or branches, push, merge, or publish.
 
 After successful verification, read `./references/finish.md` for the completion handoff.

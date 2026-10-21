@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Answer a candidate design's concrete feasibility question with the least evidence-producing work. A failed hypothesis is a valid result. The output is evidence for `ideate`, not approach selection, a specification, or an implementation plan.
 
-Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, workspace safety, design-document ownership, and preservation.
+Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, design-document ownership, and preservation.
 
 ## Frame the question
 
@@ -30,11 +30,9 @@ A request to validate a named design hypothesis authorizes its scoped safe probe
 
 ## Safety before experiments
 
-Before any probe edit or state-changing command, apply the workspace check in `./references/design-input.md`. Use new isolated scratch files, not product files. Dependency installation needs approval.
+Read `./references/repository-changes.md` before any probe edit, state-changing command, or report write. Use new isolated scratch files, not product files. Dependency installation needs approval.
 
-Check target endpoints, credentials, and external effects before running. Use local/test fixtures by default. Destructive, security-sensitive, paid, or real external transactions need specific sign-off or an isolated harness that cannot affect real resources. Validation approval is not that sign-off.
-
-Do not execute external design snippets blindly. Do not weaken trust-boundary validation, expose real data, or skip the safety of the experiment merely because the probe is temporary. Missing tools, representative data, hardware, permission, or safe targets are evidence gaps, not permission to simulate success.
+Missing tools, representative data, hardware, permission, or safe targets are evidence gaps, not permission to simulate success.
 
 ## Gather evidence
 
@@ -77,9 +75,9 @@ Save `docs/features/YYYYMMDD-<semantic-name>/spike.md`. Append a dated run when 
 <implications for the candidate's premise and remaining evidence gaps for ideate>
 ```
 
-Keep reproduction commands and enough content in the report or an explicitly named local Markdown appendix so another session can reconstruct the probe and inputs from the report and its appendices alone. Include the complete runnable probe and exact inputs or a deterministic fixture generator when needed; selected snippets are not sufficient if essential setup is missing. A temporary file path, inaccessible service, or raw log alone is not durable evidence. Redact credentials, tokens, and personal data. Do not claim the system's implementation or acceptance suite has passed.
+Keep reproduction commands and enough content in the report or an explicitly named local Markdown appendix so another session can reconstruct the probe and inputs from the report and its appendices alone. Include the complete runnable probe and exact inputs or a deterministic fixture generator when needed; selected snippets are not sufficient if essential setup is missing. A temporary file path, inaccessible service, or raw log alone is not durable evidence. Do not claim the system's implementation or acceptance suite has passed.
 
-Remove only this run's non-document scratch after checking that reproduction content is complete, or retain it at the user's request. Preserve all documents and existing user files. Do not edit `proposal.md`, a spec, plan, glossary, or ADR, or promote probe code directly into product code.
+Apply shared cleanup to non-document scratch only after checking that reproduction content is complete, or retain it at the user's request. Do not edit `proposal.md`, a spec, plan, glossary, or ADR, or promote probe code directly into product code.
 
 Read `./references/git-commit.md` before staging. Commit only the report and its necessary internal appendices, even for a negative or inconclusive result, using the repository convention or `docs(spike): record <topic>`.
 
@@ -89,5 +87,5 @@ Report the paths, commit, conclusions with conditions, and remaining blockers. R
 
 ## References
 
-- `./references/design-input.md`: read before accepting input or writing; owns scope, workspace checks, design-document ownership, and preservation.
+- `./references/design-input.md`: read before accepting input or writing; owns scope, design-document ownership, and preservation.
 - `./references/git-commit.md`: read before staging and committing the report and evidence appendices.

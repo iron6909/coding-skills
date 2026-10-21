@@ -10,7 +10,7 @@ Review a branch, completed feature, or historical commits, including the feature
 
 Deliver feedback in conversation only. Do not write review reports or persist findings in another file, ledger, or state field. The current request or the plan's Review focus supplies specific concerns.
 
-Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
+Read `./references/repository-changes.md` before checks that may change state or any authorized fix; reviewing code alone remains read-only. Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
 
 ## Pin the review range
 
@@ -85,11 +85,11 @@ This workflow uses a stricter readiness gate than the shared severity defaults: 
 
 Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, verified authorization for the exact approved plan and target branch covers in-scope Blocking/Important fixes without another routine prompt. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
 
-Before editing, confirm the target branch and that its head is still `review_head_sha`; otherwise stop and reconcile with the user. Get consent before committing on the default branch or a branch the user does not own. Record the initial staged/unstaged changes and relevant untracked content; preserve user hunks even in fix-owned files. Stop if ownership cannot be isolated safely.
+Before editing, confirm the target branch and that its head is still `review_head_sha`; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
 
 For behavior fixes, read `./references/tdd.md` and follow it. Behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, then apply the DoD to the final fixed code. Failed or unavailable required checks block fix completion and commits unless the DoD's explicit verification-waiver gate is satisfied.
 
-Read `./references/git-commit.md` before selectively staging only fix-owned changes. Inspect `git diff --staged` and commit fixes separately from the reviewed work. Do not include original reviewed changes or unrelated staged hunks, and do not push.
+Read `./references/git-commit.md` before selectively staging only fix-owned changes. Commit fixes separately from the reviewed work; do not include original reviewed changes.
 
 Keep the current full SHA as `fix_head_sha`. Perform one scoped re-check of the original findings and `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`: verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or an automatic second fix wave. If Blocking/Important findings remain, stop and present them; unrelated observations do not extend the fix pass.
 
@@ -97,4 +97,4 @@ Keep the current full SHA as `fix_head_sha`. Perform one scoped re-check of the 
 
 Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it owns only its bounded stage state, not a copy of the findings.
 
-Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill. Do not merge, push, publish, or delete documents.
+Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill.

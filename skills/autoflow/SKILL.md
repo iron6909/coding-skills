@@ -15,8 +15,8 @@ The called skills own their planning, testing, review, and commit rules. Autoflo
 Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
 
 1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` and its required internal appendices. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `spec` or `ui-design`; do not invoke either. A failed or unresolved design premise stops affected work and returns to `ideate` outside this orchestrator, not a new automated stage; changed contracts and plans need their approvals before resuming.
-2. Inspect the branch, staged and unstaged changes, and untracked files. Record the initial state. Never commit, stash, reset, or overwrite unrelated user work. If it cannot be isolated safely, stop and ask.
-3. Confirm the target branch. On the default branch, get consent to work there or create `feature/YYYYMMDD-<semantic-name>`. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
+2. Read `./references/repository-changes.md` before preparation writes, state-changing commands, or saving orchestration state. In dry-run, inspect only; do not apply branch or write actions.
+3. Confirm the target branch under the shared safety gate. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
 4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
 5. Read `./references/state-management.md` before recording progress or resuming. An existing state for another run is not overwritten; ask whether to resume it or retain it under a unique filename before starting a new run.
 
@@ -66,7 +66,7 @@ Stop for a missing approval, changed approved inputs, an unresolved execution ga
 
 Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `spec` and stop; it is outside this orchestrator.
 
-Do not run destructive rollback commands or remove documents. Explain the current state and let the user decide recovery or integration.
+Explain the preserved state and let the user decide recovery or integration.
 
 ## Completion report
 
@@ -88,4 +88,4 @@ Stopped: <reason, or none>
 Next: <resolve blocker, resume, or user decides integration>
 ```
 
-Finish after reporting. Do not merge, push, deploy, invoke another skill, or clean up documents. The user decides what happens to the branch.
+Finish after reporting; do not invoke another skill. The user decides what happens to the branch.

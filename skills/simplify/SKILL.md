@@ -26,9 +26,7 @@ Simplify **recently changed code only**, within the files and change range confi
 
 ## Workspace safety
 
-Before the first edit or check that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if overlapping changes cannot be isolated. On the default branch (`main` or `master`), obtain consent for edits there or create `feature/YYYYMMDD-<semantic-name>` before writing.
-
-Use isolated local/test targets for verification. Destructive, security-sensitive, or real external effects need specific sign-off before running a command, or a safe isolated reproducer.
+Read `./references/repository-changes.md` before the first edit or check that may write state. Read `./references/definition-of-done.md` before selecting baseline and final checks; apply its commit and unavailable-check gates.
 
 ## Execution
 
@@ -83,7 +81,7 @@ pytest
 cargo test
 ```
 
-If tests fail, undo only this batch's simplification changes, preserving the recorded initial state and user work, then rerun the checks. If the changes cannot be separated safely, stop and ask; never reset or discard the user's work. Simplification must not break tests.
+If tests fail, roll back this batch under the shared safety rules and rerun the checks. Simplification must not break tests.
 
 Also run type-check and lint:
 ```bash
@@ -104,8 +102,6 @@ git commit -m "refactor(simplify): improve clarity and remove duplication
 - Renamed getUserData -> fetchAuthenticatedUser
 - Removed unused imports in 3 files"
 ```
-
-Do not push.
 
 ### 7. Report
 

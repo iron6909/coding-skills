@@ -122,14 +122,12 @@ Use that reference for contrast thresholds, effective touch areas, and color-onl
 ## Phase 4: Save and hand off
 
 1. Present the proposed documents, new design decisions, tradeoffs, and assumptions. Wait for approval before saving; approval of the product spec does not settle open visual choices. Honor existing approval of these exact decisions without asking again. Changed decisions need renewed approval.
-2. Save `DESIGN.md` only when it did not exist, and save `ui-spec.md` beside the approved spec. Do not rewrite an existing system as a side effect.
-3. After the specification checks pass, commit only the approved documents and this skill's changes:
+2. Before saving, read `./references/repository-changes.md`. Save `DESIGN.md` only when it did not exist, and save `ui-spec.md` beside the approved spec. Do not rewrite an existing system as a side effect.
+3. After the specification checks pass, read `./references/git-commit.md` and commit only the approved documents and this skill's changes:
 
    ```
    docs(ui-design): add design specifications for <feature-name>
    ```
-
-   If unrelated changes are staged or cannot be separated, stop and ask; do not unstage or commit them. Do not push.
 4. Say what comes next: `plan` reads `ui-spec.md` from the feature directory and breaks it into tasks. Do not start it.
 
 ## References

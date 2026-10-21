@@ -4,8 +4,6 @@ Read this before accepting supplied designs, importing external material, or sav
 
 ## Workspace and scope
 
-Read applicable `AGENTS.md` and `CLAUDE.md`. Before repository writes, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop if overlapping changes cannot be isolated. On the default branch (`main` or `master`), obtain consent or create `feature/YYYYMMDD-<semantic-name>` before writing.
-
 Use one `docs/features/YYYYMMDD-<semantic-name>/` directory for the requested delivery scope. Reuse its existing path when established; the date and name do not change at each skill handoff. Several modules or implementation phases do not imply several specifications. Never silently narrow a whole-system request to its first phase.
 
 Read existing documents before updating them. Preserve prior proposals, experiments, approved specifications, and task history. Append a changed selection or experiment result rather than erasing its predecessor. A different scope needs a distinct semantic directory, not an overwrite. Do not migrate or delete legacy reports or capability maps automatically.
@@ -44,5 +42,3 @@ The approved `spec.md` and its explicitly required internal appendices must cont
 Open presentation choices may remain for `ui-design`; identify them in the spec without leaving product outcomes, business state transitions, security, data integrity, or accessibility obligations undecided. Approved `ui-spec.md` and applicable `DESIGN.md` constraints supplement the product contract with layout, visual treatment, and component interaction details; they cannot override it. A change to the product contract requires `spec` approval before UI approval or dependent planning. Deferring an open presentation choice never permits dropping supplied, settled UI decisions.
 
 Check this before approving a spec: if the original material became unavailable, could `plan` and `execute` still recover every product requirement and supplied, settled UI decision from the internal contract? Any remaining presentation choices must be settled through `ui-design` before dependent planning or implementation. At that point, the approved spec, required appendices, and applicable approved UI/design inputs jointly govern implementation, with the product contract taking precedence. A working source link or a short summary is not proof of preservation.
-
-Stage and commit only the documents and appendices this invocation owns, using exact paths. Never change the user's ignore or tracking policy, delete a document, push, or start the next skill automatically.

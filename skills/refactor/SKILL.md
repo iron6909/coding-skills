@@ -74,7 +74,7 @@ Rules:
 
 ## 4. Report
 
-Write the candidates to `.coding/refactor/YYYYMMDD-<scope>.md` as a temporary report, not a committed artifact. If the file exists, add a numeric suffix; never overwrite an earlier report. Do not commit the report or write it at the repository root.
+Read `./references/repository-changes.md` before saving the report. Write the candidates to `.coding/refactor/YYYYMMDD-<scope>.md` as a temporary report, not a committed artifact. If the file exists, add a numeric suffix; never overwrite an earlier report. Do not commit the report or write it at the repository root.
 
 The report is for the user to read. Present the same list in the conversation, ordered by confidence and impact, with one sentence at the end naming the single change you would do first.
 
