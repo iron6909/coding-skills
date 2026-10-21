@@ -12,7 +12,7 @@ Do not write product code, build prototypes, create tasks, or invoke another ski
 
 ## Ground the question
 
-Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, workspace safety, input internalization, and preservation.
+Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, input internalization, and preservation.
 
 Read relevant code, patterns, constraints, `GLOSSARY.md`, ADRs, and active learnings when available. Read supplied spike evidence with its candidate, versions, data, environment, and limits. Reopen only affected design decisions, including a premise invalidated during later work. Ask only for missing intent, scope, or deciding constraints; do not send the user to another skill just to answer one question.
 
@@ -39,7 +39,7 @@ If any survive, rank them and recommend one with remaining unknowns explicit; ot
 
 ## Save the proposal
 
-Save `docs/features/YYYYMMDD-<semantic-name>/proposal.md`:
+Read `./references/repository-changes.md` before saving a proposal or its appendices. Save `docs/features/YYYYMMDD-<semantic-name>/proposal.md`:
 
 ```markdown
 # <Name> Proposal
@@ -79,6 +79,6 @@ Stop after reporting. Do not create a specification, run experiments or product 
 
 ## References
 
-- `./references/design-input.md` — read before accepting material or writing; owns scope, input preservation, and workspace safety.
+- `./references/design-input.md` — read before accepting material or writing; owns scope and input preservation.
 - `./references/subagent-dispatch.md` — read only for authorized broad read-only exploration; otherwise inspect directly.
 - `./references/git-commit.md` — read before staging and committing the proposal or a selection update.

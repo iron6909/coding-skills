@@ -133,19 +133,19 @@ Create `GLOSSARY.md` in the repository root only when project-specific terms exi
 
 ## Write
 
-Before writing, summarize:
+Read `./references/repository-changes.md` before any instruction or glossary write. Before writing, summarize:
 
 - what you found
 - which files will be created or updated (AGENTS.md, GLOSSARY.md if needed)
 - which facts remain unknown or conflict
 
-Then write the smallest safe update. Do not overwrite surrounding user content. Do not append duplicate sections on repeated runs.
+Then write the smallest safe update. Do not append duplicate sections on repeated runs.
 
 The root `AGENTS.md` contains shared rules. A child `AGENTS.md` contains only that project's differences. `GLOSSARY.md` is always at the root (not per-child-project).
 
 ## Commit
 
-Commit what this skill wrote. Stage only the `AGENTS.md` and `GLOSSARY.md` files you created or changed, and check `git diff --staged` before committing. Use `docs(survey): record project facts`, or the repository's own convention if it sets one. Do not push.
+Commit what this skill wrote. Stage only the `AGENTS.md` and `GLOSSARY.md` files you created or changed, and check `git diff --staged` before committing. Use `docs(survey): record project facts`, or the repository's own convention if it sets one.
 
 Read `./references/git-commit.md` for commit rules.
 

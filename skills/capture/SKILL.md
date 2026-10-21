@@ -39,7 +39,7 @@ Apply the gate to each candidate: would a competent engineer repeat the mistake 
 
 ## 3. Write
 
-Read `./references/learnings-format.md` for the canonical template, metadata, matching rules, and lifecycle. Use that format rather than inventing another.
+Read `./references/repository-changes.md` before saving any learning. Read `./references/learnings-format.md` for the canonical template, metadata, matching rules, and lifecycle. Use that format rather than inventing another.
 
 Search active files for the same topic before creating one. Append related entries to its existing file; correct an inaccurate entry in place and record what changed. Preserve the document. Archival belongs to `learning-refresh` under the lifecycle gates.
 
@@ -51,7 +51,7 @@ Before saving, confirm:
 - No entry repeats `AGENTS.md`, `GLOSSARY.md`, an ADR, or a spec decision without adding missing reasoning.
 - The topic is not duplicated, the metadata follows the canonical format, and the path is under `docs/learnings/`.
 
-Read `./references/git-commit.md` before committing. Stage only the learning files created or updated in this session, inspect the staged diff, and commit using the repository's convention or `docs(learnings): capture <topic>`. Do not push.
+Read `./references/git-commit.md` before committing. Stage only the learning files created or updated in this session, inspect the staged diff, and commit using the repository's convention or `docs(learnings): capture <topic>`.
 
 ## 5. Report and stop
 

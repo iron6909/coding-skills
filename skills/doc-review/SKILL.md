@@ -52,7 +52,7 @@ Read `./references/severity.md` and use it to grade every finding. An acceptance
 
 ### 6. Fix minor issues inline
 
-Edit the document directly for Minor findings:
+Read `./references/repository-changes.md` before editing. Edit the document directly for Minor findings:
 - Clarify vague wording
 - Add missing examples
 - Fix inconsistent terminology (check GLOSSARY.md)
@@ -109,8 +109,6 @@ git commit -m "docs(<type>): review and fix <document-name>
 - Resolved <count> important findings
 - <brief summary>"
 ```
-
-Do not push.
 
 ### 10. Report completion
 

@@ -21,9 +21,7 @@ Establish missing measurements and targets before changing code. A percentage th
 
 ## Workspace safety
 
-Before the first profile, benchmark, edit, or other command that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if it overlaps and cannot be isolated safely. On the default branch (`main` or `master`), obtain consent for edits there or create `feature/YYYYMMDD-optimize-<name>` before writing; reuse that branch for the run.
-
-Check the command's target environment, credentials, and external effects before running it. Use isolated local/test fixtures by default. Destructive, security-sensitive, paid, or real external transactions need specific sign-off before execution, or a safe isolated harness that cannot affect real resources. Record existing correctness-check failures before attributing any to a variant.
+Read `./references/repository-changes.md` before the first profile, benchmark, edit, or report write. Reuse the established branch for the run. Record existing correctness-check failures before attributing any to a variant.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md` before choosing verification commands. Use focused and affected checks for each variant; the loaded DoD decides pre-commit requirements and full-suite timing. Apply its Unavailable required checks gate before committing or declaring completion. Performance gains do not waive correctness checks.
 
@@ -171,7 +169,7 @@ One variant at a time.
 - **Iterate** if promising but needs refinement
 
 For keeps: commit only the verified variant's code on the current branch, following `./references/git-commit.md`. Include the actual run directory in the commit body.
-For reverts: record why and undo only this variant's code changes. Preserve existing user changes and every experiment report. If the changes cannot be separated safely, stop and ask. Do not delete a branch or merge without the user's decision.
+For reverts: record why and roll back only this variant under the shared safety rules; retain every experiment report.
 
 ### Phase 4: Stopping Criteria
 
@@ -221,7 +219,7 @@ Iterate (Phase 1 → Phase 2 → Phase 3) until one of:
 
 Run fresh final verification on the final kept code under the loaded DoD before declaring the run complete. Report the applied DoD, commands, results, and any explicitly accepted verification boundary; an unavailable required check remains unrun, not passed.
 
-Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch, staging only this work's code and tests and checking `git diff --staged`. Reports under `.coding/` stay uncommitted. Do not create an empty final commit, merge, or push; report the branch and let the user decide integration.
+Kept variants are committed individually. Commit any remaining verified optimization changes on the current branch under the shared commit rules. Reports under `.coding/` stay uncommitted; report the branch for the user's integration decision.
 
 Commit message:
 ```

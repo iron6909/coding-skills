@@ -8,13 +8,9 @@ disable-model-invocation: true
 
 Fix the root cause, not the symptom. Start with the evidence already available; a clear failure does not need an exhaustive investigation.
 
-Read existing `GLOSSARY.md`, applicable `AGENTS.md`, and ADRs touching the failing area. Use the project's terms in the fix and commit.
+## Safety and verification
 
-## Workspace safety
-
-Before adding probes, testing a hypothesis with edits, or running a reproduction that may write state, inspect the branch and record the initial staged and unstaged changes plus relevant untracked content. Preserve user work; stop and agree on the boundary if overlap cannot be isolated safely.
-
-On the default branch (`main` or `master`), obtain consent for investigation edits or create `feature/YYYYMMDD-<semantic-name>` before writing. Read-only investigation needs no branch change. Destructive or security-sensitive actions require specific sign-off before execution, or a safe isolated reproducer that cannot affect real data.
+Read `./references/repository-changes.md` before probes, hypothesis edits, or reproduction commands that may write state; it owns workspace safety, side effects, cleanup, and delivery boundaries.
 
 Read `./references/definition-of-done.md` before choosing checks and declaring completion. Apply its Unavailable required checks gate before committing or claiming the fix is done.
 
@@ -26,8 +22,6 @@ Read `./references/definition-of-done.md` before choosing checks and declaring c
 
 If no reproduction is possible, use the reporting gate below rather than changing code on an untested theory.
 
-Redact secrets, tokens, and personal data as `<REDACTED>` before showing commands or output.
-
 ## Phase 2: Investigate only the uncertainty
 
 Skip this phase when the cause is already established. Otherwise choose the investigation that can distinguish the credible hypotheses:
@@ -38,7 +32,7 @@ Skip this phase when the cause is already established. Otherwise choose the inve
 - reduce a noisy fixture only as far as needed to isolate the failure
 - bisect a regression when history and a usable reproduction make it worthwhile
 
-Mark temporary probes with a unique prefix such as `[DEBUG-a3f1]` so they can all be removed. Use isolated local/test targets and the workspace safety gate before running them.
+Apply the loaded repository-change rules before running probes or state-changing investigation commands.
 
 ## Phase 3: Test a hypothesis
 
@@ -61,8 +55,8 @@ Never route a small fix through `spec`, `plan`, or `execute` merely because it s
 1. **Prove the regression.** Read `./references/tdd.md` and use its Prove-It pattern: observe a correct-cause failure, apply the minimal fix, and confirm the same check passes. Reuse trustworthy failure evidence rather than repeating the cycle. If no feasible test harness exists, justify the strongest reproducible alternative and name the remaining coverage gap; do not install a framework for this workflow.
 2. **Implement one fix.** Address the confirmed cause without unrelated refactoring or extra scope. If a suitable test entry point is missing, explain the design limitation; recommend `refactor` only when structural work is actually needed.
 3. **Verify.** Run the regression check, original reproduction, and applicable affected checks. The same command can serve both regression and reproduction; do not rerun it solely to fill two labels. Follow the loaded DoD for full-suite timing and unavailable required checks. Fresh evidence must apply to the final code.
-4. **Inspect and clean the diff.** Remove only this run's probes, logs, and non-document scratch. Every `[DEBUG-...]` probe is gone. Preserve user changes and all documents.
-5. **Commit.** Follow `./references/git-commit.md`, stage only this fix's changes, and inspect `git diff --staged`. Use repository conventions or `fix(scope): <summary>`, recording the cause and verification. Do not push.
+4. **Inspect and clean the diff.** Apply the shared cleanup gate to this fix before committing.
+5. **Commit.** Follow `./references/git-commit.md`. Use repository conventions or `fix(scope): <summary>`, recording the cause and verification.
 
 ### If the fix fails
 

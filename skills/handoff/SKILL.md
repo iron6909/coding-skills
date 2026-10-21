@@ -35,7 +35,7 @@ Identify:
 
 ### 2. Create Handoff Document
 
-Write `.coding/handoff/YYYYMMDD-HHMM.md`:
+Read `./references/repository-changes.md` before saving; this does not authorize continuing the paused work. Write `.coding/handoff/YYYYMMDD-HHMM.md`:
 
 ```markdown
 # Handoff: [Feature/Task Name]

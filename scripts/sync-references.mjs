@@ -19,13 +19,14 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 // source file -> skill directories that ship a copy
 const MAP = {
+  "repository-changes.md": ["autoflow", "capture", "code-review", "commit", "debug", "doc-review", "execute", "handoff", "ideate", "learning-refresh", "optimize", "plan", "refactor", "simplify", "spec", "spike", "survey", "ui-design", "ui-review"],
   "glossary-format.md": ["survey", "spec"],
   "design-input.md": ["ideate", "spike", "spec"],
   "subagent-dispatch.md": ["survey", "spec", "plan", "execute", "refactor", "ideate"],
   "tdd.md": ["execute", "debug", "code-review"],
-  "definition-of-done.md": ["plan", "execute", "code-review", "debug", "optimize"],
+  "definition-of-done.md": ["plan", "execute", "code-review", "debug", "optimize", "simplify", "ui-review", "commit"],
   "severity.md": ["execute", "code-review", "simplify", "doc-review", "ui-review"],
-  "git-commit.md": ["survey", "ideate", "spike", "spec", "plan", "capture", "execute", "debug", "code-review", "simplify", "learning-refresh", "doc-review", "commit", "optimize"],
+  "git-commit.md": ["survey", "ideate", "spike", "spec", "plan", "capture", "execute", "debug", "code-review", "simplify", "learning-refresh", "doc-review", "commit", "optimize", "ui-design", "ui-review"],
   "learnings-format.md": ["plan", "code-review", "capture", "learning-refresh"],
   "stable-ids.md": ["spec", "plan", "execute"],
   "counterfactual-test.md": ["capture", "learning-refresh"],

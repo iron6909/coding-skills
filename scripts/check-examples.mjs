@@ -40,24 +40,22 @@ for (const rule of ["Diff command: <pinned_diff_command>", "Do not dispatch a se
 }
 const reviewReferences = readdirSync(new URL("../skills/code-review/references/", import.meta.url));
 assert.deepEqual(reviewReferences.filter((file) => /^(lens-|review-lenses\.|subagent-dispatch\.)/.test(file)), [], "retired lens and axis-dispatch references must not ship");
-for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Execution"], ["ui-review", "1. Resolve any open design decision"]]) {
+const repositoryChanges = read("shared/references/repository-changes.md");
+for (const safeguard of ["initial staged and unstaged", "relevant untracked content", "default branch", "specific sign-off", "<REDACTED>", "non-document scratch", "Preserve every document", "ignore and tracking policy", "Do not push, merge", "do not authorize edits", "unrun checks remain unverified"]) {
+  assert.ok(repositoryChanges.includes(safeguard), `shared repository changes missing safeguard: ${safeguard}`);
+}
+assert.ok(repositoryChanges.includes("Document and work-record writes count too") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
+for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Execution"], ["ui-review", "## Phase 0:"]]) {
   const source = read(`skills/${skill}/SKILL.md`);
-  const gate = source.indexOf("## Workspace safety");
-  assert.ok(gate >= 0 && gate < source.indexOf(action), `${skill} needs workspace safety before its first affected action`);
-  for (const safeguard of ["initial staged and unstaged", "default branch", "sign-off"]) {
-    assert.ok(source.includes(safeguard), `${skill} missing safeguard: ${safeguard}`);
-  }
+  const gate = source.indexOf("./references/repository-changes.md");
+  assert.ok(gate >= 0 && gate < source.indexOf(action), `${skill} must load shared safety before its first affected action`);
 }
 
 const spike = read("skills/spike/SKILL.md");
 const designInput = read("shared/references/design-input.md");
-for (const safeguard of ["initial staged and unstaged", "default branch"]) {
-  assert.ok(designInput.includes(safeguard), `spike workspace reference missing safeguard: ${safeguard}`);
-}
-for (const safeguard of ["credentials", "sign-off", "non-document scratch"]) {
-  assert.ok(spike.includes(safeguard), `spike missing safeguard: ${safeguard}`);
-}
-assert.ok(spike.includes("apply the workspace check in `./references/design-input.md`"), "spike must apply shared workspace safety without duplicating it");
+assert.doesNotMatch(designInput, /initial staged and unstaged|default branch/, "design preservation must not duplicate shared workspace safety");
+assert.ok(spike.includes("non-document scratch"), "spike must preserve reproducible evidence before cleaning scratch");
+assert.ok(spike.includes("./references/repository-changes.md"), "spike must load shared repository safety before experiments");
 assert.ok(spike.indexOf("## Safety before experiments") < spike.indexOf("## Gather evidence"), "spike safety must precede execution");
 for (const rule of ["Do not require an approved spec or plan", "Supported", "Not supported", "Inconclusive", "Do not mock the dimension being tested", "preserve previous methods, failures, and conclusions"]) {
   assert.ok(spike.includes(rule), `missing independent spike contract: ${rule}`);
@@ -95,6 +93,16 @@ for (const skill of installedSkills) {
   const source = read(`skills/${skill}/SKILL.md`);
   assert.match(source, new RegExp(`^name: ${skill}$`, "m"), `${skill} must retain its portable name`);
   assert.match(source, /^disable-model-invocation: true$/m, `${skill} must remain explicitly invoked`);
+  if (skill !== "guide") {
+    assert.ok(source.includes("./references/repository-changes.md"), `${skill} can write repository files or Git state and must load shared safety and delivery`);
+    assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
+  }
+}
+for (const skill of ["execute", "debug", "code-review", "simplify", "optimize", "ui-review", "commit"]) {
+  const source = read(`skills/${skill}/SKILL.md`);
+  for (const reference of ["definition-of-done.md", "git-commit.md"]) {
+    assert.ok(source.includes(`./references/${reference}`), `${skill} must use shared code-change verification and commit gates`);
+  }
 }
 assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/coding spec"), "the quick start must work without optional guide");
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
@@ -316,9 +324,9 @@ for (const input of ["spec", "plan", "ui_spec", "design"]) {
 assert.ok(read("skills/autoflow/references/state-management.md").includes("added, removed, or changed"), "recovery must detect presence changes as well as modified contents");
 
 const debug = read("skills/debug/SKILL.md");
-const workspaceGate = debug.indexOf("## Workspace safety");
-assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "workspace safety must precede probes and hypothesis edits");
-assert.ok(debug.includes("initial staged and unstaged"), "debug must preserve pre-existing work before probing");
+const workspaceGate = debug.indexOf("./references/repository-changes.md");
+assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "shared workspace safety must precede probes and hypothesis edits");
+assert.doesNotMatch(debug, /initial staged and unstaged|default branch|Redact secrets/, "debug must delegate generic safety to the shared reference");
 assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
 assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
 assert.ok(!/git branch -[dD]|## Present the options|typed `discard`/.test(finish), "execute must not carry a branch-disposal workflow");
@@ -375,7 +383,7 @@ assert.ok(plan.includes("A saved plan contains task details") && plan.includes("
 assert.ok(read("skills/doc-review/references/review-lenses.md").includes("a self-contained plan requires no briefs"), "document review must not restore mandatory task briefs");
 const outputTier = read("skills/plan/references/output-tier.md");
 assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
-assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write") && plan.includes("Preserve user edits") && plan.includes("obtain consent or create"), "saved-plan writes need workspace protection before staging");
+assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Draft approval does not authorize"), "saved-plan writes need shared workspace protection without treating draft approval as permission to overwrite unrelated work");
 assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
 assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the approved plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
 const stableIds = read("shared/references/stable-ids.md");

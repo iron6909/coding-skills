@@ -10,7 +10,7 @@ Commit the user's specified ad-hoc changes. Other skills commit their own output
 
 ## 1. Read conventions and inspect scope
 
-Read `./references/git-commit.md` for convention precedence, staging safety, and message format. Inspect recent history only as needed for project vocabulary and scopes:
+Read `./references/repository-changes.md` before staging, running state-changing checks, or committing; this does not authorize editing the requested changes. Read `./references/definition-of-done.md` for required pre-commit checks and unavailable-check handling. Read `./references/git-commit.md` for convention precedence, staging safety, and message format. Inspect recent history only as needed for project vocabulary and scopes:
 
 ```bash
 git log --oneline -20 --no-merges
@@ -41,7 +41,7 @@ git commit -m "<subject>"
 git log -1 --stat
 ```
 
-Create a new commit; do not amend. Do not push, merge, or publish.
+Create a new commit; do not amend.
 
 ## Examples
 
