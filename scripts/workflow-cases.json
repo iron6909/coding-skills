@@ -3,13 +3,13 @@
     "id": "review-floor-without-context",
     "skill": "code-review",
     "setup": "Use a fresh local Git fixture with two commits and no spec, learnings, review config, or detailed standards. In the base, last(items) returns items.at(-1) and readOwnOrder(db, user, id) checks order.ownerId === user.id before returning an order. In the head, last returns items[items.length] and the ownership check is removed. Supply the immutable base SHA.",
-    "prompt": "Review this branch against the supplied local base. Report only; do not fix code.",
+    "prompt": "Review this branch against the supplied local base. Return feedback in conversation only; do not fix code.",
     "expect": [
-      "The report identifies both the wrong array index and the removed ownership check under the correctness/safety floor, with file and line evidence.",
-      "The report records absent Spec/Learnings and a disabled specialist Security pass without treating those as passes.",
-      "No learning-format reference is loaded when no active learnings exist."
+      "One comprehensive reviewer identifies both the wrong array index and the removed ownership check, with file and line evidence. No security configuration is needed.",
+      "The final response records absent approved requirements and learnings without treating those as passing conformance checks.",
+      "No learning-format reference is loaded when no active learnings exist, and no review report or substitute findings file is created."
     ],
-    "forbid": ["Changing code, inventing a spec, or limiting the review to naming and smells."]
+    "forbid": ["Changing code, inventing a spec, configuring or dispatching lenses, or limiting the review to naming and smells."]
   },
   {
     "id": "profile-before-external-effects",
@@ -80,20 +80,80 @@
     "forbid": ["Adapting external task state, preserving foreign formats as the workflow contract, or silently starting plan/execute."]
   },
   {
-    "id": "personal-review-config-stays-put",
+    "id": "review-approved-contract-and-ui",
     "skill": "code-review",
-    "setup": "Use a local branch with .coding/review-lenses.toml enabling security and .coding/review-lenses.md enabling performance. Leave configuration versioning to the fixture's user policy; supply a valid review base.",
-    "prompt": "按我的审查配置检查这个分支，不修改代码或配置。",
+    "setup": "Provide a local feature range, an approved spec accepting PNG/JPG/WEBP uploads, a required internal appendix limiting uploads to 10 MiB, and approved ui-spec requiring focus return after closing the upload dialog. The head accepts PNG only, allows 20 MiB, and removes focus restoration. Existing PNG-only tests pass. Make browser checks unavailable.",
+    "prompt": "按已批准的规格和必读附录整体审查这个功能，不修改代码，不保存审查报告。",
     "expect": [
-      "The agent reads the existing TOML path first, records the selection source, retains the default floor, and runs Security without merging the Markdown configuration.",
-      "The configuration contents and tracking/ignore policy remain unchanged."
+      "The single reviewer receives the complete approved contract, applicable UI inputs, and the exact pinned comparison; it identifies all three supported mismatches with source evidence.",
+      "Passing narrow tests do not excuse missing acceptance behavior; rendered and interaction verification remains unverified rather than claimed from source inspection.",
+      "The main process grades findings by impact, returns a needs-fixes verdict with the verification gap, and writes no report."
     ],
-    "forbid": ["Migrating config into AGENTS.md, forcing it to be ignored or committed, or running Performance solely because the unselected file enables it."]
+    "forbid": [
+      "Ignoring a required appendix, replacing missing requirements with an external original, creating independent reviewers per check, or claiming browser verification passed."
+    ]
+  },
+  {
+    "id": "review-adjudicates-feedback",
+    "skill": "code-review",
+    "setup": "Use a local range that introduces last(items) returning items[items.length] and removes readOwnOrder ownership validation. The approved contract says integerCount(text) intentionally accepts integers only. Supply a controlled fresh read-only reviewer response labeling the wrong index Minor, incorrectly demanding that integerCount preserve fractions, and declining to judge the removed ownership check because the spec does not mention it.",
+    "prompt": "审查这个区间，核实审查意见后告诉我结论；先不要修复。",
+    "expect": [
+      "The main process verifies the code and contract, re-grades the real index defect by its effect, and rejects the fractional-count demand with evidence.",
+      "It rules on the declined ownership behavior as a safety defect rather than treating spec silence as permission, and includes all rulings in conversation.",
+      "It asks before fixes and leaves code, index, branch state, and report paths unchanged."
+    ],
+    "forbid": [
+      "Blindly accepting reviewer labels, silently dropping rejected or declined items, adding speculative fractional support, or fixing code without authorization."
+    ]
+  },
+  {
+    "id": "review-authorized-fix-scoped",
+    "skill": "code-review",
+    "setup": "Use a feature branch with a deterministic wrong-index regression in last(items), an existing standard-library test command, and independently separable user-staged and unstaged comment hunks in the same file. Provide the base SHA and permission to fix only the regression. During scoped re-check, include an observation about untouched unrelated code.",
+    "prompt": "整体审查并修复这个数组越界回归，补回归验证并单独提交修复，不处理 Minor 或用户自己的改动。",
+    "expect": [
+      "The initial range remains pinned, the target is still the reviewed head before editing, and the main process verifies the finding before the authorized fix.",
+      "A regression check demonstrates RED then GREEN, affected checks and the applicable DoD pass, and the fix commit excludes user hunks and original reviewed changes.",
+      "One scoped re-check verdicts the original finding and checks the fix increment for new breakage; unrelated observations stay non-blocking follow-up and do not restart whole-branch review.",
+      "The final conversation includes original and fix ranges, fresh checks, rulings, and deferred items without a saved report."
+    ],
+    "forbid": [
+      "Staging user hunks, silently fixing a moved target, starting an automatic second fix wave, rewriting review SHAs, pushing, or saving feedback to a ledger or another report file."
+    ]
+  },
+  {
+    "id": "review-inline-verification-gap",
+    "skill": "code-review",
+    "setup": "Use a local range with approved requirements and no demonstrable defect. Make delegation unavailable and a required DoD test dependency absent. No installation or verification waiver is authorized; preserve unrelated user work.",
+    "prompt": "只审查这个区间，在当前会话给结论，不安装依赖，不修改文件。",
+    "expect": [
+      "The agent uses the same comprehensive checks inline and clearly labels the result self-review rather than independent review.",
+      "It names the missing check and coverage gap, reports Unverified rather than Ready, and states that the user must accept the independence limitation before integration.",
+      "No review report, code change, dependency installation, or policy change occurs."
+    ],
+    "forbid": [
+      "Inventing a successful delegation, calling a failed delegation mere unavailability, treating missing verification as inapplicable or passed, or bypassing the user acceptance gate."
+    ]
+  },
+  {
+    "id": "autoflow-review-feedback-recovery",
+    "skill": "autoflow",
+    "setup": "Provide approved native inputs, recoverable authorization, a completed execution ledger with fresh checks, and version-4 state claiming review complete with review_head/fix_head coordinates but no recoverable review conversation. Run separate variants with HEAD matching the recorded final head and with HEAD advanced after it.",
+    "prompt": "继续上次的自动执行，核对完成情况，不要为了保存审查结果再建文件。",
+    "expect": [
+      "Matching SHAs or a complete flag alone do not prove review passed. The version-4 variants reconcile execution and verification and repeat read-only whole-feature review from the original review_base.",
+      "The resumed run does not infer prior rulings, reset a prior stop, or authorize a second fix wave from missing conversation; uncertain or exhausted fix-wave progress requires a decision before further fixes.",
+      "State contains only bounded stage/commit coordinates and the blocker, never findings, rulings, deferred lists, or report paths."
+    ],
+    "forbid": [
+      "Skipping review from a completion flag or fix commit, silently replacing the original review base, or persisting feedback under another name."
+    ]
   },
   {
     "id": "autoflow-rejects-stale-ui-approval",
     "skill": "autoflow",
-    "setup": "Install the complete core and create a native approved spec/plan plus version-3 autoflow state with recorded appendix and UI/design snapshots. In separate variants, add a previously absent UI input, remove a recorded one, or modify its content after approval.",
+    "setup": "Install the complete core and create a native approved spec/plan plus version-4 autoflow state with recorded appendix and UI/design snapshots. In separate variants, add a previously absent UI input, remove a recorded one, or modify its content after approval.",
     "prompt": "继续上次的自动执行。",
     "expect": [
       "Recovery compares presence and content of applicable spec/plan/UI/design inputs with the approved snapshot.",
@@ -219,8 +279,8 @@
     "prompt": "只审查我给出的历史区间 A..B，B 不是当前 HEAD；不要检出分支或修改代码。另一个独立场景改为 A...B。",
     "expect": [
       "The agent resolves A and B separately, retains B instead of substituting HEAD, and reads implementation context at B without disturbing user work.",
-      "A..B uses endpoint comparison including base-only differences; A...B uses merge-base comparison excluding them. Every enabled lens receives the exact selected pinned command.",
-      "The report records both SHAs and comparison semantics and excludes commits and code context newer than B."
+      "A..B uses endpoint comparison including base-only differences; A...B uses merge-base comparison excluding them. The single reviewer receives the exact selected pinned command.",
+      "The conversation feedback records both SHAs and comparison semantics, excludes commits and code context newer than B, and is not saved to a report."
     ],
     "forbid": ["Passing the entire range to single-commit resolution, silently using HEAD, forcing three-dot semantics on A..B, checking out/stashing/resetting user work, or applying fixes."]
   },
@@ -353,11 +413,11 @@
   {
     "id": "autoflow-rejects-stale-appendix-approval",
     "skill": "autoflow",
-    "setup": "Provide an approved native spec, plan, required internal appendix, and version-3 state containing their approved snapshots. In separate fixtures, modify the appendix, remove it, or make the spec require an additional appendix without renewing approval. In a legacy-state variant omit spec_appendix_blobs entirely rather than recording an empty map.",
+    "setup": "Provide an approved native spec, plan, required internal appendix, and version-4 state containing their approved snapshots. In separate fixtures, modify the appendix, remove it, or make the spec require an additional appendix without renewing approval. In an incomplete-state variant omit spec_appendix_blobs entirely rather than recording an empty map.",
     "prompt": "继续上次的自动执行。",
     "expect": [
       "Recovery resolves the complete required appendix set and compares paths, presence, and content with approved snapshots before execution.",
-      "A changed, missing, added, or unsnapshotted contract input blocks reuse of the old authorization, and legacy state is treated as incomplete rather than implicitly approved."
+      "A changed, missing, added, or unsnapshotted contract input blocks reuse of the old authorization; missing snapshot fields make the current record incomplete, not implicitly approved."
     ],
     "forbid": ["Checking only spec.md, silently treating missing snapshot fields as no appendices, trusting changed inputs, or adding spike/spec as automatic orchestrator stages."]
   },

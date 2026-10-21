@@ -54,11 +54,11 @@ After execution's final verification succeeds, return to this orchestrator befor
 
 ## Stage 3: Code review
 
-Invoke `code-review` with the fixed feature review base, approved spec and plan paths, applicable approved UI/design inputs, target branch, plan Review focus, and recorded fix authorization. Use its configured lenses; do not enable optional lenses merely because the run is autonomous.
+Invoke `code-review` with the fixed feature review base, approved spec and plan paths, applicable approved UI/design inputs, target branch, plan Review focus, and recorded fix authorization. It performs one comprehensive independent review and returns feedback in conversation, not a saved report. If independent review is unavailable, stop for the user's acceptance of the stated inline-review limitation before completing this stage.
 
 The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
 
-Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. The review report stays under `.coding/` and is not committed.
+Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. Return the adjudicated findings, rejected/deferred items, checks, and verdict in conversation only. State records stage status and reviewed/fix SHAs, not a copy of that feedback; use the state reference when the conversation evidence is lost.
 
 ## Stops and recovery
 
@@ -80,7 +80,8 @@ Review base: <commit>
 Stages: plan <status>; execute <status>; code-review <status>
 Tasks: <completed / executable; each reviewed and committed; approved skipped tasks listed separately>
 Checks: <commands and fresh results>
-Review: <report path; Blocking/Important fixed or remaining>
+Review: <reviewed head; independent or inline; verdict; Blocking/Important fixed or remaining>
+Fixes: <reviewed head>..<fix head>, or none
 Deferred: <Minor findings>
 State: .coding/autoflow-state.json
 Stopped: <reason, or none>

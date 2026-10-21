@@ -1,34 +1,18 @@
 ---
 name: code-review
-description: Review a local branch, completed feature, or commit range for correctness, basic safety, standards, spec conformance, recorded learnings, and explicitly enabled specialist lenses. Save findings under .coding/review/ or .coding/features/<feature>/. Fix code only with explicit authorization; execute owns its task reviews.
+description: Independently review a local branch, completed feature, or commit range against requirements, correctness, safety, integration, and tests. Return findings in conversation only; do not save a review report. Fix code only with explicit authorization; execute owns its task reviews.
 disable-model-invocation: true
 ---
 
 # Code Review
 
-Independent review of a branch, completed feature, or historical commits, including the feature-wide stage called by `autoflow`. NOT a replacement for the task reviews inside `execute`.
+Review a branch, completed feature, or historical commits, including the feature-wide stage called by `autoflow`. This does not replace the task reviews inside `execute`.
 
-## When to use
+Deliver feedback in conversation only. Do not write review reports or persist findings in another file, ledger, or state field. The current request or the plan's Review focus supplies specific concerns.
 
-`code-review` when:
-- Reviewing someone else's branch
-- Auditing historical commits after the fact
-- User explicitly asks for an independent review
-- `autoflow` reaches its authorized feature-wide review stage
+Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
 
-## Review lenses
-
-Read `./references/review-lenses.md` before selecting or dispatching lenses; it owns selection, configuration, execution order, and report structure.
-
-Read an optional lens's reference only when that lens is enabled:
-- **Security**: `./references/lens-security.md`
-- **Performance**: `./references/lens-performance.md`
-- **Accessibility**: `./references/lens-accessibility.md`
-- **I18n**: `./references/lens-i18n.md`
-
-**Load the Definition of Done**: read `./references/definition-of-done.md`. A DoD item the diff breaks is a finding, even when no documented standard names it explicitly. State at the end of the report which DoD applied.
-
-## Pin the review base
+## Pin the review range
 
 Ask for a local base or range if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`, or `A..B` / `A...B`). Ask the user to fetch remote work first; do not fetch it here.
 
@@ -38,7 +22,7 @@ Select the comparison before resolving refs:
 - `A..B` means an endpoint comparison from A to B, even when B is not `HEAD`.
 - `A...B` means a branch comparison from A's merge base with B to B.
 
-Require both endpoints in a range; ask if the range or intended comparison is ambiguous. Resolve each endpoint separately, never pass the whole range to `rev-parse`, and never substitute `HEAD` for an explicit endpoint. Save the full outputs as `review_base_sha` and `review_head_sha`:
+Require both endpoints in a range; ask if the range or intended comparison is ambiguous. Resolve each endpoint separately, never pass the whole range to `rev-parse`, and never substitute `HEAD` for an explicit endpoint. Keep the full outputs as `review_base_sha` and `review_head_sha`:
 
 ```bash
 git rev-parse --verify --end-of-options "<review-base>^{commit}"
@@ -61,152 +45,56 @@ git diff <review_base_sha>...<review_head_sha>
 git log <review_base_sha>..<review_head_sha> --oneline
 ```
 
-Confirm both commits resolve and the selected diff is non-empty. Record both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to every lens. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
+Confirm both commits resolve and the selected diff is non-empty. Keep both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to the reviewer. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
 
 Inspect reviewed code and its callers at `review_head_sha`, for example with `git show <review_head_sha>:<path>`, not a newer or dirty working tree. Do not checkout, stash, or reset user work to obtain that context; mark unavailable historical context explicitly.
 
-## Identify the spec source
+## Prepare the handoff
 
-Look for the originating spec in this order:
+Collect the work's objective and applicable sources, not the implementer's reasoning history:
 
-1. A path the user passed as an argument
-2. `docs/features/YYYYMMDD-<semantic-name>/spec.md` matching the branch name or a commit scope
-3. Ask the user for the originating approved spec. If none exists, report that; do not invent a spec or an external-format substitute
+- Find the originating approved spec from the user's path, then a matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`, otherwise ask. If none exists, state the missing requirements input and continue the code review; do not invent a spec.
+- Read the spec and every required internal appendix as one contract. External originals, proposals, and experiment logs cannot fill missing requirements.
+- For frontend changes, include the applicable approved `ui-spec.md` and `DESIGN.md` constraints. Missing UI inputs limit conformance claims, not an ordinary code review. Source inspection does not verify rendered or interaction behavior.
+- Read a supplied plan and carry its Review focus verbatim. The spec remains the product authority; conflicting approved inputs need a decision, not silent precedence changes.
+- Read applicable repository instructions, coding standards, `CONTRIBUTING.md`, `.editorconfig`, and linter configuration; include existing `GLOSSARY.md` and ADRs touching the changed modules. Cite actual rules, not invented standards or mandatory refactors based on generic smells.
+- Look for active files in `docs/learnings/`. If none exist, state `Learnings: none recorded` without loading their format. When active learning files exist, read `./references/learnings-format.md` and supply matching evidence of recurring traps or boundary conditions. A past decision alone is not a new standard.
+- Include available verification commands, results and their code revision, plus known gaps. Task checks and ledger rulings are context, not proof; do not replay task histories or suppress findings because a task passed earlier.
 
-Read the originating spec and every required internal appendix as one contract. Give the Spec lens that complete input; external originals, proposals, and experiment logs cannot fill missing requirements.
+## Run one comprehensive review
 
-For a feature UI review, also read the matching approved `ui-spec.md` and applicable `DESIGN.md` constraints. Pass them to the Spec lens to check approved layouts, breakpoints, states, and interactions, separately from design-system consistency. If no matching UI spec exists, say so without blocking an ordinary code review. Do not claim rendered or interaction checks passed from source inspection alone.
+Read `./references/code-reviewer.md` when preparing the review; it owns the handoff template, checks, and feedback structure.
 
-When a plan is supplied, read it and use its Review focus as context for the enabled lenses. It does not enable optional lenses or replace the spec as authority.
+Use one fresh read-only subagent for the whole pinned diff, not one per concern. Give it the prepared inputs and rubric, never the whole session history, your proposed verdict, or instructions to suppress particular findings. The reviewer may inspect relevant callers and integration boundaries; this is a whole-change review, not a task-only gate.
 
-Review the whole feature diff, focusing on cross-task integration, missing requirements, and system-level risks. Task checks and their ledger are context, not proof: do not replay each task's review/fix history, but do not suppress a real finding merely because that task passed earlier.
+If delegation is unavailable, perform the same review as a separate inline pass and label it `inline self-review (no independent reviewer)`. Do not claim independence; the user decides whether that weaker review is sufficient before integration. A failed delegation is a blocker to report, not permission to silently substitute inline review.
 
-## Identify the standards sources
+The reviewer returns feedback in its response, without editing files or dispatching more reviewers. Do not ask it to rerun an entire suite already evidenced for the same revision. A concrete unanswered doubt may justify a focused check; the main process owns safe execution and the DoD gates.
 
-Read repo files that document how code should be written:
+## Adjudicate and deliver
 
-- `CODING_STANDARDS.md`
-- `CONTRIBUTING.md`
-- `AGENTS.md` conventions section
-- `.editorconfig`, linter configs
+Read all feedback before acting. Verify each finding against code, callers, approved inputs, and tests; merge duplicates and re-grade by actual impact using the loaded severity rubric. The reviewer's label is advice, not the gate. Keep unsupported suspicions distinct from confirmed defects.
 
-Also read `GLOSSARY.md` and the ADRs touching the changed modules: a change that contradicts a settled term or a recorded decision is a finding on the Standards axis.
+Rule explicitly on every item the reviewer declined to judge. Spec silence does not excuse ordinary broken behavior, unsafe trust boundaries, or data loss, but is not permission to add speculative features. Clarify ambiguous feedback or conflicts with user decisions before implementing affected fixes. Explain rejected findings with technical evidence; surface unresolved disputes and their consequences to the user.
 
-When no documented standards exist, use the **smell baseline**: Fowler code smells from _Refactoring_ ch.3.
+Deliver the reference's feedback structure in conversation. Include every valid finding, rejection, deferred item, and verification gap; do not silently drop a reviewer's concern. State which DoD applied. A read-only review can be delivered with unavailable checks, but cannot verify the implementation from missing evidence.
 
-**The repo overrides**: where documented standards endorse something the baseline flags, suppress the smell.
+This workflow uses a stricter readiness gate than the shared severity defaults: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification means `Unverified`, not `Ready`. Even a clean inline review needs the user's acceptance of its independence limitation before integration.
 
-### Smell baseline
+## Authorized fixes
 
-These smells apply when the repo documents no coding standards. Each is a labeled heuristic, not a hard violation. Skip anything tooling already enforces.
+Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, verified authorization for the exact approved plan and target branch covers in-scope Blocking/Important fixes without another routine prompt. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
 
-- **Mysterious Name**: function/variable/type name does not reveal what it does or holds → rename; if no honest name comes, the design is murky
-- **Duplicated Code**: same logic shape appears in multiple hunks/files → extract the shared shape, call it from both
-- **Feature Envy**: method reaches into another object's data more than its own → move the method onto the data it envies
-- **Data Clumps**: same fields/params travel together (a type wanting to be born) → bundle them into one type
-- **Primitive Obsession**: primitive/string stands in for a domain concept → give the concept its own small type
-- **Repeated Switches**: same switch/if-cascade on same type recurs → replace with polymorphism or one shared map
-- **Shotgun Surgery**: one logical change forces scattered edits across many files → gather what changes together into one module
-- **Divergent Change**: one file/module edited for several unrelated reasons → split so each module changes for one reason
-- **Speculative Generality**: abstraction/parameters/hooks added for needs the spec does not have → delete; inline back until a real need shows
-- **Message Chains**: long `a.b().c().d()` navigation the caller should not depend on → hide the walk behind one method on the first object
-- **Middle Man**: class/function mostly just delegates onward → cut it, call the real target direct
-- **Refused Bequest**: subclass/implementer ignores or overrides most of what it inherits → drop the inheritance, use composition
+Before editing, confirm the target branch and that its head is still `review_head_sha`; otherwise stop and reconcile with the user. Get consent before committing on the default branch or a branch the user does not own. Record the initial staged/unstaged changes and relevant untracked content; preserve user hunks even in fix-owned files. Stop if ownership cannot be isolated safely.
 
-## Identify the learnings source
+For behavior fixes, read `./references/tdd.md` and follow it. Behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, then apply the DoD to the final fixed code. Failed or unavailable required checks block fix completion and commits unless the DoD's explicit verification-waiver gate is satisfied.
 
-Look for active files in `docs/learnings/`. If none exist, record `Learnings: none recorded` and skip the axis and its format reference.
+Read `./references/git-commit.md` before selectively staging only fix-owned changes. Inspect `git diff --staged` and commit fixes separately from the reviewed work. Do not include original reviewed changes or unrelated staged hunks, and do not push.
 
-When active learning files exist, read `./references/learnings-format.md` before matching them to this diff. They hold traps, trade-offs, and boundary conditions recorded from earlier sessions.
+Keep the current full SHA as `fix_head_sha`. Perform one scoped re-check of the original findings and `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`: verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or an automatic second fix wave. If Blocking/Important findings remain, stop and present them; unrelated observations do not extend the fix pass.
 
-Match files to this diff by tag and by subject: the modules, tools, and concepts the changed files touch. A learning about a module this diff does not touch is not relevant, however interesting.
+## Completion
 
-This axis asks one question: does the diff repeat a trap the project already paid for, or cross a boundary condition a learning says not to cross? Keep it to that. A learning that merely describes a past decision is not a finding. Never invent a standard from a learning.
+Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it owns only its bounded stage state, not a copy of the findings.
 
-## Configure and run lenses
-
-Run the enabled lenses using the configuration and dispatch rules loaded above.
-
-For parallel read-only reviewers, read `./references/subagent-dispatch.md`. When delegation is unavailable, run the same enabled lenses inline in the reference's order. Reviewers return findings only; the main process owns grading and the report.
-
-## Grade findings
-
-Re-grade each finding by effect on a reasonable user using `./references/severity.md`. That reference defines the levels; no lens imposes a severity ceiling.
-
-The reviewer's label is advice. Your grading is the gate.
-
-## Write the report
-
-Write the findings to `.coding/features/YYYYMMDD-<name>/review-YYYYMMDD-HHMM.md` when the review matches a feature directory, otherwise to `.coding/review/YYYYMMDD-HHMM-<scope>.md`. If the file exists, add a numeric suffix; never overwrite an earlier report. Never write to the repository root.
-
-Use the Report structure in `./references/review-lenses.md`, including its ordering, source citations, and skipped/unavailable statuses.
-
-## Common rationalizations
-
-| Rationalization | Reality |
-|-----------------|---------|
-| "The diff is small, it doesn't need a review" | Small diffs still carry the exact bugs a review catches, and they are cheap to read. |
-| "The tests pass, so the code is correct" | The correctness/safety floor checks gaps in behavior and tests; the Spec lens adds acceptance coverage when a spec exists. |
-| "I wrote it, I know it's fine" | That is exactly the reviewer's blind spot. Use a fresh read-only reviewer. |
-| "No documented standards, so anything goes" | The correctness/safety floor still applies; the smell baseline supplies maintainability heuristics. |
-| "No learnings file, so this diff is clean" | That is an absent lens, not a passing one. Say `none recorded`; do not score it as a pass. |
-| "I grepped the learnings and found nothing relevant" | Check by tag and by subject before concluding. A trap recorded under another module's tag still applies if it is the same trap. |
-| "The spec is old, the code has moved on" | A mismatch is the finding. Report it; do not silently prefer the code. |
-| "I'll fix these findings while I'm here" | This skill reviews. Fixes are a separate, user-approved step. |
-| "Security/performance lenses aren't enabled, so skip them" | Skip specialist passes, not the mandatory correctness/safety floor. Report an obvious safety defect even without a Security lens. |
-
-## Red flags
-
-Stop and fix the process when you notice:
-
-- a review base that does not resolve, or a diff that is empty
-- findings reported without a file and line where one applies
-- findings from different lenses merged into one list
-- the reviewer's severity label accepted without re-grading
-- a report overwritten instead of suffixed
-- code changed during the review, before the user approved fixes
-- a Standard cited that the repository does not actually document
-
-## Verification
-
-Confirm the Definition of Done loaded above, then check the review itself:
-
-- [ ] the review base resolves and the diff is non-empty
-- [ ] all enabled lenses ran, or unavailable lenses are explicitly marked
-- [ ] every finding carries a severity you assigned, not the reviewer's
-- [ ] every finding that points at code names a file, and a line where one applies
-- [ ] the report was written to `.coding/`, never to the repository root
-- [ ] no code changed unless the user asked for fixes
-- [ ] the correctness/safety floor ran, even when no spec or configuration exists
-- [ ] optional lenses only ran if enabled by configuration or an explicit request for this run
-
-## Fixes
-
-This skill reviews; it does not change the code without authorization. After the report, list Blocking and Important findings and ask the user whether to fix them. When called by `autoflow`, verified user authorization for the exact plan and target branch can cover in-scope Blocking/Important fixes without another routine prompt. It never covers Minor fixes, scope changes, or decisions that require explicit high-risk sign-off.
-
-If the user agrees, first confirm which branch the fixes go on. If it is the default branch or a branch the user does not own, ask before committing there. Before editing, confirm the target still points at `review_head_sha`; otherwise stop and reconcile the changed range with the user. For behavior fixes, follow `./references/tdd.md`; behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, and apply the loaded DoD to the final fixed code before declaring the fixes complete. Commit the fixes separately from the reviewed work, staging only the files the fixes touched, checking `git diff --staged`, and using the repository's commit convention (otherwise Conventional Commits). Do not push. Minor findings stay deferred unless the user asks. If 3+ minor findings share a theme (reuse opportunities, naming inconsistency, complexity), suggest the user run `/simplify` after merge to address them systematically.
-
-Read `./references/git-commit.md` for commit rules.
-
-When the fixes are done, record the current full commit SHA as `fix_head_sha` and run one scoped re-check against the original findings using `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`. Keep the original review SHAs unchanged; record fixes as a separate range.
-
-## Completion report
-
-```text
-Review: <pinned range; endpoint or branch comparison>
-Fixes: <review_head_sha>..<fix_head_sha>, or none
-Report: <path of the review file written above>
-Lenses enabled: standards, spec, learnings[, security, performance, ...]
-Correctness/safety floor: <checked, or unavailable checks and why>
-Standards: <N findings including the floor, M fixed>
-Spec: <match | N gaps | no applicable approved inputs available>
-Learnings: <N findings, M fixed | none recorded | none matched>
-Security: <N findings, M fixed | lens not enabled>
-Performance: <N findings, M fixed | lens not enabled>
-Accessibility: <N findings, M fixed | lens not enabled>
-I18n: <N findings, M fixed | lens not enabled>
-Deferred: <N Minor findings>
-Next: <user reviews findings, requests fixes, or decides integration>
-```
-
-The report written to `.coding/` is for the user to read. List deferred minors here for their decision. If Blocking findings remain and the user wants to capture them for future reference, offer to route them to `capture`.
+Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill. Do not merge, push, publish, or delete documents.
