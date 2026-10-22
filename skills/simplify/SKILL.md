@@ -32,7 +32,7 @@ Read `./references/simplify-dimensions.md` for the reuse, clarity, efficiency, a
 
 Read `./references/complexity-metrics.md` only when an existing analyzer finding or a complexity candidate needs interpretation. Do not turn the cleanup into a measurement or scoring exercise.
 
-Use `./references/severity.md` to describe a finding's impact, not to choose its workflow. Existing behavior failures stop the affected cleanup and belong to `bugfix`, regardless of severity. Structural redesign belongs to `refactor`; requested behavior or API changes belong to `execute`. Missing required verification follows the DoD gate, not an assumed bug diagnosis. Report these separately from optional cleanup and recommend the appropriate skill without invoking it.
+Use `./references/severity.md` to describe a finding's impact, not to choose its workflow. Existing behavior failures stop the affected cleanup and belong to `bugfix`, regardless of severity. Requested behavior or API changes belong to `execute`. Missing required verification follows the DoD gate, not an assumed bug diagnosis. Report these separately from optional cleanup and recommend the appropriate skill without invoking it.
 
 ### 4. Verify
 

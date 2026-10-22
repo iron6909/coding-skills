@@ -53,7 +53,7 @@ Never route a small fix through `spec`, `plan`, or `execute` merely because it s
 ### Fix and verify
 
 1. **Establish the failure check.** Read `./references/tdd.md` and establish or reuse trustworthy failure evidence under its Prove-It rules. If no feasible test harness exists, justify the strongest reproducible alternative and name the remaining coverage gap; do not install a framework for this workflow.
-2. **Implement one fix.** Address the confirmed cause without unrelated refactoring or extra scope. If a suitable test entry point is missing, explain the design limitation; recommend `refactor` only when structural work is actually needed.
+2. **Implement one fix.** Address the confirmed cause without unrelated refactoring or extra scope. If a suitable test entry point is missing, explain the design limitation.
 3. **Verify.** Run the regression check, original reproduction, and applicable affected checks. The same command can serve both regression and reproduction; do not rerun it solely to fill two labels. For flaky or performance failures, repeat the baseline workload under comparable conditions and report before/after failure rates or metrics, sample counts or observation windows, and the acceptance result; one clean run is not proof. Follow the loaded DoD for full-suite timing and unavailable required checks. Fresh evidence must apply to the final code.
 4. **Inspect and clean the diff.** Apply the shared cleanup gate to this fix before committing.
 5. **Commit.** Follow `./references/git-commit.md`. Use repository conventions or `fix(scope): <summary>`, recording the cause and verification.

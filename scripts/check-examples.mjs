@@ -114,7 +114,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize"].includes(skill)), "retired entries must not remain as second implementations or aliases");
+assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize", "refactor"].includes(skill)), "retired entries must not remain as second implementations or aliases");
 for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
@@ -374,7 +374,6 @@ const dispatch = read("shared/references/subagent-dispatch.md");
 assert.ok(dispatch.includes("For exploration") && dispatch.includes("only when the invoking skill calls for independent review") && dispatch.includes("exploration alone does not add a review stage"), "shared dispatch guidance must not turn exploration into independent review");
 assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
 assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
-assert.ok(!read("skills/refactor/SKILL.md").includes("Never write a refactor report into the repository"), "temporary report writes are allowed; commits are not");
 assert.ok(!read("shared/references/counterfactual-test.md").includes("barely passes"), "generic security advice fails the counterfactual gate");
 const metrics = read("skills/simplify/references/complexity-metrics.md");
 assert.ok(!metrics.includes(".coding/simplify-config.toml"), "reuse project analyzer settings instead of an undocumented config");
@@ -435,14 +434,14 @@ assert.ok(read("skills/spec/references/adr-format.md").includes("All three of th
 assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
 assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
-for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix", "refactor"]) {
+for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);
   for (const file of readdirSync(new URL(`../skills/${skill}/`, import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
     assert.doesNotMatch(read(`skills/${skill}/${file}`), /(?:recommend (?:a targeted )?|needs (?:targeted )?|goes to )`spike`/, `${skill}/${file} must not send downstream work directly to spike`);
   }
 }
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-  assert.ok(!/`(?:clarify|debug|capture|optimize)`|skills\/(?:clarify|debug|capture|optimize)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+  assert.ok(!/`(?:clarify|debug|capture|optimize)`|skills\/(?:clarify|debug|capture|optimize|refactor)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
   assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 const commit = read("skills/commit/SKILL.md");
