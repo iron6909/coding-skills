@@ -6,16 +6,7 @@ Checks across five dimensions for reviewing implemented frontend UI. Use this as
 
 ## How to Use This Checklist
 
-For each check:
-1. **Verify** with source, rendered, or interaction evidence; record unavailable checks as not checked, not passed
-2. **If fails**: Create a finding with:
-   - Severity: Blocking / Important / Minor
-   - File and line number
-   - Issue description
-   - Expected behavior
-   - Impact
-   - Fix (code diff or instructions)
-   - Evidence and verification status; page, viewport, and state when relevant
+Apply the checks to the agreed scope. Follow the skill's evidence rules and report structure; this reference supplies context, checks, and impact guidance.
 
 **UI grading examples** (use the shared severity definitions loaded by ui-review):
 - **Blocking**: A confirmed applicable AA failure, inaccessible core action, data loss, or another demonstrated shipping blocker.
@@ -28,9 +19,7 @@ Item severities are defaults. Grade the demonstrated impact and approved require
 
 Classify each surface: **Persuade** earns a decision or action; **Operate** supports a task; **Read** supports understanding; **Experience** lets the work lead. Apply aesthetics to that surface and role, not the product category. Open new visual directions still need product-specific choices, not interchangeable templates.
 
-Approved DESIGN.md tokens govern consistency. Without that file, infer the stable system from code and label the inference; do not invent a scale. Explicit brand choices and familiar task UI are not defects just because they are common. These choices never exempt an accessibility failure.
-
-Search matches require contextual verification. Use available browser inspection for rendered views and interactions; otherwise record the source-only limits. A viewport screenshot proves neither a touch gesture nor real-device performance.
+Approved DESIGN.md tokens govern consistency. Matching a documented token is not design drift; a finding that departs from one names the token. Without that file, infer the stable system from code and label the inference; do not invent a scale or report a one-off value against a nonexistent system. Explicit brand choices and familiar task UI are not defects just because they are common. These choices never exempt an accessibility failure.
 
 ---
 
@@ -88,7 +77,7 @@ Search matches require contextual verification. Use available browser inspection
   - Severity: Important
   - Why: Users don't know what will happen
 
-- [ ] **Touch targets meet the 44×44 CSS px design goal on mobile**
+- [ ] **Effective touch targets meet the 44×44 CSS px design goal where touch is supported**
   - Inspect effective hit area, padding, spacing, and approved requirements, not just icon dimensions. This goal comes from WCAG 2.5.5 AAA, not a universal 2.1 AA failure threshold
   - Severity: Important by usability impact; Blocking if a core action is inaccessible or a shipping requirement fails
 
@@ -139,7 +128,7 @@ Search matches require contextual verification. Use available browser inspection
 
 ### 3.1 Color & Contrast
 - [ ] **Text contrast ≥4.5:1** (normal text)
-  - Verify computed foreground/background pairs before claiming failure; otherwise record a suspected risk
+  - Verify foreground/background pairs and applicable exceptions, including inactive controls, before claiming failure; otherwise record a suspected risk
   - Severity: Blocking (WCAG AA requirement)
 
 - [ ] **Large text contrast ≥3:1** (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px)
@@ -151,7 +140,7 @@ Search matches require contextual verification. Use available browser inspection
   - Severity: Blocking
 
 - [ ] **Color not used alone to convey information**
-  - Check: links underlined, errors have icon+text, charts have patterns
+  - Check for a valid non-color distinction: link underlining is one option; errors need explanatory text, and charts can use patterns or labels
   - Severity: Blocking
   - Why: Colorblind users miss information
 
@@ -176,7 +165,7 @@ Search matches require contextual verification. Use available browser inspection
   - Severity: Blocking
   - Why: Screen readers can't announce label
 
-### 3.3 Keyboard Navigation
+### 3.3 Keyboard and Hover/Focus Behavior
 - [ ] **All functionality accessible via keyboard**
   - Manual test: Tab through page, can reach all interactive elements
   - Severity: Blocking
@@ -197,6 +186,10 @@ Search matches require contextual verification. Use available browser inspection
   - Custom widgets do not prevent users from leaving by keyboard
   - Severity: Blocking
   - Why: Users stuck, can't continue
+
+- [ ] **Authored hover/focus content is dismissible, hoverable, and persistent where required**
+  - Check pointer transfer, persistence, and dismissal without moving pointer/focus when content obscures or replaces other content. Input errors are exempt from dismissal only; unmodified user-agent content is exempt from this criterion
+  - Severity: Blocking for a confirmed applicable WCAG 1.4.13 failure
 
 ---
 
@@ -255,5 +248,4 @@ Search matches require contextual verification. Use available browser inspection
 
 - **Not exhaustive**: These are the most common issues. Use judgment for issues not on the list.
 - **Context matters**: A check might not apply to every project. Skip if not relevant.
-- **Bundle related**: If the same issue appears 10 times, create one finding listing all locations.
 - **Prioritize impact**: Focus on what helps users most, not aesthetic perfection.

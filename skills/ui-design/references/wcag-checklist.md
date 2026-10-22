@@ -31,12 +31,17 @@ Core accessibility requirements based on WCAG 2.1 Level AA. Start with the [quic
 
 ## 1. Perceivable
 
-### 1.1 Color Contrast (WCAG 1.4.3)
+### 1.1 Contrast (WCAG 1.4.3 and 1.4.11)
 
-**Text contrast ratios:**
+**Text contrast (WCAG 1.4.3):**
 - Normal text: **≥4.5:1** against background
 - Large text (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px): **≥3:1** against background
-- UI components and graphics: **≥3:1** against adjacent colors
+- Assess exceptions for incidental text, inactive controls, and logotypes
+
+**Non-text contrast (WCAG 1.4.11):**
+- Visual information needed to identify UI components and states, and graphics needed to understand content: **≥3:1** against adjacent colors
+- For components, inactive controls and unmodified user-agent appearance are exempt
+- Decorative graphics are outside scope; a graphic's particular presentation may be exempt when essential to the information
 
 **How to check:**
 - Use browser DevTools (Chrome: Inspect > Color picker shows contrast)
@@ -60,13 +65,13 @@ Core accessibility requirements based on WCAG 2.1 Level AA. Start with the [quic
 Never use color alone to convey information.
 
 **Failures:**
-- ❌ Links only distinguished by color (no underline)
+- ❌ Links distinguished from surrounding text only by hue, without another valid cue
 - ❌ Form errors shown only in red text
 - ❌ Chart data differentiated only by color
 
 **Fixes:**
-- ✅ Links: underline + color
-- ✅ Errors: icon + color + text message
+- ✅ Links: underline + color, or another valid non-color distinction
+- ✅ Errors: explanatory text; icons may supplement it
 - ✅ Charts: patterns + color + labels
 
 ### 1.3 Text Alternatives (WCAG 1.1.1)
@@ -132,7 +137,7 @@ Structure must be perceivable regardless of presentation.
 **Headings:**
 - Use `<h1>` to `<h6>` to create outline
 - Don't skip levels (h1 → h3)
-- One `<h1>` per page
+- Provide a clear top-level heading and coherent hierarchy
 - Order represents hierarchy
 
 ---
@@ -249,13 +254,23 @@ Provide a way to skip repeated content (navigation).
 
 **Benefit:** Keyboard users don't tab through entire nav every page.
 
+### 2.5 Content on Hover or Focus (WCAG 1.4.13)
+
+For authored additional content shown on hover or focus:
+
+- **Dismissible**: Users can dismiss it without moving pointer or focus, for example with Escape, unless it reports an input error or does not obscure or replace other content
+- **Hoverable**: The pointer can move from the trigger onto the additional content without it disappearing
+- **Persistent**: It remains while the trigger or additional content is hovered or focused, unless dismissed or its information becomes invalid
+
+Unmodified user-agent content, such as a native title tooltip, is exempt.
+
 ---
 
 ## 3. Understandable
 
 ### 3.1 Form Labels (WCAG 3.3.2)
 
-Every input must have a visible, associated label.
+Provide persistent visible labels or instructions for controls that need user input, plus an effective accessible name. Prefer associated native labels; placeholder-only guidance disappears during entry.
 
 **Good:**
 ```html
@@ -411,22 +426,23 @@ ARIA (Accessible Rich Internet Applications) fills gaps in HTML semantics.
 Use this before finalizing specifications:
 
 ### Color
-- [ ] All text ≥4.5:1 contrast (normal), ≥3:1 (large)
-- [ ] Color not used alone (icons/patterns added)
-- [ ] All UI components ≥3:1 contrast
+- [ ] Applicable text meets ≥4.5:1 contrast (normal), ≥3:1 (large), with exceptions assessed
+- [ ] Meaning does not depend on color alone
+- [ ] Required component/state cues and meaningful graphics meet applicable ≥3:1 contrast, with exceptions assessed
 
 ### Keyboard
 - [ ] All functionality accessible via keyboard
 - [ ] Tab order logical
 - [ ] Keyboard focus has a visible native or authored indicator
 - [ ] No keyboard trap
+- [ ] Hover/focus content meets the applicable dismissible, hoverable, and persistent conditions
 
 ### Touch
 - [ ] Effective touch areas meet the 44×44 CSS px design goal or have an assessed, documented exception
 - [ ] Adequate spacing between targets
 
 ### Labels & Text
-- [ ] Every input has visible label
+- [ ] Input controls have persistent visible guidance and an effective accessible name
 - [ ] Error messages descriptive and actionable
 - [ ] Alt text for all informative images
 - [ ] Icon-only buttons have an effective accessible name

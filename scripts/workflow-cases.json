@@ -130,6 +130,43 @@
     "forbid": ["Treating matching tokens as complete design compliance, claiming browser checks passed, or fixing code without authorization."]
   },
   {
+    "id": "ui-design-skip-needs-settled-decisions",
+    "skill": "ui-design",
+    "setup": "Run separate local fixtures with approved product behavior, settled visual direction, and unchanged reusable controls. In one, narrow-layout arrangement and dialog focus behavior remain open. In the other, every required presentation and interaction decision is already settled by approved inputs or unchanged existing behavior; DESIGN.md is absent. No planning or implementation is authorized.",
+    "prompt": "根据已批准规格判断是否还需要界面设计；需要就展示草稿，否则说明下一步。先不要保存或实现。",
+    "expect": [
+      "Open layout or interaction choices produce a UI draft despite the fixed styling and reused controls; settled product behavior and supplied UI decisions are preserved.",
+      "The fully settled variant is skipped without inventing a design stage merely because DESIGN.md is absent.",
+      "Neither variant saves documents, starts plan, or writes application code before the relevant authorization."
+    ],
+    "forbid": ["Skipping unresolved interface decisions because styling is settled or components are reused, reopening settled product behavior, or automatically invoking the next skill."]
+  },
+  {
+    "id": "ui-design-revision-preserves-approved-inputs",
+    "skill": "ui-design",
+    "setup": "Use an isolated local feature branch with an approved revised product spec, an existing ui-spec.md, DESIGN.md, and an approved plan. The revised spec requires confirmation before deletion and preservation on cancellation, while the UI and an unfinished plan task still specify immediate deletion. Other UI decisions remain valid. No application changes or plan edits are authorized.",
+    "prompt": "对齐现有界面规格，保留不受影响的决定，指出计划中需要调整的部分。先给我审批草稿。",
+    "follow_up": "只批准界面规格的这些变更，保存提交后停止；不要修改计划或代码。",
+    "expect": [
+      "The agent reads the current product contract, existing UI specification, design system, and relevant plan before proposing revisions.",
+      "Unaffected approved UI choices are preserved without renewed approval; only new or changed decisions go through UI approval.",
+      "After approval, only ui-spec.md is updated and committed. The affected plan decisions are named for plan alignment, with dependent work not declared ready."
+    ],
+    "forbid": ["Overwriting unrelated approved UI decisions, changing DESIGN.md or the plan as a side effect, editing application code, or treating UI approval as approval of a conflicting plan."]
+  },
+  {
+    "id": "ui-review-contextual-a11y-and-inputs",
+    "skill": "ui-review",
+    "setup": "Use a safe local frontend fixture with browser inspection available. Include an inactive low-contrast control, a 36 by 36 CSS px effective touch target on a wide coarse-pointer viewport with no assessed exception, and a custom tooltip that disappears when the pointer moves from trigger to tooltip and cannot be dismissed in place while obscuring content. Preserve an approved readable font treatment with lowercase tracking. No fixes are authorized.",
+    "prompt": "专项审查界面的可用性和无障碍，结合已批准设计判断，不要修改代码。",
+    "expect": [
+      "The inactive control is not reported as a contrast failure solely for low contrast; approved readable lowercase tracking is not rejected by a blanket rule.",
+      "The wide viewport does not excuse a difficult touch target. The report distinguishes the 44px design goal and demonstrated usability impact from a universal AA threshold.",
+      "The tooltip's hoverability and applicable dismissal failures are identified with rendered or interaction evidence; unavailable checks, if any, remain explicitly unverified."
+    ],
+    "forbid": ["Inferring input capability from viewport width, treating every small target as an AA failure, applying aesthetic bans without contextual evidence, or fixing code without authorization."]
+  },
+  {
     "id": "native-spec-not-external-adapter",
     "skill": "spec",
     "setup": "Supply background material in an OpenSpec-style proposal/delta layout and mention it in project notes. There is no approved spec in this skill set's format. The user explicitly wants this skill set's workflow.",

@@ -127,17 +127,15 @@ Make the right choice obvious. Let users satisfice (pick the first reasonable op
 
 ### 3. Omit, Then Omit Again
 
-Get rid of half the words on every page, then get rid of half of what's left.
-
-Happy talk (self-congratulatory text) must die. Instructions must die. If it needs explaining, the design failed.
+Remove filler and repeated explanations. Keep concise labels, essential guidance, and safety or recovery instructions that help users finish the task.
 
 ## Responsiveness: Mobile-First Thinking
 
 ### The Challenge
 
 Users on mobile have:
-- Smaller screens (≤5.5" typically)
-- Touch instead of precise pointing
+- Narrower viewports
+- Often touch or coarse-pointer input, with keyboard and fine-pointer input also possible
 - Variable network speeds
 - Different context (often on the go)
 
@@ -149,8 +147,8 @@ Users on mobile have:
    - Layers add richness
 
 2. **Scale up thoughtfully**
-   - Tablet: add more density
-   - Desktop: add depth and micro-interactions
+   - Add density or supporting regions when space and the task justify them
+   - Choose interactions for the supported inputs, not the viewport label
 
 3. **Choose breakpoints from content and project support**
    - Reuse the existing system where it works
@@ -173,7 +171,7 @@ Users on mobile have:
 
 ### Layout Patterns
 
-**Mobile** (single column):
+**Narrow layout example** (single column):
 ```
 +------------------------+
 | Header                 |
@@ -186,7 +184,7 @@ Users on mobile have:
 +------------------------+
 ```
 
-**Tablet** (2 columns):
+**Intermediate layout example** (2 columns):
 ```
 +---------------------------+
 | Header                    |
@@ -197,7 +195,7 @@ Users on mobile have:
 +---------------------------+
 ```
 
-**Desktop** (3+ columns):
+**Wide layout example** (3+ columns):
 ```
 +-------------------------------+
 | Header                        |
@@ -207,74 +205,9 @@ Users on mobile have:
 +------+-------+-----------+----+
 ```
 
-## Accessibility: The Right Thing To Do
+## Accessibility and Component States
 
-Accessibility isn't a feature. It's how you build.
-
-### Why It Matters
-
-- 15% of the world has some disability (WHO)
-- More people use screen readers than think
-- Accessible design is usually better design for everyone
-- Legal requirement in many jurisdictions
-
-### Core Accessibility Requirements (WCAG AA)
-
-Read `./references/wcag-checklist.md` for thresholds and applicable criteria. Core principles:
-
-1. **Perceivable**: Information is usable by all senses
-2. **Operable**: Every function works with keyboard
-3. **Understandable**: Clear language, predictable behavior
-4. **Robust**: Works with assistive technologies
-
-### Color
-
-- Never use color alone to convey meaning
-- Meet the WCAG checklist's contrast threshold for the actual text size and weight
-- Never assume specific color perception
-- Consider colorblindness (8% of men, 0.5% of women)
-
-### Keyboard
-
-- All functionality accessible via keyboard
-- Tab order makes sense (visual top-to-bottom)
-- Focus indicator always visible
-- No keyboard trap (able to move focus away)
-
-### Semantic HTML
-
-- Use `<button>`, not `<div onclick>`
-- Use `<nav>`, not `<div class="navigation">`
-- Use `<main>`, not `<div id="content">`
-- Use `<form>`, not `<div class="form">`
-
-Benefits:
-- Screen readers understand structure
-- Keyboard navigation works automatically
-- Styling hooks provided
-- Browser defaults are reasonable
-
-### Forms
-
-- Every `<input>` has associated `<label>`
-- Error messages specific and actionable
-- Required fields clearly marked
-- Validation happens at right moment (inline or on submit)
-
-### States
-
-Every interactive element must clearly indicate its applicable states; native states count:
-- **Default**: Normal state
-- **Hover**: Where the input supports hover
-- **Focus**: (All) Keyboard focus - always visible
-- **Active**: (All) Being clicked/pressed
-- **Disabled**: When the control can be unavailable
-
-Avoid:
-- ❌ Color alone for state
-- ❌ Subtle differences (must be obvious)
-- ❌ Disappearing focus indicators
-- ❌ Relying on hover (doesn't exist on touch)
+Use `./references/wcag-checklist.md` for accessibility criteria, thresholds, and exceptions. Use `./references/component-states.md` for applicable native or authored component states.
 
 ## Anti-Patterns (What to Avoid)
 
@@ -288,7 +221,7 @@ Avoid:
 - ❌ Anonymous display typography in an open expressive brief; apply the role and mode guidance above
 - ❌ Novelty type that conflicts with the approved purpose, rather than a family banned by name
 - ❌ Inconsistent sizing (makes layout feel random)
-- ❌ Tracking/letterspacing on lowercase (unreadable)
+- ❌ Tracking that harms readability for the actual font, script, or text role
 - ❌ Line-height too tight (hard to read)
 
 ### Layout
@@ -305,10 +238,10 @@ Avoid:
 - ❌ Loading state missing (am I stuck?)
 - ❌ No error recovery (what do I do now?)
 
-### Mobile
+### Touch and Responsive Layouts
 - ❌ Touch hit areas that are hard to acquire; assess the design goal and actual input
 - ❌ Accidental page overflow; intentional usable table or code scrolling is different
-- ❌ Hover-only affordance (no cursor on mobile)
+- ❌ Hover-only affordance when supported inputs include touch or keyboard
 - ❌ Requires zoom to read (bad experience)
 - ❌ Autoplay video/sound (unexpected)
 
@@ -329,18 +262,3 @@ You have a new color / size / shadow that:
 3. Serves clear purpose (what's the story?)
 
 If all three are true, propose it in the conversation. Approval comes before saving; follow SKILL.md's boundary for a new versus existing DESIGN.md.
-
-## Decision Checklist
-
-Before finalizing ui-spec.md, verify:
-
-- [ ] Each surface has a clear mode (Persuade / Operate / Read / Experience)
-- [ ] Visual hierarchy obvious (what's most important?)
-- [ ] Applicable states are defined, including native feedback
-- [ ] Responsive behavior described
-- [ ] Contrast meets the WCAG checklist at the specified sizes and weights
-- [ ] Touch areas meet the 44px design goal or have an assessed, documented exception
-- [ ] Keyboard navigation possible
-- [ ] Error/loading/empty states handled
-- [ ] Follows DESIGN.md patterns (no new ad-hoc colors/spacing)
-- [ ] Applicable anti-patterns are addressed without overriding the approved brief or actual behavior

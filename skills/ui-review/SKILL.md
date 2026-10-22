@@ -1,26 +1,16 @@
 ---
 name: ui-review
-description: Review implemented frontend UI against approved UI decisions, the project's design system, and the accessibility floor, and write findings to .coding. Checks design consistency, usability, accessibility, responsive behavior, and performance. Use after execute finishes frontend work, or when asked to audit, review, or improve an interface. Changes code only if the user then asks for fixes.
+description: Review implemented frontend UI for design consistency, usability, accessibility, responsive behavior, and performance against approved UI decisions and the project's design system. Saves findings under `.coding/ui-review/`. Use after frontend implementation or when asked to audit, review, or improve an interface. Applies fixes only with user authorization.
 disable-model-invocation: true
 ---
 
 # UI Review
 
-Audit frontend code that already exists. Produces a findings report; changes code only when the user then asks.
-
-Do not confuse this with `code-review`, which judges a diff against repo standards and the originating spec. This skill judges an interface against usability and accessibility, which is a different question.
-
-## When to invoke
-
-- `execute` finished work that touched frontend files
-- The user asks to audit, review, or improve an interface
-- An interface looks inconsistent, unreadable, or hard to operate
+Perform an interface-focused audit of existing frontend work. `code-review` independently assesses a pinned code change as a whole; both skills can check approved requirements and UI decisions.
 
 ## Output
 
 `.coding/ui-review/YYYYMMDD-HHMM.md`, holding every finding. If that path exists, append `-2`, `-3`, or the next unused suffix; never overwrite a report. Use the selected path throughout the run. Nothing is committed by default.
-
-Each finding carries an ID, a severity, a file and line, the issue, the expected state, the impact on a real user, the fix, and its evidence. Include the page, viewport, state, screenshot, or reproduction steps when applicable.
 
 Before grading, read `./references/severity.md`. Use **Blocking**, **Important**, and **Minor** in new reports; retain existing reports unchanged. Severity describes impact, not permission to edit.
 
@@ -36,31 +26,17 @@ Read `./references/definition-of-done.md` before choosing verification for code 
 
 Ask what to review unless the request already says. Defaults worth offering: the files changed since the last review, or the whole frontend.
 
-Also settle two things: which dimensions to cover (all five, or one), and whether to report Minor findings or only Blocking and Important. A first pass on a large app is more useful scoped to Blocking and Important.
+Also settle two things: which dimensions to cover (all five, or a requested subset), and whether to report Minor findings or only Blocking and Important. A first pass on a large app is more useful scoped to Blocking and Important.
 
 ## Phase 1: Establish the baseline
 
-Read `DESIGN.md` when it exists. It is the baseline for every consistency finding: a value that matches a documented token is not a finding, and a finding that departs from one names the token.
-
-When there is no `DESIGN.md`, the baseline is what the code most consistently does. Say so in the report, and do not report a one-off value as a violation of a system that does not exist.
-
-Identify each surface's visitor mode using `./references/ui-review-checklist.md` before applying aesthetic checks. Approved tokens do not exempt an accessibility failure.
+Read `DESIGN.md` if present and enough code to locate the framework, components, and styling sources. Apply the context rules in `./references/ui-review-checklist.md` to identify each surface's mode and the consistency baseline.
 
 When the review matches a feature, read its approved `ui-spec.md`, originating spec, and all required internal appendices. Check the approved layouts, breakpoints, component states, and interactions separately from design-system consistency; matching tokens does not prove those decisions were implemented. If no matching UI spec exists, state that and continue the ordinary interface review without inventing one.
 
-Then read enough of the code to know the framework and where styles live — component files, stylesheets, theme config.
-
 ## Phase 2: Review the five dimensions
 
-Work through `./references/ui-review-checklist.md`. It holds the checks, their severity, and what each protects. Take the checks from there rather than from memory, so the report and the reference cannot drift apart.
-
-The dimensions, and what a finding in each means:
-
-1. **Design consistency** — a value or pattern that departs from the system. The fix is usually to use the token.
-2. **Usability** — a control that is hard to operate or that hides what it does.
-3. **Accessibility** — a barrier for keyboard, screen-reader, or low-vision users.
-4. **Responsive** — a layout that breaks or degrades on a real viewport.
-5. **Performance** — work the browser does that it does not need to.
+Work through the agreed dimensions in `./references/ui-review-checklist.md`. It owns the checks, default severity guidance, and what each protects.
 
 `./references/common-ui-mistakes.md` lists the patterns that recur across projects, with corrected code. Consult it when a finding needs a concrete replacement, and when deciding whether something is a mistake at all.
 
@@ -94,6 +70,7 @@ Approved UI decision conformance: <result, gaps, or no applicable inputs>
 ## Minor
 
 per finding: ID, severity, file:line, issue, expected, impact, fix, evidence and verification status
+include page, viewport, state, screenshot or reproduction steps when applicable
 
 ## Not checked
 what the scope or the environment ruled out
@@ -118,6 +95,6 @@ Report verified fixes, unverified changes, and remaining findings. Post-commit r
 
 ## References
 
-- `./references/severity.md` — shared severity definitions. Read before grading any finding.
-- `./references/ui-review-checklist.md` — the checks for Phase 2, with severities. Read in full before reviewing.
-- `./references/common-ui-mistakes.md` — the recurring anti-patterns, with corrected code. Read when a finding needs a concrete replacement.
+- `./references/severity.md`: read before grading any finding.
+- `./references/ui-review-checklist.md`: read in full before reviewing.
+- `./references/common-ui-mistakes.md`: read when a finding needs a concrete replacement.

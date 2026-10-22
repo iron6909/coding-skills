@@ -1,6 +1,16 @@
 # Common UI Mistakes
 
-Context-dependent review patterns, not automatic failures. Use `./references/ui-review-checklist.md` for surface modes, evidence, and severity. Separate accessibility requirements, project consistency, and aesthetic guidance.
+Context-dependent examples for the checks in `./references/ui-review-checklist.md`, not automatic failures. Use that reference for surface modes, consistency baselines, and impact grading.
+
+## Contents
+
+- [Color](#color-mistakes)
+- [Typography](#typography-mistakes)
+- [Layout](#layout-mistakes)
+- [Interaction](#interaction-mistakes)
+- [Touch and responsive](#touch-and-responsive-mistakes)
+- [Forms](#form-mistakes)
+- [Detection patterns](#quick-detection-patterns)
 
 ---
 
@@ -107,9 +117,9 @@ p {
 }
 ```
 
-**Why it's bad:** Lines crash into each other, eye struggles to track.
+**Why it's bad:** Tight leading can make lines crowd together for the actual font and content.
 
-**Fix:** Use 1.5-1.7 for body text.
+**Fix:** Choose leading for the font, script, and text role. A body-text value of 1.5-1.7 is a starting point, not a universal requirement.
 ```css
 p {
   font-size: 16px;
@@ -117,28 +127,20 @@ p {
 }
 ```
 
-- Body text: 1.5-1.7
-- Headings: 1.2-1.3 (tighter is OK, they're short)
-- UI elements (buttons): 1.0-1.2 (tight for compactness)
+Other starting points to assess in context: 1.2-1.3 for short headings and 1.0-1.2 for compact controls. Check readability and clipping rather than grading the number alone.
 
 ---
 
-### 7. Letterspacing on Lowercase
+### 7. Unconsidered Letterspacing
 
-**Problem:**
+**Problem:** Tracking is applied without checking the font, script, or text role.
 ```css
 p {
-  letter-spacing: 0.05em;  /* Spaced out lowercase text */
+  letter-spacing: 0.05em;  /* Candidate to assess, not a failure by itself */
 }
 ```
 
-**Why it's bad:** Lowercase text is designed to connect. Spacing it looks amateurish and reduces readability.
-
-**Fix:** Only add letterspacing to:
-- ALL CAPS TEXT: `letter-spacing: 0.05em` (opens up cramped capitals)
-- Headings (sparingly): `letter-spacing: -0.02em` (negative space, tight and modern)
-
-**Never:** lowercase body text.
+**Fix:** Keep font defaults unless an adjustment improves readability or fit in the actual text. Positive tracking can help capitals; headings or body text may benefit from optical adjustments. Judge the rendered result and approved direction rather than banning tracking on lowercase.
 
 ---
 
@@ -312,31 +314,25 @@ transition: transform 0.2s ease-out;  /* Example for a transform change */
 
 ---
 
-## Mobile Mistakes
+## Touch and Responsive Mistakes
 
 ### 16. Touch Targets Too Small
 
 **Problem:**
 ```css
 button {
-  height: 32px;  /* Too small for fingers */
+  height: 32px;  /* Check the effective hit area */
 }
 ```
 
 **Why it's bad:** A genuinely small hit area can cause missed taps. Visual height alone does not establish the effective area.
 
-**Fix:** Aim for an effective 44×44 CSS px touch area. This is the WCAG 2.5.5 AAA design goal, not a blanket 2.1 AA failure threshold. Assess padding, spacing, exceptions, and project requirements; the breakpoint below is only an example.
+**Fix:** Aim for an effective 44×44 CSS px touch area. This is the WCAG 2.5.5 AAA design goal, not a blanket 2.1 AA failure threshold. Assess supported inputs, padding, spacing, exceptions, and project requirements. A wider viewport does not justify a smaller touch area.
 ```css
 button {
-  height: 44px;
+  min-height: 44px;
   min-width: 44px;
   padding: 12px 24px;
-}
-
-@media (min-width: 768px) {
-  button {
-    height: 36px;  /* Can be smaller on desktop */
-  }
 }
 ```
 
@@ -355,7 +351,7 @@ button:hover {
 }
 ```
 
-**Why it's bad:** Mobile has no hover. Button looks inactive until tapped.
+**Why it's bad:** Touch and keyboard users cannot rely on hover. The control needs a recognizable affordance before interaction, regardless of viewport width.
 
 **Fix:** Make it obvious by default.
 ```css
@@ -365,8 +361,10 @@ button {
   border: 2px solid blue;  /* Clear affordance */
 }
 
-button:hover {
-  background: darker-blue;  /* Enhancement for desktop */
+@media (hover: hover) {
+  button:hover {
+    background: darker-blue;  /* Enhancement where hover is supported */
+  }
 }
 ```
 
@@ -477,26 +475,3 @@ grep -rn "<input" src/ --include="*.jsx"
 # Generic errors; inspect surrounding guidance and recovery
 grep -rn "Invalid input\|Error occurred" src/ --include="*.jsx"
 ```
-
-## Summary Checklist
-
-- [ ] Palette and neutral strategy fit the approved direction; measured contrast passes
-- [ ] Semantic colors have consistent meanings, with non-color cues where needed
-- [ ] Font roles suit each surface's mode, brand, and existing system
-- [ ] Body leading and tracking support the actual text, font, and script
-- [ ] Grouping, alignment, and spacing follow the project's scale and task density
-- [ ] Native or authored feedback makes activation, focus, progress, and recovery clear
-- [ ] Motion serves the task, remains smooth, and respects reduced-motion needs
-- [ ] Effective touch areas meet the design goal or have an assessed, documented exception
-- [ ] No accidental page overflow; intentional local scrolling remains usable
-- [ ] Form labels and actionable errors remain available while entering data
-
----
-
-## Where these come from
-
-These prompts cover palette and typography choices, scanability, interaction feedback, and forms. Some checks enforce accessibility requirements; others are consistency rules or design heuristics. Keep those sources of authority distinct.
-
-The detection patterns in each section are starting points for a grep, not a
-complete audit. A pattern search finds a hardcoded color; it cannot tell
-whether a palette reads as intentional. Treat a match as a prompt to look.

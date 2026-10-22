@@ -20,7 +20,7 @@ Standard states for common UI components. Start with the [quick reference table]
 - [Tooltips](#tooltip-states)
 - [Toasts and notifications](#toastnotification-states)
 - [Quick reference table](#quick-reference-table)
-- [Design checklist](#design-checklist)
+- [Motion](#motion)
 
 ## Why States Matter
 
@@ -73,7 +73,7 @@ The element has input focus, including keyboard or programmatic focus.
 Being clicked or pressed right now. Finger/cursor down, not yet released.
 
 **Rules:**
-- Brief moment between mousedown and mouseup
+- Brief feedback during the control's supported press interaction, not a persistent selected state
 - Should feel "pressed"
 - Often darker or slightly smaller
 
@@ -89,7 +89,7 @@ Non-interactive, cannot be used right now.
 - Visually distinct (clearly not usable)
 - `cursor: not-allowed`
 - Often grayed out
-- Don't hide (user needs to know it exists)
+- Keep unavailable controls visible when knowing they exist helps the task; hide them when irrelevant
 - Should convey "not now" not "doesn't exist"
 
 **Common styles:**
@@ -584,7 +584,8 @@ hidden (default):
   - Not in DOM or display: none
 
 visible:
-  - Appears on hover (desktop) or focus (keyboard)
+  - Appears on hover where supported, or keyboard focus
+  - Remains while the trigger or tooltip is hovered, or the trigger retains focus
   - Position: above, below, left, or right of trigger
   - Arrow: points to trigger element
   - Background: dark gray or black
@@ -592,7 +593,9 @@ visible:
   - Max-width: 200-300px
   - Z-index: high (appears above other content)
 
-(no click, closes on mouse leave or focus loss)
+dismissal:
+  - Close when neither trigger nor tooltip is hovered and trigger focus is lost
+  - If it obscures or replaces other content, allow dismissal without moving pointer or focus, for example with Escape
 ```
 
 ---
@@ -634,27 +637,6 @@ disappearing:
 
 ---
 
-## Design Checklist
+## Motion
 
-Before finalizing component specs, verify:
-
-- [ ] Applicable states are specified; existing native states count
-- [ ] Focus has a visible native or authored indicator, checked against the WCAG reference
-- [ ] Disabled state, where applicable, has working semantics as well as styling
-- [ ] Loading feedback and behavior prevent harmful duplicate submission
-- [ ] Error state provides an actionable message where applicable
-- [ ] Empty state guides the next action where applicable
-- [ ] Hover feedback is used only where supported and is not the sole interaction cue
-- [ ] Effective target areas are assessed against the WCAG reference's design goal and exceptions
-- [ ] State changes have visual feedback
-- [ ] Screen reader announcements considered (aria-live, aria-invalid)
-
----
-
-## Notes
-
-- **Hover ≠ Focus**: Pointer hover and input focus are different states; neither replaces the other's applicable feedback. Native indicators may already cover them.
-- **Active is brief**: The moment between mousedown and mouseup. Often darker or smaller.
-- **Disabled vs Hidden**: Show disabled (user knows it exists), hide if not relevant.
-- **Loading prevents double-submit**: Crucial for forms and async actions.
-- **Transitions are optional**: Follow project motion tokens and reduced-motion preferences; state feedback must work without animation.
+Transitions are optional. Follow project motion tokens and reduced-motion preferences; state feedback must work without animation.
