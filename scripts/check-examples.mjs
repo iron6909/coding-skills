@@ -49,7 +49,7 @@ for (const safeguard of ["initial staged and unstaged", "relevant untracked cont
   assert.ok(repositoryChanges.includes(safeguard), `shared repository changes missing safeguard: ${safeguard}`);
 }
 assert.ok(repositoryChanges.includes("Document and work-record writes count too") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
-for (const [skill, action] of [["optimize", "## Process"], ["simplify", "## Execution"], ["ui-review", "## Phase 0:"]]) {
+for (const [skill, action] of [["simplify", "## Execution"], ["ui-review", "## Phase 0:"]]) {
   const source = read(`skills/${skill}/SKILL.md`);
   const gate = source.indexOf("./references/repository-changes.md");
   assert.ok(gate >= 0 && gate < source.indexOf(action), `${skill} must load shared safety before its first affected action`);
@@ -103,7 +103,7 @@ for (const skill of installedSkills) {
     assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
   }
 }
-for (const skill of ["execute", "bugfix", "code-review", "simplify", "optimize", "ui-review", "commit"]) {
+for (const skill of ["execute", "bugfix", "code-review", "simplify", "ui-review", "commit"]) {
   const source = read(`skills/${skill}/SKILL.md`);
   for (const reference of ["definition-of-done.md", "git-commit.md"]) {
     assert.ok(source.includes(`./references/${reference}`), `${skill} must use shared code-change verification and commit gates`);
@@ -114,7 +114,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review"].includes(skill)), "retired entries must not remain as second implementations or aliases");
+assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize"].includes(skill)), "retired entries must not remain as second implementations or aliases");
 for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
@@ -392,13 +392,9 @@ const dod = read("shared/references/definition-of-done.md");
 for (const rule of ["## Unavailable required checks", "partial/blocked", "not a waiver", "Intermediate task commits", "read-only report"]) {
   assert.ok(dod.includes(rule), `missing completion-gate contract: ${rule}`);
 }
-for (const skill of ["execute", "bugfix", "optimize"]) {
+for (const skill of ["execute", "bugfix"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("Unavailable required checks"), `${skill} must use the shared unavailable-check gate`);
 }
-const optimize = read("skills/optimize/SKILL.md");
-const optimizeDoD = optimize.indexOf("./references/definition-of-done.md");
-assert.ok(optimizeDoD >= 0 && optimizeDoD < optimize.indexOf("## Process"), "optimize must choose checks from the DoD before starting");
-assert.ok(optimize.includes("applicable pre-commit checks pass") && optimize.includes("final verification"), "performance gains must not replace commit or completion checks");
 assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verification"), "autoflow must not advance past missing required verification");
 const tdd = read("shared/references/tdd.md");
 assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
@@ -439,14 +435,14 @@ assert.ok(read("skills/spec/references/adr-format.md").includes("All three of th
 assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
 assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
-for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix", "optimize", "refactor"]) {
+for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix", "refactor"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);
   for (const file of readdirSync(new URL(`../skills/${skill}/`, import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
     assert.doesNotMatch(read(`skills/${skill}/${file}`), /(?:recommend (?:a targeted )?|needs (?:targeted )?|goes to )`spike`/, `${skill}/${file} must not send downstream work directly to spike`);
   }
 }
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-  assert.ok(!/`(?:clarify|debug|capture)`|skills\/(?:clarify|debug|capture)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+  assert.ok(!/`(?:clarify|debug|capture|optimize)`|skills\/(?:clarify|debug|capture|optimize)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
   assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 const commit = read("skills/commit/SKILL.md");

@@ -72,7 +72,6 @@ npx skills@latest add iron6909/coding-skills
 | [ui-design](skills/ui-design/SKILL.md) | 规格已批准，界面与交互设计尚未确定 |
 | [ui-review](skills/ui-review/SKILL.md) | 审查已实现的前端界面 |
 | [bugfix](skills/bugfix/SKILL.md) | 定位并修复故障 |
-| [optimize](skills/optimize/SKILL.md) | 根据测量结果优化性能 |
 | [commit](skills/commit/SKILL.md) | 提交指定的临时改动 |
 | [autoflow](skills/autoflow/SKILL.md) | 从已批准的规格编排计划、实现与审查 |
 | [refactor](skills/refactor/SKILL.md) | 代码结构拖累修改，需要找出重构候选 |
@@ -144,7 +143,6 @@ npx skills@latest add iron6909/coding-skills
     │       ├── progress.md             # 执行账本
     │       └── task-<N>.md              # 可选的补充任务说明
     ├── handoff/YYYYMMDD-HHMM[-<topic>].md
-    ├── optimize/YYYYMMDD-HHMM/          # baseline.md、variant-<N>.md、summary.md
     ├── refactor/YYYYMMDD-<scope>.md
     ├── ui-review/YYYYMMDD-HHMM.md
     └── autoflow-state.json             # 旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
@@ -174,7 +172,7 @@ npx skills@latest add iron6909/coding-skills
 |------|----------|
 | survey、ideate、spike、spec、plan、learning、learning-refresh、ui-design | 自己产出或更新的项目文档与必要内部附录 |
 | execute、bugfix | 每个任务或每次修复的代码 |
-| simplify、optimize | 简化或优化后的代码 |
+| simplify | 简化后的代码 |
 | code-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；不生成审查报告 |
 | ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
 | autoflow | 编排 plan、execute、code-review 各自的提交 |

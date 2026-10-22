@@ -34,7 +34,7 @@ Remove redundant work only when inputs are unchanged, results remain equivalent,
 
 Do not label multiple passes over a collection waste merely because they are multiple passes. Do not replace a tiny array with a set, hoist a fallible call, introduce shared buffers, cache resources, or parallelize effects just on an assumed speedup. Preserve readability and resource ownership.
 
-Latency, throughput, memory, and cost gains need measurements. Systematic profiling, cache policies, pooling, and concurrency redesign belong to `optimize`, not this cleanup. Without measurements, describe only the redundant operation removed, not a performance gain.
+Latency, throughput, memory, and cost gains need measurements. Systematic profiling, cache policies, pooling, and concurrency redesign are outside this cleanup. Without measurements, describe only the redundant operation removed, not a performance gain.
 
 ## Example: flattening without changing responses
 

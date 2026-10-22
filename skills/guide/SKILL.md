@@ -17,7 +17,6 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `plan`: own implementation decomposition into phases and testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
 - `execute`: continuously implement approved tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
 - `bugfix`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
-- `optimize`: systematic performance optimization with measurement-driven iteration (profile, attribute, test variants, stopping criteria).
 - `code-review`: independently review a branch or commit range, including a completed feature.
 - `commit`: create high-quality commits for ad-hoc changes, detecting project conventions and staging only specified files.
 - `autoflow`: automate `plan` → `execute` → `code-review` from an already approved spec.
@@ -41,25 +40,24 @@ Use the first matching rule:
 2. If the user asks to pause work and save state (signals: "create a handoff", "save state", "I need to stop here", "hand this off"), use `handoff`.
 3. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
 4. If the user reports a failure, error, broken behavior, or regression, use `bugfix`, including performance regressions even when they ask for profiling or optimization. An already identified failed design premise goes to `ideate` instead.
-5. If the user asks for systematic performance optimization with measurement and no regression (signals: "optimize performance", "improve latency", "reduce memory usage", and mentions profiling or targets), use `optimize`.
-6. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.
-7. If the user asks to review a branch, commit range, or completed feature (signals: "review this branch", "audit these commits", "review the implementation"), use `code-review`. Per-task reviews inside `execute` remain part of that skill.
-8. If the user asks for a bounded design-stage probe with an identifiable candidate, feasibility question, and dependent design decision, use `spike`; missing constraints or a deciding criterion can be clarified there. Its evidence returns to `ideate`. No prior skill invocation is required. A design premise that failed during later work goes to `ideate` first, not directly to a probe. Routine inspection unrelated to a candidate-design decision and product acceptance are not spike work.
-9. If the user says "not sure how to implement" or "explore options", needs to compare approaches, lacks a framed candidate-design question, or needs to revisit a failed design premise, use `ideate`. A ready, supported external design can go directly to `spec`.
-10. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `spec`.
-11. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `learning`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
-12. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
-13. If the user asks to review an existing planning document, use its owner: `ideate` for a proposal, `spike` for an evidence report, `spec` for a specification, or `plan` for a plan. Keep review-only requests read-only; do not start implementation or another stage.
-14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
-15. If the user asks to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`.
-16. If the user requests a small change with clear scope and acceptance checks, use `execute` directly. Missing `AGENTS.md` alone does not require a survey; read the relevant code and commands as needed. Do not use this shortcut for unfinished planned work or unresolved product decisions.
-17. If the user asks to establish or refresh workspace facts (commands, structure, conventions), use `survey`.
-18. If scope, behavior, interfaces, constraints, or acceptance need definition, or a supplied design needs internalization without a feasibility blocker, use `spec`. Do not route a whole system through repeated per-module specifications.
-19. If an approved spec still needs layout, presentation-state, or interaction details within its settled product behavior, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
-20. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
-21. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
-22. If the approved work is clear and ready for code changes, use `execute`.
-23. If no rule matches, use `spec` instead of guessing.
+5. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.
+6. If the user asks to review a branch, commit range, or completed feature (signals: "review this branch", "audit these commits", "review the implementation"), use `code-review`. Per-task reviews inside `execute` remain part of that skill.
+7. If the user asks for a bounded design-stage probe with an identifiable candidate, feasibility question, and dependent design decision, use `spike`; missing constraints or a deciding criterion can be clarified there. Its evidence returns to `ideate`. No prior skill invocation is required. A design premise that failed during later work goes to `ideate` first, not directly to a probe. Routine inspection unrelated to a candidate-design decision and product acceptance are not spike work.
+8. If the user says "not sure how to implement" or "explore options", needs to compare approaches, lacks a framed candidate-design question, or needs to revisit a failed design premise, use `ideate`. A ready, supported external design can go directly to `spec`.
+9. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `spec`.
+10. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `learning`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
+11. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
+12. If the user asks to review an existing planning document, use its owner: `ideate` for a proposal, `spike` for an evidence report, `spec` for a specification, or `plan` for a plan. Keep review-only requests read-only; do not start implementation or another stage.
+13. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
+14. If the user asks to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`.
+15. If the user requests a small change with clear scope and acceptance checks, use `execute` directly. Missing `AGENTS.md` alone does not require a survey; read the relevant code and commands as needed. Do not use this shortcut for unfinished planned work or unresolved product decisions.
+16. If the user asks to establish or refresh workspace facts (commands, structure, conventions), use `survey`.
+17. If scope, behavior, interfaces, constraints, or acceptance need definition, or a supplied design needs internalization without a feasibility blocker, use `spec`. Do not route a whole system through repeated per-module specifications.
+18. If an approved spec still needs layout, presentation-state, or interaction details within its settled product behavior, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
+19. If a committed plan exists in `docs/features/YYYYMMDD-<semantic-name>/plan.md` (`plan` commits it only after the user approves), use `execute`.
+20. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
+21. If the approved work is clear and ready for code changes, use `execute`.
+22. If no rule matches, use `spec` instead of guessing.
 
 ## Handoff
 

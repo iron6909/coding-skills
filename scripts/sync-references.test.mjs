@@ -25,7 +25,7 @@ try {
   const registered = join(root, "skills", "execute", "references", "git-commit.md");
   const expected = readFileSync(registered, "utf8");
   assert.equal(readFileSync(join(root, "skills", "simplify", "references", "git-commit.md"), "utf8"), expected);
-  assert.equal(readFileSync(join(root, "skills", "optimize", "references", "definition-of-done.md"), "utf8"), readFileSync(join(root, "skills", "execute", "references", "definition-of-done.md"), "utf8"));
+  assert.equal(readFileSync(join(root, "skills", "bugfix", "references", "definition-of-done.md"), "utf8"), readFileSync(join(root, "skills", "execute", "references", "definition-of-done.md"), "utf8"));
 
   const crlf = expected.replace(/\r?\n/g, "\r\n");
   writeFileSync(registered, crlf);
