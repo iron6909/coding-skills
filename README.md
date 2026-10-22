@@ -71,12 +71,12 @@ npx skills@latest add iron6909/coding-skills
 | [ideate](skills/ideate/SKILL.md) | 形成和收敛方案，依据验证证据更新候选、取舍和选择 |
 | [ui-design](skills/ui-design/SKILL.md) | 规格已批准，界面与交互设计尚未确定 |
 | [ui-review](skills/ui-review/SKILL.md) | 审查已实现的前端界面 |
-| [debug](skills/debug/SKILL.md) | 定位并修复故障 |
+| [bugfix](skills/bugfix/SKILL.md) | 定位并修复故障 |
 | [optimize](skills/optimize/SKILL.md) | 根据测量结果优化性能 |
 | [commit](skills/commit/SKILL.md) | 提交指定的临时改动 |
 | [autoflow](skills/autoflow/SKILL.md) | 从已批准的规格编排计划、实现与审查 |
 | [refactor](skills/refactor/SKILL.md) | 代码结构拖累修改，需要找出重构候选 |
-| [capture](skills/capture/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
+| [learning](skills/learning/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
 | [learning-refresh](skills/learning-refresh/SKILL.md) | 已记录的经验与代码现状不一致 |
 | [doc-review](skills/doc-review/SKILL.md) | 检查方案、验证报告、规格、计划或历史能力拆分文档 |
 | [simplify](skills/simplify/SKILL.md) | 代码已能运行，需要简化与清理 |
@@ -87,7 +87,7 @@ npx skills@latest add iron6909/coding-skills
 ### 修复故障
 
 ```text
-/coding debug 购物车总价计算错误，使用优惠券后金额没有变化
+/coding bugfix 购物车总价计算错误，使用优惠券后金额没有变化
 ```
 
 定位原因、补充回归验证并提交修复。小修复不必再走一遍需求与计划流程。
@@ -173,8 +173,8 @@ npx skills@latest add iron6909/coding-skills
 
 | 技能 | 提交内容 |
 |------|----------|
-| survey、ideate、spike、spec、plan、capture、learning-refresh、ui-design | 自己产出或更新的项目文档与必要内部附录 |
-| execute、debug | 每个任务或每次修复的代码 |
+| survey、ideate、spike、spec、plan、learning、learning-refresh、ui-design | 自己产出或更新的项目文档与必要内部附录 |
+| execute、bugfix | 每个任务或每次修复的代码 |
 | simplify、optimize | 简化或优化后的代码 |
 | doc-review | 用户确认后的非语义修正；语义改动交回 ideate/spike/spec/plan 各自处理，不改写实验事实 |
 | code-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；不生成审查报告 |

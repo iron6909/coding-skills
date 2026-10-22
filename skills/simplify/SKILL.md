@@ -1,6 +1,6 @@
 ---
 name: simplify
-description: Simplify working code in an explicit scope or recent changes for reuse, clarity, and efficiency while preserving behavior. Use after implementation, before review, or for deferred cleanup. Commit verified simplifications; use debug for bugs and optimize for measured performance work.
+description: Simplify working code in an explicit scope or recent changes for reuse, clarity, and efficiency while preserving behavior. Use after implementation, before review, or for deferred cleanup. Commit verified simplifications; use bugfix for bugs and optimize for measured performance work.
 disable-model-invocation: true
 ---
 
@@ -32,7 +32,7 @@ Read `./references/simplify-dimensions.md` for the reuse, clarity, efficiency, a
 
 Read `./references/complexity-metrics.md` only when an existing analyzer finding or a complexity candidate needs interpretation. Do not turn the cleanup into a measurement or scoring exercise.
 
-Use `./references/severity.md` to describe a finding's impact, not to choose its workflow. Existing behavior failures stop the affected cleanup and belong to `debug`, regardless of severity. Structural redesign belongs to `refactor`; systematic performance work belongs to `optimize`; requested behavior or API changes belong to `execute`. Missing required verification follows the DoD gate, not an assumed bug diagnosis. Report these separately from optional cleanup and recommend the appropriate skill without invoking it.
+Use `./references/severity.md` to describe a finding's impact, not to choose its workflow. Existing behavior failures stop the affected cleanup and belong to `bugfix`, regardless of severity. Structural redesign belongs to `refactor`; systematic performance work belongs to `optimize`; requested behavior or API changes belong to `execute`. Missing required verification follows the DoD gate, not an assumed bug diagnosis. Report these separately from optional cleanup and recommend the appropriate skill without invoking it.
 
 ### 4. Verify
 

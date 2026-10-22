@@ -166,4 +166,4 @@ Unknowns: <list, or None>
 Next: spec (or execute for a ready small change)
 ```
 
-Stop after the survey. Let `ideate`, `spike`, `spec`, `plan`, `execute`, or `debug` handle the next development step.
+Stop after the survey. Let `ideate`, `spike`, `spec`, `plan`, `execute`, or `bugfix` handle the next development step.

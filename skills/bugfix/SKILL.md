@@ -1,10 +1,10 @@
 ---
-name: debug
+name: bugfix
 description: Reproduce a failure, find its root cause, and commit a verified small fix. Use for bugs, test failures, build failures, integration problems, and performance regressions.
 disable-model-invocation: true
 ---
 
-# Debug
+# Bugfix
 
 Fix the root cause, not the symptom. Start with the evidence already available; a clear failure does not need an exhaustive investigation.
 
@@ -80,4 +80,4 @@ Remaining: <known gap, or None>
 Next: <only when a decision or further work is needed>
 ```
 
-Do not claim success without trustworthy before/after evidence and the required checks. A justified alternative is not an automated regression test; say what remains unverified. Offer `capture` only for non-obvious reasoning the code and existing documents do not preserve, then stop without invoking another skill.
+Do not claim success without trustworthy before/after evidence and the required checks. A justified alternative is not an automated regression test; say what remains unverified. Offer `learning` only for non-obvious reasoning the code and existing documents do not preserve, then stop without invoking another skill.

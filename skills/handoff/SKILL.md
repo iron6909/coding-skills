@@ -27,7 +27,7 @@ This does not make Brief plans resumable across sessions. If a plan must persist
 Use the conversation and supplied artifact paths; verify only the filesystem and Git facts needed for the handoff. Do not infer a skill stage from the topic: record `unknown` when the originating stage is not established. Preserve user-supplied source anchors without broad repository discovery or continuing the paused investigation.
 
 Identify:
-- **Current phase**: Which skill stage are we in? (survey, ideate, spike, spec, plan, execute task N, debug, etc.)
+- **Current phase**: Which skill stage are we in? (survey, ideate, spike, spec, plan, execute task N, bugfix, etc.)
 - **Completed artifacts**: What files exist? (proposal.md, spike.md, spec.md, plan.md, commits)
 - **In-progress work**: What's partially done? Is there an unsaved spec draft to preserve?
 - **Blockers**: What's preventing progress? (missing info, user decision needed, external dependency)
@@ -77,7 +77,7 @@ Read `./references/repository-changes.md` before saving; this does not authorize
 2. [Second thing]
 3. [What comes after that]
 
-**Skill to invoke**: [Specific skill name to resume, e.g., `execute`, `debug`, `spike`, `spec`]
+**Skill to invoke**: [Specific skill name to resume, e.g., `execute`, `bugfix`, `spike`, `spec`]
 
 ## Open Questions
 
@@ -201,7 +201,7 @@ Current state:
 
 - **During spec**: Handoff before approval if user needs time to review
 - **During execute**: Handoff between tasks or mid-task if work pauses
-- **After debug**: Handoff if root cause is found but fix needs approval
+- **After bugfix**: Handoff if root cause is found but fix needs approval
 - **During spike**: Preserve answered questions, tested conditions, and remaining evidence gaps without treating them as an approved spec
 
 ## Notes

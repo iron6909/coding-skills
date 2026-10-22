@@ -1,10 +1,10 @@
 ---
-name: capture
+name: learning
 description: Capture the non-obvious reasoning, traps, and boundary conditions from a finished session into docs/learnings, one file per topic. Use when a feature or fix has just finished and its reasoning would otherwise be lost.
 disable-model-invocation: true
 ---
 
-# Capture
+# Learning
 
 Record reasoning this session learned that the repository does not already preserve. Save to `docs/learnings/YYYYMMDD-<topic>.md`, one active file per topic, not per session.
 

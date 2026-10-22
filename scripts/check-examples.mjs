@@ -102,7 +102,7 @@ for (const skill of installedSkills) {
     assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
   }
 }
-for (const skill of ["execute", "debug", "code-review", "simplify", "optimize", "ui-review", "commit"]) {
+for (const skill of ["execute", "bugfix", "code-review", "simplify", "optimize", "ui-review", "commit"]) {
   const source = read(`skills/${skill}/SKILL.md`);
   for (const reference of ["definition-of-done.md", "git-commit.md"]) {
     assert.ok(source.includes(`./references/${reference}`), `${skill} must use shared code-change verification and commit gates`);
@@ -113,7 +113,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-assert.ok(!installedSkills.includes("clarify"), "the retired entry must not remain as a second implementation or alias");
+assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture"].includes(skill)), "retired entries must not remain as second implementations or aliases");
 for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
@@ -337,12 +337,12 @@ for (const input of ["spec", "plan", "ui_spec", "design"]) {
 }
 assert.ok(read("skills/autoflow/references/state-management.md").includes("added, removed, or changed"), "recovery must detect presence changes as well as modified contents");
 
-const debug = read("skills/debug/SKILL.md");
-const workspaceGate = debug.indexOf("./references/repository-changes.md");
-assert.ok(workspaceGate >= 0 && workspaceGate < debug.indexOf("## Phase 1:"), "shared workspace safety must precede probes and hypothesis edits");
-assert.doesNotMatch(debug, /initial staged and unstaged|default branch|Redact secrets/, "debug must delegate generic safety to the shared reference");
-assert.ok(debug.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
-assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(debug), "bug-fix workflow must follow uncertainty, not size quotas");
+const bugfix = read("skills/bugfix/SKILL.md");
+const workspaceGate = bugfix.indexOf("./references/repository-changes.md");
+assert.ok(workspaceGate >= 0 && workspaceGate < bugfix.indexOf("## Phase 1:"), "shared workspace safety must precede probes and hypothesis edits");
+assert.doesNotMatch(bugfix, /initial staged and unstaged|default branch|Redact secrets/, "bugfix must delegate generic safety to the shared reference");
+assert.ok(bugfix.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
+assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(bugfix), "bug-fix workflow must follow uncertainty, not size quotas");
 for (const [pattern, rule] of [
   [/^description: .*commit a verified small fix\./m, "disclose its commit contract"],
   [/cause and how it produces the symptom/, "state causal evidence separately from fix verification"],
@@ -353,11 +353,11 @@ for (const [pattern, rule] of [
   [/Count one failed attempt per implementation-and-verification cycle.*not per failed assertion/, "count failed fix cycles, not assertions"],
   [/Expected TDD RED, rejected investigation hypotheses, and unavailable checks are not failed fix attempts/, "exclude expected RED, investigation, and unavailable checks from the failure budget"],
   [/Retain the count.*across resumes.*ask if unknown rather than assuming zero/, "preserve or recover the failure count on resume"],
-]) assert.match(debug, pattern, `debug must ${rule}`);
-assert.doesNotMatch(debug, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
-const debugFailureStep = debug.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
-assert.match(debugFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");
-assert.doesNotMatch(debugFailureStep, /apply the minimal fix|confirm the same check passes/, "the failure-evidence step must not duplicate implementation and verification");
+]) assert.match(bugfix, pattern, `bugfix must ${rule}`);
+assert.doesNotMatch(bugfix, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
+const bugfixFailureStep = bugfix.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
+assert.match(bugfixFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");
+assert.doesNotMatch(bugfixFailureStep, /apply the minimal fix|confirm the same check passes/, "the failure-evidence step must not duplicate implementation and verification");
 assert.ok(!/git branch -[dD]|## Present the options|typed `discard`/.test(finish), "execute must not carry a branch-disposal workflow");
 const ideate = read("skills/ideate/SKILL.md");
 assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
@@ -392,7 +392,7 @@ const dod = read("shared/references/definition-of-done.md");
 for (const rule of ["## Unavailable required checks", "partial/blocked", "not a waiver", "Intermediate task commits", "read-only report"]) {
   assert.ok(dod.includes(rule), `missing completion-gate contract: ${rule}`);
 }
-for (const skill of ["execute", "debug", "optimize"]) {
+for (const skill of ["execute", "bugfix", "optimize"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("Unavailable required checks"), `${skill} must use the shared unavailable-check gate`);
 }
 const optimize = read("skills/optimize/SKILL.md");
@@ -440,14 +440,14 @@ assert.ok(read("skills/spec/references/adr-format.md").includes("All three of th
 assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
 assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
-for (const skill of ["spec", "plan", "execute", "autoflow", "debug", "optimize", "refactor"]) {
+for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix", "optimize", "refactor"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);
   for (const file of readdirSync(new URL(`../skills/${skill}/`, import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
     assert.doesNotMatch(read(`skills/${skill}/${file}`), /(?:recommend (?:a targeted )?|needs (?:targeted )?|goes to )`spike`/, `${skill}/${file} must not send downstream work directly to spike`);
   }
 }
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-  assert.ok(!/`clarify`|skills\/clarify\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+  assert.ok(!/`(?:clarify|debug|capture)`|skills\/(?:clarify|debug|capture)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
   assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 const commit = read("skills/commit/SKILL.md");
@@ -473,7 +473,7 @@ for (const [pattern, rule] of [
 ]) assert.match(simplify, pattern, `simplify must ${rule}`);
 assert.match(read("skills/code-review/SKILL.md"), /When active learning files exist, read `\.\/references\/learnings-format\.md`/, "absent learnings must not load their format");
 assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
-assert.ok(read("skills/capture/SKILL.md").includes("without loading writing or commit references"), "zero-entry capture must stop before write-stage references");
+assert.ok(read("skills/learning/SKILL.md").includes("without loading writing or commit references"), "zero-entry learning must stop before write-stage references");
 assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
 assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
 assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");

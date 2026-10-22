@@ -1,6 +1,6 @@
 ---
 name: learning-refresh
-description: Audit active learnings in docs/learnings/ against the current codebase, update or consolidate them, and archive eligible entries without deleting documents. Use when learnings may have drifted after refactoring, changed decisions, or fixed traps. Not for creating new learnings—use capture.
+description: Audit active learnings in docs/learnings/ against the current codebase, update or consolidate them, and archive eligible entries without deleting documents. Use when learnings may have drifted after refactoring, changed decisions, or fixed traps. Not for creating new learnings—use learning.
 disable-model-invocation: true
 ---
 
@@ -65,4 +65,4 @@ Omit paths that do not apply. Check that each moved document survives at its des
 |------|---------|-------------------|-----------------------------|
 | `<path>` | Keep / Update / Consolidate / Supersede / Archive / Stale | `<verified finding>` | `<path or none>` |
 
-Report the counts, checks performed, commit, and any files left stale awaiting evidence or approval. If new non-obvious lessons emerged, recommend `capture`; do not invoke it.
+Report the counts, checks performed, commit, and any files left stale awaiting evidence or approval. If new non-obvious lessons emerged, recommend `learning`; do not invoke it.

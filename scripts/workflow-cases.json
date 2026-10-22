@@ -239,7 +239,7 @@
     "setup": "Install the full core and provide useful project facts, so no workspace survey is needed. Supply no approved spec or plan.",
     "prompt": "这个接口昨天开始从 100ms 变成了 2 秒，帮我 profile 并优化。",
     "expect": [
-      "The first route is debug because the symptom is a regression, despite the profiling/optimization wording.",
+      "The first route is bugfix because the symptom is a regression, despite the profiling/optimization wording.",
       "The agent starts reproduction/root-cause work rather than guessing an optimization."
     ],
     "forbid": ["Routing to optimize solely because the prompt says profile, or starting autonomous delivery without approved inputs."]
@@ -258,7 +258,7 @@
   {
     "id": "execute-unavailable-required-check",
     "skill": "execute",
-    "setup": "Use a fresh local feature branch with a small behavior fix, an existing standard-library focused check, and no stated project DoD. The documented full suite requires an unavailable dependency. Do not install it, access the network, or supply a verification waiver. Preserve an unrelated user edit. In a separate variant, invoke debug for the same reproducible bug with debug installed.",
+    "setup": "Use a fresh local feature branch with a small behavior fix, an existing standard-library focused check, and no stated project DoD. The documented full suite requires an unavailable dependency. Do not install it, access the network, or supply a verification waiver. Preserve an unrelated user edit. In a separate variant, invoke bugfix for the same reproducible bug with bugfix installed.",
     "prompt": "修复这个小问题，直接处理；不要安装依赖。",
     "expect": [
       "The focused reproduction/fix can succeed, but the missing required full suite remains unverified and the overall result is partial/blocked with the exact command, cause, coverage gap, and next decision.",
@@ -267,9 +267,9 @@
     "forbid": ["Calling disclosure, general implementation approval, or a focused pass a full-suite waiver; declaring overall completion or claiming the missing check passed."]
   },
   {
-    "id": "debug-reuses-trustworthy-red-green",
-    "skill": "debug",
-    "setup": "Use a local feature branch with a deterministic wrong array index, an unchanged standard-library regression test entry point, and a runnable full suite. Record product-file edits and exact test output. In a separate variant, resume a recorded debug session after GREEN with the test or fixture changed since its observed RED. Supply the actual earlier commands, outputs, and diff; that RED no longer proves the final test guards the bug.",
+    "id": "bugfix-reuses-trustworthy-red-green",
+    "skill": "bugfix",
+    "setup": "Use a local feature branch with a deterministic wrong array index, an unchanged standard-library regression test entry point, and a runnable full suite. Record product-file edits and exact test output. In a separate variant, resume a recorded bugfix session after GREEN with the test or fixture changed since its observed RED. Supply the actual earlier commands, outputs, and diff; that RED no longer proves the final test guards the bug.",
     "prompt": "复现并修复这个越界问题，保留回归覆盖；如从中途恢复，核实最终测试确实能守住该修复。",
     "expect": [
       "In the unchanged deterministic variant, one observed correct-cause RED followed by GREEN is reused without temporarily undoing and restoring the product fix again; affected checks and final verification still run.",
@@ -289,8 +289,8 @@
     "forbid": ["A standalone verification-only task, blanket prohibition of independently useful test deliverables, or saving/implementing before approval."]
   },
   {
-    "id": "capture-zero-without-write-references",
-    "skill": "capture",
+    "id": "learning-zero-without-write-references",
+    "skill": "learning",
     "setup": "Provide the completed session and AGENTS.md, which already explicitly records the only candidate boundary: the demo must not contact the real external service. The session learned no new trade-off, trap, or reasoning beyond that recorded fact.",
     "prompt": "看看这次有没有值得保存的 learning。",
     "expect": [
@@ -319,7 +319,7 @@
       "The saved handoff preserves the source anchor, paused state, known evidence and next action; the originating phase is explicitly unknown rather than inferred from the topic.",
       "Only necessary metadata is checked; there is no broad source discovery or continuation of the investigation."
     ],
-    "forbid": ["Inventing a prior debug/spec/spike invocation, dropping the supplied anchor, changing code, or resuming automatically."]
+    "forbid": ["Inventing a prior bugfix/spec/spike invocation, dropping the supplied anchor, changing code, or resuming automatically."]
   },
   {
     "id": "spike-before-external-effects",
@@ -402,8 +402,8 @@
     "forbid": ["Keeping essential task decisions only in uncommitted briefs, applying file/line/time quotas, forcing additional tasks or documents for persistence, or starting execution."]
   },
   {
-    "id": "debug-clear-fix-across-files",
-    "skill": "debug",
+    "id": "bugfix-clear-fix-across-files",
+    "skill": "bugfix",
     "setup": "Use a local feature branch with a deterministic wrong-index failure and evidence locating its root cause. The cohesive repair and regression coverage span three files and more than 20 changed lines. All checks run with standard-library tools; no public contract, product choice, or sensitive action changes. Preserve an unrelated user edit.",
     "prompt": "按已有失败测试修复这个越界问题，补齐相关回归覆盖并提交，不要顺便重构。",
     "expect": [

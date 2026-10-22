@@ -1,6 +1,6 @@
 ---
 name: optimize
-description: Profile a measured performance problem, compare variants, and commit verified improvements. Save experiment reports under .coding/optimize/. Use for systematic latency, throughput, memory, or cost work; use debug for regressions and execute for a known small fix.
+description: Profile a measured performance problem, compare variants, and commit verified improvements. Save experiment reports under .coding/optimize/. Use for systematic latency, throughput, memory, or cost work; use bugfix for regressions and execute for a known small fix.
 disable-model-invocation: true
 ---
 
@@ -306,9 +306,9 @@ Reference `./references/git-commit.md` for commit conventions.
 
 ## Integration with Other Skills
 
-- **Before optimize**: Use `debug` if it's a regression (performance used to be better)
+- **Before optimize**: Use `bugfix` if it's a regression (performance used to be better)
 - **Before optimize**: Use `execute` if it's a simple known fix (add an index, fix N+1 query)
-- **After optimize**: Recommend `capture` for non-obvious insights, if any
+- **After optimize**: Recommend `learning` for non-obvious insights, if any
 - **If the design premise is unresolved or invalidated**: Stop affected optimization and recommend `ideate`; do not turn measured implementation variants into design-feasibility experiments
 
 Report the saved summary, measurements, checks, commits, and current branch, then stop. Do not invoke another skill.
