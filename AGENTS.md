@@ -69,7 +69,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 - Skill text is English. Leave no authoring markers (`ponytail:`, TODO) in shipped files.
 - One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
 - Every skill that can write repository files or Git state must name and load `./references/repository-changes.md` before its first affected action, including document and work-record writes. Keep skill-specific approval, verification, output, and commit contracts in the skill; the shared reference does not grant permission or add workflow stages.
-- A skill ends when its result is delivered and says what comes next; save output only when its contract calls for persistence. `guide` hands off to its selected skill; `autoflow` is the sole multi-stage orchestrator and may invoke only `plan` → `execute` → `code-review` from an already approved spec. Called skills return to it; their approval, verification, and commit gates still apply. No other skill auto-invokes a next skill.
+- A skill ends when its result is delivered and says what comes next; save output only when its contract calls for persistence. `guide` hands off to its selected skill; `autoflow` is the sole multi-stage orchestrator and may invoke only `plan` → `execute` → `code-review` from an already approved spec. Called skills return to it. Autoflow's invocation authorizes in-scope planning, plan revisions, execution, and Blocking/Important review fixes without routine plan or stage approval; standalone plan approval, approved product/UI inputs, repository safety, verification, specific high-risk sign-off, and commit contracts still apply. No other skill auto-invokes a next skill.
 
 ## Terminology
 

@@ -1,6 +1,6 @@
 # Output tier
 
-Choose persistence, not a larger process. Both tiers use the task content and approval gate in SKILL.md; neither drops requirement coverage, dependencies, or verification. Only Full uses saved-plan records and commits.
+Choose persistence, not a larger process. Both tiers use the task content and applicable authorization rules in SKILL.md; neither drops requirement coverage, dependencies, or verification. Only Full uses saved-plan records and commits.
 
 | Tier | Use when | Produces |
 |------|----------|----------|

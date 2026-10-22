@@ -45,7 +45,9 @@ git diff <review_base_sha>...<review_head_sha>
 git log <review_base_sha>..<review_head_sha> --oneline
 ```
 
-Confirm both commits resolve and the selected diff is non-empty. Keep both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to the reviewer. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
+Confirm both commits resolve. Keep both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to the reviewer. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
+
+If the pinned diff is empty, confirm that the base matches the intended scope, including any supplied feature-base and ledger evidence. Return `No new diff to review` with both SHAs, comparison mode, and any uncommitted-change limit, then stop without dispatching a reviewer. This is neither `Ready` nor an independent passing review, and does not prove requirements are satisfied. Under `autoflow`, return this result to it; only verified existing requirement coverage and fresh final verification can establish a no-change delivery. Do not manufacture a diff, task, commit, or finding.
 
 Inspect reviewed code and its callers at `review_head_sha`, for example with `git show <review_head_sha>:<path>`, not a newer or dirty working tree. Do not checkout, stash, or reset user work to obtain that context; mark unavailable historical context explicitly.
 
@@ -83,7 +85,7 @@ This workflow uses a stricter readiness gate than the shared severity defaults: 
 
 ## Authorized fixes
 
-Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, verified authorization for the exact approved plan and target branch covers in-scope Blocking/Important fixes without another routine prompt. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
+Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
 
 Before editing, confirm the target branch and that its head is still `review_head_sha`; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
 

@@ -264,6 +264,11 @@ try {
   const [reviewBase, reviewHead] = resolvers.map((source) => git(...source.replaceAll("<review-base>", "HEAD~5").replaceAll("<review-head>", "HEAD~2").replaceAll('"', "").split(/\s+/).slice(1)).trim());
   assert.equal(reviewBase, git("rev-parse", "HEAD~5").trim());
   assert.equal(reviewHead, git("rev-parse", "HEAD~2").trim(), "explicit historical head must not become HEAD");
+  assert.equal(git("diff", reviewHead, reviewHead), "", "an endpoint range can legitimately have no new diff");
+  assert.equal(git("diff", `${reviewHead}...${reviewHead}`), "", "an empty branch comparison is not a review verdict");
+  const newBranchStart = git("rev-parse", "HEAD").trim();
+  assert.equal(git("diff", newBranchStart, newBranchStart), "");
+  assert.match(git("diff", reviewBase, newBranchStart), /value/, "using a new branch start would hide earlier feature changes");
   assert.equal(git("log", `${reviewBase}..${reviewHead}`, "--format=%s").trim(), "initial 5\ninitial 4\ninitial 3");
   assert.equal(git("show", `${reviewHead}:value`).trim(), "5", "read context at the historical head");
   assert.ok(read(reviewFile).includes("git show <review_head_sha>:<path>"));
@@ -322,21 +327,34 @@ try {
 } catch (error) {
   assert.fail(`Invalid autoflow state example: ${error.message}`);
 }
-assert.equal(state.version, 4, "conversation-only reviews need a distinct recovery schema");
-assert.ok(!Object.hasOwn(state, "review_report"), "state must not depend on a saved review report");
+assert.equal(state.version, 5, "invocation authority and plan snapshots need a distinct recovery schema");
+for (const field of ["mode", "approval", "auto_execute_and_review_fixes", "review_report", "current_task"]) {
+  assert.ok(!Object.hasOwn(state, field), `state must not retain ${field}`);
+}
 for (const field of ["review_head", "fix_head"]) assert.equal(state[field], null, `${field} starts explicitly empty`);
-const recovery = read("skills/autoflow/references/state-management.md");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "does not authorize a second fix wave", "If state is invalid or incomplete, stop"]) {
-  assert.ok(recovery.includes(rule), `missing conversation-only recovery gate: ${rule}`);
-}
-assert.ok(read("skills/autoflow/SKILL.md").includes("acceptance of the stated inline-review limitation"), "autoflow must not call self-review independent assurance");
-assert.deepEqual(state.approval.spec_appendix_blobs, {}, "explicitly record an empty appendix snapshot when no appendix is required");
-assert.ok(read("skills/autoflow/references/state-management.md").includes("snapshot all contract documents"), "recovery must validate required internal appendices as well as spec.md");
-for (const input of ["spec", "plan", "ui_spec", "design"]) {
+assert.equal(typeof state.plan_blob, "string", "record the self-reviewed plan separately from input approval");
+assert.ok(!Object.hasOwn(state.approved_inputs, "plan_blob"), "a generated plan snapshot is not user approval");
+assert.deepEqual(state.approved_inputs.spec_appendix_blobs, {}, "explicitly record an empty appendix snapshot when no appendix is required");
+for (const input of ["spec", "ui_spec", "design"]) {
   assert.ok(Object.hasOwn(state, input), `missing approved input path: ${input}`);
-  assert.ok(Object.hasOwn(state.approval, `${input}_blob`), `missing approved input snapshot: ${input}`);
+  assert.ok(Object.hasOwn(state.approved_inputs, `${input}_blob`), `missing approved input snapshot: ${input}`);
 }
-assert.ok(read("skills/autoflow/references/state-management.md").includes("added, removed, or changed"), "recovery must detect presence changes as well as modified contents");
+assert.ok(Object.hasOwn(state, "plan"), "keep the intended plan path even before it exists");
+const autoflow = read("skills/autoflow/SKILL.md");
+const recovery = read("skills/autoflow/references/state-management.md");
+assert.doesNotMatch(autoflow, /## Modes|--checkpointed|--dry-run|--resume|over 10 tasks|Ask once for approval/, "autoflow has one continuous execution policy");
+for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "no earlier feature increment exists", "explicit verification-waiver gate"]) {
+  assert.ok(autoflow.includes(rule), `missing autonomous delivery rule: ${rule}`);
+}
+assert.ok(autoflow.includes("acceptance of the stated inline-review limitation"), "autoflow must not call self-review independent assurance");
+assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "does not authorize a second fix wave", "If state is invalid or incomplete, stop", "snapshot all contract documents", "added, removed, or changed", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
+  assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
+}
+for (const skill of ["plan", "execute", "code-review"]) {
+  assert.match(read(`skills/${skill}/SKILL.md`), /autoflow[\s\S]*invocation[\s\S]*plan approval/i, `${skill} must accept invocation authority without plan approval`);
+}
+assert.ok(read("skills/plan/SKILL.md").includes("When called independently") && read("skills/plan/SKILL.md").includes("Wait for approval"), "standalone planning must retain its approval gate");
 
 const bugfix = read("skills/bugfix/SKILL.md");
 const workspaceGate = bugfix.indexOf("./references/repository-changes.md");
@@ -425,9 +443,9 @@ assert.ok(plan.includes("Run-only verification belongs in Final verification"), 
 assert.ok(plan.includes("A saved plan contains task details") && plan.includes("Neither tier requires task briefs by default"), "a short persisted plan must be usable without task briefs");
 const outputTier = read("skills/plan/references/output-tier.md");
 assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
-assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Draft approval does not authorize"), "saved-plan writes need shared workspace protection without treating draft approval as permission to overwrite unrelated work");
+assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Plan authorization does not authorize"), "saved-plan writes need shared workspace protection without treating plan authorization as permission to overwrite unrelated work");
 assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
-assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the approved plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
+assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the current plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
 const stableIds = read("shared/references/stable-ids.md");
 assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");
 assert.ok(stableIds.includes("or existing behavior with implementation/test evidence and a final verification check"), "requirement coverage must include unchanged existing behavior");

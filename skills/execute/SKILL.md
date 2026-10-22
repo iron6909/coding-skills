@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Implement an approved persisted or session plan, or a small, clear request, without routine task pauses. Review and commit task changes, run final verification, and keep the branch. Save persisted-plan progress in .coding/features/<feature>/impl/progress.md; small requests need no spec, plan, or ledger.
+description: Implement a user-approved or autoflow-authorized persisted plan, an approved session plan, or a small, clear request without routine task pauses. Review and commit task changes, run final verification, and keep the branch. Save persisted-plan progress in .coding/features/<feature>/impl/progress.md; small requests need no spec, plan, or ledger.
 disable-model-invocation: true
 ---
 
@@ -12,7 +12,7 @@ Use one of three execution inputs:
 - **Session plan:** use an approved task list from `plan` or supplied directly by the user. Read its approved spec and required internal appendices in full when present; that contract governs behavior. For a list without a spec, the approved list itself must settle scope, behavior, acceptance checks, dependencies, and shared interfaces.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
-Both plan inputs require settled, approved scope and verification. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
+Both plan inputs require settled scope and verification under a user-approved plan or autoflow's invocation authority for its self-reviewed plan. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
 
 ## Workspace safety
 
@@ -26,7 +26,7 @@ Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` cons
 
 ## Continuous execution
 
-Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its recorded authorization for the exact approved inputs. Missing approval or changed inputs require approval before proceeding.
+Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its invocation authority for the feature, target branch, approved contract inputs, and current self-reviewed plan; do not request plan approval. Changed contract inputs require their owner's clarification or approval, while in-scope plan revisions follow the route below. Missing authority or an unresolved user constraint blocks affected work.
 
 Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events. Keep only the task list, starting change boundaries, check results, and any failed-attempt count needed to do the work. Skip Persisted-plan records and Ledger entries below. A small change is not a miniature feature workflow.
 
@@ -53,10 +53,10 @@ Route other exceptions by the decision that is missing:
 
 | Evidence | Action |
 |----------|--------|
-| Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the approved plan or briefs. |
-| Missing task detail; changed deliverable, boundary, coverage, dependency, shared contract, or verification guarantee; task cancellation | Stop affected work for an approved revision, even when product scope is unchanged. Recommend `plan` for spec-backed plans; for a directly supplied spec-free session list, ask the user to provide and approve the revised list. Completed tasks remain history; a later task does not silently cancel an earlier one. |
+| Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the current plan or briefs. |
+| Missing task detail; changed deliverable, boundary, coverage, dependency, shared contract, or verification guarantee; task cancellation | Stop affected execution for a plan revision, even when product scope is unchanged. Under `autoflow`, return the evidence to it for an in-scope revision by `plan`, without a plan approval prompt; preserve user constraints, coverage, and verification guarantees. Otherwise recommend `plan` for spec-backed plans, or ask the user to provide and approve a directly supplied spec-free list's revision. Completed tasks remain history; a later task does not silently cancel an earlier one. |
 | Missing or changed product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`, then `plan` where reconciliation is needed. |
-| An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design, contract, and plan inputs need their applicable approvals before resuming. |
+| An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design and contract inputs need their applicable approvals before resuming; reconcile affected plans under their authorization contract. |
 
 ## Task review
 
@@ -119,7 +119,7 @@ Task <N>: brief rebuilt from approved inputs
 Task <N>: review fix pass — <findings to resolve>
 Task <N>: failed attempt — <cause and evidence; cumulative count>
 Task <N>: complete (commits <task_base>..<head>, review: <self-check | independent>, tests: <command> → <result>)
-Task <N>: skipped — approved cancellation: <reason>
+Task <N>: skipped — authorized cancellation: <reason>
 Task <N>: minor (deferred): <one-liner>
 Plan revised: <one-line reason>
 Final verification: <command> → <result>
@@ -129,7 +129,7 @@ Keep failure counts under Doubt-driven checkpoints and review progress across in
 
 ## Resume
 
-For persisted plans, read the current approved spec and required internal appendices, plan, ledger, applicable UI/design inputs, and any linked briefs. Compare recorded commits and task state with the working tree and Git history. Resume from the first executable task without a verified `complete` entry. A task is cancelled only when the current approved plan marks it `skipped` with a reason; a ledger entry alone cannot cancel it. Retain its number, any brief, and history without inventing a completion or commit.
+For persisted plans, read the current approved spec and required internal appendices, plan, ledger, applicable UI/design inputs, and any linked briefs. Compare recorded commits and task state with the working tree and Git history. Resume from the first executable task without a verified `complete` entry. A task is cancelled only when the current authorized plan marks it `skipped` with a reason under the revision contract; a ledger entry alone cannot cancel it. Retain its number, any brief, and history without inventing a completion or commit.
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
@@ -143,7 +143,7 @@ After all executable tasks pass review and are committed, or a small request is 
 
 This is command-based verification, not another whole-diff review. A clear in-scope failure returns to the affected task's fix, review, and separate commit, followed by final verification again. Unresolved failures or new decisions stop the run.
 
-Before claiming completion, confirm the task loop or already-satisfied small-request path is satisfied, approved skipped tasks are reported separately, final verification and the DoD passed, and no Blocking or Important finding remains. Inspect `git diff --check` and `git status`. Report commands and fresh results, including exact errors or unavailable checks. Never claim success from an earlier run or an agent report.
+Before claiming completion, confirm the task loop or already-satisfied small-request path is satisfied, authorized skipped tasks are reported separately, final verification and the DoD passed, and no Blocking or Important finding remains. Inspect `git diff --check` and `git status`. Report commands and fresh results, including exact errors or unavailable checks. Never claim success from an earlier run or an agent report.
 
 ## Completion report
 

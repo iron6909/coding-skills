@@ -1,91 +1,56 @@
 ---
 name: autoflow
-description: Automate plan → execute → code-review from an already approved spec. Save and commit plan.md beside the spec, check and commit each task, then review the whole feature and commit authorized fixes. Use when the user requests full-auto delivery of approved requirements. Does not clarify requirements, merge, or push.
+description: Automate plan → execute → code-review from an already approved spec without routine plan approval or stage confirmations. Save and commit plan.md beside the spec, verify and commit executable tasks, then review the whole feature and fix in-scope Blocking/Important findings. Use for autonomous delivery; specific high-risk actions still need authorization. Does not clarify requirements, merge, or push.
 disable-model-invocation: true
 ---
 
 # Autoflow
 
-Coordinate exactly three stages: `plan` → `execute` → `code-review`. The supplied spec defines the scope; this skill does not create, infer, or approve requirements.
+Coordinate three stages: `plan` → `execute` → `code-review`. The approved spec defines the scope; this skill does not create, infer, or approve requirements.
 
-The called skills own their planning, testing, review, and commit rules. Autoflow owns stage transitions, recorded authorization, and recovery. It does not weaken their gates.
+The user's autoflow request authorizes planning, in-scope plan revisions, execution, and in-scope Blocking/Important review fixes for that feature and target branch. Do not request plan approval, stage confirmations, or another routine fix authorization. This is execution authority, not an assertion that the user approved a generated plan. Honor explicit read-only, budget, branch, and other limits; a request to preview work does not authorize writes.
+
+Called skills own task design, testing, review, and commits. Their autoflow-specific authorization rules apply; repository safety, verification, and specific high-risk sign-off are unchanged. Autoflow owns stage transitions and recovery, not a second task loop.
 
 ## Entry and preparation
 
-Complete every check before choosing a starting stage; in dry-run, only inspect and report what preparation would be needed:
+Finish read-only reconciliation before branch changes or other writes:
 
-1. Read applicable `AGENTS.md` and `CLAUDE.md`. Locate and read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` and its required internal appendices. Also resolve and read the applicable approved `ui-spec.md` beside it and existing `DESIGN.md` constraints. If required approval is missing or product/UI decisions remain unresolved, stop and recommend `spec` or `ui-design`; do not invoke either. A failed or unresolved design premise stops affected work and returns to `ideate` outside this orchestrator, not a new automated stage; changed contracts and plans need their approvals before resuming.
-2. Read `./references/repository-changes.md` before preparation writes, state-changing commands, or saving orchestration state. In dry-run, inspect only; do not apply branch or write actions.
-3. Confirm the target branch under the shared safety gate. Establish the feature's review base before writing: use its known branch base or a user-supplied commit, not an assumed `main`. A newly created branch uses its starting commit.
-4. Check for an existing plan and execution ledger. Reuse only an approved plan that matches the current spec. Existing tasks or commits do not prove the feature is complete.
-5. Read `./references/state-management.md` before recording progress or resuming. An existing state for another run is not overwritten; ask whether to resume it or retain it under a unique filename before starting a new run.
-
-An autonomous request authorizes preparation, not unreviewed product decisions. If the plan exceeds the user's stated task or time budget, ask before execution; without a stated budget, call out plans over 10 tasks at the approval gate.
-
-## Modes
-
-- `/autoflow`: after the approval gate below, run the remaining stages without routine pauses.
-- `/autoflow --checkpointed`: additionally ask before each subsequent stage.
-- `/autoflow --dry-run`: read inputs and show the proposed plan, stage sequence, review scope, and blockers in conversation only. Do not change files, branches, state, or commits, invoke writing stages, or claim checks or reviews were run.
-- `/autoflow --resume`: verify recorded progress under the state reference before continuing.
-
-Flags describe instructions to the skill, not a separate executable. No configuration file is needed.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`, this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`, and every required internal appendix. Resolve applicable approved `ui-spec.md` and existing `DESIGN.md` constraints. Missing approval, conflicting inputs, or unresolved product/UI decisions block delivery: recommend `spec` or `ui-design`, without invoking either. An unresolved or failed design premise returns to `ideate` outside this orchestrator.
+2. Read `./references/repository-changes.md` before any affected action, and `./references/state-management.md` before creating or recovering state. Inspect existing state, plan, execution ledger, and Git history first; follow the reference for recovery and old records. Reconcile the initial working-tree boundary rather than treating existing changes as this run's work.
+3. Establish the fixed feature review base. Existing state and ledger must agree; a supplied base must not silently override them. With no recorded base, use a user-supplied commit or an evidenced feature base, not an assumed `main`. A new branch's starting commit is valid only when no earlier feature increment exists. An unknown base or conflicting records are blockers, not permission to use current HEAD.
+4. Confirm the target branch under the shared safety gate, then record the reconciled inputs and initial progress. Reuse a plan only after checking it against the current contract and preserved task history. Commits alone do not establish completion.
 
 ## Stage 1: Plan
 
-If no current approved plan exists, invoke `plan` at Full tier. Let it produce its draft and apply its approval gate; do not auto-approve it. Full tier keeps the run resumable.
+Invoke `plan` at Full tier to create or reconcile the plan. It self-reviews, saves and commits `plan.md`, and returns without waiting for plan approval. A current plan whose contents and evidence already satisfy that contract needs no rewrite or empty commit. Supplemental task briefs remain optional work records under `.coding/`.
 
-Ask once for approval of both:
-
-- the exact plan and its verification commands, with the applicable approved UI/design inputs;
-- autonomous execution plus fixes for Blocking and Important review findings that stay within the approved scope.
-
-An explicit approval of those actions for this exact plan can satisfy the gate; approval of the spec alone cannot. Record the approved input snapshots and the authorization using the state reference. Changed inputs require renewed approval; do not carry authorization over silently.
-
-`plan` then saves and commits `plan.md`, including task details. Supplemental task briefs are optional; when useful they stay under `.coding/` and are not part of that commit. The user decides whether to ignore or version them. When reusing an approved plan, obtain any missing execution or fix authorization before continuing.
+Record the verified plan snapshot using the state reference, then continue directly to execution. Task count alone is not a pause trigger. If the user's explicit budget or constraints cannot be met, report the conflict rather than silently exceeding them.
 
 ## Stage 2: Execute
 
-Invoke `execute` with the approved inputs, authorization, initial working-tree record, and fixed feature review base. It runs continuously under its bounded task-review rules. TDD, task checks, separate commits, and final verification remain mandatory; the later `code-review` stage does not replace them.
+Invoke `execute` with the current plan, approved contract inputs, invocation authority, initial working-tree record, and fixed feature review base. Its applicable TDD, task reviews, checks, commits, failure budget, and DoD govern execution; do not redefine them here. The execution ledger is the only task-level record.
 
-Use the execution ledger as the task-level record; do not maintain a second task list in autoflow state. If execution stops at any of its gates, record the blocker and hand back rather than launching the next stage.
+When execution needs an in-scope plan revision, return the evidence to `plan`, preserve completed history, update the plan snapshot, and continue from the reconciled task position. This is not a new approval stage or permission to weaken coverage or verification. Other unresolved execution gates stop the run.
 
-After execution's final verification succeeds, return to this orchestrator before any finish or integration decision. Stage 3 is the run's single independent feature-wide review; execute does not run another one. Failed, stale, or unavailable required verification cannot complete Stage 2; use execute's DoD result, not the existence of commits.
+After final verification satisfies execute's DoD, continue to Stage 3. Failed, stale, or unavailable required verification follows that DoD, including its explicit verification-waiver gate; unrun checks remain unverified. Task reviews and final checks do not replace the whole-feature review.
 
 ## Stage 3: Code review
 
-Invoke `code-review` with the fixed feature review base, approved spec and plan paths, applicable approved UI/design inputs, target branch, plan Review focus, and recorded fix authorization. It performs one comprehensive independent review and returns feedback in conversation, not a saved report. If independent review is unavailable, stop for the user's acceptance of the stated inline-review limitation before completing this stage.
+Invoke `code-review` with the fixed review base, target branch, approved spec and required appendices, current plan and its Review focus, applicable UI/design inputs, and invocation authority for in-scope fixes. It owns the comprehensive review, adjudication, bounded fix pass, verification, and separate fix commits. Minor findings remain deferred. A severity label does not grant specific high-risk sign-off.
 
-The authorization covers only in-scope Blocking and Important fixes. Leave Minor findings deferred. A product, architectural, security, data-loss, or other decision requiring explicit sign-off stops the run; a severity label does not grant that sign-off.
+If independent review is unavailable, report the capability gap; acceptance of the stated inline-review limitation is still required before completing that review. A failed reviewer launch is a blocker, not permission to silently downgrade.
 
-Apply the review skill's fix verification and separate commits, followed by one scoped re-check. If Blocking or Important findings remain, report them and stop rather than repeating an unbounded fix loop. Return the adjudicated findings, rejected/deferred items, checks, and verdict in conversation only. State records stage status and reviewed/fix SHAs, not a copy of that feedback; use the state reference when the conversation evidence is lost.
+For an empty pinned diff, follow code-review's empty-diff result. Only verified existing requirement coverage and fresh final verification can establish a no-change delivery; an empty range alone cannot. Report that there was no new diff to review, not an independent passing review. Do not invent tasks, commits, or review findings.
 
 ## Stops and recovery
 
-Stop for a missing approval, changed approved inputs, an unresolved execution gate, unsafe working-tree overlap, failed checks without a clear in-scope fix, or any required high-risk sign-off. Preserve the branch, commits, state, ledger, briefs, and reports.
+Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, uncertain evidence, exhausted failure budgets, and unresolved verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
 
-Follow the state reference to resume from verified evidence. A manual commit is not evidence that a task or stage passed. Do not skip a stage to make the run appear complete. If requirements must change, recommend `spec` and stop; it is outside this orchestrator.
-
-Explain the preserved state and let the user decide recovery or integration.
+Use `./references/state-management.md` whenever progress already exists. Changed approved inputs require their owner's clarification or approval before use; subsequent in-scope planning needs no plan approval. Recovery does not reset a stop or grant another review-fix wave.
 
 ## Completion report
 
-Report actual results, not estimated success:
+Report the approved spec, current plan and commit, branch, fixed review base, verified stage status, completed/executable tasks and skipped reasons, fresh checks and accepted verification limits, and state path. Include the reviewed head, independent/inline/empty-diff result, adjudicated findings and rulings, fix range and commits if any, deferred items, and exact blockers. Omit empty sections; keep review feedback in conversation only, not a report or state copy.
 
-```text
-Spec: <approved input path>
-Plan: <path and commit>
-Branch: <target branch>
-Review base: <commit>
-Stages: plan <status>; execute <status>; code-review <status>
-Tasks: <completed / executable; each reviewed and committed; approved skipped tasks listed separately>
-Checks: <commands and fresh results>
-Review: <reviewed head; independent or inline; verdict; Blocking/Important fixed or remaining>
-Fixes: <reviewed head>..<fix head>, or none
-Deferred: <Minor findings>
-State: .coding/autoflow-state.json
-Stopped: <reason, or none>
-Next: <resolve blocker, resume, or user decides integration>
-```
-
-Finish after reporting; do not invoke another skill. The user decides what happens to the branch.
+Finish after reporting. Do not invoke another skill or offer integration menus; the user decides what happens to the branch.

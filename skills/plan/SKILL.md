@@ -23,15 +23,15 @@ The spec is the product authority. Record a needed product change there through 
 
 ## Revising an existing plan
 
-Read the current approved task list and available task results before revising. For Full, also read `plan.md`, any execution ledger, and relevant Git history. For Brief, revise the conversation plan without creating files; use Git evidence when needed to confirm completed work.
+Read the current authorized task list and available task results before revising. For Full, also read `plan.md`, any execution ledger, and relevant Git history. For Brief, revise the conversation plan without creating files; use Git evidence when needed to confirm completed work.
 
-Changes to deliverables, task boundaries, requirement coverage, dependencies, shared contracts, or verification guarantees need this revision process even when product scope is unchanged. Repository-proven path/name corrections and equivalent commands that preserve those meanings may be recorded by `execute` without rewriting the approved plan.
+Changes to deliverables, task boundaries, requirement coverage, dependencies, shared contracts, or verification guarantees need this revision process even when product scope is unchanged. Repository-proven path/name corrections and equivalent commands that preserve those meanings may be recorded by `execute` without rewriting the current plan.
 
 - Completed tasks are history. Keep their numbers, content, and any briefs unchanged; add a corrective task if necessary.
 - Revise unfinished tasks and add new tasks with the next free number.
-- Cancel an unnecessary unfinished task only through an approved revision. Retain its number, any brief, and history; mark it `skipped: <approved reason>`. Check active requirement coverage and dependencies without inventing completion or a commit.
-- Present what changed and why, then obtain approval before updating the plan or linked briefs.
-- After approval, reconcile affected unfinished briefs when present, append `Plan revised: <one-line reason>` to an existing ledger, and commit the plan revision. Preserve completed and skipped records.
+- Cancel an unnecessary unfinished task only through an authorized revision. Retain its number, any brief, and history; mark it `skipped: <reason>`. Check active requirement coverage and dependencies without inventing completion or a commit.
+- Apply Authorization below to revisions too: standalone revisions need user approval; autoflow may authorize an in-scope revision without another prompt. Explain what changed and why. Neither route permits changing product decisions, disregarding user constraints, or weakening requirement coverage or verification guarantees.
+- After authorization and self-review, reconcile affected unfinished briefs when present, append `Plan revised: <one-line reason>` to an existing ledger, and commit the plan revision. Preserve completed and skipped records.
 
 ## Explore
 
@@ -112,7 +112,7 @@ Repeat only the tasks needed. Omit empty sections and use repository-relative pa
 
 ## Optional task briefs
 
-For lengthy task-specific instructions only, add `.coding/features/YYYYMMDD-<semantic-name>/impl/task-<N>.md` after approval and link it from that task in the plan.
+For lengthy task-specific instructions only, add `.coding/features/YYYYMMDD-<semantic-name>/impl/task-<N>.md` after authorization and self-review and link it from that task in the plan.
 
 Use the same task number, goal, requirement IDs, dependencies, files, and checks as the plan, followed by any additional steps or examples the task needs. Do not duplicate the spec's requirement text or introduce decisions absent from approved inputs. The plan must remain sufficient to recover the task if this supplemental file is unavailable.
 
@@ -120,7 +120,7 @@ Briefs are work records, not part of the plan commit. The user owns `.coding/` i
 
 ## Self-review
 
-Before presenting the draft, confirm:
+Before presenting or saving the plan, confirm:
 
 - active requirements are covered under `./references/stable-ids.md`
 - each task has a clear deliverable, files, and observable check
@@ -132,17 +132,15 @@ Before presenting the draft, confirm:
 
 Fix evidence-based gaps directly. If a gap requires a product decision, recommend a revision with `spec` instead of hiding the choice in a task. Preserve unaffected decisions; a targeted feasibility finding does not justify redesigning the whole system.
 
-## Approval gate
+## Authorization
 
-Approval of the spec does not approve the plan. Present the task list, approach, verification, and any review focus as a draft in conversation. Write no plan or brief yet.
+When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
 
-Wait for approval of that draft. Revise when requested. When called by `autoflow`, the same gate may also record explicit authorization for execution and in-scope Blocking/Important review fixes; spec approval alone does not grant it.
-
-After approval, Full writes `plan.md` and only any justified briefs. A committed plan records its approval. Brief writes nothing and remains in conversation.
+When called independently, approval of the spec does not approve the plan. Present the task list, approach, verification, and Review focus as a conversation draft; write no plan or brief yet. Wait for approval, revise when requested, then save Full and any justified briefs. Brief writes nothing. A commit records delivery under the applicable authorization, not proof of user approval by itself.
 
 ## Before saving
 
-Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`. Draft approval does not authorize overwriting or committing unrelated work.
+Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`. Plan authorization does not authorize overwriting or committing unrelated work.
 
 ## Commit
 
@@ -152,6 +150,6 @@ Brief has no plan artifact to commit.
 
 ## Finish
 
-Report the tier, approved task list or saved plan path, any supplemental briefs, and the commit when present. Omit empty artifact sections.
+Report the tier, task list or saved plan path, authorization source, any supplemental briefs, and the commit when present. Omit empty artifact sections.
 
-Stop and recommend `execute`; do not invoke it or modify product files. For Brief, state that later resumption needs the task list to be restated or saved. A short saved plan is sufficient; persistence does not require more decomposition.
+When called by `autoflow`, return to it for execution without another approval. Otherwise stop and recommend `execute`. Do not invoke it yourself or modify product files. For Brief, state that later resumption needs the task list to be restated or saved. A short saved plan is sufficient; persistence does not require more decomposition.
