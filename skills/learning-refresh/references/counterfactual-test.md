@@ -2,305 +2,99 @@
 
 # Counterfactual Test for Learnings
 
-The counterfactual gate is the only filter that keeps `docs/learnings/` from becoming a diary. Apply it to every candidate entry before writing.
+This reference owns the quality gate for candidate and existing entries, not their storage or reporting format.
 
-## The test
+## The gate
 
-> If this line were deleted, would a competent engineer working here later repeat the mistake, or re-derive the reasoning from scratch?
+> Without this entry, would a future engineer working in the same area repeat a non-obvious mistake or re-derive non-obvious reasoning and its boundaries?
 
-- **Yes, they would repeat it** → Write it. The entry prevents real future waste.
-- **No, they could infer it** → Do not write it. The entry is noise.
-- **Unsure** → Do not write it. When in doubt, leave it out.
+Pass only when session or repository evidence supports that value, the reasoning is missing from the final code, tests, or existing docs, and the entry names a concrete file, command, symptom, or condition. Include what to do differently and when the advice does not apply. A recorded decision may be cited to explain missing reasoning, not merely restated.
 
-## What passes
+Avoiding repeated analysis counts even when several choices are valid and nothing would break. A trade-off does not need an objectively wrong alternative to be worth preserving.
 
-### 1. Non-obvious traps
-Something that looked right but was not. The reader would try the same thing.
+- **Pass**: retain the entry for that demonstrated future value.
+- **Fail**: the value is absent, routine, already recorded, readily inferable from the artifacts, or too vague to act on.
+- **Uncertain**: skip a new candidate. For an existing entry, preserve it as unverified under the lifecycle rules; uncertainty is not proof that it failed.
 
-**Example (passes)**:
+Evaluate entries independently, without a quota. Zero qualifying entries is a normal result. Capture the trap or reasoning, not the investigation diary.
+
+## Passing examples
+
+### A project-specific trap
+
 ```markdown
 ## Legacy exporter encodes NaN as a string
 
-Our legacy exporter deliberately writes non-finite readings as the JSON
-string "NaN". After JSON.parse(), `readings.includes(NaN)` returned false
-because the array contained a string, not the numeric value NaN.
+Our legacy exporter writes non-finite readings as the JSON string "NaN".
+The consumer's `readings.includes(NaN)` returned false because the value
+was a string, not numeric NaN; that convention was absent from its code.
 
-Array.includes() uses SameValueZero and does match numeric NaN. JSON.parse()
-does not coerce "NaN" to a number; bare NaN is not valid JSON.
+Array.includes() does match numeric NaN. JSON.parse() does not coerce
+"NaN" to a number, and bare NaN is not valid JSON.
 
-Check the exporter's string sentinel explicitly, or normalize it at ingestion
-before numeric validation. Do not silently discard these missing readings.
+Check the string sentinel explicitly or normalize it at ingestion before
+numeric validation. Do not silently discard these missing readings.
 ```
 
-**Why it passes**: The exporter's sentinel convention is project-specific and absent from the consumer code; it is not a general warning about Array.includes().
+The missing project convention explains the symptom; a general warning about `Array.includes()` would not.
 
-### 2. Trade-offs with non-obvious losers
-Why the alternative lost, when the spec only says what won.
+### A trade-off that saves repeated analysis
 
-**Example (passes)**:
 ```markdown
-## Why we didn't use WebSockets for notifications
+## Why notifications use SSE rather than WebSockets
 
-We chose Server-Sent Events (SSE) for live notifications instead of WebSockets.
+The spec records SSE but not why the alternative lost. Our notifications
+are server-to-client only. During implementation, WebSockets required
+application-managed reconnection and connection state; native EventSource
+already provided the reconnect behavior this feature needed.
 
-WebSockets requires custom reconnection logic and connection state management. 
-SSE automatically reconnects and works over HTTP/2 multiplexing. Our 
-notifications are server→client only, so the bidirectional channel was unused weight.
-
-If we need client→server push in the future, revisit this.
+WebSockets would still work, but its unused bidirectional channel did not
+justify that work. Revisit the choice if client-to-server push is needed.
 ```
 
-**Why it passes**: The spec says "use SSE" but doesn't capture why WebSockets lost. A future engineer might propose WebSockets without knowing the reconnection cost was the dealbreaker.
+This passes because it preserves a non-obvious elimination reason, not because WebSockets would cause a defect.
 
-### 3. Boundary conditions that are not obvious
-Where this breaks, when it looks like it should work.
+### A boundary hidden across layers
 
-**Example (passes)**:
 ```markdown
-## Image uploads fail silently above 4.5MB
+## The upload file limit is not the request limit
 
-Our upload validator accepts files up to 5MB, but uploads between 4.5MB 
-and 5MB fail without error in production.
+The file validator and Nginx both allow 5 MiB. A multipart request carrying
+a file at that exact limit exceeds Nginx's client_max_body_size because the
+request also includes fields and multipart overhead, and is rejected.
 
-Nginx's client_max_body_size is set to 5M, but it counts the entire 
-multipart/form-data payload including field overhead (~10% in our case), 
-not just the file. A 4.8MB file becomes a 5.3MB request and Nginx rejects it.
-
-Solution: set validator to 4.5MB or raise Nginx limit to 6M.
+Set the request limit to accommodate the permitted file plus bounded fields
+and overhead, or lower the file limit accordingly. Test a maximum-size file
+with the supported form fields; do not assume a fixed overhead percentage.
 ```
 
-**Why it passes**: The 4.5MB threshold is not derivable from reading the validator code. A reader would assume "5MB limit" means 5MB files work.
+The validator alone does not reveal the effective request boundary.
 
-## What fails
+### A failure investigation reduced to its reusable lesson
 
-### 1. Facts already recorded elsewhere
-If it's in `AGENTS.md`, `GLOSSARY.md`, an ADR, or the spec, it has a home.
-
-**Example (fails)**:
 ```markdown
-## We use PostgreSQL for the main database
+## Parallel migrations starve API connections during deployments
 
-Our application uses PostgreSQL 14 as the primary data store.
+All services connect through a shared database proxy capped at 10 backend
+connections. Eight parallel migrations each held one connection, while two
+long-running API requests held the remaining two. New API requests queued
+and timed out; the same workload passed outside deployments.
 
-We chose PostgreSQL because it supports JSON columns and full-text search.
+Serialize migrations or reserve enough capacity for the measured concurrent
+API workload. Verify by deploying while running representative API traffic;
+normal-load checks alone do not exercise this boundary.
 ```
 
-**Why it fails**: This belongs in `AGENTS.md` (stack facts) or an ADR (if the choice was contested). It's not a trap or a boundary condition.
-
-### 2. Obvious consequences
-Things any competent engineer would know or could look up in 30 seconds.
-
-**Example (fails)**:
-```markdown
-## Async functions return Promises
-
-When you mark a function as async, it returns a Promise even if you 
-don't explicitly return one.
-
-This means you need to await or .then() the result.
-```
-
-**Why it fails**: This is documented behavior of async functions. A reader already knows this or will learn it from the first error message.
-
-### 3. Spec decisions reworded
-Restating what the spec already says, without the "why the alternative lost" part.
-
-**Example (fails)**:
-```markdown
-## User avatars are 128x128 pixels
-
-We decided to make user avatars 128x128 pixels.
-
-This size works well on both desktop and mobile displays.
-```
-
-**Why it fails**: The spec already says "128x128". What's missing is why 96x96 or 256x256 lost—was it visual testing? Mobile bandwidth? Retina display support? Without the trade-off, this is just repeating the spec.
-
-### 4. Inferable from the code
-If reading the implementation for 2 minutes reveals it, don't write it.
-
-**Example (fails)**:
-```markdown
-## The login form validates email format
-
-Our login form uses a regex to validate email addresses before submission.
-
-The regex checks for an @ symbol and a domain with at least one dot.
-```
-
-**Why it fails**: Opening `login-form.tsx` and reading 5 lines shows this. It's not a trap, and the validation logic is right there.
-
-### 5. Things that sound important but aren't actionable
-Vague warnings without concrete triggers or symptoms.
-
-**Example (fails)**:
-```markdown
-## Be careful with user input
-
-Always validate and sanitize user input to prevent security issues.
-
-This is important for keeping the application secure.
-```
-
-**Why it fails**: "Be careful" is not a boundary condition. What specific input broke? What was the symptom? What's the check? Without concrete details, this is a platitude.
-
-## The double-check questions
-
-Before writing an entry, answer these:
-
-1. **What would break if a reader didn't know this?**
-   - If "nothing" or "they'd figure it out in 5 minutes", fail it.
-
-2. **Can this be derived from the code or docs in under 2 minutes?**
-   - If yes, fail it.
-
-3. **Does this entry name a specific file, symptom, command, or condition?**
-   - If no, fail it.
-
-4. **If I deleted this line, would a smart reader working here later make the same mistake?**
-   - If no, fail it.
-
-5. **Is this already documented elsewhere?**
-   - If yes, fail it (unless you're adding the "why the alternative lost" part).
-
-## Common rationalizations (and why they're wrong)
-
-| Rationalization | Reality |
-|-----------------|---------|
-| "This is good context to have" | Context is only valuable if it prevents a mistake. General background belongs in the spec or AGENTS.md. |
-| "It took me hours to learn this" | Your learning time doesn't make it a trap. What matters is whether a reader would repeat the mistake, not how long you spent on it. |
-| "This is a subtle point" | Subtle ≠ non-obvious. If it's documented or inferable from the code, it's not a trap. |
-| "Future developers will thank me" | They'll thank you more for a short file they actually read than a long one they skip. |
-| "More documentation is better" | More *useful* documentation is better. Noise dilutes signal. |
-| "This connects to that other decision" | Connections belong in the spec's Decisions section or an ADR, not here. Learnings are self-contained traps and boundary conditions. |
-
-## Entry quality spectrum
-
-### ❌ Diary entry (fails counterfactual)
-```markdown
-## Today we added user authentication
-
-We implemented JWT-based authentication using the jsonwebtoken library.
-
-The tokens expire after 24 hours and are stored in localStorage.
-```
-
-**Problem**: This is project history, not a learning. It belongs in git log and the spec.
-
-### ❌ Generic security advice (fails counterfactual)
-```markdown
-## JWT tokens in localStorage are vulnerable to XSS
-
-We store JWT tokens in localStorage, which means they can be stolen if 
-an attacker injects JavaScript.
-
-Consider using httpOnly cookies for more sensitive applications.
-```
-
-**Problem**: This is documented security advice (search "JWT localStorage XSS"). A reader could find this in 30 seconds. It's not a trap we hit.
-
-### ✅ Strong learning (clearly passes)
-```markdown
-## Legacy Safari private mode rejects localStorage writes
-
-Our supported legacy Safari versions before 10.1 throw QuotaExceededError
-on localStorage.setItem() in private mode. The login flow swallowed that
-exception, so users appeared logged out without a visible error.
-
-This is a version-specific storage restriction, not a claim about current
-Safari. Check storage writes for failure and handle unavailable persistent
-storage explicitly, for example with memory-only state and reauthentication.
-Test on the affected supported versions; do not assume sessionStorage works.
-```
-
-**Why it's strong**: 
-- Specific trap (private mode in supported legacy Safari versions)
-- Non-obvious symptom (silent failure, not an error message)
-- Concrete check (handle failed writes and test affected versions)
-- Names the supported-version boundary that makes the historical behavior relevant
-
-## Batch evaluation shortcut
-
-When evaluating multiple candidates at once:
-
-1. List all candidates (just the titles)
-2. For each, ask: "If deleted, would a smart engineer repeat this mistake?"
-3. Keep only the ones where the answer is "yes"
-4. If you kept more than 5, reapply the test more strictly
-
-A session that produces 1-3 strong learnings is normal and valuable. A session with 10+ "learnings" probably failed the gate.
-
-## Edge case: Recordings of failure investigations
-
-**Question**: We spent 6 hours debugging a Heisenbug. The final cause was a race condition in the ORM connection pool. Should we record the investigation steps?
-
-**Answer**: No, record only the trap and the check.
-
-❌ **Don't write this** (investigation diary):
-```markdown
-## Debugging the intermittent 500 errors
-
-1. First we checked the logs and saw "connection pool exhausted"
-2. Then we increased the pool size but it still happened
-3. We profiled the queries and found nothing slow
-4. Finally we discovered two migrations running in parallel
-...
-```
-
-✅ **Write this instead** (trap + check):
-```markdown
-## Parallel migrations exhaust the connection pool
-
-We had intermittent "connection pool exhausted" errors in production. 
-The errors happened only during deployments, not under normal load.
-
-Our deploy script runs database migrations in parallel (one per service). 
-Each migration holds a transaction lock and a connection for its duration. 
-With 8 services deploying simultaneously, all 10 pool connections were held 
-by migrations, starving the API.
-
-Check: run migrations serially (one at a time) or expand the pool to 
-(num_services + normal_load) during deploys. Test with: deploy all services 
-simultaneously while hitting the API.
-```
-
-The investigation journey is valuable to you but not to the reader. They need the trap, the symptom, and the check—not the debug steps.
-
-## When to skip the file entirely
-
-If **all** candidates fail the counterfactual gate, report:
-
-```
-Learnings: none worth recording
-
-Reason: <one line, e.g. "all candidates were spec decisions" or "traps were obvious from error messages">
-```
-
-This is a normal and valuable outcome. A session with no learnings doesn't mean it was unproductive—it means the reasoning is already captured elsewhere, or the traps were obvious.
-
-## Red flag checklist
-
-Stop and reconsider if you notice yourself:
-
-- [ ] Rewriting spec decisions without the trade-off
-- [ ] Recording obvious language features or library behavior
-- [ ] Writing "be careful with X" without concrete symptoms
-- [ ] Producing more than 5 entries from one session
-- [ ] Feeling unsure whether an entry passes the test (if unsure, fail it)
-- [ ] Narrating your debugging journey instead of the trap
-- [ ] Documenting project facts better suited for AGENTS.md
-- [ ] Repeating information already in glossary, ADR, or spec
-
----
-
-## Summary
-
-**The gate**: Would a smart engineer repeat this mistake if this line were deleted?
-
-**Passes**: Non-obvious traps, trade-offs with non-obvious losers, boundary conditions that look like they should work
-
-**Fails**: Facts recorded elsewhere, obvious consequences, spec decisions reworded, inferable from code, unactionable warnings
-
-**When in doubt**: Leave it out. A short file that gets read beats a long one that doesn't.
-
-**Normal range**: 1-5 entries per session. Zero is normal and valuable.
+The topology and connection counts explain the contention. The sequence of debugging attempts adds no reusable reasoning.
+
+## Failing examples
+
+| Candidate | Why it fails |
+|-----------|--------------|
+| "We use PostgreSQL" or "avatars are 128×128" | Restates a project fact or decision without missing reasoning |
+| "Async functions return Promises" | Routine language behavior, not a project-specific trap |
+| "The login form checks email format" | The implementation already reveals it |
+| "Validate user input" or generic JWT storage advice | No concrete project trigger, symptom, or missing boundary |
+| "First we checked logs, then profiled queries…" | Investigation history rather than the trap, cause, and check |
+
+Keep an evidence-backed project-specific exception to these examples when it passes the gate; familiarity with a general rule does not explain an undocumented local interaction.

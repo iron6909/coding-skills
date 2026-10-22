@@ -25,12 +25,12 @@ Compare the reasoning with current behavior, not just its original spelling.
 | Signal | Check | Likely outcome |
 |--------|-------|----------------|
 | File moved or function renamed | Equivalent code and behavior still exist | Update references |
-| Trap appears fixed | All relevant entry points enforce the fix; the warning is no longer needed | Update or Supersede |
+| Trap appears fixed | Does the fix remove the problem, or does a guard still need its rationale explained? | Keep, Update, or Supersede |
 | Feature removed | No replacement or equivalent problem remains | Archive candidate |
 | Architectural choice changed | New code and ADRs actually reverse the old reasoning | Supersede |
 | Context expanded | Both old and new mechanisms remain valid in different cases | Update boundaries |
 | Learning overlaps another | Compare the reasoning, not merely tags | Consolidate |
-| Evidence still matches | Claim remains current and non-obvious | Keep |
+| Evidence still matches | Current reasoning passes the loaded quality gate | Keep |
 | Evidence is inconclusive | State what could not be verified | Stale |
 
 ### Example: upload validation
@@ -53,11 +53,9 @@ JSON.parse(JSON.stringify([NaN])); // [null]
 
 Check whether the affected data still passes through JSON, whether callers distinguish `null` from a number, and whether validation rejects non-finite numbers. `Array.prototype.includes` itself does recognize `NaN`; do not preserve a false explanation merely because its original example still appears in a document.
 
-## Assess staleness and quality
+## Avoid false positives
 
-Commit count and elapsed time help prioritize reading; they do not invalidate a learning. Old lessons can still be correct, and recent ones can already be wrong.
-
-Check whether the reasoning passes the counterfactual quality gate loaded by `learning-refresh`. Routine facts and diary entries may be archive candidates even when accurate, but the same archival approval and citation checks still apply.
+Commit count and elapsed time help prioritize reading, not decide the result.
 
 Do not confuse these with obsolete reasoning:
 
@@ -66,17 +64,4 @@ Do not confuse these with obsolete reasoning:
 - a moved test helper whose tests still verify the boundary
 - a trap prevented by the very guard the learning explains
 
-## Record the result
-
-For each learning, report:
-
-```text
-File: <learning path>
-Claim: <what was checked>
-Evidence: <current code, test, config, or ADR and what it establishes>
-Drift: <what changed, or none>
-Outcome: <Keep | Update | Consolidate | Supersede | Archive candidate | Stale>
-Action: <specific correction, replacement, or evidence/approval still needed>
-```
-
-Verify inbound citations before proposing a move. When the evidence is uncertain, keep the document and report the uncertainty; never delete it or treat a zero-match search as an archival gate.
+For each entry, retain the evidence source, what it establishes, what changed, and what remains unverified. Use the invoking skill's final report format rather than producing a separate report.

@@ -374,7 +374,29 @@ const dispatch = read("shared/references/subagent-dispatch.md");
 assert.ok(dispatch.includes("For exploration") && dispatch.includes("only when the invoking skill calls for independent review") && dispatch.includes("exploration alone does not add a review stage"), "shared dispatch guidance must not turn exploration into independent review");
 assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
 assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
-assert.ok(!read("shared/references/counterfactual-test.md").includes("barely passes"), "generic security advice fails the counterfactual gate");
+const learningGate = read("shared/references/counterfactual-test.md");
+const learningFormat = read("shared/references/learnings-format.md");
+const learningCapture = read("skills/learning/SKILL.md");
+const learningRefresh = read("skills/learning-refresh/SKILL.md");
+assert.match(learningGate, /repeat a non-obvious mistake or re-derive non-obvious reasoning/, "the gate must preserve both mistake prevention and reasoning reuse");
+assert.ok(learningGate.includes("nothing would break") && !learningGate.includes("barely passes"), "useful trade-offs need no defect, while generic advice still fails");
+assert.match(learningGate, /uncertainty is not proof that it failed/, "capture uncertainty must not become an archival verdict");
+assert.doesNotMatch(learningFormat, /## When to capture a learning/, "format must not define a second capture gate");
+for (const rule of ["Keep one current file per topic", "assesses each current entry independently", "A file with mixed outcomes keeps its current entries available", "only after every entry has a verified historical disposition", "An uncertain or still-current entry blocks the whole-file move", "get the user's approval for each move", "Never overwrite an archive"]) {
+  assert.ok(learningFormat.includes(rule), `learning lifecycle missing boundary: ${rule}`);
+}
+for (const rule of ["without replacing the underlying advice", "Preserve the original reasoning", "only one current file remains per topic", "otherwise use entry-level pointers"]) {
+  assert.ok(learningFormat.includes(rule), `learning revision missing distinction: ${rule}`);
+}
+for (const rule of ["including a Keep result", "A partial or inconclusive review retains the previous date", "remove the old `status: stale` and its `reason`", "Pending archival approval alone does not make a file stale"]) {
+  assert.ok(learningFormat.includes(rule), `learning metadata missing transition: ${rule}`);
+}
+assert.ok(learningRefresh.includes("Replacement lessons are in scope") && learningRefresh.includes("entry counts separately from file moves"), "refresh must allow scoped replacements and distinguish entry results from file actions");
+assert.match(learningCapture, /`survey` for observed terminology; `spec` for newly agreed domain concepts/, "glossary ownership must distinguish observed facts from design decisions");
+assert.ok(learningCapture.includes("PASS / FAIL / UNCERTAIN"), "the capture report must not disguise uncertain candidates as proven failures");
+assert.doesNotMatch(learningGate, /Learnings:|## Summary|## The double-check questions/, "the quality reference must not duplicate final output or the gate");
+assert.doesNotMatch(read("skills/learning-refresh/references/drift-detection.md"), /## Record the result|File: <learning path>/, "drift detection must not define a second report format");
+assert.match(learningGate, /Eight parallel migrations each held one connection, while two\nlong-running API requests held the remaining two/, "the shared ten-connection example must account for both migration and API usage");
 const metrics = read("skills/simplify/references/complexity-metrics.md");
 assert.ok(!metrics.includes(".coding/simplify-config.toml"), "reuse project analyzer settings instead of an undocumented config");
 assert.ok(!/\d+ 个真实代理行为场景/.test(readme), "do not hardcode a drifting manual-case count");

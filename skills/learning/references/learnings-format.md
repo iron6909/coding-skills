@@ -2,20 +2,7 @@
 
 # Learnings format and lifecycle
 
-`docs/learnings/` holds session learnings: trade-offs, traps, and boundary conditions the spec and plan do not record. Keep one file per topic; a file may contain several related entries.
-
-## When to capture a learning
-
-Capture when **all three** hold:
-1. The work produced non-obvious reasoning absent from its final code, tests, or existing docs
-2. The reasoning would help future work in the same area avoid a trap or make a better choice
-3. The problem is not routine (a learning is a lesson, not a log entry)
-
-Do not capture:
-- Routine fixes whose artifacts already explain the lesson
-- Facts already in the spec, plan, ADR, or code comments
-- One-time decisions with no recurring pattern
-- Implementation steps (those belong in the plan)
+`docs/learnings/` holds session learnings: trade-offs, traps, and boundary conditions. This reference owns their format, matching, and lifecycle; the invoking skill supplies the quality gate.
 
 ## File structure
 
@@ -23,7 +10,9 @@ Do not capture:
 docs/learnings/YYYYMMDD-<topic>.md
 ```
 
-For a new topic, use today's date + a short kebab-case name (2-4 words). For an existing topic, update its active file without renaming it.
+Keep one current file per topic; a file may contain several related entries. For a new topic, use today's date + a short kebab-case name (2-4 words). For an existing topic, update its current file without renaming it.
+
+A current entry is advice not explicitly marked historical. A file containing only historical entries is retained history, not a second current file, even while awaiting archival approval.
 
 Use this canonical template:
 
@@ -50,9 +39,14 @@ tags: [<3-6 lowercase module, tool, or concept tags>]
 - `docs/adr/NNNN-<related>.md`
 ```
 
-Repeat the entry section only for related lessons. Omit `Related` when unused. Keep each entry short: a pointer to reasoning, not a tutorial. Correct superseded claims in place and record what changed.
+Repeat the entry section only for related lessons. Omit `Related` when unused. Keep each entry short: a pointer to reasoning, not a tutorial.
 
-Keep lifecycle metadata in the same YAML frontmatter: `last_verified` when checked, `status: stale` with `reason` when uncertain, and the archival fields specified below when moved. Use quoted `YYYYMMDD` dates.
+Keep lifecycle metadata in the same YAML frontmatter. Use quoted `YYYYMMDD` dates:
+
+- Set `last_verified` after an evidence-backed review of every current entry, including a Keep result or a verified historical disposition. A partial or inconclusive review retains the previous date.
+- Use `status: stale` with a `reason` naming the entries whose evidence or quality remains uncertain. On a successful review, update `last_verified` and remove the old `status: stale` and its `reason`.
+- Pending archival approval alone does not make a file stale; report it separately. A legacy stale reason that only records missing approval is removed once that distinction is established.
+- Use the archival fields below when moving a file.
 
 **Legacy files**: accept body-level `Date` / `Area` / `Tags` and `Problem` / `Why` / `How to apply` sections when reading. If metadata is absent, match on the title and body instead. Convert only a file being edited; do not bulk-migrate or discard older learnings.
 
@@ -60,7 +54,7 @@ Keep lifecycle metadata in the same YAML frontmatter: `last_verified` when check
 
 **When to read**: during `plan` (task selection) and `code-review` (matching recorded traps to the diff).
 
-Search active files directly under `docs/learnings/`; `_archived/` is history, not the default matching set.
+Search Markdown files directly under `docs/learnings/`; `_archived/` is history, not the default matching set. Skip explicitly historical entries as current advice. Follow their replacement pointers when relevant; a retained historical file does not compete with its current replacement.
 
 **Match by** (case-insensitive):
 1. **Tags**: exact match or substring (e.g., tag `auth` matches `authentication`)
@@ -71,22 +65,25 @@ Read each candidate's full content. Metadata finds candidates; the evidence, rea
 
 ## Refresh cycle
 
-Learnings drift as the codebase changes. The `learning-refresh` skill audits active entries and updates, consolidates, supersedes, or archives them. No learning is deleted. Match active files directly under `docs/learnings/`; read `_archived/` only to follow a citation or inspect history.
+The `learning-refresh` skill assesses each current entry independently, then chooses file actions. Read `_archived/` only to follow a citation or inspect history. No learning is deleted.
 
-**Staleness signals**:
-- Referenced code paths, modules, or APIs no longer exist
-- The trap described no longer occurs (refactor eliminated it)
-- The trade-off reasoning is superseded by a newer ADR or architectural change
-- Overlap with other learnings (consolidate)
+### Entry revisions
 
-**Age alone is not staleness.** A two-year-old learning that still matches the code stays.
+- **Update** corrects evidence, wording, or a factual error without replacing the underlying advice. Correct it in place and record what changed and why.
+- **Supersede** replaces the advice or its rationale. Preserve the original reasoning in a clearly labeled `Historical` section with the date, reason, and replacement pointer. Add or identify the current replacement and link it back to the original.
+- **Consolidate** combines duplicate reasoning into a primary entry; mark the originals historical and link both directions without discarding their evidence or reasoning.
+- **Archive candidate** identifies an entry verified obsolete or shown to fail the quality gate. Mark it historical with the date and reason, even when no replacement is needed.
+
+For replacements, reuse the topic's current file; a new file is justified only for a different topic or when the original file becomes entirely historical. Mark and link the original in the same change so only one current file remains per topic. Use file-level `superseded_by` only when every entry is replaced by the same file; otherwise use entry-level pointers.
+
+A file with mixed outcomes keeps its current entries available; retiring one entry never makes the whole file eligible for archival.
 
 ### Archival gates
 
-Move a learning to `docs/learnings/_archived/` only when its claim is verified obsolete, superseded, consolidated into another learning, or shown to fail the counterfactual quality gate. Age, a missing file, or an empty text search alone is not enough.
+A file may be archived only after every entry has a verified historical disposition: obsolete, superseded, consolidated, or failed quality gate. An uncertain or still-current entry blocks the whole-file move. Age, a missing file, or an empty text search alone is not enough.
 
-- Without confirmation, archive only when **all three** hold: the referenced code is gone, the problem domain is gone, and no inbound citations exist.
+- Without confirmation, archive only when **all three** hold for the whole file: the referenced code is gone, the problem domain is gone, and no inbound citations exist.
 - In all other cases, present the evidence and get the user's approval for each move. Resolve inbound citations to the replacement or archived path before moving; if that cannot be done safely, leave the file in place.
-- When evidence or approval is missing, keep the file and add `status: stale` with a reason. In non-interactive mode, do not infer approval.
-- Preserve the full learning and add `status: archived`, `archived_on`, and `reason`; name any replacement in `superseded_by`.
+- Without approval, retain the historical file and report the pending move; do not infer consent in non-interactive mode. Evidence uncertainty uses the stale metadata above, not a failed quality verdict.
+- Preserve the full document and add `status: archived`, `archived_on`, and `reason`. Record replacement pointers at file or entry level as specified above.
 - Keep the filename unless it collides in `_archived/`; then add a numeric suffix. Never overwrite an archive. Update `Related` links to remain valid from the new location, using repository-relative paths.

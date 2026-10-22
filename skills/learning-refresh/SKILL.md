@@ -1,68 +1,45 @@
 ---
 name: learning-refresh
-description: Audit active learnings in docs/learnings/ against the current codebase, update or consolidate them, and archive eligible entries without deleting documents. Use when learnings may have drifted after refactoring, changed decisions, or fixed traps. Not for creating new learnings—use learning.
+description: Audit recorded entries in docs/learnings/ against current evidence, update, consolidate, or supersede them, and archive eligible whole files without deleting documents. Use after refactoring, changed decisions, or fixed traps. Replacement lessons are in scope; unrelated new session lessons belong to learning.
 disable-model-invocation: true
 ---
 
-# learning-refresh
+# Learning Refresh
 
-Refresh recorded traps, trade-offs, and boundary conditions against current evidence. Never delete a learning.
+Refresh recorded traps, trade-offs, and boundary conditions against current evidence.
 
 ## 1. Inventory
 
-Read `./references/learnings-format.md` for the canonical format, matching rules, and archival gates. It owns the conditions for moving a file; apply them to every archive, consolidation, or supersession.
+Read `./references/learnings-format.md` for the canonical format, matching rules, entry revisions, lifecycle metadata, and archival gates.
 
-List active Markdown files directly under `docs/learnings/`. Do not recursively re-audit `_archived/`; read an archived file only when following a citation or checking a replacement's history. If the directory is absent or empty, report that and stop.
-
-For each active file, record its tags, area, core claim, cited evidence, and inbound citations. Read the full content rather than judging it from metadata.
+Inventory Markdown files directly under `docs/learnings/` using those matching and history rules. If no files exist, report that and stop. Read each file in full; record each current entry's claim and cited evidence, plus the file's tags, area, and inbound citations. Retained historical entries may inform a file action but are not current advice to re-audit.
 
 ## 2. Verify
 
-Read `./references/drift-detection.md` for evidence checks and false-positive avoidance. Verify that cited code still exists, that the claim still holds, and whether another learning already covers it. A missing path or search match is a lead, not a verdict.
+Read `./references/drift-detection.md` before checking each entry's evidence; it owns the evidence checks and false-positive avoidance.
 
-Read `./references/counterfactual-test.md` to assess whether the learning prevents a non-obvious recurring mistake. Failing the quality gate makes it an archive candidate, not permission to remove it.
+Read `./references/counterfactual-test.md` before assessing each entry's continuing value. It owns the quality gate, including how to handle uncertainty about an existing entry.
 
 ## 3. Classify
 
-| Outcome | When | Action |
-|---------|------|--------|
-| Keep | Current evidence and useful reasoning | Leave in place |
-| Update | Claim remains useful; evidence or wording drifted | Correct in place and record `last_verified` |
-| Consolidate | Multiple files cover the same lesson | Merge useful reasoning into a primary file; retain or archive the others under the archival gates |
-| Supersede | New understanding replaces the claim | Write or identify the replacement, link both directions, and retain or archive the original under the archival gates |
-| Archive | Verified obsolete or fails the quality gate | Move only when the archival gates permit it; preserve the document |
-| Stale | Evidence or required approval is missing | Leave in place with `status: stale` and the reason |
+Assign each entry an outcome under the loaded rules: Keep, Update, Consolidate, Supersede, Archive candidate, or Stale. Derive file actions separately under the lifecycle and archival gates; a mixed-outcome file is not assigned a single entry outcome.
 
-Present evidence and the proposed outcome for each file. Ask for approval where the archival gates require it. Do not use age alone as a reason to archive, and do not interpret silence as consent.
-
-Examples:
-- A moved function with unchanged behavior → Update the evidence.
-- A non-obvious upload size boundary still affecting requests → Keep.
-- A routine project-history entry with no reusable lesson → Archive candidate; seek approval.
-- Removed code, removed problem domain, and no inbound citations → Eligible for archival without a confirmation gate.
+Present the evidence, per-entry outcomes, and proposed file actions. Request any move approvals required by the archival gates.
 
 ## 4. Apply changes
 
-Read `./references/repository-changes.md` before editing or moving a learning. Apply the canonical format when editing a learning; do not migrate unrelated files. Preserve its reasoning and record why a claim changed. Before a move, resolve inbound citations, add archival metadata, and check for destination collisions as specified by the archival gates.
+Read `./references/repository-changes.md` before editing or moving a learning. Apply the proposed entry revisions, lifecycle metadata, and permitted file actions using the format reference, including its citation and destination-collision checks. Do not migrate unrelated files.
 
-Consolidation and supersession never imply deletion. When a move is not safe or approved, leave the original in place with a pointer to the primary or replacement file.
+Recheck each affected file's current entries and historical dispositions before finalizing metadata or a move.
 
 ## 5. Commit
 
-Read `./references/git-commit.md` before committing. Stage only this session's exact paths, including both the old and new paths of any move:
-
-```bash
-git add -- <edited-file> <old-learning-path> <archived-learning-path>
-git diff --staged
-git commit -m "docs(learnings): refresh against current codebase"
-```
-
-Omit paths that do not apply. Check that each moved document survives at its destination and no unrelated user edits are staged.
+Read `./references/git-commit.md` before committing. Stage only this session's exact paths, including both the old and new paths of any move. Confirm each moved document survives at its destination. Commit using the repository's convention or `docs(learnings): refresh against current codebase`.
 
 ## 6. Report and stop
 
-| File | Outcome | Evidence / reason | Replacement or archive path |
-|------|---------|-------------------|-----------------------------|
-| `<path>` | Keep / Update / Consolidate / Supersede / Archive / Stale | `<verified finding>` | `<path or none>` |
+| File / entry | Outcome | Evidence / reason | File action / replacement |
+|--------------|---------|-------------------|---------------------------|
+| `<path>#<entry>` | Keep / Update / Consolidate / Supersede / Archive candidate / Stale | `<verified finding or uncertainty>` | `<retained, updated, archived path, replacement, or pending approval>` |
 
-Report the counts, checks performed, commit, and any files left stale awaiting evidence or approval. If new non-obvious lessons emerged, recommend `learning`; do not invoke it.
+Report entry counts separately from file moves, checks performed, and the commit or no-change result. Distinguish unresolved evidence or quality from pending archival approval. If unrelated new lessons emerged, recommend `learning`; do not invoke it.
