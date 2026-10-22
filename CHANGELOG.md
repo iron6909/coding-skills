@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0] - 2026-10-22
+
+### Breaking Changes
+
+- **移除技能**：删除 `optimize` 和 `refactor` 及其路由、文档入口和共享引用映射，不保留别名或替代流程。使用方须移除旧调用、安装筛选及手工安装的旧技能目录；已有优化和重构报告保留。
+
+### Changed
+
+- **关联清理**：清理 `bugfix`、`simplify` 的失效推荐及专属检查，不将已删除流程迁入其他技能。
+- **验证范围**：仓库自检与离线打包检查通过；60 个手工场景仅完成结构检查，本轮未进行代理行为实跑。
+
 ## [10.0.0] - 2026-10-22
 
 ### Breaking Changes
@@ -536,7 +547,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v9.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v11.0.0...HEAD
+[11.0.0]: https://github.com/iron6909/coding-skills/compare/v10.0.0...v11.0.0
+[10.0.0]: https://github.com/iron6909/coding-skills/compare/v9.0.0...v10.0.0
 [9.0.0]: https://github.com/iron6909/coding-skills/compare/v8.0.3...v9.0.0
 [8.0.3]: https://github.com/iron6909/coding-skills/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/iron6909/coding-skills/compare/v8.0.1...v8.0.2
