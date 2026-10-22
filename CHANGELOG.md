@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.0.1] - 2026-10-22
+
+### Fixed
+
+- **历史审查依据**：规格、必需附录、UI 输入和计划默认绑定被审查版本，明确其他契约版本的适用依据，不将文件版本视为批准证据。
+- **技能路由**：UI 专项审查优先于整体功能审查，已有计划核对用户或 autoflow 授权，首次接触仓库不再要求先运行 survey。
+- **无障碍说明**：区分原生禁用、ARIA 语义和指针命中行为，明确对比度与悬浮内容的例外、触控目标的适用级别及实际验证边界。
+
+### Changed
+
+- **共享规则**：严重性只定义影响，提交与交付门槛由各技能决定；独立审查按调用技能指定的单元执行，不再按关注点拆分。
+- **按需阅读**：精简五份 UI 引用，保留判断条件、例外和验证方法；计划层级与完成交接规则收回技能正文，旧引用保留定位说明。
+
+### Added
+
+- **回归检查**：新增历史契约版本的 Git 自检和三个手工场景，77 个场景定义通过结构校验；本轮未进行代理行为实跑。
+
 ## [13.0.0] - 2026-10-22
 
 ### Breaking Changes
@@ -616,7 +633,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.0.1...HEAD
+[13.0.1]: https://github.com/iron6909/coding-skills/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/iron6909/coding-skills/compare/v12.0.0...v13.0.0
 [12.0.0]: https://github.com/iron6909/coding-skills/compare/v11.0.3...v12.0.0
 [11.0.3]: https://github.com/iron6909/coding-skills/compare/v11.0.2...v11.0.3
