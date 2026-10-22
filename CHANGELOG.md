@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.3] - 2026-10-22
+
+### Fixed
+
+- **提交授权**：区分技能自产改动与用户明确指定的临时改动；存在无关已暂存内容时先停止询问，不因可安全隔离而绕过门槛。
+- **提交信息与交付**：普通候选消息按项目规范整理，要求原文且与规范冲突时停止询问；补齐验证规则及提交、阻塞或无改动结果的汇报。
+
+### Changed
+
+- **规则归属**：共享引用统一维护暂存安全规则，正文删除重复确认和禁令，保留部分 hunk 与消息预览示例，同步全部共享副本。
+
+### Added
+
+- **回归场景**：新增授权 hunk、无关暂存阻塞、消息规范化及原文冲突四个手工场景；67 个场景定义通过结构检查，本轮未进行代理行为实跑。
+
 ## [11.0.2] - 2026-10-22
 
 ### Fixed
@@ -578,7 +593,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v11.0.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v11.0.3...HEAD
+[11.0.3]: https://github.com/iron6909/coding-skills/compare/v11.0.2...v11.0.3
 [11.0.0]: https://github.com/iron6909/coding-skills/compare/v10.0.0...v11.0.0
 [10.0.0]: https://github.com/iron6909/coding-skills/compare/v9.0.0...v10.0.0
 [9.0.0]: https://github.com/iron6909/coding-skills/compare/v8.0.3...v9.0.0
