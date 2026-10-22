@@ -24,7 +24,6 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `refactor`: review the structure of existing code and propose ranked improvement candidates for a chosen target.
 - `learning`: record the non-obvious reasoning, traps, and boundary conditions from a finished session into `docs/learnings`.
 - `learning-refresh`: audit and refresh the learnings store in `docs/learnings/` for staleness.
-- `doc-review`: review a proposal, spike report, spec, plan, or legacy capability map for gaps and contradictions.
 - `simplify`: clean up working code in an explicit scope or recent changes for reuse, clarity, and efficiency without changing behavior.
 - `handoff`: create a lightweight session handoff for multi-session continuity, capturing current phase and next steps.
 - `ui-design`: turn an approved frontend spec into `ui-spec.md`, establishing `DESIGN.md` if absent.
@@ -50,7 +49,7 @@ Use the first matching rule:
 10. If the user asks where the structure of existing code is hurting, or asks to review structure for a chosen refactor target (signals: "refactor review", "modules too shallow", "hard to test", "should we split this module"), use `refactor`. A refactor without a chosen target goes to `spec`.
 11. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `learning`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
 12. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
-13. If the user asks to review a planning document (signals: "review this spec", "check the plan", "review this spike report", "is this capability map complete"), use `doc-review`.
+13. If the user asks to review an existing planning document, use its owner: `ideate` for a proposal, `spike` for an evidence report, `spec` for a specification, or `plan` for a plan. Keep review-only requests read-only; do not start implementation or another stage.
 14. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes (use `refactor` for those).
 15. If the user asks to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`.
 16. If the user requests a small change with clear scope and acceptance checks, use `execute` directly. Missing `AGENTS.md` alone does not require a survey; read the relevant code and commands as needed. Do not use this shortcut for unfinished planned work or unresolved product decisions.

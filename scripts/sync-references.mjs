@@ -19,14 +19,14 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 // source file -> skill directories that ship a copy
 const MAP = {
-  "repository-changes.md": ["autoflow", "bugfix", "code-review", "commit", "doc-review", "execute", "handoff", "ideate", "learning", "learning-refresh", "optimize", "plan", "refactor", "simplify", "spec", "spike", "survey", "ui-design", "ui-review"],
+  "repository-changes.md": ["autoflow", "bugfix", "code-review", "commit", "execute", "handoff", "ideate", "learning", "learning-refresh", "optimize", "plan", "refactor", "simplify", "spec", "spike", "survey", "ui-design", "ui-review"],
   "glossary-format.md": ["survey", "spec"],
   "design-input.md": ["ideate", "spike", "spec"],
   "subagent-dispatch.md": ["survey", "spec", "plan", "execute", "refactor", "ideate"],
   "tdd.md": ["execute", "bugfix", "code-review"],
   "definition-of-done.md": ["plan", "execute", "code-review", "bugfix", "optimize", "simplify", "ui-review", "commit"],
-  "severity.md": ["execute", "code-review", "simplify", "doc-review", "ui-review"],
-  "git-commit.md": ["survey", "ideate", "spike", "spec", "plan", "learning", "execute", "bugfix", "code-review", "simplify", "learning-refresh", "doc-review", "commit", "optimize", "ui-design", "ui-review"],
+  "severity.md": ["execute", "code-review", "simplify", "ui-review"],
+  "git-commit.md": ["survey", "ideate", "spike", "spec", "plan", "learning", "execute", "bugfix", "code-review", "simplify", "learning-refresh", "commit", "optimize", "ui-design", "ui-review"],
   "learnings-format.md": ["plan", "code-review", "learning", "learning-refresh"],
   "stable-ids.md": ["spec", "plan", "execute"],
   "counterfactual-test.md": ["learning", "learning-refresh"],

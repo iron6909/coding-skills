@@ -82,6 +82,7 @@ assert.ok(designInput.includes("For `spike`, read only material needed to frame,
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
 const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
+assert.match(routing, /review an existing planning document.*`ideate`.*`spike`.*`spec`.*`plan`.*Keep review-only requests read-only/, "document reviews must use their owner without authorizing edits or implementation");
 assert.ok(routing.includes("missing constraints or a deciding criterion can be clarified there") && !routing.includes("lacks the inputs for a bounded design probe"), "guide must not divert a framed spike question solely because a constraint or criterion is missing");
 assert.ok(routing.indexOf("small change with clear scope and acceptance checks") >= 0 && routing.indexOf("small change with clear scope and acceptance checks") < routing.indexOf("use `survey`"), "clear small work must route before workspace documentation");
 assert.ok(routing.includes("Missing `AGENTS.md` alone does not require a survey"), "missing instructions must not force document creation");
@@ -113,7 +114,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture"].includes(skill)), "retired entries must not remain as second implementations or aliases");
+assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review"].includes(skill)), "retired entries must not remain as second implementations or aliases");
 for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
@@ -382,7 +383,6 @@ assert.ok(!/Mandatory split|must split|must flatten/.test(metrics), "metrics mus
 assert.doesNotMatch(metrics, /Complexity Score|npm install|pip install|## Reporting Format/, "complexity hints must not create a scoring, installation or reporting workflow");
 assert.match(metrics, /existing analyzer/, "interpret project analyzer findings rather than introduce another analyzer");
 assert.ok(!read("skills/simplify/SKILL.md").includes("Blocking findings should not exist here"), "passing tests must not suppress Blocking findings");
-assert.ok(!read("skills/doc-review/references/review-lenses.md").includes("mark as Important"), "missing evidence must be graded by impact");
 const decomposition = read("skills/plan/references/task-decomposition.md");
 assert.ok(!decomposition.includes("May not be testable independently"), "every task must remain independently testable");
 assert.ok(!decomposition.includes('"Add password reset flow" (expands auth system horizontally)'), "password reset is a new vertical journey");
@@ -406,7 +406,6 @@ assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
 assert.ok(plan.includes("A saved plan contains task details") && plan.includes("Neither tier requires task briefs by default"), "a short persisted plan must be usable without task briefs");
-assert.ok(read("skills/doc-review/references/review-lenses.md").includes("a self-contained plan requires no briefs"), "document review must not restore mandatory task briefs");
 const outputTier = read("skills/plan/references/output-tier.md");
 assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
 assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Draft approval does not authorize"), "saved-plan writes need shared workspace protection without treating draft approval as permission to overwrite unrelated work");

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- **移除技能**：删除 `doc-review` 及其路由、共享引用映射和文档入口，不保留别名或替代技能。文档检查继续由 `ideate`、`spike`、`spec`、`plan` 各自负责；已有项目文档不变。使用方须移除旧调用、安装筛选及手工安装的旧技能目录。
+
 ## [9.0.0] - 2026-10-22
 
 ### Breaking Changes

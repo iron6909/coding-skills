@@ -2,7 +2,7 @@
 
 # Severity levels
 
-Three levels classify findings by urgency and impact. Use these consistently across code review, document review, task evaluation, and finding reports.
+Three levels classify findings by urgency and impact. Use these consistently across code review, task evaluation, and finding reports.
 
 ## Blocking
 

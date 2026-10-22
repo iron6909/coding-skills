@@ -78,7 +78,6 @@ npx skills@latest add iron6909/coding-skills
 | [refactor](skills/refactor/SKILL.md) | 代码结构拖累修改，需要找出重构候选 |
 | [learning](skills/learning/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
 | [learning-refresh](skills/learning-refresh/SKILL.md) | 已记录的经验与代码现状不一致 |
-| [doc-review](skills/doc-review/SKILL.md) | 检查方案、验证报告、规格、计划或历史能力拆分文档 |
 | [simplify](skills/simplify/SKILL.md) | 代码已能运行，需要简化与清理 |
 | [handoff](skills/handoff/SKILL.md) | 暂停工作，留待其他会话继续 |
 
@@ -176,7 +175,6 @@ npx skills@latest add iron6909/coding-skills
 | survey、ideate、spike、spec、plan、learning、learning-refresh、ui-design | 自己产出或更新的项目文档与必要内部附录 |
 | execute、bugfix | 每个任务或每次修复的代码 |
 | simplify、optimize | 简化或优化后的代码 |
-| doc-review | 用户确认后的非语义修正；语义改动交回 ideate/spike/spec/plan 各自处理，不改写实验事实 |
 | code-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；不生成审查报告 |
 | ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
 | autoflow | 编排 plan、execute、code-review 各自的提交 |
