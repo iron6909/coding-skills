@@ -8,7 +8,9 @@ disable-model-invocation: true
 
 Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. This skill alone decomposes delivery work into phases and tasks. Do not write product code or start implementation.
 
-Read `./references/output-tier.md` to choose between a session-only Brief plan and a saved Full plan. Full normally writes one `plan.md`, even for a short plan that merely needs to survive a pause. Neither tier requires task briefs by default.
+Choose persistence, not a larger process: **Brief** keeps the task list and checks in conversation, with no files or ledger; **Full** saves one `plan.md` when the user needs persistence, later resumption, or an autoflow run. A short plan may use Full simply to survive a pause. File count, module boundaries, and risk do not determine the tier. Both retain the same task contract, and neither requires task briefs by default.
+
+Read `./references/output-tier.md` only when resolving an older instruction that points to the former tier guidance; the rules now live here.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
@@ -152,4 +154,4 @@ Brief has no plan artifact to commit.
 
 Report the tier, task list or saved plan path, authorization source, any supplemental briefs, and the commit when present. Omit empty artifact sections.
 
-When called by `autoflow`, return to it for execution without another approval. Otherwise stop and recommend `execute`. Do not invoke it yourself or modify product files. For Brief, state that later resumption needs the task list to be restated or saved. A short saved plan is sufficient; persistence does not require more decomposition.
+When called by `autoflow`, return to it for execution without another approval. Otherwise stop and recommend `execute`. Do not invoke it yourself or modify product files. For Brief, state that later resumption needs the task list to be restated or saved; lost conversation context alone does not require a Full replan.

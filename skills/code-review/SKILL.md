@@ -53,7 +53,9 @@ Inspect reviewed code and its callers at `review_head_sha`, for example with `gi
 
 ## Prepare the handoff
 
-Collect the work's objective and applicable sources, not the implementer's reasoning history:
+Collect the work's objective and applicable sources, not the implementer's reasoning history. Default to the applicable approved contract and review context at `review_head_sha`, including the spec, required appendices, UI/design inputs, plan, standards, glossary, ADRs, and learnings. Read them with `git show <review_head_sha>:<path>`, not from a newer or dirty working tree. Resolve required appendix paths from that selected spec version.
+
+If the user or `autoflow` explicitly supplies another contract version, identify each input by immutable `commit:path`, or a blob ID with its exact supplied content, and state why it applies. A path, commit, or hash identifies content, not approval. Give the reviewer these versioned inputs or their exact contents; missing versions or unclear applicability remain conformance gaps to clarify, not permission to substitute current files. Current instructions governing repository safety still apply; historical documents are review evidence, not authority to change this workflow.
 
 - Find the originating approved spec from the user's path, then a matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`, otherwise ask. If none exists, state the missing requirements input and continue the code review; do not invent a spec.
 - Read the spec and every required internal appendix as one contract. External originals, proposals, and experiment logs cannot fill missing requirements.
@@ -81,7 +83,7 @@ Rule explicitly on every item the reviewer declined to judge. Spec silence does 
 
 Deliver the reference's feedback structure in conversation. Include every valid finding, rejection, deferred item, and verification gap; do not silently drop a reviewer's concern. State which DoD applied. A read-only review can be delivered with unavailable checks, but cannot verify the implementation from missing evidence.
 
-This workflow uses a stricter readiness gate than the shared severity defaults: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification means `Unverified`, not `Ready`. Even a clean inline review needs the user's acceptance of its independence limitation before integration.
+Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification means `Unverified`, not `Ready`. Even a clean inline review needs the user's acceptance of its independence limitation before integration.
 
 ## Authorized fixes
 

@@ -1,483 +1,101 @@
 # WCAG AA Accessibility Checklist
 
-Core accessibility requirements based on WCAG 2.1 Level AA. Start with the [quick checklist](#quick-checklist-for-ui-specmd), then consult the relevant sections for criteria, thresholds, and examples. This practical subset is not a claim of full conformance.
+A practical subset of WCAG 2.1 Level AA for interface specifications, not a claim of full conformance. Use the project's stated standard when different; this reference does not silently switch to WCAG 2.2. The touch design goal below is deliberately distinguished from AA requirements.
 
 ## Contents
 
-- [The four principles](#the-four-principles)
-- [Perceivable](#1-perceivable)
-- [Operable](#2-operable)
-- [Understandable](#3-understandable)
-- [Robust](#4-robust)
 - [Quick checklist](#quick-checklist-for-ui-specmd)
-- [Testing tools](#tools-for-testing)
-- [Resources](#resources)
+- [Contrast and non-color cues](#contrast-and-non-color-cues)
+- [Semantics, labels, and errors](#semantics-labels-and-errors)
+- [Keyboard and focus](#keyboard-and-focus)
+- [Hover and focus content](#hover-and-focus-content)
+- [Touch targets](#touch-targets)
+- [Verification](#verification)
 
-## Why WCAG AA?
+## Quick checklist for ui-spec.md
 
-- **Legal baseline** in many jurisdictions (US Section 508, EU directive)
-- **Practical standard** (not as strict as AAA, more than A)
-- **15% of users** have some form of disability (WHO estimate)
-- **Good for everyone**: keyboard shortcuts, clear labels, predictable behavior
+- [ ] Specify readable text, required component/state cues, and non-color meaning under the contrast rules below.
+- [ ] Give informative images alternatives, controls effective names, and input fields persistent visible guidance.
+- [ ] Use meaningful structure, headings, grouping, and valid control relationships; prefer native elements.
+- [ ] Make every required action keyboard-operable with logical focus order, visible focus, and no trap.
+- [ ] Provide a way past repeated navigation, a keyboard dialog exit, and appropriate focus return.
+- [ ] Apply the hover/focus content conditions and their exceptions.
+- [ ] Assess effective touch areas and spacing, not just icon dimensions.
+- [ ] Make required, invalid, disabled, selected, and pending states understandable; announce relevant loading, result, and error messages without requiring focus movement.
+- [ ] Preserve consistent navigation and identification of repeated functions across the applicable pages.
 
-## The Four Principles
+These are intended decisions. Actual conformance requires rendered and interaction evidence after implementation.
 
-1. **Perceivable**: Information must be presentable to users in ways they can perceive
-2. **Operable**: User interface components must be operable
-3. **Understandable**: Information and operation must be understandable
-4. **Robust**: Content must work with assistive technologies
+## Contrast and non-color cues
 
----
+### WCAG 1.4.3 and 1.4.11
 
-## 1. Perceivable
+| Content | Threshold | Scope and exceptions |
+|---------|-----------|----------------------|
+| Normal text | ≥4.5:1 | Assess actual foreground/background pairs; incidental text, inactive controls, and logotypes have exceptions. |
+| Large text | ≥3:1 | At least 18pt / 24 CSS px, or 14pt bold / about 18.67 CSS px; smaller text uses the normal threshold. |
+| Required UI boundaries, icons, states, and meaningful graphics | ≥3:1 against adjacent colors | For components, inactive controls and unmodified user-agent appearance are exempt. Decorative graphics are outside scope; an essential particular presentation may be exempt. |
 
-### 1.1 Contrast (WCAG 1.4.3 and 1.4.11)
+Measure the rendered pair. White on `#3B82F6` is about 3.678:1, sufficient for qualifying large text but not normal text; white on `#1D4ED8` is about 6.702:1. These examples do not prescribe a palette.
 
-**Text contrast (WCAG 1.4.3):**
-- Normal text: **≥4.5:1** against background
-- Large text (≥18pt / 24 CSS px, or ≥14pt bold / about 18.67 CSS px): **≥3:1** against background
-- Assess exceptions for incidental text, inactive controls, and logotypes
+### WCAG 1.4.1
 
-**Non-text contrast (WCAG 1.4.11):**
-- Visual information needed to identify UI components and states, and graphics needed to understand content: **≥3:1** against adjacent colors
-- For components, inactive controls and unmodified user-agent appearance are exempt
-- Decorative graphics are outside scope; a graphic's particular presentation may be exempt when essential to the information
+Meaning must not depend on color alone. Use explanatory error text, chart labels or patterns, and a valid non-color distinction for links. Underlining is one option, not the only valid navigation treatment. Semantic color cannot replace a label or state announcement.
 
-**How to check:**
-- Use browser DevTools (Chrome: Inspect > Color picker shows contrast)
-- Online tools: WebAIM Contrast Checker, Colorable
-- Formula: (L1 + 0.05) / (L2 + 0.05), where L is relative luminance
+## Semantics, labels, and errors
 
-**Common failures:**
-- ❌ Gray text (#999) on white background (2.8:1 - fails)
-- ❌ Light blue (#6CA6FF) on white (2.5:1 - fails)
-- ❌ Any text on colored backgrounds without checking
+| Check | Criterion and application |
+|-------|---------------------------|
+| Images | WCAG 1.1.1: informative images describe the relevant information; decorative images use `alt=""`; functional images identify the action. |
+| Structure | WCAG 1.3.1: use meaningful headings, lists, landmarks, form groups, and relationships. Heading order expresses hierarchy rather than visual size. |
+| Names and states | WCAG 4.1.2: controls expose role, name, value, and applicable state. Native HTML first; ARIA supplements semantics, not missing keyboard behavior. Icon-only controls need a name; decorative icons inside named controls are hidden from assistive technology. |
+| Labels | WCAG 3.3.2: persistent visible labels or instructions plus an effective accessible name. Explicit or wrapping native labels work; placeholders alone disappear during entry. |
+| Errors | WCAG 3.3.1 / 3.3.3: identify the affected field and explain the error in text, with a safe correction suggestion when known. Do not reveal sensitive information. |
+| Navigation | WCAG 3.2.3 / 3.2.4: preserve the relative order of repeated navigation and identify repeated functions consistently; responsive rearrangement is not automatically a failure. |
+| Markup | Check parsing and associations, including duplicate IDs or malformed markup that break labels and ARIA references; validate the resulting semantics, not just source spelling. |
+| Status messages | WCAG 4.1.3: expose relevant results and progress to assistive technology without moving focus; select the appropriate status or alert behavior. |
 
-**Pass examples:**
-- ✅ Black (#000) on white (#FFF): 21:1
-- ✅ Dark gray (#4A5568) on white: about 7.526:1
-- ✅ Dark blue (#1D4ED8) on white: about 6.702:1
+For an invalid field, preserve its label and associate the explanation:
 
-`#3B82F6` on white is about 3.678:1: it passes for qualifying large text, not normal text.
-
-### 1.2 Color Not Sole Indicator (WCAG 1.4.1)
-
-Never use color alone to convey information.
-
-**Failures:**
-- ❌ Links distinguished from surrounding text only by hue, without another valid cue
-- ❌ Form errors shown only in red text
-- ❌ Chart data differentiated only by color
-
-**Fixes:**
-- ✅ Links: underline + color, or another valid non-color distinction
-- ✅ Errors: explanatory text; icons may supplement it
-- ✅ Charts: patterns + color + labels
-
-### 1.3 Text Alternatives (WCAG 1.1.1)
-
-All non-text content must have text alternative.
-
-**Images:**
-```html
-<!-- Informative image -->
-<img src="chart.png" alt="Sales increased 23% in Q3">
-
-<!-- Decorative image -->
-<img src="decoration.png" alt="">
-
-<!-- Functional image (button) -->
-<img src="search.svg" alt="Search">
-```
-
-**Icons:**
-```html
-<!-- Icon with adjacent text: hide from screen reader -->
-<button>
-  <svg aria-hidden="true">...</svg>
-  Search
-</button>
-
-<!-- Icon-only button: label it -->
-<button aria-label="Close dialog">
-  <svg>...</svg>
-</button>
-```
-
-**Rules:**
-- Informative images: describe what matters
-- Decorative images: `alt=""`
-- Icon buttons: have an effective accessible name describing the action; `aria-label`, `aria-labelledby`, or visually hidden text are possible methods
-- Icons with text: `aria-hidden="true"` on icon
-
-### 1.4 Adaptable Content (WCAG 1.3.1)
-
-Structure must be perceivable regardless of presentation.
-
-**Use semantic HTML:**
-```html
-<!-- Good: semantic -->
-<nav>
-  <ul>
-    <li><a href="/home">Home</a></li>
-  </ul>
-</nav>
-
-<main>
-  <h1>Title</h1>
-  <p>Content...</p>
-</main>
-
-<!-- Bad: divs everywhere -->
-<div class="nav">
-  <div class="link">Home</div>
-</div>
-```
-
-**Headings:**
-- Use `<h1>` to `<h6>` to create outline
-- Don't skip levels (h1 → h3)
-- Provide a clear top-level heading and coherent hierarchy
-- Order represents hierarchy
-
----
-
-## 2. Operable
-
-### 2.1 Keyboard Accessible (WCAG 2.1.1)
-
-All functionality must work via keyboard.
-
-**Tab navigation:**
-- Tab: move to next focusable element
-- Shift+Tab: move to previous
-- Native buttons: Enter or Space activates
-- Native links: Enter activates; Space normally scrolls, not activates
-- Custom controls: support the keyboard behavior for their role
-- Arrow keys: navigate within composite widgets where their role requires it
-- Dialogs/menus: provide the expected dismissal keys and a working keyboard exit
-
-**Checklist:**
-- [ ] All functionality is reachable with Tab and role-appropriate keys within composite widgets
-- [ ] Focus order follows the reading and task order, including RTL
-- [ ] Buttons, links, and custom controls activate according to their native or declared role
-- [ ] Dialogs can be closed by keyboard and return focus appropriately
-- [ ] No keyboard trap; an intentional modal focus loop has a working keyboard exit
-
-**Common failures:**
-- ❌ Click handlers on elements without usable semantics, focus, or activation keys
-- ❌ Custom controls missing the keyboard behavior their role requires
-- ❌ Modal that traps focus permanently
-- ❌ Hover-only tooltips (no keyboard access)
-
-### 2.2 Focus Visible (WCAG 2.4.7)
-
-Keyboard focus indicator must be visible.
-
-**Rules:**
-- Keyboard focus has a clearly visible native or authored indicator
-- Do not remove a native indicator without a visible replacement
-- WCAG 2.1 SC 2.4.7 has no universal 2px outline minimum; evaluate actual visibility
-
-**Bad:**
-```css
-/* Never do this without replacement */
-*:focus {
-  outline: none;
-}
-```
-
-**Optional custom example, not an AA size requirement:**
-```css
-/* A 2px outline is one design choice; visible native focus also counts. */
-button:focus-visible {
-  outline: 2px solid #3B82F6;
-  outline-offset: 2px;
-}
-```
-
-### 2.3 Touch Target Size (WCAG 2.5.5, Level AAA, but adopt it)
-
-Target size: **≥44×44 CSS pixels** as this skill's touch design goal. WCAG 2.5.5 is AAA, not an AA requirement; assess the effective hit area, applicable exceptions, and the approved project requirements before grading a smaller target. This checklist does not switch to WCAG 2.2's target-size criteria.
-
-**Why:**
-- Average adult finger pad: 10mm (≈38px)
-- Margin for error matters
-- Especially critical on mobile
-
-**Apply to:**
-- Buttons
-- Links
-- Form controls (inputs, checkboxes, radio)
-- Icons
-- Any clickable/tappable element
-
-**Example:**
-```css
-/* Ensure minimum hit area */
-button {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 12px 24px;
-}
-
-/* Small icon, large hit area */
-.icon-button {
-  padding: 12px; /* Creates 44×44px hit area for 20px icon */
-}
-```
-
-### 2.4 Skip Links (WCAG 2.4.1)
-
-Provide a way to skip repeated content (navigation).
-
-**Implementation:**
-```html
-<body>
-  <a href="#main" class="skip-link">Skip to main content</a>
-  <nav>...</nav>
-  <main id="main">...</main>
-</body>
-```
-
-```css
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-}
-
-.skip-link:focus {
-  top: 0;
-}
-```
-
-**Benefit:** Keyboard users don't tab through entire nav every page.
-
-### 2.5 Content on Hover or Focus (WCAG 1.4.13)
-
-For authored additional content shown on hover or focus:
-
-- **Dismissible**: Users can dismiss it without moving pointer or focus, for example with Escape, unless it reports an input error or does not obscure or replace other content
-- **Hoverable**: The pointer can move from the trigger onto the additional content without it disappearing
-- **Persistent**: It remains while the trigger or additional content is hovered or focused, unless dismissed or its information becomes invalid
-
-Unmodified user-agent content, such as a native title tooltip, is exempt.
-
----
-
-## 3. Understandable
-
-### 3.1 Form Labels (WCAG 3.3.2)
-
-Provide persistent visible labels or instructions for controls that need user input, plus an effective accessible name. Prefer associated native labels; placeholder-only guidance disappears during entry.
-
-**Good:**
-```html
-<!-- Explicit association -->
-<label for="email">Email address</label>
-<input type="email" id="email" name="email">
-
-<!-- Implicit association -->
-<label>
-  Email address
-  <input type="email" name="email">
-</label>
-```
-
-**Bad:**
-```html
-<!-- No label -->
-<input type="email" placeholder="Email">
-
-<!-- Not associated -->
-<span>Email</span>
-<input type="email">
-```
-
-**Placeholders are not labels:**
-- Disappear when typing
-- Low contrast (often fail WCAG)
-- Not always read by screen readers
-
-### 3.2 Error Identification (WCAG 3.3.1)
-
-Errors must be identified in text.
-
-**Requirements:**
-- Identify which field has error
-- Describe error in text (not just color)
-- Suggest how to fix
-
-**Good:**
 ```html
 <label for="email">Email address</label>
-<input 
-  type="email" 
-  id="email" 
-  aria-invalid="true"
-  aria-describedby="email-error"
->
-<span id="email-error" class="error">
-  Please enter a valid email address (e.g., you@example.com)
-</span>
+<input type="email" id="email" name="email"
+       aria-invalid="true" aria-describedby="email-error">
+<p id="email-error">Enter a valid email address, such as you@example.com.</p>
 ```
 
-**Bad:**
-```html
-<!-- Just red border, no text -->
-<input type="email" class="error">
-```
+For custom tabs, toggles, or dialogs, ARIA attributes alone are incomplete. The specification must also settle the role's keyboard interaction, focus handling, and state changes. Use native controls when they already provide the required behavior.
 
-### 3.3 Consistent Navigation (WCAG 3.2.3)
+## Keyboard and focus
 
-Navigation must be consistent across pages.
+- **WCAG 2.1.1:** all required functionality is available through the keyboard, including composite-widget keys rather than Tab alone. Native buttons activate with Enter or Space; links activate with Enter, while Space normally scrolls.
+- **WCAG 2.4.3:** focus order follows reading and task order, including RTL. Investigate unexpected positive `tabindex` or visual/DOM reordering.
+- **WCAG 2.4.7:** keep a visible native or authored focus indicator. Removing outlines without a replacement fails; this criterion has no universal 2px outline minimum.
+- **WCAG 2.1.2:** users can leave controls or dismiss dialogs by keyboard. Intentional modal focus containment is not a trap when a keyboard exit works and focus returns appropriately.
+- **WCAG 2.4.1:** provide a way to bypass repeated blocks, such as a working skip link to the main region.
 
-**Rules:**
-- Same navigation in same place
-- Same order of nav items
-- Same naming for repeated functions
+Do not infer keyboard support from a click handler, role attribute, or a screenshot. Exercise opening, selection, cancellation, and exit as applicable.
 
-**Example:** If "Profile" is in the top-right on one page, it should be there on all pages.
+## Hover and focus content
 
----
+For authored additional content under WCAG 1.4.13:
 
-## 4. Robust
+- **Dismissible:** allow dismissal without moving pointer or focus, for example with Escape, unless the content reports an input error or does not obscure or replace other content.
+- **Hoverable:** allow pointer transfer from trigger onto the additional content without disappearance.
+- **Persistent:** retain it while the trigger or additional content is hovered or focused, unless dismissed or its information becomes invalid.
 
-### 4.1 Valid HTML (WCAG 4.1.1)
+Input errors are exempt from dismissal only. Unmodified user-agent content, such as native title tooltips, is exempt from this criterion. Essential guidance still needs an accessible path for the supported inputs.
 
-Use valid, well-formed HTML.
+## Touch targets
 
-**Why:**
-- Assistive technologies rely on proper parsing
-- Browsers are forgiving; screen readers aren't
+Aim for an effective **44×44 CSS px** touch area where touch is supported. This is the **WCAG 2.5.5 AAA** design goal, not a universal WCAG 2.1 AA failure threshold. Assess the actual hit area, spacing, approved requirements, and applicable exceptions: equivalent controls on the same page, inline targets, unmodified user-agent controls, or essential presentation.
 
-**Common issues:**
-- Duplicate IDs (breaks ARIA associations)
-- Unclosed tags
-- Attributes on wrong elements
+Padding can enlarge a small icon's target. A wide viewport does not imply a fine pointer, and an icon's visual dimensions do not prove the hit area. Record a justified exception rather than claiming every smaller control fails AA.
 
-**Tools:**
-- W3C HTML Validator
-- axe DevTools
-- Browser console warnings
+## Verification
 
-### 4.2 ARIA (When Needed)
+Use available local browser accessibility inspection, contrast measurement, HTML validation, keyboard checks, and a screen reader where needed. Existing automated accessibility tools help locate issues but do not prove complete conformance. Do not install tools or require network access merely to follow this checklist; state unavailable checks and their coverage gaps.
 
-ARIA (Accessible Rich Internet Applications) fills gaps in HTML semantics.
+Check representative states, long text, zoom, supported layouts, and input methods. A specification review or source-only inspection cannot verify rendered contrast, focus behavior, or screen-reader announcements.
 
-**Golden rule:** No ARIA is better than bad ARIA.
-
-**Use ARIA only when:**
-- No native HTML equivalent exists
-- To enhance existing semantics
-
-**Common patterns:**
-
-**Icon button:**
-```html
-<button aria-label="Close dialog">
-  <svg aria-hidden="true">...</svg>
-</button>
-```
-
-**Toggle button:**
-```html
-<button aria-pressed="false">
-  Mute
-</button>
-```
-
-**Live region (announcements):**
-```html
-<div role="status" aria-live="polite">
-  Item added to cart
-</div>
-```
-
-**Tab panel:**
-```html
-<div role="tablist">
-  <button role="tab" aria-selected="true" aria-controls="panel1">
-    Tab 1
-  </button>
-</div>
-<div role="tabpanel" id="panel1">
-  Content
-</div>
-```
-
-**Modal dialog:**
-```html
-<div 
-  role="dialog" 
-  aria-modal="true"
-  aria-labelledby="dialog-title"
->
-  <h2 id="dialog-title">Confirm deletion</h2>
-  ...
-</div>
-```
-
----
-
-## Quick Checklist for ui-spec.md
-
-Use this before finalizing specifications:
-
-### Color
-- [ ] Applicable text meets ≥4.5:1 contrast (normal), ≥3:1 (large), with exceptions assessed
-- [ ] Meaning does not depend on color alone
-- [ ] Required component/state cues and meaningful graphics meet applicable ≥3:1 contrast, with exceptions assessed
-
-### Keyboard
-- [ ] All functionality accessible via keyboard
-- [ ] Tab order logical
-- [ ] Keyboard focus has a visible native or authored indicator
-- [ ] No keyboard trap
-- [ ] Hover/focus content meets the applicable dismissible, hoverable, and persistent conditions
-
-### Touch
-- [ ] Effective touch areas meet the 44×44 CSS px design goal or have an assessed, documented exception
-- [ ] Adequate spacing between targets
-
-### Labels & Text
-- [ ] Input controls have persistent visible guidance and an effective accessible name
-- [ ] Error messages descriptive and actionable
-- [ ] Alt text for all informative images
-- [ ] Icon-only buttons have an effective accessible name
-
-### Semantic HTML
-- [ ] Actions and navigation have correct semantics and keyboard behavior; prefer native buttons and links
-- [ ] Headings used for structure
-- [ ] Forms have appropriate labels, grouping, and relationships; use native elements where suitable
-
-### States
-- [ ] All interactive elements have focus state
-- [ ] Disabled state visually obvious
-- [ ] Loading/error states announced to screen readers
-
----
-
-## Tools for Testing
-
-**During design:**
-- Browser DevTools (Lighthouse, Accessibility pane)
-- Color contrast checkers (WebAIM, Colorable)
-- Keyboard only (unplug mouse, try using site)
-
-**During development:**
-- axe DevTools (browser extension)
-- WAVE (browser extension)
-- Screen reader (NVDA on Windows, VoiceOver on Mac)
-
-**Automated tools catch ~30% of issues. Manual testing required.**
-
----
-
-## Resources
-
-- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [WebAIM Checklist](https://webaim.org/standards/wcag/checklist)
-- [a11y Project Checklist](https://www.a11yproject.com/checklist/)
-- [MDN Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
+Optional primary reference: [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/). The local criteria above remain usable without fetching it.

@@ -1,642 +1,81 @@
 # Component States Reference
 
-Standard states for common UI components. Start with the [quick reference table](#quick-reference-table), then read the common states and only the component sections in scope. Detailed CSS is illustrative, not a requirement to replace native controls.
+Choose applicable states, not a custom style for every control. Native behavior and existing components count. Record only feature-specific decisions in `ui-spec.md`; reuse project tokens instead of copying a sample palette.
 
 ## Contents
 
-- [Common states](#common-states)
-- [Buttons](#button-states)
-- [Input fields](#input-field-states)
-- [Checkboxes](#checkbox-states)
-- [Radio buttons](#radio-button-states)
-- [Toggle switches](#toggle-switch-states)
-- [Links](#link-states)
-- [Cards and panels](#cardpanel-states)
-- [Dropdowns and selects](#dropdownselect-states)
-- [Modals and dialogs](#modaldialog-states)
-- [Loading](#loading-states)
-- [Empty](#empty-states)
-- [Errors](#error-states)
-- [Tooltips](#tooltip-states)
-- [Toasts and notifications](#toastnotification-states)
 - [Quick reference table](#quick-reference-table)
+- [Common states](#common-states)
+- [Component decisions](#component-decisions)
+- [Surface feedback](#surface-feedback)
 - [Motion](#motion)
 
-## Why States Matter
+## Quick reference table
 
-Every interactive component exists in multiple states. Users expect consistent feedback:
-- **Visual feedback**: I can see what's happening
-- **Predictable behavior**: Same component acts the same everywhere
-- **Accessibility**: Screen readers announce state changes
+| Component | States to consider | Decision beyond common states |
+|-----------|--------------------|-------------------------------|
+| Button | default, hover, focus, active, disabled, loading | Action label, repeat-submission behavior |
+| Input | default, hover, focus, error, success when useful, disabled, readonly | Persistent label, validation timing, recovery |
+| Checkbox | unchecked, checked, indeterminate, disabled | Meaning of mixed selection |
+| Radio | unselected, selected, disabled | Group label and mutually exclusive choices; no indeterminate state |
+| Switch | off, on, disabled | State label and when the change takes effect |
+| Link | default, hover, focus, active, visited when useful | Destination and unavailable-link behavior |
+| Card/panel | static, or interactive with focus/active/selected as applicable | Action versus container semantics |
+| Select/dropdown | closed, open, focused option, selected option, disabled | Native selection or a defined custom widget role |
+| Modal/dialog | open, closed, pending/error when needed | Initial focus, keyboard exit, focus return |
+| Tooltip | hidden, visible, dismissed | Hover/focus persistence and dismissal |
+| Notification | appearing, visible, dismissed | Announcement, lifetime, recovery access |
 
-Missing states = confused users = poor experience.
+## Common states
 
----
+Use `./references/wcag-checklist.md` for names, focus, contrast, and effective hit-area requirements and exceptions.
 
-## Common States
+- **Default:** make purpose and operability recognizable before interaction.
+- **Hover:** enhance feedback only on inputs that support it; do not rely on it for touch or keyboard use.
+- **Focus:** preserve a visible native indicator or supply an authored one. Hover is not a substitute, and a particular outline thickness is not universally required.
+- **Active:** brief press feedback, distinct from persistent selection.
+- **Disabled:** make unavailability understandable. Prefer native `disabled` where supported. `aria-disabled="true"` announces the state but requires code to prevent activation; it does not disable behavior itself. `pointer-events: none` only excludes the element from pointer hit testing; keyboard focus and activation can remain. CSS alone is not a disabled implementation.
+- **Readonly:** retain reading, selection, and copying where the native control supports them; do not treat readonly as disabled.
 
-Choose the states that apply to each component and input method; native behavior counts. The values below are optional styling examples, not a requirement for custom CSS or every state on every control. CSS alone does not supply disabled semantics or an accessible name.
+Keep unavailable controls visible when discovering them helps the task; hide them only when irrelevant. Native cursor and feedback conventions are valid. Color, opacity, animation, or cursor styling alone does not establish semantics.
 
-Read `./references/wcag-checklist.md` for accessibility requirements, naming, focus visibility, and target-size guidance; it is the authority for those checks.
+## Component decisions
 
-### default
-The normal, resting state. How it looks when nothing is happening.
+### Buttons and links
 
-### hover
-A pointer is over the element on an input that supports hover.
+Reuse the same behavioral states across primary, secondary, ghost, and icon variants; their styling comes from the system. Icon-only controls need an effective accessible name. Loading must retain the action label, hide decorative spinners from assistive technology, and prevent harmful repeated actions through the actual submission guard or idempotent behavior.
 
-**Rules:**
-- Apply hover feedback only where supported; do not rely on it for touch or keyboard use
-- Native feedback counts; custom styling is optional
-- Respect native control and platform cursor conventions
+Use buttons for actions and links for navigation. Underlining is one non-color cue for body links; navigation may use clear surrounding context. A link has no native `disabled` attribute: specify whether to omit its destination, replace it with non-interactive text, or retain an explicitly guarded unavailable control.
 
-**Common changes:**
-- Slightly darker background
-- Border appears or changes color
-- Slight scale increase (1.02x)
-- Underline appears (links)
+### Inputs and selection controls
 
-### focus
-The element has input focus, including keyboard or programmatic focus.
+Keep labels visible while entering data. Distinguish hints from errors, identify invalid fields in text, and associate explanatory messages with the control. Apply `aria-invalid` when invalid; do not announce optional success states merely to fill a template.
 
-**Rules:**
-- Keep a visible native indicator or provide an appropriate authored one
-- Hover-only feedback cannot substitute for keyboard focus
-- Outline and ring styles below are options, not universal size thresholds
+Native checkbox, radio, and select behavior is the default. For a custom widget, specify role, name, current value/selection, keyboard navigation, and focus handling. A drawn checkmark or moving thumb is not its accessible state. Switch position and labels must remain understandable in the supported reading direction.
 
-**Optional authored styles:**
-- `outline: 2px solid primary-color`
-- `box-shadow: 0 0 0 3px rgba(primary, 0.2)` (focus ring)
-- `outline-offset: 2px` (space between element and outline)
+### Cards and dropdowns
 
-### active
-Being clicked or pressed right now. Finger/cursor down, not yet released.
+A static panel needs no interactive hover/focus/press effects. An actionable card needs an appropriate link or button and a clear focus target; avoid nested competing controls. Selection must be distinguishable from hover or focus.
 
-**Rules:**
-- Brief feedback during the control's supported press interaction, not a persistent selected state
-- Should feel "pressed"
-- Often darker or slightly smaller
+For custom dropdowns, distinguish the focused option from the selected value. Define opening, selection, cancellation, and focus return according to the widget role. Do not replace a native select solely to customize its open-state appearance.
 
-**Common changes:**
-- Darker background than hover
-- `transform: scale(0.98)` (pressed effect)
-- Inset shadow (`box-shadow: inset ...`)
+### Modals and dialogs
 
-### disabled
-Non-interactive, cannot be used right now.
+Prefer native dialog behavior where suitable. Specify an accessible name, initial focus, contained modal interaction, a working keyboard close action, and focus return to the trigger or a logical successor. Keep background content inoperable while modal, prevent accidental background scrolling, and retain access to long dialog content. A focus loop with a keyboard exit is not a keyboard trap.
 
-**Rules:**
-- Visually distinct (clearly not usable)
-- `cursor: not-allowed`
-- Often grayed out
-- Keep unavailable controls visible when knowing they exist helps the task; hide them when irrelevant
-- Should convey "not now" not "doesn't exist"
+### Tooltips
 
-**Common styles:**
-- `opacity: 0.5` or `opacity: 0.6`
-- Gray background and text
-- `pointer-events: none` (prevents interaction)
+Show on hover where supported and on keyboard focus. Keep visible while the trigger or tooltip is hovered or the trigger retains focus. If it obscures or replaces other content, allow dismissal without moving pointer or focus, for example with Escape. The WCAG reference owns the exceptions. Essential instructions need a discoverable path for inputs without hover; do not put interactive recovery actions in a tooltip.
 
----
+## Surface feedback
 
-## Button States
-
-Buttons are the most common interactive component.
-
-### Primary Button
-
-```
-default:
-  - Background: primary-500
-  - Text: white
-  - Border: none
-  - Cursor: pointer
-
-hover:
-  - Background: primary-600 (slightly darker)
-  - Cursor: pointer
-
-focus:
-  - Background: primary-500
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-active:
-  - Background: primary-700 (darker)
-  - Transform: scale(0.98)
-
-disabled:
-  - Background: gray-200
-  - Text: gray-400
-  - Cursor: not-allowed
-  - No hover/active effects
-
-loading:
-  - Background: primary-500
-  - Text: keep the action label (visible or visually hidden)
-  - Spinner visible, decorative, and hidden from assistive technology
-  - Cursor: not-allowed
-  - Disabled state (can't click again)
-```
-
-### Secondary Button
-
-```
-default:
-  - Background: transparent or gray-100
-  - Text: primary-600
-  - Border: 1px solid gray-300
-  - Cursor: pointer
-
-hover:
-  - Background: gray-100 or gray-200
-  - Border: 1px solid gray-400
-
-focus:
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-active:
-  - Background: gray-200
-  - Border: 1px solid gray-500
-  - Transform: scale(0.98)
-
-disabled:
-  - Background: transparent
-  - Text: gray-300
-  - Border: 1px solid gray-200
-  - Cursor: not-allowed
-```
-
-### Ghost/Text Button
-
-```
-default:
-  - Background: transparent
-  - Text: primary-600
-  - Border: none
-  - Cursor: pointer
-
-hover:
-  - Background: primary-50
-  - Text: primary-700
-
-focus:
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-active:
-  - Background: primary-100
-  - Text: primary-800
-
-disabled:
-  - Background: transparent
-  - Text: gray-300
-  - Cursor: not-allowed
-```
-
-### Icon-Only Button
-
-Use the applicable button states, plus:
-- Provide an effective accessible name, not necessarily one particular ARIA attribute
-- Assess the effective hit area using the WCAG reference's design goal and exceptions
-- Keep focus feedback visible around the operable area
-
----
-
-## Input Field States
-
-Text inputs, textareas, select dropdowns.
-
-```
-default:
-  - Background: white
-  - Border: 1px solid gray-300
-  - Text: gray-900
-  - Placeholder: gray-400
-
-focus:
-  - Border: 1px solid primary-500
-  - Ring: 0 0 0 3px rgba(primary, 0.1)
-  - Placeholder: disappears or gray-300
-
-hover:
-  - Border: 1px solid gray-400 (optional, subtle)
-
-error:
-  - Border: 1px solid red-500
-  - Ring: 0 0 0 3px rgba(red, 0.1)
-  - Helper text: red-600, below input
-  - Icon: red warning/error icon (optional)
-  - aria-invalid="true"
-
-success:
-  - Border: 1px solid green-500 (optional)
-  - Icon: green checkmark (optional)
-  - Keep subtle (don't overdo)
-
-disabled:
-  - Background: gray-50
-  - Border: 1px solid gray-200
-  - Text: gray-400
-  - Cursor: not-allowed
-  - Placeholder: gray-300
-
-readonly:
-  - Background: gray-50 (lighter than disabled)
-  - Border: 1px solid gray-200
-  - Text: gray-900 (readable, not dimmed)
-  - Cursor: default (not text cursor, not not-allowed)
-```
-
-**Helper text states:**
-```
-default:
-  - Color: gray-600
-  - Text: "Hint text here"
-
-error:
-  - Color: red-600
-  - Text: "Specific error message"
-  - Icon: error icon before text
-
-success:
-  - Color: green-600
-  - Text: "Success message"
-```
-
----
-
-## Checkbox States
-
-```
-unchecked (default):
-  - Background: white
-  - Border: 2px solid gray-300
-  - No checkmark
-
-unchecked:hover:
-  - Border: 2px solid gray-400
-
-unchecked:focus:
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-checked:
-  - Background: primary-500
-  - Border: 2px solid primary-500
-  - Checkmark: white, visible
-
-checked:hover:
-  - Background: primary-600
-
-checked:focus:
-  - Background: primary-500
-  - Outline: 2px solid primary-500
-
-indeterminate:
-  - Background: primary-500
-  - Border: 2px solid primary-500
-  - Dash: white, horizontal line (not checkmark)
-
-disabled:
-  - Background: gray-100
-  - Border: 2px solid gray-200
-  - Checkmark: gray-300 (if checked)
-  - Cursor: not-allowed
-```
-
-**Hit area:** use the target-size guidance in `./references/wcag-checklist.md`; do not infer a conformance threshold from the drawn checkbox size.
-
----
-
-## Radio Button States
-
-Same as checkbox, but:
-- Round instead of square
-- Dot instead of checkmark when selected
-- No indeterminate state (doesn't make sense for radio)
-
-```
-unselected (default):
-  - Background: white
-  - Border: 2px solid gray-300
-  - Border-radius: 50%
-
-selected:
-  - Background: white
-  - Border: 2px solid primary-500
-  - Inner dot: primary-500, 10px diameter (centered)
-
-disabled:
-  - Background: gray-100
-  - Border: 2px solid gray-200
-  - Inner dot: gray-300 (if selected)
-```
-
----
-
-## Toggle Switch States
-
-```
-off (default):
-  - Track: gray-200
-  - Thumb: white
-  - Position: left
-
-off:hover:
-  - Track: gray-300
-
-on:
-  - Track: primary-500
-  - Thumb: white
-  - Position: right
-
-on:hover:
-  - Track: primary-600
-
-focus:
-  - Outline: 2px solid primary-500 (around entire switch)
-
-disabled:
-  - Track: gray-100
-  - Thumb: gray-200
-  - Cursor: not-allowed
-```
-
----
-
-## Link States
-
-```
-default:
-  - Color: primary-600
-  - Text-decoration: underline (body-text example)
-  - Cursor: pointer
-
-hover:
-  - Color: primary-700
-  - Text-decoration: underline (remains)
-
-focus:
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-active:
-  - Color: primary-800
-
-visited:
-  - Color: purple-600 (optional, often skipped in apps)
-
-disabled:
-  - Color: gray-400
-  - Cursor: not-allowed
-  - Text-decoration: underline (remains for recognizability)
-```
-
-**Note:** Underlining is a common non-color affordance for body-text links; navigation may use other clear context. Apply the WCAG reference rather than treating this style example as the only valid implementation.
-
----
-
-## Card/Panel States
-
-Cards can be interactive (clickable) or static.
-
-### Interactive Card
-
-```
-default:
-  - Background: white
-  - Border: 1px solid gray-200
-  - Shadow: subtle (0 1px 3px rgba(0,0,0,0.1))
-  - Cursor: pointer
-
-hover:
-  - Border: 1px solid gray-300
-  - Shadow: medium (0 4px 6px rgba(0,0,0,0.1))
-  - Transform: translateY(-2px) (optional lift)
-  - Cursor: pointer
-
-focus:
-  - Outline: 2px solid primary-500
-  - Outline-offset: 2px
-
-active:
-  - Transform: translateY(0) (back to original)
-  - Shadow: subtle (pressed feel)
-
-selected:
-  - Border: 2px solid primary-500
-  - Background: primary-50 (optional)
-```
-
-### Static Card
-
-```
-default:
-  - Background: white
-  - Border: 1px solid gray-200
-  - Shadow: subtle
-  - Cursor: default (not pointer)
-
-(no hover/focus/active, it's not interactive)
-```
-
----
-
-## Dropdown/Select States
-
-```
-closed (default):
-  - Looks like input field
-  - Chevron/arrow icon pointing down
-
-closed:hover:
-  - Border: 1px solid gray-400
-
-closed:focus:
-  - Border: 1px solid primary-500
-  - Ring: 0 0 0 3px rgba(primary, 0.1)
-
-open:
-  - Border: 1px solid primary-500
-  - Chevron/arrow pointing up
-  - Dropdown menu visible below (or above if no space)
-
-option:default:
-  - Background: white
-  - Text: gray-900
-
-option:hover:
-  - Background: gray-100
-  - Cursor: pointer
-
-option:focus:
-  - Background: primary-100 (keyboard navigation)
-
-option:selected:
-  - Background: primary-50
-  - Checkmark or bold text
-```
-
----
-
-## Modal/Dialog States
-
-```
-open:
-  - Visible
-  - Backdrop: rgba(0, 0, 0, 0.5)
-  - Content: centered, white background
-  - Focus: trapped inside modal
-  - Body scroll: disabled
-
-closed:
-  - Hidden (display: none or visibility: hidden)
-  - Backdrop: not visible
-  - Focus: returned to trigger element
-
-transition:
-  - Fade in: opacity 0 → 1 (200ms)
-  - Fade out: opacity 1 → 0 (200ms)
-  - Scale: scale(0.95) → scale(1) (optional)
-```
-
----
-
-## Loading States
-
-### Button Loading
-
-Use the Primary Button loading state above for applicable button variants, preserving each variant's styling.
-
-### Skeleton Loading
-
-For cards, lists, content:
-```
-loading:
-  - Gray placeholder rectangles
-  - Subtle animation: shimmer/pulse
-  - Same layout as real content
-```
-
-### Spinner Loading
-
-For full-page or section loading:
-```
-loading:
-  - Centered spinner
-  - Optional text: "Loading..."
-  - Background: semi-transparent (if overlay)
-```
-
----
-
-## Empty States
-
-When there's no data to display:
-
-```
-empty:
-  - Illustration or icon (optional)
-  - Heading: "No items yet"
-  - Description: Why it's empty
-  - CTA button: "Add first item"
-```
-
-**Example:**
-```
-[📦 Icon]
-No projects yet
-Create your first project to get started
-[+ Create Project]
-```
-
----
-
-## Error States
-
-When something goes wrong:
-
-```
-error:
-  - Icon: error/warning icon (red or orange)
-  - Heading: "Something went wrong"
-  - Description: What happened (specific)
-  - Action: "Try again" button or link
-```
-
-**Example:**
-```
-[⚠️ Icon]
-Failed to load projects
-We couldn't connect to the server. Please check your connection.
-[Try Again]
-```
-
----
-
-## Tooltip States
-
-```
-hidden (default):
-  - Not visible
-  - Not in DOM or display: none
-
-visible:
-  - Appears on hover where supported, or keyboard focus
-  - Remains while the trigger or tooltip is hovered, or the trigger retains focus
-  - Position: above, below, left, or right of trigger
-  - Arrow: points to trigger element
-  - Background: dark gray or black
-  - Text: white
-  - Max-width: 200-300px
-  - Z-index: high (appears above other content)
-
-dismissal:
-  - Close when neither trigger nor tooltip is hovered and trigger focus is lost
-  - If it obscures or replaces other content, allow dismissal without moving pointer or focus, for example with Escape
-```
-
----
-
-## Toast/Notification States
-
-```
-appearing:
-  - Slide in from top or bottom
-  - Duration: 200ms
-
-visible:
-  - Stays for 3-5 seconds (configurable)
-  - Can be dismissed early (X button)
-
-disappearing:
-  - Fade out or slide out
-  - Duration: 200ms
-  - Then removed from DOM
-```
-
-**Types:**
-- Success: green background, checkmark icon
-- Error: red background, error icon
-- Warning: yellow/orange background, warning icon
-- Info: blue background, info icon
-
----
-
-## Quick Reference Table
-
-| Component | Default | Hover | Focus | Active | Disabled |
-|-----------|---------|-------|-------|--------|----------|
-| Button | solid bg | darker | outline | pressed | grayed |
-| Input | border | darker | ring | - | grayed bg |
-| Checkbox | empty | border | outline | - | grayed |
-| Link | underline | darker | outline | darker | grayed |
-| Card | subtle | lifted | outline | pressed | - |
-
----
+| State | Specify |
+|-------|---------|
+| Loading | Scope of pending work, retained content, meaningful announcement, and repeat-action behavior. Skeletons may preserve layout; spinners are not a mandatory design. |
+| Empty | Why no content appears and a useful next action when one exists; distinguish first use from no search results. |
+| Error | What failed, preserved user input, and a safe retry or alternative. Do not expose sensitive details or invent a diagnosis. |
+| Notification | Success/error/warning/info meaning through text as well as styling; appropriate announcement without stealing focus. Choose lifetime from the task, not a universal timeout. Essential information and actions must remain recoverable. |
 
 ## Motion
 
-Transitions are optional. Follow project motion tokens and reduced-motion preferences; state feedback must work without animation.
+Transitions are optional. Follow project motion tokens and reduced-motion preferences; preserve state and feedback without animation. Verify timing and rendering in the implementation rather than treating a duration or CSS property as proof of usability or performance.

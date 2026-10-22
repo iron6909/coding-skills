@@ -1,12 +1,12 @@
 ---
 name: survey
-description: Survey a workspace and create or refresh its project facts in AGENTS.md (and GLOSSARY.md). Use on first contact with a repository, and again whenever commands, structure, or conventions have changed and the project documents may be stale.
+description: Survey a workspace and create or refresh its project facts in AGENTS.md (and GLOSSARY.md). Use when those facts need recording or commands, structure, or conventions have drifted; not as a prerequisite for a clear small change.
 disable-model-invocation: true
 ---
 
 # Survey
 
-Inspect the workspace, collect project facts, and create or update `AGENTS.md` files. Run it the first time you work in a repository and again whenever the recorded facts may have drifted from the repository.
+Inspect the workspace and record or refresh project facts in `AGENTS.md`. First contact with a repository or a missing instruction file alone does not require this stage.
 
 Keep the result short. Record facts and project rules, not generic engineering advice.
 

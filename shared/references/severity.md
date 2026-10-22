@@ -1,10 +1,10 @@
 # Severity levels
 
-Three levels classify findings by urgency and impact. Use these consistently across code review, task evaluation, and finding reports.
+Three levels classify findings by demonstrated impact. The invoking skill owns approval, commit, deferral, and readiness gates; a severity label neither grants permission nor decides those gates.
 
 ## Blocking
 
-Must fix before the work can ship. Blocks merge or deployment.
+A critical failure of required behavior, safety, compatibility, or acceptance assurance.
 
 Examples:
 - Correctness: wrong behavior, data loss, state corruption
@@ -14,7 +14,7 @@ Examples:
 
 ## Important
 
-Should fix, but can be deferred if acknowledged. Does not block shipping.
+A material usability, performance, or maintenance problem without the critical impact above.
 
 Examples:
 - Performance: noticeable slowdown, inefficient algorithm
@@ -24,7 +24,7 @@ Examples:
 
 ## Minor
 
-Nice to have. Record and defer unless trivial to fix now.
+A limited-impact refinement with no material effect on the current journey.
 
 Examples:
 - Style: formatting inconsistencies, naming improvements

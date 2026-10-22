@@ -33,7 +33,7 @@ assert.doesNotMatch(review + reviewer, /review-lenses|legacy configuration|backw
 for (const check of ["boundary conditions", "error handling", "Test effectiveness", "trust boundaries", "data loss"]) {
   assert.ok(reviewer.includes(check), `missing comprehensive review check: ${check}`);
 }
-for (const rule of ["one fresh read-only subagent", "never the whole session history", "inline self-review (no independent reviewer)", "A failed delegation is a blocker", "Rule explicitly on every item", "Explain rejected findings with technical evidence", "stricter readiness gate"]) {
+for (const rule of ["one fresh read-only subagent", "never the whole session history", "inline self-review (no independent reviewer)", "A failed delegation is a blocker", "Rule explicitly on every item", "Explain rejected findings with technical evidence"]) {
   assert.ok(review.includes(rule), `missing review coordination rule: ${rule}`);
 }
 for (const rule of ["Do not write review reports or persist findings", "Review alone does not authorize code changes", "preserve user hunks", "one scoped re-check", "automatic second fix wave"]) {
@@ -86,6 +86,16 @@ assert.match(routing, /review an existing planning document.*`ideate`.*`spike`.*
 assert.ok(routing.includes("missing constraints or a deciding criterion can be clarified there") && !routing.includes("lacks the inputs for a bounded design probe"), "guide must not divert a framed spike question solely because a constraint or criterion is missing");
 assert.ok(routing.indexOf("small change with clear scope and acceptance checks") >= 0 && routing.indexOf("small change with clear scope and acceptance checks") < routing.indexOf("use `survey`"), "clear small work must route before workspace documentation");
 assert.ok(routing.includes("Missing `AGENTS.md` alone does not require a survey"), "missing instructions must not force document creation");
+const routingRules = [...routing.matchAll(/^\d+\. (.+)$/gm)].map(([, rule]) => rule);
+const uiRoute = routingRules.findIndex((rule) => rule.includes("use `ui-review`"));
+assert.ok(uiRoute >= 0 && uiRoute < routingRules.findIndex((rule) => rule.includes("use `code-review`")), "UI-specific review must precede general completed-feature review");
+assert.doesNotMatch(guide, /commits it only after the user approves/, "a plan commit must not imply user approval");
+assert.match(routingRules.find((rule) => /persisted or session plan/.test(rule)) ?? "", /user or autoflow authorization/, "existing plans use their applicable authority");
+assert.doesNotMatch(read("skills/survey/SKILL.md"), /Use on first contact|Run it the first time/, "survey is optional fact maintenance, not an onboarding prerequisite");
+const reviewInputs = review.split("## Prepare the handoff")[1].split("## Run one comprehensive review")[0];
+assert.match(reviewInputs, /review_head_sha[\s\S]*git show[\s\S]*appendix paths/, "contract inputs and appendix selection must be version-bound");
+assert.match(reviewer, /^Input basis:/m, "review handoff must identify the selected contract basis");
+assert.match(reviewer, /commit:path.*blob ID/, "reviewer needs recoverable versions, not bare paths");
 const readme = read("README.md");
 const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((label) => {
   const section = readme.split(`### ${label}`)[1]?.split("\n#")[0] ?? "";
@@ -197,7 +207,10 @@ for (const rule of ["Review inline by default", "scoped re-check", "A second cle
 assert.ok(!taskReview.includes("at most one fix pass"), "review pass count alone must not force another approval");
 assert.ok(execute.includes("3 failed implementation or review-fix attempts") && execute.includes("do not reset the count on resume"), "clear corrections still need a persistent failure budget");
 assert.ok(execute.includes("Count one failed attempt per implementation or fix cycle") && execute.includes("Expected TDD RED is not a failed attempt"), "count failed implementation cycles, not expected RED or individual failing assertions");
-assert.ok(taskReview.includes("stricter commit gate than the shared severity defaults"), "distinguish impact grading from execute's commit policy");
+assert.match(taskReview, /resolve[^.]*Blocking and Important[^.]*before commit/i, "execute owns its Blocking/Important commit gate");
+assert.match(review, /Blocking or Important[^.]*Needs fixes/, "code-review owns its readiness gate");
+const severity = read("shared/references/severity.md");
+assert.doesNotMatch(severity, /does not block shipping|can be deferred|unless trivial to fix/i, "impact definitions must not choose another skill's commit or deferral policy");
 assert.ok(execute.includes("Stop and ask the user for explicit sign-off on that specific risk"), "continuous execution must retain risk approval");
 for (const file of ["skills/guide/SKILL.md", "skills/autoflow/SKILL.md", "README.md"]) {
   assert.ok(!/execute auto|Pass `auto`|传\s*`?auto`?|逐任务停下确认/.test(read(file)), `stale execute mode in ${file}`);
@@ -243,7 +256,7 @@ assert.equal(observeLabel(labelImplementations.after, "label", "save").error, be
 console.log("simplification example preserves responses, result identity, errors and effect order");
 
 const reviewFile = "skills/code-review/SKILL.md";
-const finish = read("skills/execute/references/finish.md");
+const finish = execute.split("## Completion report")[1];
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
 const gitEnv = { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" };
 const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Example checks", "-c", "user.email=checks@example.invalid", "-c", "commit.gpgsign=false", ...args], {
@@ -252,9 +265,11 @@ const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Ex
 try {
   writeFileSync(join(fixture, "global-config"), "");
   git("init", "--quiet", "--initial-branch=main");
+  const contractFiles = ["spec.md", "limits.md", "ui-spec.md", "DESIGN.md", "plan.md"];
   for (let n = 1; n <= 7; n++) {
     writeFileSync(join(fixture, "value"), `${n}\n`);
-    git("add", "value");
+    for (const path of contractFiles) writeFileSync(join(fixture, path), `version ${n}: ${path}\n`);
+    git("add", "--", "value", ...contractFiles);
     git("commit", "-qm", `initial ${n}`);
   }
   git("switch", "-qc", "feature/example-check");
@@ -316,6 +331,15 @@ try {
   assert.doesNotMatch(increment.stdout, /^[+-]user-/m, "review only the task-start-to-current increment, not pre-existing user changes");
   assert.match(git("diff", "--cached", "--", "task-file"), /^\+user-staged: changed$/m, "review must preserve the user's index");
   assert.match(git("diff", "--", "task-file"), /^\+user-unstaged: changed$/m, "review must preserve the user's unstaged changes");
+  for (const path of contractFiles) writeFileSync(join(fixture, path), `uncommitted: ${path}\n`);
+  const beforeReads = git("status", "--porcelain=v1");
+  for (const path of contractFiles) {
+    assert.equal(git("show", `${reviewHead}:${path}`).trim(), `version 5: ${path}`, "historical contracts must not follow HEAD or dirty files");
+    assert.equal(git("show", `HEAD:${path}`).trim(), `version 7: ${path}`, "an explicitly selected newer contract has a distinct basis");
+    const blob = git("rev-parse", `${reviewHead}:${path}`).trim();
+    assert.equal(git("cat-file", "blob", blob), git("show", `${reviewHead}:${path}`), "a pinned blob recovers the same contract content");
+  }
+  assert.equal(git("status", "--porcelain=v1"), beforeReads, "versioned reads must preserve the index and working tree");
   assert.equal(git("branch", "--show-current").trim(), "feature/example-check");
 } finally {
   rmSync(fixture, { recursive: true, force: true });
@@ -390,6 +414,7 @@ assert.ok(!ideate.includes("different topic") && ideate.includes("./references/d
 assert.ok(ideate.includes("run experiments or product acceptance checks") && !ideate.includes("perform validation"), "ideation must forbid experiments and product acceptance, not read-only fact checks");
 const dispatch = read("shared/references/subagent-dispatch.md");
 assert.ok(dispatch.includes("For exploration") && dispatch.includes("only when the invoking skill calls for independent review") && dispatch.includes("exploration alone does not add a review stage"), "shared dispatch guidance must not turn exploration into independent review");
+assert.doesNotMatch(dispatch, /per axis|Read reports by file path/, "dispatch must not split reviews by concern or require saved reports");
 assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
 assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
 const learningGate = read("shared/references/counterfactual-test.md");
@@ -440,9 +465,13 @@ assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchange
 assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
-assert.ok(plan.includes("A saved plan contains task details") && plan.includes("Neither tier requires task briefs by default"), "a short persisted plan must be usable without task briefs");
-const outputTier = read("skills/plan/references/output-tier.md");
-assert.ok(outputTier.includes("A short plan may use Full simply to survive a pause") && !/Hard floors|at most 5 files/.test(outputTier), "persistence must not impose size or module gates");
+assert.ok(plan.includes("A saved plan contains task details") && /neither requires task briefs/i.test(plan), "a short persisted plan must be usable without task briefs");
+const outputTier = plan.split("## Preconditions")[0];
+assert.match(outputTier, /Brief[^\n]*conversation[^\n]*Full[^\n]*persistence/, "tier choice belongs in the skill and follows persistence needs");
+assert.doesNotMatch(outputTier, /Hard floors|at most 5 files/, "persistence must not impose size or module gates");
+for (const path of ["skills/plan/references/output-tier.md", "skills/execute/references/finish.md"]) {
+  assert.match(read(path), /superseded[\s\S]*SKILL\.md/, "retained documents point to the current owner without a second policy");
+}
 assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Plan authorization does not authorize"), "saved-plan writes need shared workspace protection without treating plan authorization as permission to overwrite unrelated work");
 assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
 assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the current plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
@@ -472,9 +501,11 @@ assert.ok(uiDesign.includes("align affected decisions in an existing one") && ui
 const uiAccessibility = read("skills/ui-design/references/wcag-checklist.md");
 assert.ok(uiAccessibility.includes("WCAG 1.4.3 and 1.4.11") && uiAccessibility.includes("inactive controls and unmodified user-agent appearance are exempt"), "non-text contrast must name its criterion and component exceptions");
 assert.doesNotMatch(uiAccessibility, /All UI components.*3:1/, "the quick checklist must not turn conditional non-text contrast into a universal rule");
-for (const rule of ["Dismissible", "Hoverable", "Persistent"]) assert.ok(uiAccessibility.includes(`**${rule}**`), `missing hover/focus content condition: ${rule}`);
+for (const rule of ["Dismissible", "Hoverable", "Persistent"]) assert.match(uiAccessibility, new RegExp(`\\b${rule}\\b`, "i"), `missing hover/focus content condition: ${rule}`);
 const uiStates = read("skills/ui-design/references/component-states.md");
 assert.ok(uiStates.includes("trigger or tooltip is hovered") && uiStates.includes("without moving pointer or focus, for example with Escape"), "tooltip examples must support pointer transfer and in-place dismissal");
+assert.doesNotMatch(uiStates, /pointer-events: none[^\n]*prevents interaction/, "pointer hit testing is not disabled semantics");
+assert.match(uiStates, /native `disabled`[\s\S]*aria-disabled[\s\S]*keyboard focus and activation/i, "disabled guidance must distinguish native behavior, ARIA, and CSS");
 const uiExamples = read("skills/ui-review/references/common-ui-mistakes.md");
 assert.doesNotMatch(uiExamples, /Can be smaller on desktop|Mobile has no hover|\*\*Never:\*\* lowercase body text/, "examples must not confuse width with input or ban lowercase tracking");
 assert.doesNotMatch(read("skills/ui-design/references/design-principles.md"), /Instructions must die|Tracking\/letterspacing on lowercase/, "design heuristics must not ban necessary guidance or lowercase tracking");
@@ -522,7 +553,7 @@ assert.match(read("skills/code-review/SKILL.md"), /When active learning files ex
 assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
 assert.ok(read("skills/learning/SKILL.md").includes("without loading writing or commit references"), "zero-entry learning must stop before write-stage references");
 assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
-assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
-assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");
-console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving completion, spike safety and completion gates");
+assert.match(finish, /keep the current branch[^\n]*not another approval choice/i, "every input type must finish with the branch kept, without a menu");
+assert.match(finish, /After final verification and Definition of Done[^\n]*keep the current branch/, "default keep must not bypass verification");
+console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review and contract versions, comprehensive conversation-only review and recovery, branch-preserving completion, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

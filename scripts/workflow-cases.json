@@ -164,6 +164,43 @@
     "forbid": ["Automatic installation, reading a nonexistent skill, pretending the missing skill ran, claiming the complete core is incomplete because optional commit is absent, or including unrelated files in the commit."]
   },
   {
+    "id": "guide-ui-only-completed-feature",
+    "skill": "guide",
+    "setup": "Install the core plus guide and ui-review in an isolated local feature branch with a completed login feature, approved UI inputs, and a pinned implementation range. In separate fixtures request a UI-only review or an overall branch review that also includes UI concerns. No code fixes are authorized.",
+    "prompt": "审查刚完成的登录功能，只看界面和可访问性，不要修改代码。对照场景改为整体审查这个分支，包括接口、安全和界面。",
+    "expect": [
+      "The UI-only request routes to ui-review despite naming a completed feature; it does not first demand a whole-code-review range or independent code reviewer.",
+      "The overall-review variant routes to code-review rather than treating any UI keyword as a UI-only request.",
+      "The selected skill retains its own output, verification, and fix-authorization boundaries."
+    ],
+    "forbid": ["Matching the general completed-feature rule before the explicit UI-only scope, dropping non-UI concerns from the overall review, or applying unrequested fixes."]
+  },
+  {
+    "id": "guide-autoflow-plan-authority",
+    "skill": "guide",
+    "setup": "Provide an approved native spec, a self-reviewed committed plan produced under an explicit autoflow request, and recoverable invocation scope, branch, restrictions, and task history. No user plan approval exists or will be supplied. The current request continues only that authorized execution. In a separate control fixture, provide the same committed plan without evidence of either user plan approval or autoflow invocation authority.",
+    "prompt": "按照上文已授权的范围继续这份已落盘计划，保留原分支和限制，不重新审批计划。",
+    "expect": [
+      "Guide routes the existing plan to execute, which verifies the applicable invocation authority instead of describing the generated plan as user-approved.",
+      "The authorized variant proceeds without routine plan approval while retaining risk, verification, ownership, and failure-budget gates.",
+      "The control variant asks for the missing authority before editing; the commit alone does not establish approval, and the no-reapproval wording cannot supply missing earlier authority."
+    ],
+    "forbid": ["Requiring user plan approval for a valid autoflow-authorized plan, inferring authorization solely from a commit, or ignoring the original restrictions."]
+  },
+  {
+    "id": "review-historical-contract-versions",
+    "skill": "code-review",
+    "setup": "Create local A..B with B older than HEAD. At B, approved spec.md and its required limits.md appendix accept PNG uploads up to 5 MiB; ui-spec.md and the plan agree. HEAD revises them to require WEBP and 10 MiB, adds a new required appendix, and has a separate dirty UI-document edit. B implements its own contract correctly. Run separate report-only variants with the B contract present, a required historical appendix unavailable, or the user explicitly selecting an identified newer approved contract to assess B against.",
+    "prompt": "只审查 A..B，按 B 当时适用的已批准契约判断，保留工作区。另一个独立变体明确指定用我提供的新契约版本评价 B，并说明这个比较口径。",
+    "expect": [
+      "The default review resolves spec, appendix set, UI inputs, and plan at B; the reviewer receives immutable versions or exact supplied contents rather than unversioned working-tree paths.",
+      "New requirements and the dirty UI edit do not become defects in the historical implementation by default.",
+      "A missing historical appendix remains a conformance gap, not a reason to substitute the current file.",
+      "The explicit alternative uses the chosen contract version, identifies its basis, and reports differences against that contract without presenting them as violations of B's original contract."
+    ],
+    "forbid": ["Silently reading current contracts, mixing appendix sets from different spec versions, treating a hash as approval, checking out or stashing user work, saving feedback, or applying fixes."]
+  },
+  {
     "id": "approved-ui-is-not-just-tokens",
     "skill": "ui-review",
     "setup": "Provide an approved native spec and ui-spec with a mobile stacked layout and focus-return behavior. Implement the design tokens correctly but omit the mobile layout and focus restoration. Make browser inspection unavailable; keep source inspection available.",

@@ -148,7 +148,7 @@ npx skills@latest add iron6909/coding-skills
 
 </details>
 
-`code-review` 的审查重点通过本次请求或计划的 Review focus 提供，结果只在会话内交付，不生成审查文档。
+`code-review` 的审查重点通过本次请求或计划的 Review focus 提供，结果只在会话内交付，不生成审查文档。历史审查默认使用被审查版本适用的规格、附录和 UI 等输入，不静默套用工作区的新版本；明确指定其他契约时记录其版本及适用依据。文件版本不等于批准证据。
 
 旧 `.coding/handoff/`、`.coding/ideation/` 报告和 `capability-map.md` 保留为历史资料，不再默认生成，也不自动迁移或删除。
 

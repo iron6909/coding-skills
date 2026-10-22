@@ -71,7 +71,7 @@ Check:
 - no security, accessibility, data-loss, compatibility, or error-handling regression exists
 - no accidental file, debug output, dead code, or unrequested dependency entered the diff
 
-Read `./references/severity.md` to grade impact. This workflow has a stricter commit gate than the shared severity defaults: resolve valid in-scope Blocking and Important findings before commit; defer Minor cleanup and rule out incorrect findings with evidence. An out-of-scope issue is follow-up unless it blocks approved behavior or downstream work.
+Read `./references/severity.md` to grade impact. Commit gate: resolve valid in-scope Blocking and Important findings before commit; defer Minor cleanup and rule out incorrect findings with evidence. An out-of-scope issue is follow-up unless it blocks approved behavior or downstream work.
 
 Fixes need fresh focused and affected checks and a scoped re-check, not a restarted whole review or more reviewers. A second clear in-scope correction does not need new approval merely because it is a second pass. Stop before committing or advancing while a Blocking or Important finding remains unresolved; continue fixing only within the existing authorization and failure budget below.
 
@@ -151,4 +151,8 @@ For a small change or session plan, report the change or already-satisfied evide
 
 For persisted plans, also report the plan path, completed and skipped tasks, ledger path, actual rulings, cleared risk checkpoints, and deferred findings.
 
-After successful verification, read `./references/finish.md` for the completion handoff.
+After final verification and Definition of Done are satisfied, keep the current branch and all documents; this is not another approval choice or a verification waiver. Do not offer merge, discard, or cleanup menus. State that task reviews and final verification are not an independent whole-feature review.
+
+When called by `autoflow`, return the results to it for whole-feature review. Otherwise stop; recommend `code-review` when useful, or `learning` only for non-obvious reasoning not already preserved. Do not invoke another skill.
+
+Read `./references/finish.md` only when resolving an older instruction that points to the former handoff location; the rules now live here.
