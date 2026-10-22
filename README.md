@@ -77,7 +77,6 @@ npx skills@latest add iron6909/coding-skills
 | [learning](skills/learning/SKILL.md) | 保存功能或修复中值得保留的推理与经验 |
 | [learning-refresh](skills/learning-refresh/SKILL.md) | 已记录的经验与代码现状不一致 |
 | [simplify](skills/simplify/SKILL.md) | 代码已能运行，需要简化与清理 |
-| [handoff](skills/handoff/SKILL.md) | 暂停工作，留待其他会话继续 |
 
 ## 使用示例
 
@@ -141,7 +140,6 @@ npx skills@latest add iron6909/coding-skills
     │   └── impl/
     │       ├── progress.md             # 执行账本
     │       └── task-<N>.md              # 可选的补充任务说明
-    ├── handoff/YYYYMMDD-HHMM[-<topic>].md
     ├── ui-review/YYYYMMDD-HHMM.md
     └── autoflow-state.json             # 旧运行可保留为 autoflow-state-YYYYMMDD-HHMM.json
 ```
@@ -150,7 +148,7 @@ npx skills@latest add iron6909/coding-skills
 
 `code-review` 的审查重点通过本次请求或计划的 Review focus 提供，结果只在会话内交付，不生成审查文档。
 
-旧 `.coding/ideation/` 报告和 `capability-map.md` 保留为历史资料，不再默认生成，也不自动迁移或删除。
+旧 `.coding/handoff/`、`.coding/ideation/` 报告和 `capability-map.md` 保留为历史资料，不再默认生成，也不自动迁移或删除。
 
 ### 使用约定
 
@@ -175,7 +173,6 @@ npx skills@latest add iron6909/coding-skills
 | ui-review | 经授权的修复单独提交，遵守上述验证约定，不包含被审查的原始改动；报告不提交 |
 | autoflow | 编排 plan、execute、code-review 各自的提交 |
 | commit | 用户指定的临时改动 |
-| handoff | 不提交，只留下交接记录 |
 
 ## Pi 入口与边界
 

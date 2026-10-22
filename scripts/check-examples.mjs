@@ -114,7 +114,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   const source = read(`skills/${file}`);
   assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
 }
-assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize", "refactor"].includes(skill)), "retired entries must not remain as second implementations or aliases");
+assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize", "refactor", "handoff"].includes(skill)), "retired entries must not remain as second implementations or aliases");
 for (const skill of ["spec", "plan", "execute", "autoflow"]) {
   assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
 }
@@ -476,7 +476,7 @@ for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix"]) {
   }
 }
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-  assert.ok(!/`(?:clarify|debug|capture|optimize)`|skills\/(?:clarify|debug|capture|optimize|refactor)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
+  assert.ok(!/`(?:clarify|debug|capture|optimize|handoff)`|skills\/(?:clarify|debug|capture|optimize|refactor|handoff)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
   assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 const commit = read("skills/commit/SKILL.md");
@@ -506,6 +506,5 @@ assert.ok(read("skills/learning/SKILL.md").includes("without loading writing or 
 assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
 assert.ok(finish.includes("Keep the current branch") && finish.includes("not another approval choice"), "every input type must finish with the branch kept, without a menu");
 assert.ok(finish.indexOf("Keep the current branch") > finish.indexOf("final verification and Definition of Done"), "default keep must not bypass verification");
-assert.ok(read("skills/handoff/SKILL.md").includes("Do not infer a skill stage"), "handoff must not invent a phase from the topic");
-console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving handoff, spike safety and completion gates");
+console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review, comprehensive conversation-only review and recovery, branch-preserving completion, spike safety and completion gates");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **破坏性变更：移除 `handoff` 技能**：删除独立交接入口、路由及其检查场景，会话恢复依赖已有过程文档和工作记录；旧 `.coding/handoff/` 文档保留，不自动迁移或删除。
+
 ## [11.0.3] - 2026-10-22
 
 ### Fixed

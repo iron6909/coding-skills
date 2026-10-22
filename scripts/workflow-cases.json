@@ -371,17 +371,6 @@
     "forbid": ["Treating branch retention as a verification waiver, bypassing final verification or the DoD, offering merge or discard menus, deleting branches, or running simplify."]
   },
   {
-    "id": "handoff-unknown-stage-keeps-anchors",
-    "skill": "handoff",
-    "setup": "Provide a paused investigation summary and an exact source-file/line anchor. No skill was named as the originating stage, no spec or plan exists, and no code was edited. Allow only local metadata checks and saving the handoff.",
-    "prompt": "先停在这里，保存交接，下一次从给出的源码位置继续，不要继续调查。",
-    "expect": [
-      "The saved handoff preserves the source anchor, paused state, known evidence and next action; the originating phase is explicitly unknown rather than inferred from the topic.",
-      "Only necessary metadata is checked; there is no broad source discovery or continuation of the investigation."
-    ],
-    "forbid": ["Inventing a prior bugfix/spec/spike invocation, dropping the supplied anchor, changing code, or resuming automatically."]
-  },
-  {
     "id": "spike-before-external-effects",
     "skill": "spike",
     "setup": "Use a local fixture on main with pre-existing staged, unstaged, and relevant untracked work. During approach design, an unselected refund-API candidate needs idempotency evidence under a fixed duplicate-request criterion; no spec or plan exists. The existing command targets a production-labelled service. Block outbound network; provide no real credentials or transaction authorization.",
@@ -776,7 +765,7 @@
   {
     "id": "execute-lightweight-resume-failure-budget",
     "skill": "execute",
-    "setup": "Resume a small request or approved session task list with no ledger. Task results record two failed implementation cycles plus expected TDD RED runs and multiple failed assertions within each cycle. A clear in-scope local correction can now pass all required checks. In separate variants, record three failed cycles, or provide a handoff whose failure count is unknown. No high-risk action or new scope is involved.",
+    "setup": "Resume a small request or approved session task list with no ledger. Task results record two failed implementation cycles plus expected TDD RED runs and multiple failed assertions within each cycle. A clear in-scope local correction can now pass all required checks. In separate variants, record three failed cycles, or provide task results with an unknown failure count. No high-risk action or new scope is involved.",
     "prompt": "继续剩下的修复，保留之前的任务结果，按原有范围完成检查并报告。",
     "expect": [
       "The two-cycle variant resumes under the existing authorization, counting cycles once and excluding expected RED; it retains the count without creating a ledger and may commit only after fresh checks and review pass.",

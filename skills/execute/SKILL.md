@@ -133,7 +133,7 @@ For persisted plans, read the current approved spec and required internal append
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
-For a session plan or small change whose conversation was lost, ask the user to restate the remaining scope and reconcile change boundaries against Git before editing. Recover the failure count from task results or a saved handoff; if unknown, ask the user and do not assume zero. Do not force a larger plan solely because context was compressed. A handoff may supply evidence, not invented approval.
+For a session plan or small change whose conversation was lost, ask the user to restate the remaining scope and reconcile change boundaries against Git before editing. Recover the failure count from task results or existing work records; if unknown, ask the user and do not assume zero. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
 
 ## Tests and verification
 
