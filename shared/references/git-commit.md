@@ -1,23 +1,18 @@
 # Git commit rules
 
-Every skill that commits follows these rules. The skill's own instructions define what files to stage and the commit subject prefix.
+Every skill that commits follows these rules. The invoking skill defines the commit scope and subject prefix.
 
-## Stage only own files
+## Stage only in-scope changes
 
-Stage only this skill's changes. Use `git add <path>` for files it owns entirely, or selective staging when a file also contains user changes. Never `git add .` or `git add -A`. If ownership cannot be separated safely, stop and ask.
+Stage only changes in that scope: the skill's own output, or user-specified changes in `commit`. Use `git add -- <path>` only when every change in that file is in scope; otherwise use selective staging. Never `git add .` or `git add -A`. If the boundary cannot be separated safely, stop and ask.
 
-Before committing, verify what will be committed:
+Before committing, verify that the staged diff contains exactly the intended in-scope changes:
 
 ```bash
 git diff --staged
 ```
 
-Check that:
-- Only the files this skill owns are staged
-- No unrelated changes from the user are included
-- The diff matches what the skill intended to commit
-
-If unrelated changes are already staged, stop and ask. Do not unstage, stash, overwrite, or commit the user's changes on their behalf.
+If out-of-scope changes are already staged, stop and ask before staging or committing. Do not unstage, stash, overwrite, or commit those changes.
 
 ## Commit message
 

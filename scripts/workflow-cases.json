@@ -107,6 +107,51 @@
     "forbid": ["Editing .gitignore or .git/info/exclude, cancelling tracking, or deciding that the user must never commit .coding/."]
   },
   {
+    "id": "commit-authorized-user-hunks",
+    "skill": "commit",
+    "setup": "Use a local feature branch with the README-defined core plus commit installed. In user.mjs, prepare distinct user-authored validation hunks, one staged and one unstaged, plus an unrelated unstaged logging hunk. Keep another unrelated file changed but unstaged. Required local checks pass with and without the excluded hunks; record the initial bytes, diffs, and HEAD.",
+    "prompt": "提交 user.mjs 中的校验改动，包括已暂存和未暂存的部分，日志改动不要提交。直接完成，不用再让我确认文件或消息。",
+    "expect": [
+      "Both staged and unstaged validation changes are inspected and accepted as authorized scope despite being user-authored; only those hunks enter a new commit without routine file or message reapproval.",
+      "Working-tree file bytes remain unchanged; the logging hunk and unrelated file remain uncommitted, and no extra implementation or cleanup is performed.",
+      "Required checks run freshly, and the final response reports the applied DoD, skips or accepted limits, check commands and outcomes, commit hash and scope, and no push."
+    ],
+    "forbid": ["Rejecting authorized changes because the skill did not author them, staging excluded hunks or files, using blanket staging, amending, pushing, or claiming checks passed without running them."]
+  },
+  {
+    "id": "commit-unrelated-staged-blocks",
+    "skill": "commit",
+    "setup": "Use a local feature branch with the README-defined core plus commit installed and passing required local checks. Prepare an unstaged user change in config.mjs and an unrelated staged change in notes.mjs. Record file bytes, index contents, and HEAD; provide no follow-up authorization.",
+    "prompt": "只提交 config.mjs 的改动，notes.mjs 不在这次范围内。",
+    "expect": [
+      "The unrelated staged change triggers a stop and a specific question before any further staging or commit, even though the files could be isolated safely.",
+      "File bytes, index contents, and HEAD remain unchanged, and the response reports the blocker without claiming a new commit."
+    ],
+    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, silently bypassing the gate with a path-only commit, or expanding the authorized scope."]
+  },
+  {
+    "id": "commit-normalizes-supplied-message",
+    "skill": "commit",
+    "setup": "Use a local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, and all required checks run locally and pass. The supplied message is not required verbatim.",
+    "prompt": "提交 validation.mjs，提交信息用 Update validation。",
+    "expect": [
+      "The supplied message is adapted to the required convention without changing its intent or requesting routine message approval.",
+      "Fresh required checks precede a new commit containing only the requested changes; no implementation edits are made."
+    ],
+    "forbid": ["Committing a nonconforming message, stopping solely because the suggested message needs formatting, changing user code, bypassing checks or hooks, amending, or pushing."]
+  },
+  {
+    "id": "commit-verbatim-message-conflict",
+    "skill": "commit",
+    "setup": "Use a separate local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, required checks pass locally, and no follow-up permission to change either message constraint is supplied.",
+    "prompt": "提交 validation.mjs。提交信息必须逐字使用 Update validation，不要改写。",
+    "expect": [
+      "The agent identifies the conflict between the verbatim message and the repository convention, stops, and asks which constraint may change instead of choosing silently.",
+      "No new commit or implementation edit occurs; the final response states the exact blocker rather than reporting success."
+    ],
+    "forbid": ["Rewriting the message despite the verbatim constraint, committing the nonconforming message, treating commit authorization as permission to ignore the conflict, amending, or pushing."]
+  },
+  {
     "id": "guide-missing-optional-skill",
     "skill": "guide",
     "setup": "Install the complete core but omit optional commit. In a local fixture with known commit conventions, prepare exactly two user-named edits and no unrelated staged changes.",

@@ -10,7 +10,7 @@ Commit the user's specified ad-hoc changes. Other skills commit their own output
 
 ## 1. Read conventions and inspect scope
 
-Read `./references/repository-changes.md` before staging, running state-changing checks, or committing; this does not authorize editing the requested changes. Read `./references/definition-of-done.md` for required pre-commit checks and unavailable-check handling. Read `./references/git-commit.md` for convention precedence, staging safety, and message format. Inspect recent history only as needed for project vocabulary and scopes:
+Read `./references/repository-changes.md` before staging, running state-changing checks, or committing; this does not authorize editing the requested changes. Read `./references/definition-of-done.md` for required pre-commit checks, unavailable-check handling, and reporting. Read `./references/git-commit.md` for convention precedence, staging safety, and message format. Inspect recent history only as needed for project vocabulary and scopes:
 
 ```bash
 git log --oneline -20 --no-merges
@@ -19,22 +19,24 @@ git diff -- <specified-files>
 git diff --staged
 ```
 
-Inspect relevant untracked files directly. Staged-only changes are part of the requested diff too; do not infer them from the unstaged diff.
+Inspect relevant untracked files directly. Include staged-only changes within the requested scope; do not infer them from the unstaged diff.
 
-An explicit request to commit named files or hunks is authorization to commit that scope. Do not ask again for file or message approval unless the user requested a preview. Ask only when the scope is ambiguous, exclusions are unclear, or unrelated staged or overlapping changes cannot be separated safely. Do not commit, unstage, stash, or overwrite unrelated user work.
+An explicit request to commit named files or hunks authorizes that scope. Do not ask again for file or message approval unless the user requested a preview. If the scope is ambiguous or exclusions are unclear, ask before staging.
 
 ## 2. Stage and commit
 
-Enumerate the authorized paths or hunks. Never use `git add .` or `git add -A`, even when all current changes are authorized.
+Enumerate the authorized paths or hunks. For whole-file scope:
 
 ```bash
 git add -- <specified-files>
 git diff --staged
 ```
 
-Use selective staging for partial files; if it cannot be done safely with the available tools, ask rather than including excluded changes.
+For partial-file staging, follow the shared Git rules.
 
-Use the user's supplied message when compatible with project rules; otherwise write a concise message from the inspected diff. No separate message approval is needed unless requested. Respect required checks and hooks; do not bypass them. If scope, checks, or message constraints conflict, stop and report the exact issue.
+Use a supplied message when compatible with project rules. Adapt an incompatible message without changing its intent, unless the user requires it verbatim; then stop and ask. If none was supplied, write a concise message from the inspected diff.
+
+Respect required checks and hooks; run the checks and do not bypass either.
 
 ```bash
 git commit -m "<subject>"
@@ -45,10 +47,10 @@ Create a new commit; do not amend.
 
 ## Examples
 
-- "Commit the timeout change in config.yml" → inspect the authorized diff, stage only that change, commit, and report the hash. No routine confirmation round.
-- "Commit validation in user.js, not its logging changes" → isolate the validation hunks, inspect the staged diff, and commit only those. Ask if the boundary is ambiguous or cannot be separated safely.
+- "Commit the timeout change in config.yml" → inspect the authorized diff, stage only that change, commit, and report the hash.
+- "Commit validation in user.js, not its logging changes" → isolate the validation hunks, inspect the staged diff, and commit only those.
 - "Show me the message before committing" → inspect, propose the message, and wait as requested.
 
 ## Finish
 
-Report the commit hash, committed files or hunks, and any check or hook issue. State that nothing was pushed, then stop.
+Follow the shared safety and Definition of Done reporting rules. Include the commit hash and committed files or hunks, or why no commit was made, plus any hook issue. State that nothing was pushed, then stop.
