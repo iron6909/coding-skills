@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.0.0] - 2026-10-22
+
+### Breaking Changes
+
+- **autoflow 连续执行契约**：移除多模式体系，调用即授权范围内规划、计划修订、实施及 Blocking/Important 审查修复，不再请求例行计划批准或阶段确认。改用普通 `autoflow` 调用，恢复由已有证据识别；明确的只读、预算和分支限制仍有效，独立 `plan` 审批及具体高风险专项授权不变。
+- **恢复状态 schema v5**：用 `approved_inputs` 保存批准的产品/UI 契约，另以 `plan_blob` 标识自审计划；移除旧模式和执行授权布尔值。旧记录先只读核对，再保留原件并按当前授权及可信证据重建，不静默沿用旧权限或清除阻塞、失败次数与修复历史。
+
+### Fixed
+
+- **审查基线**：分支及状态写入前核对已有记录，保留原功能基线，不以新建分支的起点覆盖已有功能增量；冲突或证据不明时停止。
+- **阶段恢复与修订**：初始计划尚未落盘不再被视为无效状态；范围内计划修订自查保存并提交后继续，保留完成历史、需求覆盖及验证保证。
+- **空差异交付**：返回 `No new diff to review`，不启动审查者或制造提交；只有既有需求覆盖与本次最终验证均成立才能交付，不冒充独立审查通过。
+
+### Added
+
+- **回归证据**：新增八个手工场景及契约检查，74 个场景定义通过结构校验。四个选定样本的新旧技能快照各实跑一次，核对工具轨迹、提交、状态、检查输出和用户改动保全；仅限 Windows、Node 24.10.0 和单模型，不代表全部变体或通用遵循率。
+
 ## [12.0.0] - 2026-10-22
 
 ### Removed
@@ -599,7 +616,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v11.0.3...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.0.0...HEAD
+[13.0.0]: https://github.com/iron6909/coding-skills/compare/v12.0.0...v13.0.0
+[12.0.0]: https://github.com/iron6909/coding-skills/compare/v11.0.3...v12.0.0
 [11.0.3]: https://github.com/iron6909/coding-skills/compare/v11.0.2...v11.0.3
 [11.0.0]: https://github.com/iron6909/coding-skills/compare/v10.0.0...v11.0.0
 [10.0.0]: https://github.com/iron6909/coding-skills/compare/v9.0.0...v10.0.0
