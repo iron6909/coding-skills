@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.3] - 2026-10-21
+
+### Fixed
+
+- **简化边界**：`simplify` 接受无近期差异的指定文件，优先复用现有能力，保持输入、响应、错误、对象身份和副作用顺序；无收益时不制造修改或提交。
+- **执行门禁**：正常路径无需重复审批，基线通过后才审查和修改，最终检查全部返回并满足完成条件后才读取提交规则；范围未明、安全或所有权冲突等必要决策仍需确认。
+
+### Changed
+
+- **清理流程**：统一为范围、基线、审查实施、验证、提交五阶段，删除复杂度打分、额外报告和不必要的分析步骤。
+
+### Added
+
+- **维护自检**：在仓库克隆中使用 `npm run check`，统一引用同步、示例契约、轨迹校验器自检、适配器和离线打包检查。
+- **回归验证**：63 个场景定义通过结构检查，16 次流程对照两版各 63/64 项，串行门禁补丁的两次定向复验均为 8/8 项；仅限 Windows 和单模型，最终补丁未重跑整套，不证明性能提升。
+
 ## [8.0.2] - 2026-10-21
 
 ### Fixed
@@ -504,7 +520,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.3...HEAD
+[8.0.3]: https://github.com/iron6909/coding-skills/compare/v8.0.2...v8.0.3
+[8.0.2]: https://github.com/iron6909/coding-skills/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/iron6909/coding-skills/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/iron6909/coding-skills/compare/v7.0.4...v8.0.0
 [7.0.4]: https://github.com/iron6909/coding-skills/compare/v7.0.3...v7.0.4
