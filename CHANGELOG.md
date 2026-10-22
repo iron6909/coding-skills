@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0] - 2026-10-22
+
+### Breaking Changes
+
+- **技能命名**：`debug` 重命名为 `bugfix`，`capture` 重命名为 `learning`，对应技能目录同步更名，不保留旧入口别名。使用方须更新调用名称、安装筛选及旧目录配置；技能行为与项目文档输出路径不变。
+
+### Changed
+
+- **关联引用与自检**：同步技能路由、跨技能建议、README、共享引用映射和手工场景定义；契约自检禁止保留旧入口或别名。本轮未进行代理行为实跑。
+
 ## [8.0.3] - 2026-10-21
 
 ### Fixed
@@ -520,7 +530,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v8.0.3...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v9.0.0...HEAD
+[9.0.0]: https://github.com/iron6909/coding-skills/compare/v8.0.3...v9.0.0
 [8.0.3]: https://github.com/iron6909/coding-skills/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/iron6909/coding-skills/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/iron6909/coding-skills/compare/v8.0.0...v8.0.1
