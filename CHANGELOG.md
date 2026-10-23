@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.1.0] - 2026-10-23
+
+### Added
+
+- **主动触发**：16 个技能默认支持模型按请求选择，仍保留显式调用，是否选中取决于宿主与模型。
+- **触发检查**：补充默认可选、描述长度及授权边界的契约检查。
+
+### Changed
+
+- **入口选择**：明确请求直接进入匹配技能，`guide` 仅处理入口不明确或用户请求选择流程的情况。
+- **授权边界**：主动选择不替代审批或授权下一阶段，`autoflow` 仍需明确的自主交付请求，经验维护、代码清理和 UI 审查不因前序工作完成而自动启动。
+
+### Verification
+
+- **入口探针**：Windows、Node 24.10.0 下，Astra 和 Luna 的 16 个无父会话协调样本均满足原技能读取判据，其中一个 Luna 样本额外读取了参考文件，读取边界合规为 15/16，不代表完整工作流或全部场景通过。
+
 ## [13.0.1] - 2026-10-22
 
 ### Fixed
@@ -633,7 +649,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.0.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.0...HEAD
+[13.1.0]: https://github.com/iron6909/coding-skills/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/iron6909/coding-skills/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/iron6909/coding-skills/compare/v12.0.0...v13.0.0
 [12.0.0]: https://github.com/iron6909/coding-skills/compare/v11.0.3...v12.0.0
