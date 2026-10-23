@@ -1,7 +1,6 @@
 ---
 name: ui-review
-description: Review implemented frontend UI for design consistency, usability, accessibility, responsive behavior, and performance against approved UI decisions and the project's design system. Saves findings under `.coding/ui-review/`. Use after frontend implementation or when asked to audit, review, or improve an interface. Applies fixes only with user authorization.
-disable-model-invocation: true
+description: Use when the user asks to review, audit, or improve an implemented interface's design, usability, accessibility, responsiveness, or performance. Check approved UI decisions and the design system, save findings under .coding/ui-review/, and fix only with user authorization. Overall code reviews belong to code-review; new interface designs belong to ui-design.
 ---
 
 # UI Review

@@ -81,6 +81,8 @@ assert.ok(designInput.includes("For `spike`, read only material needed to frame,
 
 const guide = read("skills/guide/SKILL.md");
 assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
+assert.doesNotMatch(guide, /Use (?:`guide` )?when the request does not name a skill/, "an unnamed skill alone must not force routing through guide");
+assert.match(guide, /A clear request belongs directly to its matching specialist/, "guide must leave clear requests to their specialist");
 const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
 assert.match(routing, /review an existing planning document.*`ideate`.*`spike`.*`spec`.*`plan`.*Keep review-only requests read-only/, "document reviews must use their owner without authorizing edits or implementation");
 assert.ok(routing.includes("missing constraints or a deciding criterion can be clarified there") && !routing.includes("lacks the inputs for a bounded design probe"), "guide must not divert a framed spike question solely because a constraint or criterion is missing");
@@ -107,7 +109,14 @@ assert.deepEqual([...coreSkills, ...auxiliarySkills].sort(), installedSkills, "e
 for (const skill of installedSkills) {
   const source = read(`skills/${skill}/SKILL.md`);
   assert.match(source, new RegExp(`^name: ${skill}$`, "m"), `${skill} must retain its portable name`);
-  assert.match(source, /^disable-model-invocation: true$/m, `${skill} must remain explicitly invoked`);
+  assert.doesNotMatch(source, /^disable-model-invocation:/m, `${skill} must use default model-selected invocation`);
+  const description = source.match(/^description: (.+)$/m)?.[1] ?? "";
+  assert.ok(description.length > 0 && description.length <= 1024, `${skill} needs a nonempty, portable description`);
+  if (["learning", "learning-refresh", "simplify", "ui-review"].includes(skill)) {
+    assert.match(description, /Use when the user asks/, `${skill} must describe requested work, not an automatic follow-up`);
+    assert.doesNotMatch(description, /\bUse (?:after|before)\b/, `${skill} must not use workflow timing alone as a trigger`);
+  }
+  if (skill === "autoflow") assert.match(description, /user explicitly asks for autonomous delivery/, "autoflow must distinguish delivery authorization from spec approval");
   if (skill !== "guide") {
     assert.ok(source.includes("./references/repository-changes.md"), `${skill} can write repository files or Git state and must load shared safety and delivery`);
     assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);

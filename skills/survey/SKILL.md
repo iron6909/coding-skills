@@ -1,7 +1,6 @@
 ---
 name: survey
 description: Survey a workspace and create or refresh its project facts in AGENTS.md (and GLOSSARY.md). Use when those facts need recording or commands, structure, or conventions have drifted; not as a prerequisite for a clear small change.
-disable-model-invocation: true
 ---
 
 # Survey

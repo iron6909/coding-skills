@@ -1,7 +1,6 @@
 ---
 name: bugfix
 description: Reproduce a failure, find its root cause, and commit a verified small fix. Use for bugs, test failures, build failures, integration problems, and performance regressions.
-disable-model-invocation: true
 ---
 
 # Bugfix

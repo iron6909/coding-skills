@@ -1,7 +1,6 @@
 ---
 name: ui-design
 description: Create or revise ui-spec.md beside an approved spec before dependent planning or coding, establishing DESIGN.md at the project root only when absent. Use when frontend layout, presentation states, or interaction details remain open or need realigning with the approved product behavior.
-disable-model-invocation: true
 ---
 
 # UI Design

@@ -62,7 +62,7 @@ Several files are shared. The source is `shared/references/`; each consuming ski
 
 ## Skill authoring rules
 
-- Every skill sets `disable-model-invocation: true`. Skills are user-invoked; `guide` is a router, not the only entry point.
+- Skills support model-selected and explicit user invocation. Omit `disable-model-invocation` by default; set it to `true` only for a deliberately manual-only skill. `guide` is a fallback router, not a mandatory entry point. Selection alone does not grant approval, expand scope, or authorize another workflow stage.
 - `description` frontmatter is the trigger text. It must match the body: name the real output location and the real unit (task, not step).
 - Describe capabilities, not tool names. Write "delegate to a read-only subagent" or "search the web", never a specific harness tool, and say what to do when the capability is missing.
 - The skill that writes a project document commits it, staging only its own files. No skill pushes. README's 提交责任 says which skill commits what.

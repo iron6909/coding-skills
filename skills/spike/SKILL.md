@@ -1,7 +1,6 @@
 ---
 name: spike
 description: Validate a candidate design's blocking feasibility questions and save evidence, conclusions, and limits in docs/features/YYYYMMDD-<semantic-name>/spike.md. Use only for bounded questions during approach design; return every outcome to ideate for design decisions. Not for specification, planning, implementation, debugging, optimization, or product acceptance work.
-disable-model-invocation: true
 ---
 
 # Spike

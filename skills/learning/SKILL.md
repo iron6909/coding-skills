@@ -1,7 +1,6 @@
 ---
 name: learning
-description: Capture the non-obvious reasoning, traps, and boundary conditions from finished work into docs/learnings, one current file per topic. Use when a feature or fix has just finished and its reasoning would otherwise be lost.
-disable-model-invocation: true
+description: Use when the user asks to preserve lessons or pitfalls from finished work. Capture non-obvious reasoning and boundary conditions in docs/learnings/, one current file per topic. Existing stale lessons belong to learning-refresh; completion alone does not request capture.
 ---
 
 # Learning

@@ -1,7 +1,6 @@
 ---
 name: code-review
 description: Independently review a local branch, completed feature, or commit range against requirements, correctness, safety, integration, and tests. Return findings in conversation only; do not save a review report. Fix code only with explicit authorization; execute owns its task reviews.
-disable-model-invocation: true
 ---
 
 # Code Review

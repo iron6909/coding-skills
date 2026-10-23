@@ -1,7 +1,6 @@
 ---
 name: plan
-description: Turn an approved spec into ordered, testable tasks. Keep a Brief plan in conversation or save a Full plan.md beside the spec in docs/features when persistence is needed. Add task briefs in .coding only for lengthy task-specific detail. Use when approved work needs planning.
-disable-model-invocation: true
+description: Use when the user asks to create, review, or revise an implementation plan from an approved spec. Decompose work into ordered, testable tasks; keep a Brief plan in conversation or save a Full plan.md beside the spec in docs/features/. Do not implement tasks or resolve unsettled product decisions.
 ---
 
 # Plan

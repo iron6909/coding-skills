@@ -1,7 +1,6 @@
 ---
 name: ideate
 description: Develop and converge candidate approaches in docs/features/YYYYMMDD-<semantic-name>/proposal.md. Use when designs need comparison, feasibility evidence, or revision after a premise fails. Own approach selection, recommend spike for bounded design questions, and consume its evidence before recommending spec. Do not run experiments or define the formal specification.
-disable-model-invocation: true
 ---
 
 # Ideate

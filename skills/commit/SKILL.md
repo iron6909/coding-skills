@@ -1,7 +1,6 @@
 ---
 name: commit
 description: Create user-directed commits for ad-hoc changes outside another skill's workflow. Apply shared commit rules, use project vocabulary, and stage only authorized files or hunks. Honor an explicit commit request without routine file or message reapproval.
-disable-model-invocation: true
 ---
 
 # Commit

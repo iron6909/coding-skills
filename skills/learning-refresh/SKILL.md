@@ -1,7 +1,6 @@
 ---
 name: learning-refresh
-description: Audit recorded entries in docs/learnings/ against current evidence, update, consolidate, or supersede them, and archive eligible whole files without deleting documents. Use after refactoring, changed decisions, or fixed traps. Replacement lessons are in scope; unrelated new session lessons belong to learning.
-disable-model-invocation: true
+description: Use when the user asks to audit or refresh existing docs/learnings/ entries against current code or decisions, not merely after refactoring. Update, consolidate, supersede, or archive eligible documents without deleting them. Replacement lessons are in scope; unrelated new lessons belong to learning.
 ---
 
 # Learning Refresh

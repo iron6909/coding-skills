@@ -1,7 +1,6 @@
 ---
 name: spec
 description: Clarify requirements and internalize supplied designs into one approved spec.md in docs/features/YYYYMMDD-<semantic-name>/. Use when a settled approach needs behavior, scope, interfaces, or acceptance formalized. Return unresolved approach decisions or failed design premises to ideate; leave all implementation slicing to plan.
-disable-model-invocation: true
 ---
 
 # Spec

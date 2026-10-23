@@ -1,7 +1,6 @@
 ---
 name: execute
-description: Implement a user-approved or autoflow-authorized persisted plan, an approved session plan, or a small, clear request without routine task pauses. Review and commit task changes, run final verification, and keep the branch. Save persisted-plan progress in .coding/features/<feature>/impl/progress.md; small requests need no spec, plan, or ledger.
-disable-model-invocation: true
+description: Use when the user asks to implement or resume approved work or a small change with clear scope and acceptance checks. Follow user-approved or autoflow-authorized plans, verify and commit tasks, and record persisted-plan progress in .coding/features/<feature>/impl/progress.md. Small requests need no spec, plan, or ledger. Bug reports belong to bugfix.
 ---
 
 # Execute

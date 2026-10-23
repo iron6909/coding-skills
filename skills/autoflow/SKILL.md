@@ -1,7 +1,6 @@
 ---
 name: autoflow
-description: Automate plan → execute → code-review from an already approved spec without routine plan approval or stage confirmations. Save and commit plan.md beside the spec, verify and commit executable tasks, then review the whole feature and fix in-scope Blocking/Important findings. Use for autonomous delivery; specific high-risk actions still need authorization. Does not clarify requirements, merge, or push.
-disable-model-invocation: true
+description: Use when the user explicitly asks for autonomous delivery from an approved spec with settled UI decisions. Run plan → execute → code-review without routine plan or stage approvals; commit plan.md beside the spec, verified tasks, and in-scope Blocking/Important fixes. An approved spec alone is not delivery authorization. Specific high-risk actions still need sign-off; never merge or push.
 ---
 
 # Autoflow

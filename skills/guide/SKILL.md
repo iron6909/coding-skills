@@ -1,7 +1,6 @@
 ---
 name: guide
-description: Route a development request to the smallest suitable skill, then hand off to it. Use when the request does not name a skill.
-disable-model-invocation: true
+description: Route an ambiguous development request to the smallest suitable skill, then hand off. Use when the user asks which skill to use, where to start, or needs help choosing a workflow; clear requests belong directly to the matching specialist.
 ---
 
 # Guide
@@ -26,7 +25,7 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `ui-design`: turn an approved frontend spec into `ui-spec.md`, establishing `DESIGN.md` if absent.
 - `ui-review`: review implemented frontend UI for design quality, consistency, accessibility, and performance.
 
-`guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` when the request does not name a skill.
+`guide` is a router, not the only entry point. The user can invoke any skill directly, and rule 1 below honors that. Use `guide` for an unclear workflow entry point or when the user asks which skill to use. A clear request belongs directly to its matching specialist, even when it names no skill.
 
 The underlying mechanisms, such as TDD and subagents, are not routing targets.
 

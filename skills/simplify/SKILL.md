@@ -1,7 +1,6 @@
 ---
 name: simplify
-description: Simplify working code in an explicit scope or recent changes for reuse, clarity, and efficiency while preserving behavior. Use after implementation, before review, or for deferred cleanup. Commit verified simplifications; use bugfix for bugs.
-disable-model-invocation: true
+description: Use when the user asks to simplify, clean up, or refactor working code for clarity, reuse, or efficiency without changing behavior. Stay within the requested scope or recent changes and commit verified simplifications. Bugs belong to bugfix; feature changes and structural redesign are not cleanup.
 ---
 
 # simplify
