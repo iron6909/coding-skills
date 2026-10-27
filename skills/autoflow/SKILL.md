@@ -7,7 +7,7 @@ description: Use when the user explicitly asks for autonomous delivery from an a
 
 Coordinate three stages: `plan` → `execute` → `code-review`. The approved spec defines the scope; this skill does not create, infer, or approve requirements.
 
-The user's autoflow request authorizes planning, in-scope plan revisions, execution, and in-scope Blocking/Important review fixes for that feature and target branch. Do not request plan approval, stage confirmations, or another routine fix authorization. This is execution authority, not an assertion that the user approved a generated plan. Honor explicit read-only, budget, branch, and other limits; a request to preview work does not authorize writes.
+The user's autoflow request authorizes planning, in-scope plan revisions, execution, and in-scope Blocking/Important review fixes for that feature and target branch. Do not request plan approval, stage confirmations, or another routine fix authorization. This is execution authority, not an assertion that the user approved a generated plan. Honor explicit read-only, branch, and other limits under the shared repository rules; a request to preview work does not authorize writes.
 
 Called skills own task design, testing, review, and commits. Their autoflow-specific authorization rules apply; repository safety, verification, and specific high-risk sign-off are unchanged. Autoflow owns stage transitions and recovery, not a second task loop.
 
@@ -24,13 +24,13 @@ Finish read-only reconciliation before branch changes or other writes:
 
 Invoke `plan` at Full tier to create or reconcile the plan. It self-reviews, saves and commits `plan.md`, and returns without waiting for plan approval. A current plan whose contents and evidence already satisfy that contract needs no rewrite or empty commit. Supplemental task briefs remain optional work records under `.coding/`.
 
-Record the verified plan snapshot using the state reference, then continue directly to execution. Task count alone is not a pause trigger. If the user's explicit budget or constraints cannot be met, report the conflict rather than silently exceeding them.
+Record the verified plan snapshot using the state reference, then continue directly to execution. Task count alone is not a pause trigger. Explicit user constraints remain binding; report a partial result when they prevent completion, without a routine budget approval or extension request.
 
 ## Stage 2: Execute
 
 Invoke `execute` with the current plan, approved contract inputs, invocation authority, initial working-tree record, and fixed feature review base. Its applicable TDD, task reviews, checks, commits, evidence-driven recovery, and DoD govern execution; do not redefine them here. The execution ledger is the only task-level record.
 
-When execution needs an in-scope plan revision, return the evidence to `plan`, preserve completed history, update the plan snapshot, and continue from the reconciled task position. This is not a new approval stage or permission to weaken coverage or verification. Other unresolved execution gates stop the run.
+When `execute` makes an in-scope revision under its loaded revision contract, verify the returned plan and commit, update the plan snapshot, and continue from the reconciled task position. Invoke `plan` only for decomposition not settled within that contract. This is not a new approval stage or permission to weaken coverage or verification. Other unresolved execution gates stop the run.
 
 After final verification satisfies execute's DoD, continue to Stage 3. Failed, stale, or unavailable required verification follows that DoD, including its explicit verification-waiver gate; unrun checks remain unverified. Task reviews and final checks do not replace the whole-feature review.
 
@@ -38,15 +38,15 @@ After final verification satisfies execute's DoD, continue to Stage 3. Failed, s
 
 Invoke `code-review` with the fixed review base, target branch, approved spec and required appendices, current plan and its Review focus, applicable UI/design inputs, and invocation authority for in-scope fixes. It owns the comprehensive review, adjudication, in-scope corrections and re-checks, verification, and separate fix commits. Minor findings remain deferred. A severity label does not grant specific high-risk sign-off.
 
-If independent review is unavailable, report the capability gap; acceptance of the stated inline-review limitation is still required before completing that review. A failed reviewer launch is a blocker, not permission to silently downgrade.
+If independent review is unavailable, use code-review's disclosed inline fallback without an acceptance prompt unless the user or repository explicitly requires independence. A failed reviewer launch is a blocker, not permission to silently downgrade.
 
 For an empty pinned diff, follow code-review's empty-diff result. Only verified existing requirement coverage and fresh final verification can establish a no-change delivery; an empty range alone cannot. Report that there was no new diff to review, not an independent passing review. Do not invent tasks, commits, or review findings.
 
 ## Stops and recovery
 
-Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, no evidence-backed next step, exhausted explicit user budgets, and unresolved verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
+Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, no evidence-backed next step, and unresolved required verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
 
-Use `./references/state-management.md` whenever progress already exists. Changed approved inputs require their owner's clarification or approval before use; subsequent in-scope planning needs no plan approval. Recovery preserves unresolved blockers and explicit user limits; prior attempt or fix-pass counts do not revoke otherwise valid authority.
+Use `./references/state-management.md` whenever progress already exists. The reference distinguishes editorial-only input changes from semantic changes needing their owner's clarification or approval; subsequent in-scope planning needs no plan approval. Recovery preserves unresolved blockers and explicit user limits; prior attempt or fix-pass counts do not revoke otherwise valid authority.
 
 ## Completion report
 

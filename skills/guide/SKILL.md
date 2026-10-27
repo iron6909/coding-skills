@@ -13,8 +13,8 @@ Choose the smallest suitable skill for the user's current request, then follow t
 - `ideate`: develop and converge candidate approaches, consuming design evidence before selection.
 - `spike`: answer bounded candidate-design feasibility questions and return evidence to `ideate`.
 - `spec`: clarify requirements and internalize designs into one approved contract for the requested scope.
-- `plan`: own implementation decomposition into phases and testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
-- `execute`: continuously implement approved tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
+- `plan`: own initial implementation decomposition into phases and testable tasks. Full tier saves `plan.md`; Brief tier keeps the plan in the conversation.
+- `execute`: continuously implement authorized tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
 - `bugfix`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
 - `code-review`: independently review a branch or commit range, including a completed feature.
 - `commit`: create high-quality commits for ad-hoc changes, detecting project conventions and staging only specified files.
@@ -49,7 +49,7 @@ Use the first matching rule:
 14. If the user asks to establish or refresh workspace facts (commands, structure, conventions), use `survey`.
 15. If scope, behavior, interfaces, constraints, or acceptance need definition, or a supplied design needs internalization without a feasibility blocker, use `spec`. Do not route a whole system through repeated per-module specifications.
 16. If an approved spec still needs layout, presentation-state, or interaction details within its settled product behavior, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
-17. If a persisted or session plan exists for the request, use `execute` to verify its applicable user or autoflow authorization before acting. A plan commit alone does not establish authorization.
+17. If a persisted or session plan exists for the request, use `execute` to verify its applicable user or autoflow authorization before acting. A request to execute the current self-reviewed plan supplies execution authority without another routine approval; a plan commit alone does not.
 18. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
 19. If the approved work is clear and ready for code changes, use `execute`.
 20. If no rule matches, use `spec` instead of guessing.

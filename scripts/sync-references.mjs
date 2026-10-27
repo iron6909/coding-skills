@@ -24,6 +24,7 @@ const MAP = {
   "design-input.md": ["ideate", "spike", "spec"],
   "subagent-dispatch.md": ["survey", "spec", "plan", "execute", "ideate"],
   "tdd.md": ["execute", "bugfix", "code-review"],
+  "plan-revisions.md": ["plan", "execute"],
   "definition-of-done.md": ["plan", "execute", "code-review", "bugfix", "simplify", "ui-review", "commit"],
   "severity.md": ["execute", "code-review", "simplify", "ui-review"],
   "git-commit.md": ["survey", "ideate", "spike", "spec", "plan", "learning", "execute", "bugfix", "code-review", "simplify", "learning-refresh", "commit", "ui-design", "ui-review"],

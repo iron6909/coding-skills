@@ -5,7 +5,7 @@ description: Use when the user asks to create, review, or revise an implementati
 
 # Plan
 
-Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. This skill alone decomposes delivery work into phases and tasks. Do not write product code or start implementation.
+Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. This skill owns initial decomposition of delivery work into phases and tasks. Do not write product code or start implementation.
 
 Choose persistence, not a larger process: **Brief** keeps the task list and checks in conversation, with no files or ledger; **Full** saves one `plan.md` when the user needs persistence, later resumption, or an autoflow run. A short plan may use Full simply to survive a pause. File count, module boundaries, and risk do not determine the tier. Both retain the same task contract, and neither requires task briefs by default.
 
@@ -26,13 +26,7 @@ The spec is the product authority. Record a needed product change there through 
 
 Read the current authorized task list and available task results before revising. For Full, also read `plan.md`, any execution ledger, and relevant Git history. For Brief, revise the conversation plan without creating files; use Git evidence when needed to confirm completed work.
 
-Changes to deliverables, task boundaries, requirement coverage, dependencies, shared contracts, or verification guarantees need this revision process even when product scope is unchanged. Repository-proven path/name corrections and equivalent commands that preserve those meanings may be recorded by `execute` without rewriting the current plan.
-
-- Completed tasks are history. Keep their numbers, content, and any briefs unchanged; add a corrective task if necessary.
-- Revise unfinished tasks and add new tasks with the next free number.
-- Cancel an unnecessary unfinished task only through an authorized revision. Retain its number, any brief, and history; mark it `skipped: <reason>`. Check active requirement coverage and dependencies without inventing completion or a commit.
-- Apply Authorization below to revisions too: standalone revisions need user approval; autoflow may authorize an in-scope revision without another prompt. Explain what changed and why. Neither route permits changing product decisions, disregarding user constraints, or weakening requirement coverage or verification guarantees.
-- After authorization and self-review, reconcile affected unfinished briefs when present, append `Plan revised: <one-line reason>` to an existing ledger, and commit the plan revision. Preserve completed and skipped records.
+Read `./references/plan-revisions.md` before changing an existing plan. It owns revision authority, preserved history, coverage checks, and persistence. Apply Authorization below to the requested output; an in-scope revision needs no routine reapproval.
 
 ## Explore
 
@@ -137,7 +131,7 @@ Fix evidence-based gaps directly. If a gap requires a product decision, recommen
 
 When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
 
-When called independently, approval of the spec does not approve the plan. Present the task list, approach, verification, and Review focus as a conversation draft; write no plan or brief yet. Wait for approval, revise when requested, then save Full and any justified briefs. Brief writes nothing. A commit records delivery under the applicable authorization, not proof of user approval by itself.
+When called independently, a request to create or revise a plan authorizes that planning output, not implementation. Self-review and deliver Brief in conversation or save and commit Full as requested, without routine plan approval. A review-only, draft, preview, or explicit approval-first request remains conversation-only until the user authorizes saving. Approval of the spec alone is not a request to plan or execute, and a plan commit is not execution authority. Missing product decisions and specific high-risk actions still need their applicable decisions.
 
 ## Before saving
 

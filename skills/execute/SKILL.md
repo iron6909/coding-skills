@@ -1,6 +1,6 @@
 ---
 name: execute
-description: Use when the user asks to implement or resume approved work or a small change with clear scope and acceptance checks. Follow user-approved or autoflow-authorized plans, verify and commit tasks, and record persisted-plan progress in .coding/features/<feature>/impl/progress.md. Small requests need no spec, plan, or ledger. Bug reports belong to bugfix.
+description: Use when the user asks to implement or resume approved work or a small change with clear scope and acceptance checks. Follow authorized, self-reviewed plans, verify and commit tasks, and record persisted-plan progress in .coding/features/<feature>/impl/progress.md. Small requests need no spec, plan, or ledger. Bug reports belong to bugfix.
 ---
 
 # Execute
@@ -8,10 +8,10 @@ description: Use when the user asks to implement or resume approved work or a sm
 Use one of three execution inputs:
 
 - **Persisted plan:** read this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`, its required internal appendices, and `plan.md` in full. The spec defines behavior; the plan defines tasks and their checks. Do not fill contract gaps from external originals or a proposal. Read a task brief only when the plan links one.
-- **Session plan:** use an approved task list from `plan` or supplied directly by the user. Read its approved spec and required internal appendices in full when present; that contract governs behavior. For a list without a spec, the approved list itself must settle scope, behavior, acceptance checks, dependencies, and shared interfaces.
+- **Session plan:** use a task list from `plan` or supplied directly by the user with execution authority. Read its approved spec and required internal appendices in full when present; that contract governs behavior. For a list without a spec, the approved list itself must settle scope, behavior, acceptance checks, dependencies, and shared interfaces.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
-Both plan inputs require settled scope and verification under a user-approved plan or autoflow's invocation authority for its self-reviewed plan. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
+Both plan inputs require settled scope and verification, a self-reviewed task list, and a user request to execute it or autoflow's invocation authority. A request to execute the current plan authorizes implementation without a separate routine plan approval. Honor explicit approval-first or no-change restrictions that remain unresolved. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
 
 ## Workspace safety
 
@@ -25,7 +25,7 @@ Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` cons
 
 ## Continuous execution
 
-Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its invocation authority for the feature, target branch, approved contract inputs, and current self-reviewed plan; do not request plan approval. Changed contract inputs require their owner's clarification or approval, while in-scope plan revisions follow the route below. Missing authority or an unresolved user constraint blocks affected work.
+Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its invocation authority for the feature, target branch, approved contract inputs, and current self-reviewed plan; do not request plan approval. Changes to product/UI meaning require their owner's clarification or approval; verified editorial-only changes do not reopen settled decisions. In-scope plan revisions follow the route below. Missing authority or an unresolved user constraint blocks affected work.
 
 Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events. Keep only the task list, starting change boundaries, check results, and failure evidence needed to do the work. Skip Persisted-plan records and Ledger entries below. A small change is not a miniature feature workflow.
 
@@ -53,7 +53,8 @@ Route other exceptions by the decision that is missing:
 | Evidence | Action |
 |----------|--------|
 | Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the current plan or briefs. |
-| Missing task detail; changed deliverable, boundary, coverage, dependency, shared contract, or verification guarantee; task cancellation | Stop affected execution for a plan revision, even when product scope is unchanged. Under `autoflow`, return the evidence to it for an in-scope revision by `plan`, without a plan approval prompt; preserve user constraints, coverage, and verification guarantees. Otherwise recommend `plan` for spec-backed plans, or ask the user to provide and approve a directly supplied spec-free list's revision. Completed tasks remain history; a later task does not silently cancel an earlier one. |
+| Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Return a revised plan snapshot to `autoflow` when called by it. |
+| A proposed revision changes delivery scope, approved contracts, requirement coverage, verification guarantees, or an explicit user constraint | Stop affected work for that specific decision; recommend `spec` for product changes or `plan` for arrangements needing user resolution. Do not hide the change as an implementation detail. |
 | Missing or changed product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`, then `plan` where reconciliation is needed. |
 | An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design and contract inputs need their applicable approvals before resuming; reconcile affected plans under their authorization contract. |
 
@@ -76,19 +77,19 @@ Fixes need fresh focused and affected checks and a scoped re-check, not a restar
 
 ## Failed checks and fixes
 
-Revisit the evidence changed by the failure. Continue within the existing authorization while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval unless the user set that limit.
+Revisit the evidence changed by the failure. Continue while new evidence supports a concrete next investigation or correction within scope and existing authorization. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval; explicit limits follow the shared repository rules.
 
-If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop affected work and report the evidence and smallest missing input. Expected TDD RED is normal progress, not a reason to stop. Unavailable required checks follow the DoD gate; they are not passes.
+If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop affected work and report the evidence and smallest missing input. Expected TDD RED is normal progress, not a reason to stop. Unavailable required checks follow the DoD gate; they are not passes.
 
 ## Doubt-driven checkpoints
 
 Check before affected actions and whenever new evidence changes the risk:
 
 - **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
-- **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
+- **Security-sensitive**: an unresolved security-policy decision or real-resource effect under the shared safety rule, not merely implementing an already approved security contract in local code.
 - **Unexplained**: a decision you cannot justify from the approved input or repository evidence.
 
-When a trigger applies, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
+When a trigger lacks specific authorization, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Reuse sign-off already given for the same action, target, and effects. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
 
 ## Persisted-plan records
 
@@ -135,7 +136,7 @@ For persisted plans, read the current approved spec and required internal append
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
-For a session plan or small change whose conversation was lost, ask the user to restate the remaining scope and reconcile change boundaries against Git before editing. Recover available failure evidence and unresolved blockers from task results or existing work records. A missing attempt count alone is not a blocker unless needed to enforce an explicit user limit; missing scope or authorization still is. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
+For a session plan or small change whose conversation was lost, first recover scope, execution authority, and change boundaries from the current request, available records, and Git evidence. Ask only for what remains ambiguous; a diff alone cannot prove authorization. Recover available failure evidence and unresolved blockers from task results or existing work records. Missing attempt counts alone do not require approval; explicit limits follow the shared repository rules. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
 
 ## Tests and verification
 

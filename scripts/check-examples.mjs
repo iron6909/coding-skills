@@ -205,7 +205,7 @@ assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>") && exec
 for (const rule of ["captured task-start contents", "isolated task increment", "Task <N>: starting state —", "never copy secrets into records"]) assert.ok(execute.includes(rule), `missing change-boundary rule: ${rule}`);
 assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed persisted plan");
 assert.ok(execute.includes("Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events"), "small work must skip bookkeeping, not move it into conversation");
-assert.ok(execute.includes("Recover available failure evidence and unresolved blockers") && execute.includes("A missing attempt count alone is not a blocker"), "lightweight recovery needs evidence, not an attempt quota");
+assert.ok(execute.includes("Recover available failure evidence and unresolved blockers") && execute.includes("first recover scope, execution authority, and change boundaries") && execute.includes("Ask only for what remains ambiguous"), "lightweight recovery must inspect available evidence before asking the user");
 assert.ok(execute.includes("**Persisted plan:**") && !execute.includes("**Planned work:**"), "name the persistence distinction explicitly");
 assert.ok(execute.includes("supplied directly by the user") && execute.includes("without a spec"), "session plans must state whether directly supplied plans need a spec");
 const exceptions = execute.split("## Exceptions and handoffs\n")[1]?.split("\n## ")[0] ?? "";
@@ -379,15 +379,15 @@ assert.doesNotMatch(autoflow, /## Modes|--checkpointed|--dry-run|--resume|over 1
 for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "no earlier feature increment exists", "explicit verification-waiver gate"]) {
   assert.ok(autoflow.includes(rule), `missing autonomous delivery rule: ${rule}`);
 }
-assert.ok(autoflow.includes("acceptance of the stated inline-review limitation"), "autoflow must not call self-review independent assurance");
+assert.ok(autoflow.includes("disclosed inline fallback without an acceptance prompt unless") && review.includes("If the user or repository explicitly requires independent review"), "inline review must disclose its limit without a routine acceptance gate or overriding required independence");
 assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "added, removed, or changed", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "refresh only those proven editorial snapshots", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
   assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
 }
 for (const skill of ["plan", "execute", "code-review"]) {
   assert.match(read(`skills/${skill}/SKILL.md`), /autoflow[\s\S]*invocation[\s\S]*plan approval/i, `${skill} must accept invocation authority without plan approval`);
 }
-assert.ok(read("skills/plan/SKILL.md").includes("When called independently") && read("skills/plan/SKILL.md").includes("Wait for approval"), "standalone planning must retain its approval gate");
+assert.ok(read("skills/plan/SKILL.md").includes("a request to create or revise a plan authorizes that planning output, not implementation") && read("skills/plan/SKILL.md").includes("explicit approval-first request remains conversation-only"), "standalone planning must honor the requested output without authorizing implementation or bypassing an explicit preview");
 
 const bugfix = read("skills/bugfix/SKILL.md");
 const workspaceGate = bugfix.indexOf("./references/repository-changes.md");
@@ -403,15 +403,21 @@ for (const [pattern, rule] of [
   [/Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach/, "route missing product decisions to spec"],
   [/recommend `ideate` when approaches need comparison or replacement.*unresolved or invalidated/, "route unsettled approaches or design premises to ideate"],
   [/Expected TDD RED and rejected hypotheses can inform the next step.*unavailable required checks follow the DoD gate/, "distinguish useful failure evidence from missing verification"],
-  [/On resume, recover available failure evidence and unresolved blockers.*A missing attempt count alone is not a blocker/, "recover evidence without inventing a count gate"],
+  [/On resume, recover available failure evidence and unresolved blockers.*Missing attempt counts alone do not require approval/, "recover evidence without inventing a count gate"],
 ]) assert.match(bugfix, pattern, `bugfix must ${rule}`);
 for (const [skill, source] of [["execute", execute], ["bugfix", bugfix], ["code-review", review]]) {
-  for (const rule of ["new evidence supports a concrete next investigation or correction", "explicit user budgets", "unchanged failing approach", "Attempt count alone does not require renewed approval unless the user set that limit", "no evidence-backed next step remains"]) {
+  for (const rule of ["new evidence supports a concrete next investigation or correction", "shared repository rules", "unchanged failing approach", "Attempt count alone does not require renewed approval", "no evidence-backed next step remains"]) {
     assert.ok(source.includes(rule), `${skill} must use evidence-driven continuation: ${rule}`);
   }
 }
 assert.doesNotMatch(execute + bugfix + review + autoflow + recovery, /3 failed|stop before a fourth|failure[- ]budgets?|second fix wave|fix-wave|do not assume zero|failed-attempt counts?/i, "skill-imposed attempt and fix-pass quotas must not return through execution or recovery");
-for (const source of [execute, bugfix, recovery]) assert.ok(source.includes("unless needed to enforce an explicit user limit"), "missing counts still matter when the user set a budget");
+for (const rule of ["Do not require a time, token, retry, or cost budget", "stop conditions, not approval stages", "without soliciting a budget increase", "Do not keep attempt counters unless", "Honor specific sign-off already given", "Implementing an explicitly approved security contract in local code"]) assert.ok(repositoryChanges.includes(rule), `missing bounded autonomy rule: ${rule}`);
+assert.doesNotMatch(execute + bugfix + review + recovery, /larger budget|unless the user set that limit|unless needed to enforce an explicit user limit/i, "budget approval gates must not leak back into individual workflows");
+assert.ok(review.includes("current request already authorizes fixes") && review.includes("without asking again"), "explicit review-and-fix requests must not need a second authorization");
+assert.ok(review.includes("uniquely evidenced base") && review.includes("without a prompt"), "review must recover a clear local base and continue without a spec instead of asking by default");
+const uiReview = read("skills/ui-review/SKILL.md");
+for (const rule of ["Default to all five dimensions and all severities", "current request already authorizes fixes", "without another approval prompt"]) assert.ok(uiReview.includes(rule), `missing UI review default or existing authority: ${rule}`);
+assert.ok(spike.includes("do not request an effort budget or approval of an estimate") && spike.includes("without soliciting a budget extension"), "safe probes need no effort-approval stage");
 assert.doesNotMatch(bugfix, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
 const bugfixFailureStep = bugfix.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
 assert.match(bugfixFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");
@@ -478,6 +484,7 @@ assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verifi
 const tdd = read("shared/references/tdd.md");
 assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
 assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
+assert.ok(tdd.includes("first inspect existing public interfaces and test patterns") && tdd.includes("a technical test-location choice needs no approval"), "technical test-entry selection must be investigated before asking about product or safety decisions");
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
 assert.ok(plan.includes("A saved plan contains task details") && /neither requires task briefs/i.test(plan), "a short persisted plan must be usable without task briefs");
@@ -489,7 +496,10 @@ for (const path of ["skills/plan/references/output-tier.md", "skills/execute/ref
 }
 assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Plan authorization does not authorize"), "saved-plan writes need shared workspace protection without treating plan authorization as permission to overwrite unrelated work");
 assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
-assert.ok(execute.includes("equivalent commands") && execute.includes("do not rewrite the current plan or briefs") && execute.includes("even when product scope is unchanged"), "execution corrections must not bypass semantic plan revision");
+const planRevisions = read("shared/references/plan-revisions.md");
+for (const skill of ["plan", "execute"]) assert.ok(read(`skills/${skill}/SKILL.md`).includes("./references/plan-revisions.md"), `${skill} must load the single revision contract before changing task semantics`);
+for (const rule of ["honor explicit preview, approval, and no-reordering instructions", "product behavior, delivery scope", "requirement coverage, verification guarantees", "Preserve completed tasks", "before affected implementation", "without a skill handoff"]) assert.ok(planRevisions.includes(rule), `missing safe inline-revision rule: ${rule}`);
+assert.ok(execute.includes("Apply a supported in-scope adjustment inline") && execute.includes("self-review and record it"), "execution must reconcile implementation-only arrangements without a routine handoff or approval");
 const stableIds = read("shared/references/stable-ids.md");
 assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");
 assert.ok(stableIds.includes("or existing behavior with implementation/test evidence and a final verification check"), "requirement coverage must include unchanged existing behavior");
@@ -507,7 +517,7 @@ const specRevision = spec.split("## Revisions\n")[1].split("\n## ")[0];
 for (const input of ["required internal appendices in full", "approved `ui-spec.md`", "`DESIGN.md`", "affected plan tasks"]) {
   assert.ok(specRevision.includes(input), `spec revision must inspect ${input}`);
 }
-assert.ok(specRevision.includes("Spec approval does not renew approval of conflicting UI decisions or a stale plan") && specRevision.includes("Do not edit UI documents, tasks, or execution records here"), "spec revision must report stale downstream inputs without renewing their approval or editing them");
+assert.ok(specRevision.includes("Spec approval does not settle conflicting UI decisions or reconcile a stale plan") && specRevision.includes("Do not edit UI documents, tasks, or execution records here"), "spec revision must report stale downstream inputs without renewing their approval or editing them");
 const uiDesign = read("skills/ui-design/SKILL.md");
 assert.ok(uiDesign.includes("stop and recommend `spec` for that decision before UI approval"), "UI approval must not change the product contract");
 assert.ok(uiDesign.includes("every in-scope layout, presentation-state, and interaction decision"), "settled styling or component reuse alone must not skip UI design");
@@ -531,7 +541,7 @@ assert.doesNotMatch(elicitation, /Don't accept the first answer|First Principles
 assert.ok(elicitation.includes("These techniques do not authorize comparing replacement approaches, relaxing agreed constraints, or running experiments"), "elicitation techniques must stay within the spec readiness boundary");
 assert.ok(read("skills/spec/references/adr-format.md").includes("All three of these must be true"), "ADR eligibility must remain in its owning reference");
 assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
-assert.ok(plan.includes("This skill alone decomposes delivery work") && plan.includes("Do not create capability maps, child specs"), "plan must own implementation decomposition without recursive specifications");
+assert.ok(plan.includes("This skill owns initial decomposition") && plan.includes("Do not create capability maps, child specs"), "plan must own initial decomposition without forbidding bounded execution revisions");
 assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
 for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix"]) {
   assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);

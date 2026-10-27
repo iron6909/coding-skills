@@ -13,7 +13,7 @@ Read `./references/repository-changes.md` before checks that may change state or
 
 ## Pin the review range
 
-Ask for a local base or range if not specified (commit SHA, branch name, tag, `main`, `HEAD~5`, or `A..B` / `A...B`). Ask the user to fetch remote work first; do not fetch it here.
+Use the supplied local base or range (commit SHA, branch name, tag, `main`, `HEAD~5`, or `A..B` / `A...B`). If absent, first inspect an applicable ledger, feature history, and local refs for a uniquely evidenced base; state that basis without a confirmation prompt. Ask only when the intended comparison remains ambiguous, not merely unnamed. Do not assume a default branch or substitute a new HEAD for an existing feature base. Ask the user to fetch unavailable remote work first; do not fetch it here.
 
 Select the comparison before resolving refs:
 
@@ -56,7 +56,7 @@ Collect the work's objective and applicable sources, not the implementer's reaso
 
 If the user or `autoflow` explicitly supplies another contract version, identify each input by immutable `commit:path`, or a blob ID with its exact supplied content, and state why it applies. A path, commit, or hash identifies content, not approval. Give the reviewer these versioned inputs or their exact contents; missing versions or unclear applicability remain conformance gaps to clarify, not permission to substitute current files. Current instructions governing repository safety still apply; historical documents are review evidence, not authority to change this workflow.
 
-- Find the originating approved spec from the user's path, then a matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`, otherwise ask. If none exists, state the missing requirements input and continue the code review; do not invent a spec.
+- Find the originating approved spec from the user's path, then an unambiguous matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`. If none is identifiable, state the requirements-conformance limit and continue ordinary correctness and safety review without a prompt; do not invent a spec. Ask only when resolving conflicting candidate contracts is necessary for a finding or authorized fix.
 - Read the spec and every required internal appendix as one contract. External originals, proposals, and experiment logs cannot fill missing requirements.
 - For frontend changes, include the applicable approved `ui-spec.md` and `DESIGN.md` constraints. Missing UI inputs limit conformance claims, not an ordinary code review. Source inspection does not verify rendered or interaction behavior.
 - Read a supplied plan and carry its Review focus verbatim. The spec remains the product authority; conflicting approved inputs need a decision, not silent precedence changes.
@@ -70,7 +70,7 @@ Read `./references/code-reviewer.md` when preparing the review; it owns the hand
 
 Use one fresh read-only subagent for the whole pinned diff, not one per concern. Give it the prepared inputs and rubric, never the whole session history, your proposed verdict, or instructions to suppress particular findings. The reviewer may inspect relevant callers and integration boundaries; this is a whole-change review, not a task-only gate.
 
-If delegation is unavailable, perform the same review as a separate inline pass and label it `inline self-review (no independent reviewer)`. Do not claim independence; the user decides whether that weaker review is sufficient before integration. A failed delegation is a blocker to report, not permission to silently substitute inline review.
+If delegation is unavailable, perform the same review as a separate inline pass and label it `inline self-review (no independent reviewer)`. Disclose the limitation and deliver without a separate acceptance prompt. If the user or repository explicitly requires independent review, its absence blocks that requirement, not delivery of an honest limited report. A failed delegation is a blocker to report, not permission to silently substitute inline review.
 
 The reviewer returns feedback in its response, without editing files or dispatching more reviewers. Do not ask it to rerun an entire suite already evidenced for the same revision. A concrete unanswered doubt may justify a focused check; the main process owns safe execution and the DoD gates.
 
@@ -82,11 +82,11 @@ Rule explicitly on every item the reviewer declined to judge. Spec silence does 
 
 Deliver the reference's feedback structure in conversation. Include every valid finding, rejection, deferred item, and verification gap; do not silently drop a reviewer's concern. State which DoD applied. A read-only review can be delivered with unavailable checks, but cannot verify the implementation from missing evidence.
 
-Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification means `Unverified`, not `Ready`. Even a clean inline review needs the user's acceptance of its independence limitation before integration.
+Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification or explicitly required independent review means `Unverified`, not `Ready`. An inline result is never independent assurance; it needs no extra acceptance unless independence is explicitly required.
 
 ## Authorized fixes
 
-Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
+Review alone does not authorize code changes. If the current request already authorizes fixes, honor its exact scope after adjudicating findings without asking again. Only a review-only request needs a later fix decision; deliver its findings before offering repairs. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. An unresolved product, architectural, security-policy, or data-loss decision stops affected work; implementing an already approved security contract locally is not a new risk approval.
 
 Before editing, confirm the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
 
@@ -96,7 +96,7 @@ Read `./references/git-commit.md` before selectively staging only fix-owned chan
 
 Keep the current full SHA as `fix_head_sha`. After each correction, perform a scoped re-check of the original findings and the fix-owned increment, including uncommitted changes; at the final fix head use `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`. Verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or add reviewers for each correction; unrelated observations do not extend the authorized scope.
 
-Continue authorized Blocking/Important fixes and fix-caused regressions while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval unless the user set that limit. If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop and present the remaining findings and smallest missing input. Unresolved findings and missing verification still block readiness.
+Continue authorized Blocking/Important fixes and fix-caused regressions while new evidence supports a concrete next investigation or correction, within scope and existing risk approvals. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval; explicit limits follow the shared repository rules. If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop and present the remaining findings and smallest missing input. Unresolved findings and missing verification still block readiness.
 
 ## Completion
 

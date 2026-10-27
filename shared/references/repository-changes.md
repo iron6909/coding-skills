@@ -10,9 +10,11 @@ Inspect the branch and record the initial staged and unstaged changes plus relev
 
 On the default branch (`main` or `master`), obtain consent for writes there or create `feature/YYYYMMDD-<semantic-name>` before writing. Honor consent already given for that exact branch and scope. Do not switch away from a branch pinned by the request or review without agreement. Document and work-record writes count too; a conversation-only draft or dry-run does not.
 
+Do not require a time, token, retry, or cost budget to start authorized work or invent quotas. Honor explicit user limits as stop conditions, not approval stages. If a stated limit is reached or its remaining allowance cannot be established, preserve the work and report the partial result without soliciting a budget increase. Do not keep attempt counters unless needed to enforce an explicit limit.
+
 ## Check side effects before execution
 
-Check target environments, endpoints, credentials, and external effects before state-changing commands, including reproduction, profiling, and verification. Prefer isolated local/test fixtures. Destructive, security-sensitive, paid, or real external transactions require specific sign-off before execution, or a safe isolated reproducer that cannot affect real resources. General execution, review, or fix approval is not that sign-off.
+Check target environments, endpoints, credentials, and external effects before state-changing commands, including reproduction, profiling, and verification. Prefer isolated local/test fixtures. Destructive, security-sensitive, paid, or real external transactions require specific sign-off before execution, or a safe isolated reproducer that cannot affect real resources. Honor specific sign-off already given for the same action, target, and effects; ask again only when those change. Implementing an explicitly approved security contract in local code does not itself require another sign-off. New security-policy decisions, expanded access, and operations on real credentials or resources still require their specific authorization. General execution, review, or fix approval is not that sign-off.
 
 Do not weaken trust-boundary validation or other safety protections for a temporary probe. Record existing check failures when establishing a baseline; do not attribute them to this run without evidence.
 

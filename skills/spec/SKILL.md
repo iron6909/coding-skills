@@ -89,7 +89,7 @@ Preserve precise implementation-relevant content from supplied designs. Do not s
 
 Before revising, read the current spec and its required internal appendices in full, any approved `ui-spec.md`, applicable `DESIGN.md` constraints, and affected plan tasks with relevant briefs or execution records when present.
 
-Preserve unaffected decisions, stable IDs, and history; do not re-interview or revalidate everything. Present affected UI decisions and plan tasks with the proposed contract changes. Spec approval does not renew approval of conflicting UI decisions or a stale plan. Identify the needed `ui-design` and `plan` revisions before dependent work resumes; unaffected decisions keep their approval. Do not edit UI documents, tasks, or execution records here.
+Preserve unaffected decisions, stable IDs, and history; do not re-interview or revalidate everything. Present affected UI decisions and plan tasks with the proposed contract changes. Spec approval does not settle conflicting UI decisions or reconcile a stale plan. Identify the needed `ui-design` and `plan` revisions before dependent work resumes; unaffected decisions keep their approval. Do not edit UI documents, tasks, or execution records here.
 
 ## Review and approval
 

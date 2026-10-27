@@ -23,9 +23,9 @@ Read `./references/definition-of-done.md` before choosing verification for code 
 
 ## Phase 0: Scope
 
-Ask what to review unless the request already says. Defaults worth offering: the files changed since the last review, or the whole frontend.
+Honor the requested scope. If unspecified, use the identifiable current frontend increment, or the whole frontend when no increment is identifiable; state the choice and proceed. Ask only when different plausible targets would materially change the review.
 
-Also settle two things: which dimensions to cover (all five, or a requested subset), and whether to report Minor findings or only Blocking and Important. A first pass on a large app is more useful scoped to Blocking and Important.
+Default to all five dimensions and all severities, prioritizing Blocking and Important findings. Honor requested subsets; dimensions and severity filtering are not a pre-review questionnaire.
 
 ## Phase 1: Establish the baseline
 
@@ -35,7 +35,7 @@ When the review matches a feature, read its approved `ui-spec.md`, originating s
 
 ## Phase 2: Review the five dimensions
 
-Work through the agreed dimensions in `./references/ui-review-checklist.md`. It owns the checks, default severity guidance, and what each protects.
+Work through the selected dimensions in `./references/ui-review-checklist.md`. It owns the checks, default severity guidance, and what each protects.
 
 `./references/common-ui-mistakes.md` lists the patterns that recur across projects, with corrected code. Consult it when a finding needs a concrete replacement, and when deciding whether something is a mistake at all.
 
@@ -81,9 +81,9 @@ When a check passes, say so in the summary. A report of failures alone cannot be
 
 ## Phase 4: Offer fixes
 
-Present the report and ask what to fix. Do not apply anything unasked.
+Present the report. If the current request already authorizes fixes, honor its exact scope without another approval prompt; otherwise offer repairs without applying them. Review-only requests remain read-only apart from the report this skill promises.
 
-When the user approves fixes:
+For authorized fixes:
 
 1. Resolve any open design decision with the user before changing code. Work in severity order, Blocking first, and make the smallest change that fixes each finding.
 2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.

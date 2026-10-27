@@ -178,12 +178,12 @@
   {
     "id": "guide-autoflow-plan-authority",
     "skill": "guide",
-    "setup": "Provide an approved native spec, a self-reviewed committed plan produced under an explicit autoflow request, and recoverable invocation scope, branch, restrictions, and task history. No user plan approval exists or will be supplied. The current request continues only that authorized execution. In a separate control fixture, provide the same committed plan without evidence of either user plan approval or autoflow invocation authority.",
+    "setup": "Provide an approved native spec, a self-reviewed committed plan produced under an explicit autoflow request, and recoverable invocation scope, branch, restrictions, and task history. No user plan approval exists or will be supplied. The current request continues only that authorized execution. In a separate control fixture, provide the same committed plan without execution authority and request only a read-only status check.",
     "prompt": "按照上文已授权的范围继续这份已落盘计划，保留原分支和限制，不重新审批计划。",
     "expect": [
       "Guide routes the existing plan to execute, which verifies the applicable invocation authority instead of describing the generated plan as user-approved.",
-      "The authorized variant proceeds without routine plan approval while retaining risk, verification, ownership, evidence-driven stopping, and explicit user-budget gates.",
-      "The control variant asks for the missing authority before editing; the commit alone does not establish approval, and the no-reapproval wording cannot supply missing earlier authority."
+      "The authorized variant proceeds without routine plan approval while retaining risk, verification, ownership, evidence-driven stopping, and explicit user limits without budget-extension prompts.",
+      "The control variant remains read-only; the commit alone is not execution authority. A direct current request to execute a settled self-reviewed plan would authorize execution without another routine plan approval."
     ],
     "forbid": ["Requiring user plan approval for a valid autoflow-authorized plan, inferring authorization solely from a commit, or ignoring the original restrictions."]
   },
@@ -309,11 +309,11 @@
     "prompt": "只审查这个区间，在当前会话给结论，不安装依赖，不修改文件。",
     "expect": [
       "The agent uses the same comprehensive checks inline and clearly labels the result self-review rather than independent review.",
-      "It names the missing check and coverage gap, reports Unverified rather than Ready, and states that the user must accept the independence limitation before integration.",
+      "It names the missing check and coverage gap and reports Unverified rather than Ready. The inline limitation is disclosed without an acceptance prompt; a separate variant explicitly requiring independence remains blocked on that requirement.",
       "No review report, code change, dependency installation, or policy change occurs."
     ],
     "forbid": [
-      "Inventing a successful delegation, calling a failed delegation mere unavailability, treating missing verification as inapplicable or passed, or bypassing the user acceptance gate."
+      "Inventing a successful delegation, calling a failed delegation mere unavailability, treating missing verification as inapplicable or passed, or overriding an explicit independence requirement."
     ]
   },
   {
@@ -333,13 +333,13 @@
   {
     "id": "autoflow-rejects-stale-ui-approval",
     "skill": "autoflow",
-    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and version-5 autoflow state separating approved contract snapshots from plan_blob. In separate variants, add a previously absent UI input, remove a recorded one, or modify its content after approval.",
+    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and version-5 autoflow state separating approved contract snapshots from plan_blob. In separate variants, add a previously absent UI input, remove a recorded one, change a UI behavior after approval, or make only formatting/explanatory edits while retaining the exact approved content for full comparison.",
     "prompt": "继续上次的自动执行。",
     "expect": [
       "Recovery compares the presence and content of spec/appendix/UI/design inputs with approved_inputs and reconciles the plan separately against plan_blob and revision evidence.",
-      "Changed contract inputs stop execution for their owner's clarification or approval; after renewal the in-scope plan is reconciled without a plan approval prompt."
+      "Semantic, added, removed, or unrecoverable contract inputs stop affected execution for their owner's decision; proven editorial-only changes retain approval after a full comparison and refresh the snapshot with evidence, not a prompt. A content hash alone never proves semantic equivalence."
     ],
-    "forbid": ["Skipping a stage, inventing prior approval, executing changed inputs, or adding a new core-dependency preflight instead of validating the approved state."]
+    "forbid": ["Skipping a stage, inventing prior approval, executing semantically changed inputs without approval, or adding a new core-dependency preflight instead of validating the approved state."]
   },
   {
     "id": "guide-performance-regression",
@@ -383,7 +383,7 @@
       "The ordinary variant keeps run-only focused/full-suite checks in Final verification rather than adding a task or brief solely to run checks or update the ledger.",
       "The independently requested test tool may earn a task with its own observable artifact and acceptance; creating coverage is not confused with merely rerunning checks."
     ],
-    "forbid": ["A standalone verification-only task, blanket prohibition of independently useful test deliverables, or saving/implementing before approval."]
+    "forbid": ["A standalone verification-only task, blanket prohibition of independently useful test deliverables, or ignoring the explicit instruction to show the draft without saving."]
   },
   {
     "id": "learning-zero-without-write-references",
@@ -564,7 +564,7 @@
     "prompt": "继续上次的自动执行。",
     "expect": [
       "Recovery resolves the complete required appendix set and compares paths, presence, and content with approved snapshots before execution.",
-      "A changed, missing, added, or unsnapshotted contract input blocks reuse of the old authorization; missing snapshot fields make the current record incomplete, not implicitly approved."
+      "A semantically changed, missing, added, unrecoverable, or unsnapshotted contract input blocks reuse of old approval. A formatting-only variant may continue only after recovering the exact approved contract and proving all behavior, linked paths, and code/schema fragments unchanged; missing snapshot fields make the record incomplete, not implicitly approved."
     ],
     "forbid": ["Checking only spec.md, silently treating missing snapshot fields as no appendices, trusting changed inputs, or adding spike/spec as automatic orchestrator stages."]
   },
@@ -645,7 +645,7 @@
     "prompt": "只确认当前库版本是否导出 encodeBytes，供候选编码方案决定是否继续。按提供的源码和判据检查并保存证据；不要实验、完整导入设计或替我选型。",
     "expect": [
       "The agent accepts source inspection as design evidence and reads the question's relevant material without requiring unrelated appendices or a full design import.",
-      "The report preserves the version, decisive source content, conclusion, and limits without claiming a runtime probe ran. Only the evidence documents are committed, and the outcome returns to ideate."
+      "The report preserves the version, decisive source content, conclusion, and limits without claiming a runtime probe ran. Only the evidence documents are committed, and the outcome returns to ideate. The safe bounded request needs no effort-budget or estimate-approval prompt."
     ],
     "forbid": ["Rejecting the request as routine inspection, routing to ideate before inspecting a complete bounded question, requiring unrelated inaccessible material, running a probe, or importing the full design into proposal.md or the evidence report."]
   },
@@ -714,7 +714,7 @@
     "follow_up": "只批准这次规格及必要附录的变更，保存提交；界面和计划稍后单独对齐，不要继续实现。",
     "expect": [
       "Before drafting, the agent reads the current spec and required appendix, approved UI/design inputs, and relevant task/history records. It preserves stable IDs, unaffected decisions, completed tasks, and prior records.",
-      "It identifies the conflicting UI decisions and unfinished task details, reports the required ui-design and plan revisions, and does not treat spec approval as renewed downstream approval.",
+      "It identifies the conflicting UI decisions and unfinished task details, reports the required ui-design and plan revisions, and does not treat spec approval as resolving conflicting UI decisions or automatically reconciling the plan.",
       "After approval, only invocation-owned specification documents are changed and committed. UI, plan, briefs, ledger, and product code remain unchanged, and dependent work is not declared ready."
     ],
     "forbid": ["Editing downstream documents, silently reconciling conflicting inputs in implementation, reapproving unaffected decisions, reopening the selected mechanism, or treating stale UI and plan approvals as valid for the revised behavior."]
@@ -726,9 +726,9 @@
     "prompt": "继续执行已批准的计划；如果发现设计前提失效，保留现有工作并停下说明，不要靠新实验或临时替代方案继续。",
     "expect": [
       "The agent stops affected execution, reports the exact design claim and contradicting evidence, and recommends ideate rather than directly recommending or running spike.",
-      "It preserves completed history, product code, and the approved contract and plan. A changed design requires specification and affected-plan approval before execution can resume."
+      "It preserves completed history, product code, and the approved contract and plan. A changed design requires specification approval and affected-plan reconciliation before execution can resume; implementation-only reconciliation needs no separate approval."
     ],
-    "forbid": ["Turning the unknown into an implementation probe, silently selecting a fallback, rewriting the spec or plan, cancelling unfinished work without plan approval, or automatically invoking another skill."]
+    "forbid": ["Turning the unknown into an implementation probe, silently selecting a fallback, rewriting the spec or plan, cancelling unfinished work to evade the unresolved design decision, or automatically invoking another skill."]
   },
   {
     "id": "plan-existing-coverage-and-write-safety",
@@ -746,14 +746,14 @@
   {
     "id": "plan-session-contract-and-revision",
     "skill": "plan",
-    "setup": "Supply an approved native spec for two related local CLI journeys with settled interfaces, two cohesive deliverables, and existing checks. Request a session-only plan. After its approval, ask in the same session to add an already in-scope boundary check to the second task and approve that revision only at its gate.",
+    "setup": "Supply an approved native spec for two related local CLI journeys with settled interfaces, two cohesive deliverables, and existing checks. Request a session-only plan. After its approval, ask in the same session to add an already in-scope boundary check to the second task; no revision approval is supplied.",
     "prompt": "按这份已批准规格拆出当前会话使用的计划，写清依赖、接口和检查，不需要保存。先展示草稿。",
     "follow_up": "批准这份会话计划，不保存、不提交，也不开始实施。",
     "expect": [
       "The conversation plan preserves REQ coverage, files, deliverables, dependencies, shared interfaces, and final checks without inventing a fixed error/polish phase.",
-      "The later session revision retains task identity and unaffected content, presents the changed check for approval, and does not require a plan.md, ledger, brief, or Full-tier upgrade."
+      "The later requested in-scope session revision retains task identity and unaffected content, states the added check without another approval prompt, and does not require a plan.md, ledger, brief, or Full-tier upgrade."
     ],
-    "forbid": ["Saving planning artifacts, making commits or product changes, dropping task-contract fields because the plan is Brief, adding unrequested delivery phases, or silently accepting the revision."]
+    "forbid": ["Saving planning artifacts, making commits or product changes, dropping task-contract fields because the plan is Brief, adding unrequested delivery phases, or demanding approval for a requested implementation-only revision."]
   },
   {
     "id": "execute-equivalent-path-correction",
@@ -773,7 +773,7 @@
     "prompt": "继续执行这个已批准计划；发现与代码不一致的地方请明确指出，不要替我改变已批准安排。",
     "expect": [
       "The agent identifies the concrete producer/consumer and dependency conflict and stops dependent implementation for plan revision even though product scope is unchanged.",
-      "It recommends plan rather than spec or ideate for this scheduling defect, preserves approved inputs and user work, and does not implement the later task early or silently rewrite dependencies."
+      "The explicit no-change instruction blocks inline revision despite the general in-scope default. It recommends plan for the scheduling defect, preserves approved inputs and user work, and does not silently reorder tasks."
     ],
     "forbid": ["Calling a semantic task/dependency change a harmless description correction, rewriting approved inputs, implementing before revision approval, or reopening a settled design premise."]
   },
@@ -795,9 +795,9 @@
     "prompt": "把空白搜索词的结果设为空列表，运行现有检查后报告。",
     "expect": [
       "The small-request variant reviews existing behavior, runs fresh final checks and the applicable DoD, and reports already satisfied with implementation/test evidence and no new commit.",
-      "The planned variant stops for an approved plan revision that retains task history and moves proven behavior to Existing coverage; it does not silently cancel or complete the task."
+      "The planned variant performs a self-reviewed in-scope revision inline, retains task number and history with a skipped reason, moves proven behavior to Existing coverage with final checks, and commits only the plan revision without a new approval prompt or invented implementation commit."
     ],
-    "forbid": ["Manufacturing edits or an empty commit, declaring completion from old check output, asking for unnecessary small-request planning, or revising/cancelling a planned task without approval."]
+    "forbid": ["Manufacturing edits or an empty commit, declaring completion from old check output, asking for unnecessary small-request planning, or cancelling a planned task without recording evidence, preserved coverage, and history."]
   },
   {
     "id": "autoflow-continuous-invocation",
@@ -817,11 +817,11 @@
     "setup": "Provide an approved native spec, a committed plan, a trustworthy ledger with one completed task and one unnecessary unfinished task whose behavior and checks already exist, plus current invocation authority. A second variant needs a changed unfinished task boundary but no product decision, coverage reduction, user-constraint change, or weaker check. No plan-revision approval will be supplied.",
     "prompt": "继续 autoflow，按现有规格和证据对齐剩余计划并完成，不要编造已完成任务。",
     "expect": [
-      "Execution returns revision evidence to the orchestrator; plan performs and commits an in-scope self-reviewed revision without a plan approval prompt, then execution resumes from reconciled progress.",
+      "Execute performs and commits an in-scope self-reviewed revision inline under the shared revision contract, returns the revised plan snapshot to the orchestrator, and resumes from reconciled progress without a skill handoff or approval prompt.",
       "Completed task numbers, contents, briefs, and ledger history remain intact. A cancellation retains its number and reason, preserves coverage through Existing coverage and final checks, and does not invent completion or a commit for that task.",
       "The plan snapshot is refreshed only after the verified revision; product changes or weakened verification remain outside invocation authority."
     ],
-    "forbid": ["Requiring routine revision approval, letting execute silently rewrite task semantics, erasing history, or skipping requirement coverage."]
+    "forbid": ["Requiring routine revision approval, letting execute change task semantics without self-review, evidence, preserved coverage, and a recorded revision, erasing history, or skipping requirement coverage."]
   },
   {
     "id": "autoflow-early-plan-recovery",
@@ -875,7 +875,7 @@
     "prompt": "只读预览 autoflow 的计划与阻塞项，不修改文件、分支、状态或提交。",
     "expect": [
       "Explicit read-only or legacy dry-run intent is honored without branch, document, state, commit, or reviewer writes; removing named modes does not erase user restrictions.",
-      "A budget conflict is reported rather than exceeded silently; task count alone is not a budget or risk gate."
+      "A budget conflict returns a partial result rather than exceeding the explicit limit or requesting more budget; task count alone is not a budget or risk gate."
     ],
     "forbid": ["Treating every mention of autoflow as unrestricted write authority, silently ignoring old read-only wording, or introducing new mode configuration."]
   },
@@ -909,8 +909,74 @@
     "prompt": "按之前批准的范围和限制继续，缺少必要输入或额度时说明原因，不绕过检查。",
     "expect": [
       "The evidence-gap variant stops affected work and names the exact missing input without blindly retrying, claiming completion, or requesting a generic continue approval.",
-      "The budget variants ask for a specific budget change or the missing usage evidence before another attempt; removing skill-imposed quotas does not override a user-imposed limit or imply unused budget. No variant commits unverified work or changes user files."
+      "The budget variants preserve work and report a partial result without requesting a budget increase, approval, or reconstructing unknown usage as unused allowance. Explicit user limits remain binding. No variant commits unverified work or changes user files."
     ],
     "forbid": ["Treating evidence-driven continuation as unlimited authority, silently exceeding the user budget, fabricating evidence, weakening checks, or counting a generic execution request as a budget override."]
+  },
+  {
+    "id": "execute-inline-plan-revision-and-recovery",
+    "skill": "execute",
+    "setup": "Use an approved local spec and self-reviewed persisted plan with settled behavior and runnable checks. Repository evidence proves a dependency arrangement wrong, but correcting unfinished task boundaries preserves product behavior, delivery scope, coverage, verification, and public contracts. Current execution authority is recoverable from the request or work records even if older conversation and attempt counts are missing. Preserve a completed task, task-start boundary, and unrelated user edits. In separate controls provide an explicit no-reordering restriction or a proposed scope/coverage reduction.",
+    "prompt": "按这份计划继续完成，依据代码对齐实施安排，保留完成历史和用户改动。",
+    "expect": [
+      "The normal variant reads the shared revision contract, recovers authority and boundaries before asking questions, revises unfinished arrangements inline, self-reviews, records the rationale, and commits only plan changes before dependent implementation.",
+      "It continues without a plan handoff, repeated approval, or attempt-count question. Controls stop only for the actual explicit restriction or product/coverage change, not task count or generic uncertainty."
+    ],
+    "forbid": ["Inferring authority from a diff alone, erasing completed tasks, silently weakening checks, overruling no-reordering instructions, or committing user hunks."]
+  },
+  {
+    "id": "plan-request-authorizes-output",
+    "skill": "plan",
+    "setup": "Provide an approved native spec with settled behavior and existing local checks on a feature branch. No plan approval will be supplied. In separate variants request a persisted plan, a session-only plan, a draft-only preview, or execution of an already self-reviewed plan. Preserve unrelated user work.",
+    "prompt": "按已批准规格制定可执行计划，保存并提交计划文档，不开始实施。",
+    "expect": [
+      "The persisted-plan request authorizes self-review, saving, and a selective plan commit without asking for approval again; the session-only variant delivers in conversation with no files.",
+      "The explicit draft-only variant writes nothing. Planning does not authorize implementation, while a separate current execution request supplies execution authority without an extra routine plan approval."
+    ],
+    "forbid": ["Treating spec approval alone as a planning request, asking to reconfirm requested saving, implementing from a plan-only request, or ignoring a preview restriction."]
+  },
+  {
+    "id": "review-evidence-defaults-and-existing-authority",
+    "skill": "code-review",
+    "setup": "Use a feature branch with a uniquely evidenced ledger review base but no base argument, no identifiable spec, a deterministic wrong-index regression, runnable standard-library checks, and separable user hunks. The user already authorizes this local correction. Delegation is unavailable, but independent review is not required. In controls make the base ambiguous or explicitly require independent review.",
+    "prompt": "整体审查并修复这个功能的数组越界回归，验证并只提交修复，不处理其他问题。",
+    "expect": [
+      "The normal run pins the evidenced local base, states the missing-spec conformance limit, discloses inline self-review, and honors the current fix scope without asking for a range, spec, independence acceptance, or fix approval.",
+      "Controls clarify only the ambiguous comparison or report the unmet independence requirement. Actual reviewer launch failures remain explicit blockers, not silent fallback."
+    ],
+    "forbid": ["Assuming main or current HEAD as the feature base, inventing requirements, claiming independence, weakening verification, or including user changes."]
+  },
+  {
+    "id": "ui-review-defaults-and-authorized-fixes",
+    "skill": "ui-review",
+    "setup": "Use a safe local frontend increment with approved UI decisions, a missing accessible button name, browser inspection and existing checks available, and an unrelated user edit. Supply no review-dimension or severity preferences. In a control request review only.",
+    "prompt": "审查当前界面改动，只修复其中的无障碍问题，按已有设计验证后单独提交修复。",
+    "expect": [
+      "The agent states the identifiable increment scope and default dimensions/severities without a preflight questionnaire. It preserves requested accessibility-only fix scope and does not seek the already given repair permission again.",
+      "The report retains actual evidence and limits, verified fixes are committed without user hunks or the report, and the review-only control makes no code changes."
+    ],
+    "forbid": ["Reapproving dimensions or severity filters, silently expanding fix scope, inventing browser passes, or fixing the read-only control."]
+  },
+  {
+    "id": "autoflow-other-record-and-editorial-recovery",
+    "skill": "autoflow",
+    "setup": "Use a current unambiguous feature request and a valid state record for a different feature. The target feature has approved inputs and a self-reviewed plan, and local history can recover its review base. Preserve the old record exactly at a unique retained path before creating new state. In a same-feature variant change only formatting in a required appendix while retaining exact approved bytes for comparison; in a control make those bytes unavailable or change a linked contract path.",
+    "prompt": "按当前指定功能继续 autoflow，保留其他功能记录，不要重复审批纯排版变化。",
+    "expect": [
+      "The unrelated old record is automatically retained without a recover-or-keep menu, never overwritten or claimed complete; state for the current target is established only from its own evidence.",
+      "Editorial input changes continue only after exact full-contract comparison proves behavior, constraints, links, schemas, security, UI decisions, and acceptance unchanged. Controls stop for missing proof or actual contract change."
+    ],
+    "forbid": ["Copying another feature's base or authority, inferring approval from hashes, treating changed links as whitespace, discarding records, or silently accepting unavailable evidence."]
+  },
+  {
+    "id": "execute-approved-security-contract-no-reapproval",
+    "skill": "execute",
+    "setup": "Provide an approved native contract explicitly defining an ownership check, self-reviewed plan, current execution request, isolated local tests, and no real credentials or resources. A suitable public API and existing test patterns are inspectable. In separate controls propose broader access or a real credential rotation without specific sign-off.",
+    "prompt": "按批准的权限规则补齐本地所有权校验，选择现有公共接口验证并提交，不操作真实环境。",
+    "expect": [
+      "The local implementation chooses the existing observable test entry point and follows the already approved security decision without requesting generic permission for touching authorization code.",
+      "Expanded access, unresolved policy, destructive effects, and real credential operations still stop before the affected action unless specifically authorized. Fresh checks, ownership safety, and no external effects are evidenced."
+    ],
+    "forbid": ["Removing trust-boundary validation, inferring external-effect sign-off from a plan, repeatedly asking about a technical test location, or overriding user restrictions."]
   }
 ]

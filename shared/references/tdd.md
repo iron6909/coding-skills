@@ -15,7 +15,7 @@ Do not skip step 2.
 
 ## Where to test
 
-A **test entry point** is the public interface a test calls into: a function, endpoint, command, or UI action. Test through the entry points the spec's Testing Boundary section lists; the user approved them with the spec. When there is no spec (a small change or a fix), name the entry point in one line before writing the test, and ask if it is unclear.
+A **test entry point** is the public interface a test calls into: a function, endpoint, command, or UI action. Test through the entry points the spec's Testing Boundary section lists; the user approved them with the spec. When there is no spec (a small change or a fix), first inspect existing public interfaces and test patterns, choose the narrowest observable entry point, and name it in one line before writing the test. Ask only when that choice exposes an unresolved product behavior or safety decision; a technical test-location choice needs no approval.
 Use the repository's existing test tools. Do not add a test framework or dependency for this workflow.
 
 ## What to test

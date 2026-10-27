@@ -59,9 +59,9 @@ Never route a small fix through `spec`, `plan`, or `execute` merely because it s
 
 ### If the fix fails
 
-Revisit the evidence the failure changes; do not repeat settled investigation steps or an unchanged failing approach. Continue within the existing authorization while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Attempt count alone does not require renewed approval unless the user set that limit, and does not prove the architecture is wrong.
+Revisit the evidence the failure changes; do not repeat settled investigation steps or an unchanged failing approach. Continue while new evidence supports a concrete next investigation or correction within scope and existing authorization. Attempt count alone does not require renewed approval or prove the architecture is wrong; explicit limits follow the shared repository rules.
 
-If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop and report the evidence and smallest missing input. Expected TDD RED and rejected hypotheses can inform the next step; unavailable required checks follow the DoD gate, not a claim of success. On resume, recover available failure evidence and unresolved blockers, not an attempt quota. A missing attempt count alone is not a blocker unless needed to enforce an explicit user limit; missing scope or authorization still is.
+If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop and report the evidence and smallest missing input. Expected TDD RED and rejected hypotheses can inform the next step; unavailable required checks follow the DoD gate, not a claim of success. On resume, recover available failure evidence and unresolved blockers, not an attempt quota. Missing attempt counts alone do not require approval; missing scope or authorization still blocks affected work.
 
 ## If no reproduction is possible
 
