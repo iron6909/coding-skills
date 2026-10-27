@@ -6,7 +6,7 @@ Load this discipline before changing behavior when the project supports tests.
 
 ## Red-green-refactor loop
 
-1. **RED**: write the smallest test that exposes the needed behavior, through an approved test entry point.
+1. **RED**: write the smallest test that exposes the needed behavior, through an entry point selected under Where to test below.
 2. **Run it** and confirm it fails for the right reason: the behavior is missing, not a typo or a setup error. A test that passes before the implementation exists proves nothing.
 3. **GREEN**: write only enough code to pass the test.
 4. **Run it again** and confirm it passes.

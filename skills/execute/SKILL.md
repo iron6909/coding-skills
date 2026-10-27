@@ -35,7 +35,7 @@ The main process owns all writes. Read `./references/subagent-dispatch.md` only 
 
 For each executable task, in dependency order:
 
-1. Read the task and relevant code. Confirm any earlier outputs it needs exist and match. Capture its starting staged and unstaged patches and relevant untracked contents so its changes can be separated from user work and earlier tasks. For persisted plans, also record the boundary as described below. If no change is needed, use Exceptions and handoffs before editing.
+1. Read the task and relevant code. Confirm any earlier outputs it needs exist and match. For a new task, capture its starting staged and unstaged patches and relevant untracked contents so its changes can be separated from user work and earlier tasks; on resume, recover its original boundary under Resume instead. For persisted plans, also record the boundary as described below. If no change is needed, use Exceptions and handoffs before editing.
 2. Check the doubt-driven triggers before affected actions. Follow the loaded TDD loop for behavior changes, or the appropriate alternative check. Read `./references/testing-strategy.md` when the right test level or isolation boundary is unclear.
 3. Implement the smallest in-scope change and run focused and affected checks. Do not weaken a test to match incorrect behavior. If a check fails, follow Failed checks and fixes below.
 4. Inspect the task-owned diff and run the task review below. Fix valid in-scope findings, run fresh affected checks, and re-check the fixes and their affected paths. Leave Minor cleanup deferred.
@@ -45,6 +45,8 @@ For each executable task, in dependency order:
 After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
 
 ## Exceptions and handoffs
+
+Before taking either no-change path, read `./references/plan-revisions.md` and apply its task-start boundary and delivery-evidence check. Recover missing boundaries under Resume; do not reclassify interrupted work as existing coverage.
 
 If a small request is already satisfied, review the existing behavior against the request, apply final verification and the DoD, and report the evidence with no new commit. Do not manufacture edits or an empty commit. If a task in either kind of plan needs no change, use the plan-revision route below to retain its number and history and move proven behavior to Existing coverage; do not silently cancel it.
 

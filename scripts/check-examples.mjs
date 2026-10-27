@@ -201,6 +201,7 @@ for (const isLoading of [false, true]) {
 const execute = read("skills/execute/SKILL.md");
 assert.ok(!/\bmodes?\b|5 task review-fix rounds/i.test(execute), "execute must not retain modes or the five-round review loop");
 assert.ok(execute.includes("After each task is committed, continue directly to the next executable task"), "execute must continue between tasks");
+assert.ok(execute.includes("Before taking either no-change path, read `./references/plan-revisions.md`") && execute.includes("on resume, recover its original boundary under Resume instead"), "both no-change paths must load the shared boundary check without resetting resumed work");
 assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>") && execute.includes("only a candidate diff"), "the task-base diff is a candidate, not an ownership filter");
 for (const rule of ["captured task-start contents", "isolated task increment", "Task <N>: starting state —", "never copy secrets into records"]) assert.ok(execute.includes(rule), `missing change-boundary rule: ${rule}`);
 assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed persisted plan");
@@ -338,6 +339,9 @@ try {
   assert.equal(increment.status, 1, increment.stderr); // git diff returns 1 for a non-empty increment.
   assert.match(increment.stdout, /^\+task: changed$/m);
   assert.doesNotMatch(increment.stdout, /^[+-]user-/m, "review only the task-start-to-current increment, not pre-existing user changes");
+  assert.match(readFileSync(taskFile, "utf8"), /^task: changed$/m, "a resumed task's current contents can satisfy its check");
+  assert.match(git("show", "HEAD:task-file"), /^task: old$/m, "a passing working-tree check does not prove the task increment was committed");
+  assert.notEqual(readFileSync(taskFile, "utf8"), startingContents, "retain the original task-start boundary instead of classifying the resumed increment as existing coverage");
   assert.match(git("diff", "--cached", "--", "task-file"), /^\+user-staged: changed$/m, "review must preserve the user's index");
   assert.match(git("diff", "--", "task-file"), /^\+user-unstaged: changed$/m, "review must preserve the user's unstaged changes");
   for (const path of contractFiles) writeFileSync(join(fixture, path), `uncommitted: ${path}\n`);
@@ -349,6 +353,16 @@ try {
     assert.equal(git("cat-file", "blob", blob), git("show", `${reviewHead}:${path}`), "a pinned blob recovers the same contract content");
   }
   assert.equal(git("status", "--porcelain=v1"), beforeReads, "versioned reads must preserve the index and working tree");
+  const approvedBlob = git("rev-parse", "HEAD:spec.md").trim();
+  const approvedContent = git("cat-file", "blob", approvedBlob);
+  for (const editorialContent of [`\n${approvedContent}`, `\n${approvedContent}\n`]) {
+    writeFileSync(join(fixture, "spec.md"), editorialContent);
+    const editorialBlob = git("hash-object", "--", "spec.md").trim();
+    assert.equal(editorialContent.trim(), git("cat-file", "blob", approvedBlob).trim(), "both uncommitted editorial edits compare against the recoverable approved content");
+    assert.throws(() => git("cat-file", "blob", editorialBlob), "a computed editorial hash alone cannot be recovered after the next edit");
+  }
+  assert.equal(git("diff", "--cached", "--", "spec.md"), "", "snapshot reconciliation must not stage user documents");
+  assert.equal(git("status", "--porcelain=v1"), beforeReads, "editorial comparisons must not stage changes or create retained files");
   assert.equal(git("branch", "--show-current").trim(), "feature/example-check");
 } finally {
   rmSync(fixture, { recursive: true, force: true });
@@ -381,7 +395,7 @@ for (const rule of ["Do not request plan approval, stage confirmations", "a requ
 }
 assert.ok(autoflow.includes("disclosed inline fallback without an acceptance prompt unless") && review.includes("If the user or repository explicitly requires independent review"), "inline review must disclose its limit without a routine acceptance gate or overriding required independence");
 assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "refresh only those proven editorial snapshots", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "Before recording a snapshot, verify", "A hash alone is not a saved snapshot", "retain the recoverable approved snapshot", "Do not commit user documents or create retained copies solely to refresh state", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
   assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
 }
 for (const skill of ["plan", "execute", "code-review"]) {
@@ -485,6 +499,8 @@ const tdd = read("shared/references/tdd.md");
 assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
 assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
 assert.ok(tdd.includes("first inspect existing public interfaces and test patterns") && tdd.includes("a technical test-location choice needs no approval"), "technical test-entry selection must be investigated before asking about product or safety decisions");
+assert.ok(tdd.includes("through an entry point selected under Where to test below"), "RED must use the single test-entry selection rule");
+assert.doesNotMatch(tdd, /through an approved test entry point/i, "RED must not require approval for a technical test-entry choice");
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
 assert.ok(plan.includes("A saved plan contains task details") && /neither requires task briefs/i.test(plan), "a short persisted plan must be usable without task briefs");
@@ -498,7 +514,7 @@ assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, 
 assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
 const planRevisions = read("shared/references/plan-revisions.md");
 for (const skill of ["plan", "execute"]) assert.ok(read(`skills/${skill}/SKILL.md`).includes("./references/plan-revisions.md"), `${skill} must load the single revision contract before changing task semantics`);
-for (const rule of ["honor explicit preview, approval, and no-reordering instructions", "product behavior, delivery scope", "requirement coverage, verification guarantees", "Preserve completed tasks", "before affected implementation", "without a skill handoff"]) assert.ok(planRevisions.includes(rule), `missing safe inline-revision rule: ${rule}`);
+for (const rule of ["honor explicit preview, approval, and no-reordering instructions", "product behavior, delivery scope", "requirement coverage, verification guarantees", "Preserve completed tasks", "original task-start boundary", "undelivered task-owned increment", "remaining checks, review, and selective commit", "not a new starting snapshot", "before affected implementation", "without a skill handoff"]) assert.ok(planRevisions.includes(rule), `missing safe inline-revision rule: ${rule}`);
 assert.ok(execute.includes("Apply a supported in-scope adjustment inline") && execute.includes("self-review and record it"), "execution must reconcile implementation-only arrangements without a routine handoff or approval");
 const stableIds = read("shared/references/stable-ids.md");
 assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");

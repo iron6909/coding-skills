@@ -6,6 +6,7 @@ Continue without renewed approval only when repository evidence supports the adj
 
 - Preserve completed tasks, numbers, briefs, commits, and history. Add a corrective task rather than rewriting completed work.
 - Revise unfinished tasks; give new tasks the next free number. Reconcile dependencies and producer/consumer interfaces before affected execution resumes.
+- Before treating a started or resumed request or task as already satisfied, compare current contents and task commits with the original task-start boundary and reconcile delivery evidence. An undelivered task-owned increment is interrupted work even if current checks pass, not Existing coverage or a skipped task. Complete its remaining checks, review, and selective commit (or verify an existing task commit) before recording completion. Missing or ambiguous boundaries need clarification, not a new starting snapshot.
 - Mark an unnecessary unfinished task `skipped: <reason>` without inventing completion. Preserve its number and history, and record existing implementation/test evidence and final checks for any requirement it already satisfies.
 - Self-review the revised task list against the approved contract, coverage, dependencies, and checks. Record what changed and why before relying on it.
 
