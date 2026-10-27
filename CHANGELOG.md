@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.1.1] - 2026-10-27
+
+### Fixed
+
+- **重复审批**：计划请求授权其输出，执行可按证据就地修订实施安排，已授权审查修复及技术性测试入口选择不再重复确认，产品/UI 决策、必需验证和具体高风险操作仍保留原有门槛。
+- **执行停顿**：调查与修复按新证据推进，不再因固定失败次数停下授权或另设预算审批，用户明确的上限仍作为停止条件。
+- **恢复证据**：沿用原始任务边界，未交付的实现继续完成审查、验证和提交，不归入既有覆盖；纯编辑性契约变化不重新审批，快照仅在新内容可恢复时更新。
+- **审查默认值**：从已有证据确定审查范围，UI 审查默认覆盖全部维度和级别，内联自查披露局限后继续交付，明确要求独立审查时仍须满足该要求。
+
+### Verification
+
+- Windows、Node 24.10.0 下，仓库检查和离线打包通过，补充任务边界与连续排版修改的 Git 自检；84 个手工场景仅完成结构校验，本轮未进行代理行为实跑。
+
 ## [13.1.0] - 2026-10-23
 
 ### Added
@@ -649,7 +662,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.0...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.1...HEAD
+[13.1.1]: https://github.com/iron6909/coding-skills/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/iron6909/coding-skills/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/iron6909/coding-skills/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/iron6909/coding-skills/compare/v12.0.0...v13.0.0
