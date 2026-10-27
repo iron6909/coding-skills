@@ -88,13 +88,15 @@ Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Mi
 
 Review alone does not authorize code changes. After delivering findings, ask whether to fix Blocking/Important items. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. A product, architectural, security-sensitive, or data-loss decision needing explicit sign-off stops affected work.
 
-Before editing, confirm the target branch and that its head is still `review_head_sha`; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
+Before editing, confirm the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
 
 For behavior fixes, read `./references/tdd.md` and follow it. Behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, then apply the DoD to the final fixed code. Failed or unavailable required checks block fix completion and commits unless the DoD's explicit verification-waiver gate is satisfied.
 
 Read `./references/git-commit.md` before selectively staging only fix-owned changes. Commit fixes separately from the reviewed work; do not include original reviewed changes.
 
-Keep the current full SHA as `fix_head_sha`. Perform one scoped re-check of the original findings and `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`: verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or an automatic second fix wave. If Blocking/Important findings remain, stop and present them; unrelated observations do not extend the fix pass.
+Keep the current full SHA as `fix_head_sha`. After each correction, perform a scoped re-check of the original findings and the fix-owned increment, including uncommitted changes; at the final fix head use `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`. Verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or add reviewers for each correction; unrelated observations do not extend the authorized scope.
+
+Continue authorized Blocking/Important fixes and fix-caused regressions while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval unless the user set that limit. If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop and present the remaining findings and smallest missing input. Unresolved findings and missing verification still block readiness.
 
 ## Completion
 

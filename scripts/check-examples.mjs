@@ -36,9 +36,10 @@ for (const check of ["boundary conditions", "error handling", "Test effectivenes
 for (const rule of ["one fresh read-only subagent", "never the whole session history", "inline self-review (no independent reviewer)", "A failed delegation is a blocker", "Rule explicitly on every item", "Explain rejected findings with technical evidence"]) {
   assert.ok(review.includes(rule), `missing review coordination rule: ${rule}`);
 }
-for (const rule of ["Do not write review reports or persist findings", "Review alone does not authorize code changes", "preserve user hunks", "one scoped re-check", "automatic second fix wave"]) {
+for (const rule of ["Do not write review reports or persist findings", "Review alone does not authorize code changes", "preserve user hunks", "After each correction", "Do not restart whole-branch review", "unrelated observations do not extend the authorized scope"]) {
   assert.ok(review.includes(rule), `missing review boundary: ${rule}`);
 }
+assert.ok(review.includes("last verified `fix_head_sha`") && review.includes("including uncommitted changes"), "continued corrections must track their own commits and re-check uncommitted fixes without losing the pinned review");
 for (const rule of ["Diff command: <pinned_diff_command>", "Do not dispatch a second reviewer", "author\'s rationale never grades its own correctness", "### Declined to judge", "**Ready**, **Needs fixes**, or **Unverified**"]) {
   assert.ok(reviewer.includes(rule), `missing reviewer contract: ${rule}`);
 }
@@ -204,7 +205,7 @@ assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>") && exec
 for (const rule of ["captured task-start contents", "isolated task increment", "Task <N>: starting state —", "never copy secrets into records"]) assert.ok(execute.includes(rule), `missing change-boundary rule: ${rule}`);
 assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed persisted plan");
 assert.ok(execute.includes("Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events"), "small work must skip bookkeeping, not move it into conversation");
-assert.ok(execute.includes("any failed-attempt count") && execute.includes("do not assume zero"), "lightweight recovery must retain or ask for the failure count");
+assert.ok(execute.includes("Recover available failure evidence and unresolved blockers") && execute.includes("A missing attempt count alone is not a blocker"), "lightweight recovery needs evidence, not an attempt quota");
 assert.ok(execute.includes("**Persisted plan:**") && !execute.includes("**Planned work:**"), "name the persistence distinction explicitly");
 assert.ok(execute.includes("supplied directly by the user") && execute.includes("without a spec"), "session plans must state whether directly supplied plans need a spec");
 const exceptions = execute.split("## Exceptions and handoffs\n")[1]?.split("\n## ")[0] ?? "";
@@ -214,8 +215,7 @@ for (const rule of ["Review inline by default", "scoped re-check", "A second cle
   assert.ok(taskReview.includes(rule), `missing task-review rule: ${rule}`);
 }
 assert.ok(!taskReview.includes("at most one fix pass"), "review pass count alone must not force another approval");
-assert.ok(execute.includes("3 failed implementation or review-fix attempts") && execute.includes("do not reset the count on resume"), "clear corrections still need a persistent failure budget");
-assert.ok(execute.includes("Count one failed attempt per implementation or fix cycle") && execute.includes("Expected TDD RED is not a failed attempt"), "count failed implementation cycles, not expected RED or individual failing assertions");
+assert.ok(execute.includes("Expected TDD RED is normal progress") && execute.includes("Unavailable required checks follow the DoD gate"), "expected RED must not halt work, while missing verification still blocks completion");
 assert.match(taskReview, /resolve[^.]*Blocking and Important[^.]*before commit/i, "execute owns its Blocking/Important commit gate");
 assert.match(review, /Blocking or Important[^.]*Needs fixes/, "code-review owns its readiness gate");
 const severity = read("shared/references/severity.md");
@@ -381,7 +381,7 @@ for (const rule of ["Do not request plan approval, stage confirmations", "a requ
 }
 assert.ok(autoflow.includes("acceptance of the stated inline-review limitation"), "autoflow must not call self-review independent assurance");
 assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "does not authorize a second fix wave", "If state is invalid or incomplete, stop", "snapshot all contract documents", "added, removed, or changed", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "added, removed, or changed", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
   assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
 }
 for (const skill of ["plan", "execute", "code-review"]) {
@@ -402,10 +402,16 @@ for (const [pattern, rule] of [
   [/repeat the baseline workload under comparable conditions.*before\/after.*one clean run is not proof/, "verify nondeterministic fixes with comparable repeated measurements"],
   [/Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach/, "route missing product decisions to spec"],
   [/recommend `ideate` when approaches need comparison or replacement.*unresolved or invalidated/, "route unsettled approaches or design premises to ideate"],
-  [/Count one failed attempt per implementation-and-verification cycle.*not per failed assertion/, "count failed fix cycles, not assertions"],
-  [/Expected TDD RED, rejected investigation hypotheses, and unavailable checks are not failed fix attempts/, "exclude expected RED, investigation, and unavailable checks from the failure budget"],
-  [/Retain the count.*across resumes.*ask if unknown rather than assuming zero/, "preserve or recover the failure count on resume"],
+  [/Expected TDD RED and rejected hypotheses can inform the next step.*unavailable required checks follow the DoD gate/, "distinguish useful failure evidence from missing verification"],
+  [/On resume, recover available failure evidence and unresolved blockers.*A missing attempt count alone is not a blocker/, "recover evidence without inventing a count gate"],
 ]) assert.match(bugfix, pattern, `bugfix must ${rule}`);
+for (const [skill, source] of [["execute", execute], ["bugfix", bugfix], ["code-review", review]]) {
+  for (const rule of ["new evidence supports a concrete next investigation or correction", "explicit user budgets", "unchanged failing approach", "Attempt count alone does not require renewed approval unless the user set that limit", "no evidence-backed next step remains"]) {
+    assert.ok(source.includes(rule), `${skill} must use evidence-driven continuation: ${rule}`);
+  }
+}
+assert.doesNotMatch(execute + bugfix + review + autoflow + recovery, /3 failed|stop before a fourth|failure[- ]budgets?|second fix wave|fix-wave|do not assume zero|failed-attempt counts?/i, "skill-imposed attempt and fix-pass quotas must not return through execution or recovery");
+for (const source of [execute, bugfix, recovery]) assert.ok(source.includes("unless needed to enforce an explicit user limit"), "missing counts still matter when the user set a budget");
 assert.doesNotMatch(bugfix, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
 const bugfixFailureStep = bugfix.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
 assert.match(bugfixFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");

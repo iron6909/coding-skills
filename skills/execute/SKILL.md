@@ -27,7 +27,7 @@ Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` cons
 
 Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its invocation authority for the feature, target branch, approved contract inputs, and current self-reviewed plan; do not request plan approval. Changed contract inputs require their owner's clarification or approval, while in-scope plan revisions follow the route below. Missing authority or an unresolved user constraint blocks affected work.
 
-Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events. Keep only the task list, starting change boundaries, check results, and any failed-attempt count needed to do the work. Skip Persisted-plan records and Ledger entries below. A small change is not a miniature feature workflow.
+Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events. Keep only the task list, starting change boundaries, check results, and failure evidence needed to do the work. Skip Persisted-plan records and Ledger entries below. A small change is not a miniature feature workflow.
 
 The main process owns all writes. Read `./references/subagent-dispatch.md` only when delegating a narrow read-only investigation or risk-based review. If delegation is unavailable, work inline and state that a self-check is not independent review.
 
@@ -37,7 +37,7 @@ For each executable task, in dependency order:
 
 1. Read the task and relevant code. Confirm any earlier outputs it needs exist and match. Capture its starting staged and unstaged patches and relevant untracked contents so its changes can be separated from user work and earlier tasks. For persisted plans, also record the boundary as described below. If no change is needed, use Exceptions and handoffs before editing.
 2. Check the doubt-driven triggers before affected actions. Follow the loaded TDD loop for behavior changes, or the appropriate alternative check. Read `./references/testing-strategy.md` when the right test level or isolation boundary is unclear.
-3. Implement the smallest in-scope change and run focused and affected checks. Do not weaken a test to match incorrect behavior. If a failure has no clear in-scope fix, stop and report the exact blocker.
+3. Implement the smallest in-scope change and run focused and affected checks. Do not weaken a test to match incorrect behavior. If a check fails, follow Failed checks and fixes below.
 4. Inspect the task-owned diff and run the task review below. Fix valid in-scope findings, run fresh affected checks, and re-check the fixes and their affected paths. Leave Minor cleanup deferred.
 5. Commit only after review passes, checks are fresh, and no doubt trigger is open. Inspect `git diff --check` and `git status`, then follow `./references/git-commit.md` for selective staging and messages. When the spec has REQ-N IDs, read `./references/stable-ids.md` and reference the implemented IDs; do not invent IDs for a standalone request.
 6. For persisted plans, record completion and the commit in the ledger. Otherwise, retain only a concise task result in conversation.
@@ -72,7 +72,13 @@ Check:
 
 Read `./references/severity.md` to grade impact. Commit gate: resolve valid in-scope Blocking and Important findings before commit; defer Minor cleanup and rule out incorrect findings with evidence. An out-of-scope issue is follow-up unless it blocks approved behavior or downstream work.
 
-Fixes need fresh focused and affected checks and a scoped re-check, not a restarted whole review or more reviewers. A second clear in-scope correction does not need new approval merely because it is a second pass. Stop before committing or advancing while a Blocking or Important finding remains unresolved; continue fixing only within the existing authorization and failure budget below.
+Fixes need fresh focused and affected checks and a scoped re-check, not a restarted whole review or more reviewers. A second clear in-scope correction does not need new approval merely because it is a second pass. Stop before committing or advancing while a Blocking or Important finding remains unresolved; continue investigation or fixes under Failed checks and fixes below.
+
+## Failed checks and fixes
+
+Revisit the evidence changed by the failure. Continue within the existing authorization while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval unless the user set that limit.
+
+If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop affected work and report the evidence and smallest missing input. Expected TDD RED is normal progress, not a reason to stop. Unavailable required checks follow the DoD gate; they are not passes.
 
 ## Doubt-driven checkpoints
 
@@ -81,9 +87,6 @@ Check before affected actions and whenever new evidence changes the risk:
 - **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
 - **Security-sensitive**: authentication, authorization, access control, permissions, secrets handling.
 - **Unexplained**: a decision you cannot justify from the approved input or repository evidence.
-- **Repeated failure**: 3 failed implementation or review-fix attempts on a task. Stop for the user's decision before another attempt; do not reset the count on resume.
-
-Count one failed attempt per implementation or fix cycle that ends with failing required checks or a scoped re-check leaving a valid in-scope Blocking/Important finding, not per failed assertion. Expected TDD RED is not a failed attempt. Unavailable checks follow the DoD gate; they are not implementation attempts or passes.
 
 When a trigger applies, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
 
@@ -116,7 +119,7 @@ Task <N>: starting state — <staged/unstaged patches and relevant untracked con
 Task <N>: Ruling: <finding> — <decision and reason>
 Task <N>: brief rebuilt from approved inputs
 Task <N>: review fix pass — <findings to resolve>
-Task <N>: failed attempt — <cause and evidence; cumulative count>
+Task <N>: failed attempt — <cause, evidence, and next step or blocker>
 Task <N>: complete (commits <task_base>..<head>, review: <self-check | independent>, tests: <command> → <result>)
 Task <N>: skipped — authorized cancellation: <reason>
 Task <N>: minor (deferred): <one-liner>
@@ -124,7 +127,7 @@ Plan revised: <one-line reason>
 Final verification: <command> → <result>
 ```
 
-Keep failure counts under Doubt-driven checkpoints and review progress across interruptions. Preserve historical events and documents; they do not replace current checks or approval.
+Keep failure evidence, unresolved blockers, and review progress across interruptions. Preserve historical events and documents; they do not replace current checks or approval.
 
 ## Resume
 
@@ -132,7 +135,7 @@ For persisted plans, read the current approved spec and required internal append
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
-For a session plan or small change whose conversation was lost, ask the user to restate the remaining scope and reconcile change boundaries against Git before editing. Recover the failure count from task results or existing work records; if unknown, ask the user and do not assume zero. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
+For a session plan or small change whose conversation was lost, ask the user to restate the remaining scope and reconcile change boundaries against Git before editing. Recover available failure evidence and unresolved blockers from task results or existing work records. A missing attempt count alone is not a blocker unless needed to enforce an explicit user limit; missing scope or authorization still is. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
 
 ## Tests and verification
 
@@ -140,7 +143,7 @@ Use existing tools, the loaded TDD discipline, and the applicable DoD. Run focus
 
 After all executable tasks pass review and are committed, or a small request is confirmed already satisfied, run final verification on the current code. Use the plan's Final verification commands, the session task list's checks, or the small request's checks as appropriate. Apply the DoD's Unavailable required checks gate: disclosure alone does not permit completion, a blocked commit, or a downstream stage.
 
-This is command-based verification, not another whole-diff review. A clear in-scope failure returns to the affected task's fix, review, and separate commit, followed by final verification again. Unresolved failures or new decisions stop the run.
+This is command-based verification, not another whole-diff review. A clear in-scope failure returns to the affected task's fix, review, and separate commit, followed by final verification again. Other failures follow Failed checks and fixes above.
 
 Before claiming completion, confirm the task loop or already-satisfied small-request path is satisfied, authorized skipped tasks are reported separately, final verification and the DoD passed, and no Blocking or Important finding remains. Inspect `git diff --check` and `git status`. Report commands and fresh results, including exact errors or unavailable checks. Never claim success from an earlier run or an agent report.
 

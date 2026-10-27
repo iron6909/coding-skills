@@ -59,9 +59,9 @@ Never route a small fix through `spec`, `plan`, or `execute` merely because it s
 
 ### If the fix fails
 
-Revisit the evidence the failure changes; do not repeat settled investigation steps. After 3 failed fix attempts, stop before a fourth and discuss the smallest next decision with the user. Repeated coupling, a required redesign, or a new symptom from each fix may indicate a design problem, but failure count alone does not prove the architecture is wrong.
+Revisit the evidence the failure changes; do not repeat settled investigation steps or an unchanged failing approach. Continue within the existing authorization while new evidence supports a concrete next investigation or correction, without exceeding scope, risk approvals, or explicit user budgets. Attempt count alone does not require renewed approval unless the user set that limit, and does not prove the architecture is wrong.
 
-Count one failed attempt per implementation-and-verification cycle that ends with the target failure or a fix-caused required-check failure, not per failed assertion. Expected TDD RED, rejected investigation hypotheses, and unavailable checks are not failed fix attempts; unavailable checks follow the DoD gate. Retain the count for the same failure across resumes; recover it from the conversation or existing work records, and ask if unknown rather than assuming zero.
+If no evidence-backed next step remains, or continuing needs a new user decision, permission, unavailable input or resource, or larger budget, stop and report the evidence and smallest missing input. Expected TDD RED and rejected hypotheses can inform the next step; unavailable required checks follow the DoD gate, not a claim of success. On resume, recover available failure evidence and unresolved blockers, not an attempt quota. A missing attempt count alone is not a blocker unless needed to enforce an explicit user limit; missing scope or authorization still is.
 
 ## If no reproduction is possible
 

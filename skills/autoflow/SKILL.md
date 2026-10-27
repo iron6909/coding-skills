@@ -28,7 +28,7 @@ Record the verified plan snapshot using the state reference, then continue direc
 
 ## Stage 2: Execute
 
-Invoke `execute` with the current plan, approved contract inputs, invocation authority, initial working-tree record, and fixed feature review base. Its applicable TDD, task reviews, checks, commits, failure budget, and DoD govern execution; do not redefine them here. The execution ledger is the only task-level record.
+Invoke `execute` with the current plan, approved contract inputs, invocation authority, initial working-tree record, and fixed feature review base. Its applicable TDD, task reviews, checks, commits, evidence-driven recovery, and DoD govern execution; do not redefine them here. The execution ledger is the only task-level record.
 
 When execution needs an in-scope plan revision, return the evidence to `plan`, preserve completed history, update the plan snapshot, and continue from the reconciled task position. This is not a new approval stage or permission to weaken coverage or verification. Other unresolved execution gates stop the run.
 
@@ -36,7 +36,7 @@ After final verification satisfies execute's DoD, continue to Stage 3. Failed, s
 
 ## Stage 3: Code review
 
-Invoke `code-review` with the fixed review base, target branch, approved spec and required appendices, current plan and its Review focus, applicable UI/design inputs, and invocation authority for in-scope fixes. It owns the comprehensive review, adjudication, bounded fix pass, verification, and separate fix commits. Minor findings remain deferred. A severity label does not grant specific high-risk sign-off.
+Invoke `code-review` with the fixed review base, target branch, approved spec and required appendices, current plan and its Review focus, applicable UI/design inputs, and invocation authority for in-scope fixes. It owns the comprehensive review, adjudication, in-scope corrections and re-checks, verification, and separate fix commits. Minor findings remain deferred. A severity label does not grant specific high-risk sign-off.
 
 If independent review is unavailable, report the capability gap; acceptance of the stated inline-review limitation is still required before completing that review. A failed reviewer launch is a blocker, not permission to silently downgrade.
 
@@ -44,9 +44,9 @@ For an empty pinned diff, follow code-review's empty-diff result. Only verified 
 
 ## Stops and recovery
 
-Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, uncertain evidence, exhausted failure budgets, and unresolved verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
+Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, no evidence-backed next step, exhausted explicit user budgets, and unresolved verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
 
-Use `./references/state-management.md` whenever progress already exists. Changed approved inputs require their owner's clarification or approval before use; subsequent in-scope planning needs no plan approval. Recovery does not reset a stop or grant another review-fix wave.
+Use `./references/state-management.md` whenever progress already exists. Changed approved inputs require their owner's clarification or approval before use; subsequent in-scope planning needs no plan approval. Recovery preserves unresolved blockers and explicit user limits; prior attempt or fix-pass counts do not revoke otherwise valid authority.
 
 ## Completion report
 
