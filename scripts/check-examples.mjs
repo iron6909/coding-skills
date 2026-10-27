@@ -145,6 +145,7 @@ assert.ok(readme.includes("审查重点通过本次请求或计划的 Review foc
 assert.ok(readme.includes("`code-review` 只在会话内交付结果，`ui-review` 仍保存报告"), "code-review output changes must not remove UI review reports");
 
 const strategy = read("skills/execute/references/testing-strategy.md");
+assert.ok(strategy.includes("`./references/tdd.md` owns test entry-point selection"), "test strategy must use TDD's entry-point selection rule");
 assert.ok(!/Recommended ratio|Coverage targets|Dependencies can be mocked/.test(strategy), "test selection must follow risk, not universal quotas or mockability");
 assert.ok(!read("skills/ideate/SKILL.md").includes("Generate 5-8"), "ideation must not pad the option count");
 for (const file of ["component-states.md", "wcag-checklist.md"]) {
@@ -500,7 +501,7 @@ assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchange
 assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
 assert.ok(tdd.includes("first inspect existing public interfaces and test patterns") && tdd.includes("a technical test-location choice needs no approval"), "technical test-entry selection must be investigated before asking about product or safety decisions");
 assert.ok(tdd.includes("through an entry point selected under Where to test below"), "RED must use the single test-entry selection rule");
-assert.doesNotMatch(tdd, /through an approved test entry point/i, "RED must not require approval for a technical test-entry choice");
+assert.doesNotMatch(tdd + strategy, /\bapproved test entry points?\b/i, "TDD and test strategy must not require separate approval for a technical test-entry choice");
 const plan = read("skills/plan/SKILL.md");
 assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
 assert.ok(plan.includes("A saved plan contains task details") && /neither requires task briefs/i.test(plan), "a short persisted plan must be usable without task briefs");

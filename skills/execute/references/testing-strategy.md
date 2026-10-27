@@ -1,6 +1,6 @@
 # Testing Strategy
 
-Choose checks through the approved test entry points, using the project's existing tools. `./references/tdd.md` owns test-first discipline; this reference selects test levels and evidence, not a second TDD workflow.
+Use the project's existing tools. `./references/tdd.md` owns test entry-point selection and test-first discipline; this reference selects test levels and evidence, not a second TDD workflow.
 
 ## Choose by risk and entry point
 
