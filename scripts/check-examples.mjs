@@ -50,6 +50,13 @@ for (const safeguard of ["initial staged and unstaged", "relevant untracked cont
   assert.ok(repositoryChanges.includes(safeguard), `shared repository changes missing safeguard: ${safeguard}`);
 }
 assert.ok(repositoryChanges.includes("Document and work-record writes count too") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
+for (const rule of ["## Feature review base", "feature history and local refs", "no earlier feature increment exists", "Conflicting or unknown bases"]) {
+  assert.ok(repositoryChanges.includes(rule), `missing shared feature-base rule: ${rule}`);
+}
+for (const skill of ["execute", "autoflow"]) {
+  assert.ok(read(`skills/${skill}/SKILL.md`).includes("Feature review base"), `${skill} must use the shared feature-base rule`);
+}
+assert.doesNotMatch(read("skills/execute/SKILL.md"), /Only a new standalone run without a base uses/, "a first execute invocation must not hide earlier feature commits behind HEAD");
 for (const [skill, action] of [["simplify", "## Execution"], ["ui-review", "## Phase 0:"]]) {
   const source = read(`skills/${skill}/SKILL.md`);
   const gate = source.indexOf("./references/repository-changes.md");
@@ -375,7 +382,14 @@ try {
 } catch (error) {
   assert.fail(`Invalid autoflow state example: ${error.message}`);
 }
-assert.equal(state.version, 5, "invocation authority and plan snapshots need a distinct recovery schema");
+assert.equal(state.version, 5, "request receipts extend version 5 without reinterpreting older authority flags");
+assert.ok(Array.isArray(state.request_evidence) && state.request_evidence.length > 0, "new state must preserve actual invocation evidence");
+for (const message of state.request_evidence) {
+  assert.deepEqual(Object.keys(message).sort(), ["source", "text"]);
+  for (const field of ["source", "text"]) assert.ok(typeof message[field] === "string" && message[field].trim(), `request evidence needs ${field}`);
+}
+assert.match(state.request_evidence[0].text, /do not install dependencies/, "the receipt preserves an actual restriction, not just an approval claim");
+assert.ok(!Object.hasOwn(state, "limit_usage"), "a request without a budget must not create usage counters");
 for (const field of ["mode", "approval", "auto_execute_and_review_fixes", "review_report", "current_task"]) {
   assert.ok(!Object.hasOwn(state, field), `state must not retain ${field}`);
 }
@@ -390,8 +404,11 @@ for (const input of ["spec", "ui_spec", "design"]) {
 assert.ok(Object.hasOwn(state, "plan"), "keep the intended plan path even before it exists");
 const autoflow = read("skills/autoflow/SKILL.md");
 const recovery = read("skills/autoflow/references/state-management.md");
+for (const rule of ["Capture `request_evidence`", "trustworthy same-run receipt", "Existing version-5 records may lack", "absence is not evidence of unrestricted authority", "Without a user limit, omit `limit_usage`", "do not reset consumption on resume"]) {
+  assert.ok(recovery.includes(rule), `missing recoverable request or limit rule: ${rule}`);
+}
 assert.doesNotMatch(autoflow, /## Modes|--checkpointed|--dry-run|--resume|over 10 tasks|Ask once for approval/, "autoflow has one continuous execution policy");
-for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "no earlier feature increment exists", "explicit verification-waiver gate"]) {
+for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "explicit verification-waiver gate"]) {
   assert.ok(autoflow.includes(rule), `missing autonomous delivery rule: ${rule}`);
 }
 assert.ok(autoflow.includes("disclosed inline fallback without an acceptance prompt unless") && review.includes("If the user or repository explicitly requires independent review"), "inline review must disclose its limit without a routine acceptance gate or overriding required independence");
@@ -461,7 +478,7 @@ assert.match(learningGate, /repeat a non-obvious mistake or re-derive non-obviou
 assert.ok(learningGate.includes("nothing would break") && !learningGate.includes("barely passes"), "useful trade-offs need no defect, while generic advice still fails");
 assert.match(learningGate, /uncertainty is not proof that it failed/, "capture uncertainty must not become an archival verdict");
 assert.doesNotMatch(learningFormat, /## When to capture a learning/, "format must not define a second capture gate");
-for (const rule of ["Keep one current file per topic", "assesses each current entry independently", "A file with mixed outcomes keeps its current entries available", "only after every entry has a verified historical disposition", "An uncertain or still-current entry blocks the whole-file move", "get the user's approval for each move", "Never overwrite an archive"]) {
+for (const rule of ["Keep one current file per topic", "assesses each current entry independently", "A file with mixed outcomes keeps its current entries available", "only after every entry has a verified historical disposition", "An uncertain or still-current entry blocks the whole-file move", "without per-file approval", "Never overwrite an archive"]) {
   assert.ok(learningFormat.includes(rule), `learning lifecycle missing boundary: ${rule}`);
 }
 for (const rule of ["without replacing the underlying advice", "Preserve the original reasoning", "only one current file remains per topic", "otherwise use entry-level pointers"]) {
@@ -470,6 +487,9 @@ for (const rule of ["without replacing the underlying advice", "Preserve the ori
 for (const rule of ["including a Keep result", "A partial or inconclusive review retains the previous date", "remove the old `status: stale` and its `reason`", "Pending archival approval alone does not make a file stale"]) {
   assert.ok(learningFormat.includes(rule), `learning metadata missing transition: ${rule}`);
 }
+assert.doesNotMatch(learningFormat, /get the user's approval for each move|the problem domain is gone/, "eligible authorized archival must not require per-file consent or domain disappearance");
+assert.ok(learningFormat.includes("A refresh or archival request authorizes") && learningFormat.includes("within the authorized scope") && learningFormat.includes("leave the file in place"), "automatic archival must retain request scope and safe citation handling");
+assert.ok(learningRefresh.includes("report and stop before writes"), "audit-only and preview requests must not revise metadata, move files, or commit");
 assert.ok(learningRefresh.includes("Replacement lessons are in scope") && learningRefresh.includes("entry counts separately from file moves"), "refresh must allow scoped replacements and distinguish entry results from file actions");
 assert.match(learningCapture, /`survey` for observed terminology; `spec` for newly agreed domain concepts/, "glossary ownership must distinguish observed facts from design decisions");
 assert.ok(learningCapture.includes("PASS / FAIL / UNCERTAIN"), "the capture report must not disguise uncertain candidates as proven failures");
@@ -518,6 +538,12 @@ for (const skill of ["plan", "execute"]) assert.ok(read(`skills/${skill}/SKILL.m
 for (const rule of ["honor explicit preview, approval, and no-reordering instructions", "product behavior, delivery scope", "requirement coverage, verification guarantees", "Preserve completed tasks", "original task-start boundary", "undelivered task-owned increment", "remaining checks, review, and selective commit", "not a new starting snapshot", "before affected implementation", "without a skill handoff"]) assert.ok(planRevisions.includes(rule), `missing safe inline-revision rule: ${rule}`);
 assert.ok(execute.includes("Apply a supported in-scope adjustment inline") && execute.includes("self-review and record it"), "execution must reconcile implementation-only arrangements without a routine handoff or approval");
 const stableIds = read("shared/references/stable-ids.md");
+assert.doesNotMatch(stableIds, /(?:Revise the plan|reconcile plan coverage) through `plan`/, "ID alignment must follow the active revision contract instead of forcing a plan handoff");
+assert.ok(stableIds.includes("invoking skill's revision contract") && stableIds.includes("neither cross-artifact writes nor execution authority"), "ID rules must not grant spec permission to edit a plan or execute changed scope");
+const projectDocuments = read("skills/survey/references/project-documents.md");
+assert.doesNotMatch(projectDocuments, /only `plan` decomposes/, "project document guidance must not retain exclusive revision ownership");
+assert.ok(projectDocuments.includes("initial implementation decomposition"), "plan retains initial decomposition ownership");
+assert.ok(planRevisions.includes("execution authority covers the revised scope"), "approved specification changes alone must not authorize execution of new scope");
 assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");
 assert.ok(stableIds.includes("or existing behavior with implementation/test evidence and a final verification check"), "requirement coverage must include unchanged existing behavior");
 assert.ok(!decomposition.includes("Horizontal Filling") && decomposition.includes("several tightly related acceptance conditions") && decomposition.includes("not automatic follow-up tasks"), "decomposition must follow cohesive approved work rather than a layer/phase taxonomy");

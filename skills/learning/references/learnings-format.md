@@ -82,8 +82,8 @@ A file with mixed outcomes keeps its current entries available; retiring one ent
 
 A file may be archived only after every entry has a verified historical disposition: obsolete, superseded, consolidated, or failed quality gate. An uncertain or still-current entry blocks the whole-file move. Age, a missing file, or an empty text search alone is not enough.
 
-- Without confirmation, archive only when **all three** hold for the whole file: the referenced code is gone, the problem domain is gone, and no inbound citations exist.
-- In all other cases, present the evidence and get the user's approval for each move. Resolve inbound citations to the replacement or archived path before moving; if that cannot be done safely, leave the file in place.
-- Without approval, retain the historical file and report the pending move; do not infer consent in non-interactive mode. Evidence uncertainty uses the stale metadata above, not a failed quality verdict.
+- A refresh or archival request authorizes eligible in-scope moves without per-file approval. Honor audit-only, preview, approval-first, and no-move restrictions; without move authority, retain the historical files and report proposed moves. Do not infer consent from silence or non-interactive execution.
+- Resolve inbound citations to the replacement or archived path within the authorized scope before moving. If the references or ownership boundary cannot be handled safely, leave the file in place and report the blocker; continue other authorized updates.
+- Eligibility depends on verified entry dispositions, not disappearance of the code or problem domain. A superseded lesson can become history while its domain remains active. Evidence uncertainty uses the stale metadata above, not a failed quality verdict.
 - Preserve the full document and add `status: archived`, `archived_on`, and `reason`. Record replacement pointers at file or entry level as specified above.
 - Keep the filename unless it collides in `_archived/`; then add a numeric suffix. Never overwrite an archive. Update `Related` links to remain valid from the new location, using repository-relative paths.

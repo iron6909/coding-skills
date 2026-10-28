@@ -4,7 +4,7 @@ Read before creating or recovering `.coding/autoflow-state.json`. State coordina
 
 ## Schema
 
-Use version 5. This example shows a self-reviewed, committed plan with execution in progress; the plan was not presented for user approval:
+Use version 5. Request receipts are an additive field; older version-5 records without them follow Request evidence and limits below. This example shows a self-reviewed, committed plan with execution in progress; the plan was not presented for user approval:
 
 ```json
 {
@@ -15,6 +15,12 @@ Use version 5. This example shows a self-reviewed, committed plan with execution
   "design": "DESIGN.md",
   "branch": "feature/20261012-user-login",
   "review_base": "<full commit hash>",
+  "request_evidence": [
+    {
+      "source": "<user-message locator or observed timestamp>",
+      "text": "Use autoflow for the approved user-login spec on feature/20261012-user-login; keep this branch and do not install dependencies."
+    }
+  ],
   "approved_inputs": {
     "spec_blob": "<git hash-object output for the approved spec>",
     "spec_appendix_blobs": {},
@@ -37,10 +43,18 @@ Use version 5. This example shows a self-reviewed, committed plan with execution
 - Capture `approved_inputs` after verifying the input approvals during preparation. Before recording a snapshot, verify that its exact content is recoverable from a committed Git blob or a trustworthy retained copy. Use `git hash-object -- "<path>"` only to identify contents without writing objects. A hash alone is not a saved snapshot; if no recoverable approved version exists, stop for the missing evidence. `ui_spec` and `design` paths and blobs are null when absent or inapplicable; record absence explicitly.
 - `spec_appendix_blobs` maps every required internal appendix path to its approved blob ID, or `{}` when none exist. Re-resolve the complete appendix set from the spec and its appendices; snapshot all contract documents. A changed snapshot requires the semantic comparison under Recovery below, not automatic reapproval. Added, missing, newly required, or semantically changed contract inputs need their owner's clarification or approval.
 - `plan_blob` identifies implementation arrangements, not user approval. Set it after plan self-review, saving, and commit; refresh it after a verified in-scope revision. A missing file or null snapshot is normal before initial plan completion, not after it.
-- Invocation authority comes from the user's request for the feature and branch, not a state boolean. Verify that authority and all explicit restrictions on recovery. No state field grants high-risk sign-off or a verification waiver.
+- Invocation authority comes from the user's request for the feature and branch, not a state boolean. Preserve and reconcile it under Request evidence and limits below. No state field grants high-risk sign-off or a verification waiver.
 - The execution ledger owns task numbers, task reviews, checks, commits, and failure evidence. Do not copy a `current_task` or completed-task list here.
 - `review_head` pins the full SHA at review start, including an empty-diff check. `fix_head` is the final full SHA after authorized fixes, or null. Keep `review_base` fixed; validate review commits and fix ancestry during recovery.
 - Do not store review findings, rulings, deferred lists, report paths, or feedback text in state or the execution ledger. `stop_reason` names the blocker, not the review body. SHAs and complete flags locate evidence but cannot prove the verdict.
+
+## Request evidence and limits
+
+Capture `request_evidence` while the user messages are available and include it in new state. Retain the exact relevant user text, redacted under the repository rules, with an available message locator or observed timestamp. Include the originating request and applicable earlier restrictions, not just the latest “continue”. Append later scope changes, restrictions, or revocations without erasing earlier messages. Do not copy the whole conversation or review feedback; an agent summary or an approval boolean is not a user message.
+
+On recovery, a trustworthy same-run receipt can preserve the instructions when the original conversation is unavailable; that alone needs no renewed approval. Reconcile it with the current request and known later instructions. Conflicting, unexplained, or externally altered receipts need clarification before relying on them, not automatic trust. Existing version-5 records may lack these receipts: recover from the current request and available evidence before asking only for missing scope or restrictions, then populate the receipt at the next authorized state update. Their absence is not evidence of unrestricted authority. Do not invent old messages or use a receipt to bypass contract approval, high-risk sign-off, or verification gates.
+
+Only an explicit cumulative user limit adds `limit_usage`: record its source message, ceiling, units, consumed amount, and measurement evidence. Update it from actual usage before further bounded work and at checkpoints; do not reset consumption on resume or across stages. Pass effective restrictions and the remaining allowance to called skills and reconcile their reported usage. If remaining allowance cannot be established, apply the shared limit-stop rule rather than guessing or requesting an increase. Without a user limit, omit `limit_usage` and do not invent counters or quotas.
 
 ## Preserve and update records
 
@@ -63,7 +77,7 @@ Prepare valid JSON in a temporary non-document file and replace state atomically
 
 ## Recovery
 
-1. Inspect state before branch changes or other writes. Validate schema, statuses, paths, and applicable commit fields against the recorded stage. Handle older records as above. If state is invalid or incomplete, stop without changing it; optional early-plan evidence is not a missing schema field. Missing contract snapshot fields do not prove those inputs were absent.
+1. Inspect state before branch changes or other writes. Reconcile request evidence and limits as above, including older version-5 records without receipts. Validate schema, statuses, paths, and applicable commit fields against the recorded stage. Handle older records as above. If state is invalid or incomplete, stop without changing it; optional early-plan evidence is not a missing schema field. Missing contract snapshot fields do not prove those inputs were absent.
 2. Confirm the branch is current, recorded commits remain reachable, state and ledger review bases agree, and original user changes remain protected. Conflicting supplied or recorded bases, changed history, or ambiguous task boundaries block continuation. Do not substitute a new branch's HEAD for an existing feature base.
 3. Re-read the spec, required appendices, and applicable UI/design inputs. Compare paths, presence, and blobs with `approved_inputs`. For changed blobs, recover the exact approved content from Git or a trustworthy retained copy and compare the full contract, including linked paths and code/schema fragments. Formatting or explanatory edits may retain approval only when behavior, scope, constraints, interfaces, security, UI decisions, and acceptance are demonstrably unchanged. Record the comparison evidence and refresh a proven editorial snapshot only when the new exact content is already recoverable under the snapshot rule above; otherwise retain the recoverable approved snapshot and continue without a prompt. Do not commit user documents or create retained copies solely to refresh state; a hash alone is not semantic proof. Added, removed, newly required, semantically changed, or unrecoverable approved inputs stop affected work for the owner's clarification or approval. After reconciliation, update the plan and re-evaluate affected execution and review evidence; preserve completed task history, not stale readiness claims.
 4. Recover planning according to its stage. Before initial plan completion, continue or rebuild the draft from approved inputs and repository evidence; inspect any partial write without overwriting user changes. After completion, require the saved plan and commit. Reconcile changed plans against verified revisions and task history before refreshing `plan_blob`; unknown changes do not become authorized merely by hashing them. No plan approval prompt is required for a valid in-scope revision.

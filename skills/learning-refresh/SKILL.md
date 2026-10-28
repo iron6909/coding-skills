@@ -1,6 +1,6 @@
 ---
 name: learning-refresh
-description: Use when the user asks to audit or refresh existing docs/learnings/ entries against current code or decisions, not merely after refactoring. Update, consolidate, supersede, or archive eligible documents without deleting them. Replacement lessons are in scope; unrelated new lessons belong to learning.
+description: Use when the user asks to audit or refresh existing docs/learnings/ entries against current code or decisions, not merely after refactoring. Audit-only requests return findings without writes; refresh requests update, consolidate, supersede, or archive eligible documents without per-file approval or deletion. Replacement lessons are in scope; unrelated new lessons belong to learning.
 ---
 
 # Learning Refresh
@@ -23,7 +23,7 @@ Read `./references/counterfactual-test.md` before assessing each entry's continu
 
 Assign each entry an outcome under the loaded rules: Keep, Update, Consolidate, Supersede, Archive candidate, or Stale. Derive file actions separately under the lifecycle and archival gates; a mixed-outcome file is not assigned a single entry outcome.
 
-Present the evidence, per-entry outcomes, and proposed file actions. Request any move approvals required by the archival gates.
+Present the evidence, per-entry outcomes, and proposed file actions. For audit-only, preview, or approval-first requests, report and stop before writes, including metadata updates. Otherwise apply the loaded lifecycle and archival gates using the current request's authority; do not add a separate approval round.
 
 ## 4. Apply changes
 

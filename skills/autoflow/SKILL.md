@@ -17,8 +17,8 @@ Finish read-only reconciliation before branch changes or other writes:
 
 1. Read applicable `AGENTS.md` and `CLAUDE.md`, this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md`, and every required internal appendix. Resolve applicable approved `ui-spec.md` and existing `DESIGN.md` constraints. Missing approval, conflicting inputs, or unresolved product/UI decisions block delivery: recommend `spec` or `ui-design`, without invoking either. An unresolved or failed design premise returns to `ideate` outside this orchestrator.
 2. Read `./references/repository-changes.md` before any affected action, and `./references/state-management.md` before creating or recovering state. Inspect existing state, plan, execution ledger, and Git history first; follow the reference for recovery and old records. Reconcile the initial working-tree boundary rather than treating existing changes as this run's work.
-3. Establish the fixed feature review base. Existing state and ledger must agree; a supplied base must not silently override them. With no recorded base, use a user-supplied commit or an evidenced feature base, not an assumed `main`. A new branch's starting commit is valid only when no earlier feature increment exists. An unknown base or conflicting records are blockers, not permission to use current HEAD.
-4. Confirm the target branch under the shared safety gate, then record the reconciled inputs and initial progress. Reuse a plan only after checking it against the current contract and preserved task history. Commits alone do not establish completion.
+3. Establish the fixed feature review base under the loaded repository reference's **Feature review base** rule. Pass that same base to execution and whole-feature review.
+4. Confirm the target branch under the shared safety gate, then record the reconciled inputs, request evidence, and initial progress under the state reference. Reuse a plan only after checking it against the current contract and preserved task history. Commits alone do not establish completion.
 
 ## Stage 1: Plan
 

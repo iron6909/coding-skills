@@ -57,7 +57,7 @@ Route other exceptions by the decision that is missing:
 | Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the current plan or briefs. |
 | Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Return a revised plan snapshot to `autoflow` when called by it. |
 | A proposed revision changes delivery scope, approved contracts, requirement coverage, verification guarantees, or an explicit user constraint | Stop affected work for that specific decision; recommend `spec` for product changes or `plan` for arrangements needing user resolution. Do not hide the change as an implementation detail. |
-| Missing or changed product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`, then `plan` where reconciliation is needed. |
+| Missing or unapproved product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`. After approval, reconcile the plan under `./references/plan-revisions.md`; approval alone does not authorize executing changed scope. |
 | An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design and contract inputs need their applicable approvals before resuming; reconcile affected plans under their authorization contract. |
 
 ## Task review
@@ -105,7 +105,9 @@ Start the ledger with:
 # Execution ledger — plan: docs/features/YYYYMMDD-<semantic-name>/plan.md
 ```
 
-Resolve the feature's `review_base` from the caller or existing ledger to a full commit SHA. Only a new standalone run without a base uses `git rev-parse HEAD`. Keep it fixed for any later whole-feature review. Record each task's `task_base` and starting staged and unstaged patches and relevant untracked contents in the ledger; never copy secrets into records, and stop if redaction makes ownership ambiguous. A SHA alone does not preserve initial user edits. An interrupted task reuses its original base and starting state. For a repository without a commit, record `none` and compare against the initial file state. Missing or ambiguous resumed boundaries require clarification, not a new `HEAD` base.
+Before creating the ledger, resolve the feature's `review_base` under the loaded repository reference's **Feature review base** rule. Record its full SHA and evidence basis for later whole-feature review.
+
+Record each task's `task_base` and starting staged and unstaged patches and relevant untracked contents in the ledger; never copy secrets into records, and stop if redaction makes ownership ambiguous. A SHA alone does not preserve initial user edits. An interrupted task reuses its original base and starting state. For a repository without a commit, record `none` and compare against the initial file state. Missing or ambiguous resumed boundaries require clarification, not a new `HEAD` base.
 
 Read task details from `plan.md`. Follow an explicit brief link when present; do not create briefs merely because an `impl/` directory exists. If a linked brief is missing, recover only details supported by the approved spec, plan, UI/design inputs, and repository evidence. Record what was recovered. If those inputs are insufficient, use Exceptions and handoffs; do not invent missing decisions.
 

@@ -4,7 +4,7 @@
 
 Read before changing an existing task list, task boundaries, dependencies, coverage, interfaces, or verification arrangements. A request to revise or execute that plan authorizes implementation-only adjustments; honor explicit preview, approval, and no-reordering instructions.
 
-Continue without renewed approval only when repository evidence supports the adjustment and product behavior, delivery scope, approved public contracts, requirement coverage, verification guarantees, and user constraints remain intact. Clarify a missing product decision or proposed change to those boundaries before affected work. A plan revision never supplies missing execution authority.
+Continue without renewed approval only when repository evidence supports the adjustment and product behavior, delivery scope, approved public contracts, requirement coverage, verification guarantees, and user constraints remain intact. Clarify a missing product decision or proposed change to those boundaries before affected work. A plan revision never supplies missing execution authority. After a specification revision, first verify that execution authority covers the revised scope; specification approval alone does not supply it. Reconcile implementation arrangements against that approved contract under these same rules.
 
 - Preserve completed tasks, numbers, briefs, commits, and history. Add a corrective task rather than rewriting completed work.
 - Revise unfinished tasks; give new tasks the next free number. Reconcile dependencies and producer/consumer interfaces before affected execution resumes.

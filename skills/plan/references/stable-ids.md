@@ -51,6 +51,8 @@ If existing behavior needs a change or new regression coverage, include that del
 
 ## Revisions
 
+Specification changes follow `spec`'s approval contract. Plan alignment follows the invoking skill's revision contract; this reference grants neither cross-artifact writes nor execution authority.
+
 ### Add
 
 Assign the next unused ID. Keep existing IDs unchanged; do not renumber them to close gaps.
@@ -63,7 +65,7 @@ Keep the condition visible in the spec with its ID and reason:
 - ~~REQ-2: Uploaded image is resized to 128x128 pixels~~ (retired: preserve original size)
 ```
 
-Revise the plan through `plan`: remove the retired ID from unfinished executable task coverage, but preserve completed tasks and their briefs as history, including their original coverage. New tasks must not claim a retired ID. If retirement changes already implemented behavior, plan a corrective task against the current acceptance conditions; do not rewrite the completed task.
+In an authorized plan revision, remove the retired ID from unfinished executable task coverage, but preserve completed tasks and their briefs as history, including their original coverage. New tasks must not claim a retired ID. If retirement changes already implemented behavior, plan a corrective task against the current acceptance conditions; do not rewrite the completed task.
 
 ### Change
 
@@ -91,4 +93,4 @@ Before a task commit:
 
 ## Existing specs without IDs
 
-Add IDs to Acceptance in the next approved revision of this system's spec, then reconcile plan coverage through `plan`. Do not rewrite old commits or completed task history to backfill IDs. A standalone change without a spec does not need invented IDs.
+Add IDs to Acceptance in the next approved revision of this system's spec, then reconcile plan coverage under the invoking skill's revision contract. Do not rewrite old commits or completed task history to backfill IDs. A standalone change without a spec does not need invented IDs.

@@ -17,6 +17,6 @@ Important choices and their reasons, in `docs/adr/`. Prevents re-opening decisio
 ## Relationship with feature work
 
 - **AGENTS.md / GLOSSARY.md / ADRs**: project-level, long-lived, shared by all features.
-- **`docs/features/`**: permanent candidate proposals, optional spike evidence, formal specifications and their required internal appendices, and implementation plans. One delivery scope may cover a whole system; only `plan` decomposes its implementation.
+- **`docs/features/`**: permanent candidate proposals, optional spike evidence, formal specifications and their required internal appendices, and implementation plans. One delivery scope may cover a whole system; `plan` owns initial implementation decomposition. Later adjustments follow the planning or executing skill's revision contract.
 - **Feasibility evidence**: `spike` records methods, observations, conclusions, and limits separately. `spec` adopts supported design decisions without embedding experiments or depending on external originals. Existing capability maps remain historical context, not a required stage.
 - **`.coding/`**: execution ledgers, task briefs, reports, and user-maintained configuration. These record how the work was done; skills never delete them. Users decide whether to ignore or version them; skills do not set that policy.

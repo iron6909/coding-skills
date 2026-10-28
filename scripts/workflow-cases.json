@@ -808,7 +808,7 @@
     "expect": [
       "The request authorizes an in-scope Full plan: self-review, save, and selectively commit it, then execute and review without asking for plan approval, stage confirmations, or routine Blocking/Important fix authorization.",
       "Task checks, applicable TDD, task reviews and commits, final verification, and one comprehensive independent feature review are evidenced; a task count over ten alone causes no pause.",
-      "State uses version 5 with approved contract snapshots separate from plan_blob, no mode or authority boolean, and no copied task list or review feedback. The generated plan is not called user-approved."
+      "State uses version 5 with approved contract snapshots separate from plan_blob, request_evidence retaining the actual request and restrictions, no mode or authority boolean, and no copied task list or review feedback. No limit_usage is created without a user limit. The generated plan is not called user-approved."
     ],
     "forbid": ["Auto-approving on behalf of the user, weakening checks, inferring high-risk sign-off from invocation, saving review findings, or merging/pushing."]
   },
@@ -980,5 +980,51 @@
       "Expanded access, unresolved policy, destructive effects, and real credential operations still stop before the affected action unless specifically authorized. Fresh checks, ownership safety, and no external effects are evidenced."
     ],
     "forbid": ["Removing trust-boundary validation, inferring external-effect sign-off from a plan, repeatedly asking about a technical test location, or overriding user restrictions."]
+  },
+  {
+    "id": "execute-recovers-first-run-feature-base",
+    "skill": "execute",
+    "setup": "Create two earlier commits for the same approved feature, with an unambiguous original base evidenced by local history and the request. Supply a self-reviewed persisted plan for the remaining work, but no ledger or autoflow state. Create a continuation branch at current HEAD and preserve an unrelated user edit. In separate controls make the feature base genuinely ambiguous, or start a genuinely new feature with no earlier increment.",
+    "prompt": "首次用 execute 完成这个功能剩余计划，记录供后续整体审查使用的原始功能基线，不要漏掉已有实现，也不要自动启动整体审查。",
+    "expect": [
+      "Read-only reconciliation recovers and records the original full feature-base SHA and its evidence before ledger writes. Both earlier feature commits remain in the later candidate review range without routine confirmation.",
+      "Only the genuinely new-feature control may use current HEAD. The ambiguous control asks for the missing comparison rather than silently resetting the base; task-start boundaries and user edits remain protected."
+    ],
+    "forbid": ["Treating first invocation or a new branch as a new feature, hiding prior commits behind HEAD, inventing a base, or automatically invoking code-review."]
+  },
+  {
+    "id": "execute-aligns-approved-requirement-ids",
+    "skill": "execute",
+    "setup": "Provide an approved spec revision retiring one requirement and adding IDs to remaining acceptance conditions without weakening their checks. A persisted plan has one completed task whose original coverage must remain historical and unfinished tasks needing ID alignment. The current request explicitly authorizes execution of the revised scope. The change needs no new product or UI decision. In the approval-only control replace the execution prompt with a read-only status request and supply no execution authority; in the other control supply a still-draft spec revision.",
+    "prompt": "按这份已批准的修订规格继续实施，就地对齐未完成计划的需求编号和覆盖，保留完成历史，不再单独调用 plan。",
+    "expect": [
+      "The authorized run uses the shared revision contract rather than treating stable-ID guidance as a mandatory plan handoff. It self-reviews active coverage, preserves completed task IDs and history, commits the persisted plan revision separately, and continues authorized work.",
+      "Spec approval alone does not authorize execution, and draft retirement cannot remove required coverage. Controls stop at the actual missing authority or product decision without erasing history."
+    ],
+    "forbid": ["Requiring routine plan reapproval, giving spec permission to edit task records, silently implementing unapproved behavior, rewriting completed coverage, or fabricating requirement IDs."]
+  },
+  {
+    "id": "autoflow-retains-request-evidence-and-limits",
+    "skill": "autoflow",
+    "setup": "Start on a local feature branch with approved inputs and a user request forbidding dependency installation and task reordering. Record the actual messages and provenance in version-5 state, then resume in a fresh session without the original conversation. In a separate cumulative-limit variant allow at most three correction attempts across the run and retain evidence that two were consumed before interruption. Additional controls use older version-5 state without receipts but recoverable user messages, unavailable restrictions or usage, and a receipt contradicted by a current no-write instruction replacing the continuation prompt. Keep all external effects disabled.",
+    "prompt": "继续这次 autoflow，沿用已记录的范围和限制；若有累计上限，沿用已用额度，不重新确认已经明确的事项。",
+    "expect": [
+      "The initial state preserves exact relevant user text and provenance in request_evidence, including applicable earlier restrictions. A trustworthy same-run receipt permits recovery without the lost conversation or a routine reapproval; constraints reach called skills.",
+      "The limited variant preserves measured cumulative usage across stages and resume, allows only the remaining attempt, and reports partial results at the limit without requesting an increase. The unlimited variant creates no usage counters.",
+      "Older version-5 state is enriched only after recovering actual instructions, not rejected solely for lacking the additive field. Unknown restrictions or remaining allowance block affected work; current no-write instructions override an older receipt without state writes."
+    ],
+    "forbid": ["Treating an approval boolean or agent summary as a user message, inventing missing instructions, resetting usage on resume, copying review feedback into state, trusting conflicting receipts, or asking again for recoverable authority."]
+  },
+  {
+    "id": "learning-refresh-batch-archive-without-reapproval",
+    "skill": "learning-refresh",
+    "setup": "Provide several fully superseded or consolidated learning files with verified historical dispositions, current replacements, and code domains that still exist. Include an in-scope inbound citation that can be safely updated, an existing archive with a colliding filename, a mixed current/historical file, and an unresolved citation outside the authorized scope. Use separate variants whose user prompts request authorized refresh, explicit archive, audit-only, preview, or in-place refresh without moves. Record all document contents and unrelated user changes before each run.",
+    "prompt": "刷新这些经验，归档已确认过时或被替代的文档，保留原文和有效引用，不需要逐份确认。",
+    "expect": [
+      "Authorized refresh and archive variants move eligible files without per-file prompts even while their code domains remain active. They preserve original reasoning, add lifecycle metadata, repair only authorized citations, choose an unused destination on collision, and commit only owned paths.",
+      "Mixed or uncertain files and a file whose inbound citation cannot be safely updated remain in place; other authorized updates continue. No source or archived document is deleted or overwritten.",
+      "Audit-only and preview variants report findings without metadata, file, branch, or commit writes. The no-move variant permits only otherwise authorized in-place updates and reports proposed moves without silently archiving."
+    ],
+    "forbid": ["Requiring code/domain disappearance for an already eligible authorized move, reapproving every file, archiving uncertain/current entries, changing out-of-scope citations, overwriting an archive, or mutating an audit-only run."]
   }
 ]
