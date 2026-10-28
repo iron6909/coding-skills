@@ -132,13 +132,7 @@ Create `GLOSSARY.md` in the repository root only when project-specific terms exi
 
 ## Write
 
-Read `./references/repository-changes.md` before any instruction or glossary write. Before writing, summarize:
-
-- what you found
-- which files will be created or updated (AGENTS.md, GLOSSARY.md if needed)
-- which facts remain unknown or conflict
-
-Then write the smallest safe update. Do not append duplicate sections on repeated runs.
+Read `./references/repository-changes.md` before any instruction or glossary write. Write the smallest safe update without a pre-write confirmation; the Finish report covers what changed. Do not append duplicate sections on repeated runs.
 
 The root `AGENTS.md` contains shared rules. A child `AGENTS.md` contains only that project's differences. `GLOSSARY.md` is always at the root (not per-child-project).
 

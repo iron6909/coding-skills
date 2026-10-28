@@ -49,7 +49,12 @@ const repositoryChanges = read("shared/references/repository-changes.md");
 for (const safeguard of ["initial staged and unstaged", "relevant untracked content", "default branch", "specific sign-off", "<REDACTED>", "non-document scratch", "Preserve every document", "ignore and tracking policy", "Do not push, merge", "do not authorize edits", "unrun checks remain unverified"]) {
   assert.ok(repositoryChanges.includes(safeguard), `shared repository changes missing safeguard: ${safeguard}`);
 }
-assert.ok(repositoryChanges.includes("Document and work-record writes count too") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
+assert.ok(repositoryChanges.includes("document/report saves, work records") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
+assert.ok(repositoryChanges.includes("Before the first commit on the default branch") && repositoryChanges.includes("without asking"), "the default branch gets a feature branch before committing, not a consent prompt");
+assert.ok(read("shared/references/git-commit.md").includes("leave them staged") && read("shared/references/git-commit.md").includes("-- <paths>"), "unrelated staged work is preserved by a path-limited commit, not a stop");
+for (const [path, pattern] of [["shared/references/repository-changes.md", /obtain consent for writes/], ["shared/references/git-commit.md", /stop and ask before staging or committing/], ["skills/commit/SKILL.md", /verbatim; then stop and ask/], ["skills/survey/SKILL.md", /Before writing, summarize/], ["skills/execute/SKILL.md", /\*\*Unexplained\*\*/], ["shared/references/stable-ids.md", /obtain approval before revising the plan/], ["skills/bugfix/SKILL.md", /let the user adjust them/]]) {
+  assert.doesNotMatch(read(path), pattern, `${path} must not reintroduce a redundant approval gate`);
+}
 for (const rule of ["## Feature review base", "feature history and local refs", "no earlier feature increment exists", "Conflicting or unknown bases"]) {
   assert.ok(repositoryChanges.includes(rule), `missing shared feature-base rule: ${rule}`);
 }

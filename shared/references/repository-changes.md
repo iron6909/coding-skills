@@ -8,7 +8,7 @@ Read applicable `AGENTS.md` and `CLAUDE.md`, existing `GLOSSARY.md`, and ADRs to
 
 Inspect the branch and record the initial staged and unstaged changes plus relevant untracked content, not just filenames or a commit SHA. Preserve user work even in files this run will change. If overlapping changes cannot be isolated safely, stop and agree on the boundary before writing or staging. Reuse a trustworthy recorded boundary on resume; do not redefine initial user changes as this run's work.
 
-On the default branch (`main` or `master`), obtain consent for writes there or create `feature/YYYYMMDD-<semantic-name>` before writing. Honor consent already given for that exact branch and scope. Do not switch away from a branch pinned by the request or review without agreement. Document and work-record writes count too; a conversation-only draft or dry-run does not.
+Before the first commit on the default branch (`main` or `master`), create and switch to `feature/YYYYMMDD-<semantic-name>` without asking; the working tree carries over. Skip the switch when the user or repository instructions direct commits to that branch. Do not switch away from a branch pinned by the request or review without agreement. Uncommitted edits, reports, work records, and probes need no branch change.
 
 ## Feature review base
 

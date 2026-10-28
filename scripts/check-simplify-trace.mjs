@@ -44,13 +44,13 @@ export function checkTrace(events, variant) {
     const priorChanges = changes.filter(edit => edit.result.index < call.index);
     return priorChanges.length > 0 && passed.some(check => check.index > priorChanges.at(-1).result.index && check.result.index < call.index);
   });
-  const realQuestions = questions.every(call => variant === "mutation-boundary" && /暂存|index|staged|ownership/i.test(call.args.message ?? ""));
+  const noQuestions = questions.length === 0;
   const readProtocol = !calls.some(call => call.result.isError && /Edit without read|have not read/i.test(call.output));
   return [
     { text: "Actually inspect the named scope and complete its applicable baseline/review or legitimate early exit", passed: engagement, evidence: `source reads=${source.length}; checks=${checks.length}; passing checks=${passed.length}; review reads=${reviews.length}; fixture=${variant}` },
     { text: "Complete a passing baseline before loading review/commit references or attempting edits; blocked/no-code runs load none", passed: baselineFirst, evidence: `passing baseline result events=${passed.map(call => call.result.index)}; review/commit/edit start events=${[...reviews, ...commits, ...edits].map(call => call.index)}` },
     { text: "Load commit guidance only after own changes have passed post-edit verification", passed: commitLast, evidence: `commit guidance start events=${commits.map(call => call.index)}; edit result events=${changes.map(call => call.result.index)}; passing check result events=${passed.map(call => call.result.index)}` },
-    { text: "Do not request routine scope/plan approval; retain real staged-ownership decisions", passed: realQuestions, evidence: `blocking questions=${questions.length}; permitted staged-ownership fixture=${variant === "mutation-boundary"}` },
+    { text: "Do not request routine scope, plan, or staged-ownership approval", passed: noQuestions, evidence: `blocking questions=${questions.length}` },
     { text: "Follow the host read-before-edit protocol without rejected write attempts", passed: readProtocol, evidence: `read-before-edit rejections=${calls.filter(call => call.result.isError && /Edit without read|have not read/i.test(call.output)).length}` },
   ];
 }

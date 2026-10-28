@@ -87,9 +87,8 @@ If no evidence-backed next step remains, or continuing needs a new user decision
 
 Check before affected actions and whenever new evidence changes the risk:
 
-- **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
+- **Irreversible**: deleting real data, dropping or rewriting a schema, rotating or destroying a key, publishing, or another effect `git revert` cannot undo outside disposable local fixtures.
 - **Security-sensitive**: an unresolved security-policy decision or real-resource effect under the shared safety rule, not merely implementing an already approved security contract in local code.
-- **Unexplained**: a decision you cannot justify from the approved input or repository evidence.
 
 When a trigger lacks specific authorization, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Reuse sign-off already given for the same action, target, and effects. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
 

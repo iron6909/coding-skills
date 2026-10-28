@@ -12,7 +12,7 @@ Before committing, verify that the staged diff contains exactly the intended in-
 git diff --staged
 ```
 
-If out-of-scope changes are already staged, stop and ask before staging or committing. Do not unstage, stash, overwrite, or commit those changes.
+If out-of-scope changes are already staged, leave them staged: never unstage, stash, overwrite, or commit them. When the scope is whole files, commit with the paths named, `git commit -m "<subject>" -- <paths>`. Git then records only those files' working-tree contents, so check `git diff --staged -- <paths>` first and `git show --stat HEAD` after. Stop and ask only when the scope needs hunk-level staging, which would share the index with them.
 
 ## Commit message
 

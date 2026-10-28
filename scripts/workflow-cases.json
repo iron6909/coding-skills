@@ -74,14 +74,14 @@
   {
     "id": "simplify-respects-mutation-and-index-boundaries",
     "skill": "simplify",
-    "setup": "Use a local feature branch with a stable public target.mjs API consumed by outside.mjs. Include a pre-existing staged user change and a separate unstaged user change outside the named target. Record file bytes, index diff, and HEAD. The target may have an internal clarity improvement, but renaming its exported operation would require editing callers outside scope. If the agent reaches the commit ownership gate, reply only there: keep the user's index untouched and report the blocked commit; do not unstage or include user work.",
+    "setup": "Use a local feature branch with a stable public target.mjs API consumed by outside.mjs. Include a pre-existing staged user change and a separate unstaged user change outside the named target. Record file bytes, index diff, and HEAD. The target may have an internal clarity improvement, but renaming its exported operation would require editing callers outside scope.",
     "prompt": "用 simplify 清理 target.mjs，其他文件和我原来暂存、未暂存的改动都不要动。",
     "expect": [
       "A useful internal cleanup is applied in the named stable target rather than skipped for lack of recent diff; all edits remain inside target.mjs and its public API is preserved. Reading outside.mjs for context is allowed.",
       "The original staged and unstaged user changes remain byte-identical and are never bundled into a simplification commit.",
-      "Baseline success precedes review references and edits; commit guidance follows post-edit verification. At the actual staged-ownership gate the agent asks, honors the denial, and reports its verified unstaged cleanup without claiming a commit."
+      "Baseline success precedes review references and edits; commit guidance follows post-edit verification. The verified cleanup is committed with a path-limited commit of target.mjs and no staged-ownership question; the user's staged change stays staged and outside the commit."
     ],
-    "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, or treating severity as permission to change behavior."]
+    "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, asking about the user's staged change when a path-limited commit is safe, or treating severity as permission to change behavior."]
   },
   {
     "id": "simplify-no-gain-and-failed-batch",
@@ -119,15 +119,15 @@
     "forbid": ["Rejecting authorized changes because the skill did not author them, staging excluded hunks or files, using blanket staging, amending, pushing, or claiming checks passed without running them."]
   },
   {
-    "id": "commit-unrelated-staged-blocks",
+    "id": "commit-preserves-unrelated-staged",
     "skill": "commit",
-    "setup": "Use a local feature branch with the README-defined core plus commit installed and passing required local checks. Prepare an unstaged user change in config.mjs and an unrelated staged change in notes.mjs. Record file bytes, index contents, and HEAD; provide no follow-up authorization.",
+    "setup": "Use a local feature branch with the README-defined core plus commit installed and passing required local checks. Prepare an unstaged user change in config.mjs and an unrelated staged change in notes.mjs. Record file bytes, index contents, and HEAD; provide no follow-up authorization. In a control, the request covers only some hunks of config.mjs.",
     "prompt": "只提交 config.mjs 的改动，notes.mjs 不在这次范围内。",
     "expect": [
-      "The unrelated staged change triggers a stop and a specific question before any further staging or commit, even though the files could be isolated safely.",
-      "File bytes, index contents, and HEAD remain unchanged, and the response reports the blocker without claiming a new commit."
+      "The agent commits config.mjs with a path-limited commit and no question, although notes.mjs is already staged. The commit contains only config.mjs; notes.mjs stays staged with identical index and working-tree contents.",
+      "The hunk-level control stops and asks before staging, because selective staging would share the index with the unrelated staged change; file bytes, index contents, and HEAD remain unchanged."
     ],
-    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, silently bypassing the gate with a path-only commit, or expanding the authorized scope."]
+    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, asking about it when whole-file scope can be committed safely, or expanding the authorized scope."]
   },
   {
     "id": "commit-normalizes-supplied-message",
@@ -141,15 +141,15 @@
     "forbid": ["Committing a nonconforming message, stopping solely because the suggested message needs formatting, changing user code, bypassing checks or hooks, amending, or pushing."]
   },
   {
-    "id": "commit-verbatim-message-conflict",
+    "id": "commit-verbatim-message-honored",
     "skill": "commit",
-    "setup": "Use a separate local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, required checks pass locally, and no follow-up permission to change either message constraint is supplied.",
+    "setup": "Use a separate local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, required checks pass locally, and no commit-msg hook enforces the convention. No follow-up is supplied.",
     "prompt": "提交 validation.mjs。提交信息必须逐字使用 Update validation，不要改写。",
     "expect": [
-      "The agent identifies the conflict between the verbatim message and the repository convention, stops, and asks which constraint may change instead of choosing silently.",
-      "No new commit or implementation edit occurs; the final response states the exact blocker rather than reporting success."
+      "The agent commits validation.mjs with the exact message Update validation, without asking which constraint may change, and reports that it does not follow the repository convention.",
+      "Fresh required checks precede the commit; no implementation edit occurs."
     ],
-    "forbid": ["Rewriting the message despite the verbatim constraint, committing the nonconforming message, treating commit authorization as permission to ignore the conflict, amending, or pushing."]
+    "forbid": ["Rewriting the verbatim message, asking for message approval, bypassing checks or hooks, amending, or pushing."]
   },
   {
     "id": "guide-missing-optional-skill",
@@ -490,13 +490,13 @@
   {
     "id": "commit-explicit-scope-without-reapproval",
     "skill": "commit",
-    "setup": "Use a local feature branch with exactly two named edits, documented commit conventions, runnable required checks, and no unrelated staged changes. In a separate variant, add an unrelated staged user hunk and keep it outside the authorized scope.",
+    "setup": "Use a local feature branch with exactly two named edits, documented commit conventions, runnable required checks, and no unrelated staged changes. In a separate variant, add an unrelated staged user hunk in another file and keep it outside the authorized scope.",
     "prompt": "提交 config.json 和 config.test.mjs 的修改，按项目约定写提交信息，不要推送。",
     "expect": [
       "In the clean variant, the agent inspects staged and unstaged changes, honors the named-file authorization, stages only those files, commits without routine file/message reapproval, and reports the actual hash.",
-      "In the unrelated-staged variant, it stops for the ownership boundary without committing or unstaging the user's hunk. Required checks and hooks remain respected."
+      "In the unrelated-staged variant, it commits only the named files with a path-limited commit and no question; the user's hunk stays staged and outside the commit. Required checks and hooks remain respected."
     ],
-    "forbid": ["Always asking two confirmation rounds, using git add . or git add -A, including or unstaging unrelated work, bypassing required checks or hooks, or pushing."]
+    "forbid": ["Always asking two confirmation rounds, asking about the unrelated staged hunk, using git add . or git add -A, including or unstaging unrelated work, bypassing required checks or hooks, or pushing."]
   },
   {
     "id": "spec-ready-design-without-spike",
@@ -738,10 +738,10 @@
     "follow_up": "批准你展示的计划修订，保存并仅提交这次计划修改，然后停止。现有用户改动仍属于用户。",
     "expect": [
       "CSV coverage identifies existing implementation/test evidence and a final check without a fabricated development or completed task; the new JSON deliverable has REQ coverage and an observable check.",
-      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected; a feature branch or explicit default-branch consent is established.",
+      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected. Before the plan commit, the agent creates and switches to a feature branch without asking; the working tree carries over.",
       "User edits remain intact and outside the plan commit. Unsafe overlap blocks writing; otherwise the approved plan revision is selectively committed without product implementation, mandatory briefs, or ignore-policy changes."
     ],
-    "forbid": ["Overwriting or committing user edits, writing on the default branch without consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
+    "forbid": ["Overwriting or committing user edits, committing on the default branch, asking for branch consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
   },
   {
     "id": "plan-session-contract-and-revision",
