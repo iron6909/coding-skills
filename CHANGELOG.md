@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.1.2] - 2026-10-28
+
 ### Fixed
 
 - **功能审查基线**：统一独立执行与自动交付的基线恢复规则，不以首次调用或新分支起点遗漏此前功能增量。
@@ -671,7 +673,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.1...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.2...HEAD
+[13.1.2]: https://github.com/iron6909/coding-skills/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/iron6909/coding-skills/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/iron6909/coding-skills/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/iron6909/coding-skills/compare/v13.0.0...v13.0.1
