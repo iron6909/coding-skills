@@ -21,6 +21,7 @@ Never edit `refer/`, and never make a skill depend on a path inside it. It is in
 
 - Local-only. Do not add issue-tracker integration (GitHub, Linear, Jira), CI definitions, PR-description generation, or multi-user state sync to any skill.
 - Prefer deleting or simplifying over adding. A new skill or reference must earn its place.
+- Agent usage accounting is outside skill scope. Do not add time/token/cost budgets, remaining-allowance state, or retry quotas.
 
 ## Pi extension changes
 

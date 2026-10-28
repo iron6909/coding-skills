@@ -80,7 +80,7 @@ assert.ok(spike.includes("Do not take downstream work as a probe request") && sp
 assert.ok(spike.includes("routine inspection unrelated to a candidate-design decision") && spike.includes("design premise discovered during downstream work"), "spike exclusions must not reject bounded design questions or source-based evidence");
 assert.ok(spike.includes("candidate, question, or dependent design decision cannot be established") && spike.includes("ask here for missing constraints or a deciding criterion"), "spike must distinguish an unframed question from missing details it can clarify locally");
 assert.ok(!spike.includes("If an intended design probe lacks the required inputs"), "missing details alone must not force an ideate detour");
-assert.ok(spike.includes("effort boundary>") && spike.includes("why the run stopped"), "spike evidence must preserve its effort boundary and stopping reason");
+assert.ok(spike.includes("probe scope>") && spike.includes("why the run stopped"), "spike evidence must preserve its probe scope and stopping reason");
 assert.ok(spike.includes("another session can reconstruct the probe and inputs from the report and its appendices alone") && spike.includes("complete runnable probe and exact inputs or a deterministic fixture generator"), "scratch cleanup requires self-contained reproduction, not just selected snippets");
 assert.ok(spike.split("## Finish")[1].includes("Recommend `ideate` for every outcome"), "even supported evidence must return to design rather than approve delivery");
 assert.ok(spike.includes("Do not edit `proposal.md`") && spike.includes("Commit only the report and its necessary internal appendices"), "spike owns evidence, not proposals or contracts");
@@ -389,8 +389,7 @@ for (const message of state.request_evidence) {
   for (const field of ["source", "text"]) assert.ok(typeof message[field] === "string" && message[field].trim(), `request evidence needs ${field}`);
 }
 assert.match(state.request_evidence[0].text, /do not install dependencies/, "the receipt preserves an actual restriction, not just an approval claim");
-assert.ok(!Object.hasOwn(state, "limit_usage"), "a request without a budget must not create usage counters");
-for (const field of ["mode", "approval", "auto_execute_and_review_fixes", "review_report", "current_task"]) {
+for (const field of ["mode", "approval", "auto_execute_and_review_fixes", "review_report", "current_task", "limit_usage"]) {
   assert.ok(!Object.hasOwn(state, field), `state must not retain ${field}`);
 }
 for (const field of ["review_head", "fix_head"]) assert.equal(state[field], null, `${field} starts explicitly empty`);
@@ -404,8 +403,8 @@ for (const input of ["spec", "ui_spec", "design"]) {
 assert.ok(Object.hasOwn(state, "plan"), "keep the intended plan path even before it exists");
 const autoflow = read("skills/autoflow/SKILL.md");
 const recovery = read("skills/autoflow/references/state-management.md");
-for (const rule of ["Capture `request_evidence`", "trustworthy same-run receipt", "Existing version-5 records may lack", "absence is not evidence of unrestricted authority", "Without a user limit, omit `limit_usage`", "do not reset consumption on resume"]) {
-  assert.ok(recovery.includes(rule), `missing recoverable request or limit rule: ${rule}`);
+for (const rule of ["Capture `request_evidence`", "trustworthy same-run receipt", "Existing version-5 records may lack", "absence is not evidence of unrestricted authority", "Pass effective restrictions to called skills"]) {
+  assert.ok(recovery.includes(rule), `missing recoverable request rule: ${rule}`);
 }
 assert.doesNotMatch(autoflow, /## Modes|--checkpointed|--dry-run|--resume|over 10 tasks|Ask once for approval/, "autoflow has one continuous execution policy");
 for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "explicit verification-waiver gate"]) {
@@ -413,7 +412,7 @@ for (const rule of ["Do not request plan approval, stage confirmations", "a requ
 }
 assert.ok(autoflow.includes("disclosed inline fallback without an acceptance prompt unless") && review.includes("If the user or repository explicitly requires independent review"), "inline review must disclose its limit without a routine acceptance gate or overriding required independence");
 assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "A missing fix-pass count alone requires no approval", "Reassess a former skill-imposed count-only stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "Before recording a snapshot, verify", "A hash alone is not a saved snapshot", "retain the recoverable approved snapshot", "Do not commit user documents or create retained copies solely to refresh state", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
+for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "Reassess a former skill-imposed stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "Before recording a snapshot, verify", "A hash alone is not a saved snapshot", "retain the recoverable approved snapshot", "Do not commit user documents or create retained copies solely to refresh state", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
   assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
 }
 for (const skill of ["plan", "execute", "code-review"]) {
@@ -435,21 +434,20 @@ for (const [pattern, rule] of [
   [/Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach/, "route missing product decisions to spec"],
   [/recommend `ideate` when approaches need comparison or replacement.*unresolved or invalidated/, "route unsettled approaches or design premises to ideate"],
   [/Expected TDD RED and rejected hypotheses can inform the next step.*unavailable required checks follow the DoD gate/, "distinguish useful failure evidence from missing verification"],
-  [/On resume, recover available failure evidence and unresolved blockers.*Missing attempt counts alone do not require approval/, "recover evidence without inventing a count gate"],
+  [/On resume, recover available failure evidence and unresolved blockers.*missing scope or authorization still blocks affected work/, "recover evidence and authority rather than usage counts"],
 ]) assert.match(bugfix, pattern, `bugfix must ${rule}`);
 for (const [skill, source] of [["execute", execute], ["bugfix", bugfix], ["code-review", review]]) {
-  for (const rule of ["new evidence supports a concrete next investigation or correction", "shared repository rules", "unchanged failing approach", "Attempt count alone does not require renewed approval", "no evidence-backed next step remains"]) {
+  for (const rule of ["new evidence supports a concrete next investigation or correction", "unchanged failing approach", "no evidence-backed next step remains"]) {
     assert.ok(source.includes(rule), `${skill} must use evidence-driven continuation: ${rule}`);
   }
 }
-assert.doesNotMatch(execute + bugfix + review + autoflow + recovery, /3 failed|stop before a fourth|failure[- ]budgets?|second fix wave|fix-wave|do not assume zero|failed-attempt counts?/i, "skill-imposed attempt and fix-pass quotas must not return through execution or recovery");
-for (const rule of ["Do not require a time, token, retry, or cost budget", "stop conditions, not approval stages", "without soliciting a budget increase", "Do not keep attempt counters unless", "Honor specific sign-off already given", "Implementing an explicitly approved security contract in local code"]) assert.ok(repositoryChanges.includes(rule), `missing bounded autonomy rule: ${rule}`);
-assert.doesNotMatch(execute + bugfix + review + recovery, /larger budget|unless the user set that limit|unless needed to enforce an explicit user limit/i, "budget approval gates must not leak back into individual workflows");
+assert.doesNotMatch(repositoryChanges + execute + bugfix + review + autoflow + recovery + spike, /limit_usage|\bbudgets?\b|remaining allowance|\b(?:attempt|fix-pass|usage) (?:counts?|counters?|quotas?)\b|3 failed|stop before a fourth|second fix wave|fix-wave|do not assume zero|failed-attempt counts?/i, "skills must not manage usage budgets, counters, or retry quotas");
+for (const rule of ["Honor specific sign-off already given", "Implementing an explicitly approved security contract in local code"]) assert.ok(repositoryChanges.includes(rule), `missing safety boundary: ${rule}`);
 assert.ok(review.includes("current request already authorizes fixes") && review.includes("without asking again"), "explicit review-and-fix requests must not need a second authorization");
 assert.ok(review.includes("uniquely evidenced base") && review.includes("without a prompt"), "review must recover a clear local base and continue without a spec instead of asking by default");
 const uiReview = read("skills/ui-review/SKILL.md");
 for (const rule of ["Default to all five dimensions and all severities", "current request already authorizes fixes", "without another approval prompt"]) assert.ok(uiReview.includes(rule), `missing UI review default or existing authority: ${rule}`);
-assert.ok(spike.includes("do not request an effort budget or approval of an estimate") && spike.includes("without soliciting a budget extension"), "safe probes need no effort-approval stage");
+assert.ok(spike.includes("State the smallest suitable method and proceed") && spike.includes("no evidence-backed next probe remains"), "safe probes proceed under existing authority and stop for evidence, not usage accounting");
 assert.doesNotMatch(bugfix, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
 const bugfixFailureStep = bugfix.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
 assert.match(bugfixFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");

@@ -24,7 +24,7 @@ Finish read-only reconciliation before branch changes or other writes:
 
 Invoke `plan` at Full tier to create or reconcile the plan. It self-reviews, saves and commits `plan.md`, and returns without waiting for plan approval. A current plan whose contents and evidence already satisfy that contract needs no rewrite or empty commit. Supplemental task briefs remain optional work records under `.coding/`.
 
-Record the verified plan snapshot using the state reference, then continue directly to execution. Task count alone is not a pause trigger. Explicit user constraints remain binding; report a partial result when they prevent completion, without a routine budget approval or extension request.
+Record the verified plan snapshot using the state reference, then continue directly to execution. Task count alone is not a pause trigger. Explicit user constraints remain binding; report a partial result when they prevent completion.
 
 ## Stage 2: Execute
 
@@ -46,7 +46,7 @@ For an empty pinned diff, follow code-review's empty-diff result. Only verified 
 
 Request specific authorization before a high-risk action not already authorized. Missing contract decisions, unsafe overlap, no evidence-backed next step, and unresolved required verification or capability gaps are blockers, not reasons to add routine plan approval. Stop before the affected action, preserve artifacts, and report the smallest missing decision or evidence.
 
-Use `./references/state-management.md` whenever progress already exists. The reference distinguishes editorial-only input changes from semantic changes needing their owner's clarification or approval; subsequent in-scope planning needs no plan approval. Recovery preserves unresolved blockers and explicit user limits; prior attempt or fix-pass counts do not revoke otherwise valid authority.
+Use `./references/state-management.md` whenever progress already exists. The reference distinguishes editorial-only input changes from semantic changes needing their owner's clarification or approval; subsequent in-scope planning needs no plan approval. Recovery preserves unresolved blockers and applicable user restrictions.
 
 ## Completion report
 

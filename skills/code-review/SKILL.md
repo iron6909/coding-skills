@@ -96,7 +96,7 @@ Read `./references/git-commit.md` before selectively staging only fix-owned chan
 
 Keep the current full SHA as `fix_head_sha`. After each correction, perform a scoped re-check of the original findings and the fix-owned increment, including uncommitted changes; at the final fix head use `git diff <review_head_sha> <fix_head_sha> -- <fix-owned paths>`. Verdict each finding as addressed or still open, and check the fix for new breakage. Keep the original review SHAs unchanged. Do not restart whole-branch review or add reviewers for each correction; unrelated observations do not extend the authorized scope.
 
-Continue authorized Blocking/Important fixes and fix-caused regressions while new evidence supports a concrete next investigation or correction, within scope and existing risk approvals. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval; explicit limits follow the shared repository rules. If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop and present the remaining findings and smallest missing input. Unresolved findings and missing verification still block readiness.
+Continue authorized Blocking/Important fixes and fix-caused regressions while new evidence supports a concrete next investigation or correction, within scope and existing risk approvals. Do not repeat an unchanged failing approach. If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop and present the remaining findings and smallest missing input. Unresolved findings and missing verification still block readiness.
 
 ## Completion
 

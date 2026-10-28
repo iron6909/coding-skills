@@ -19,13 +19,13 @@ Read the relevant code, contracts, existing evidence, and constraints. State:
 
 - the candidate, unknown, and which design decision depends on it
 - the criterion that would support or reject the hypothesis
-- the smallest method, representative inputs, environment, and effort boundary that can decide it
+- the smallest method, representative inputs, environment, and scope that can decide it
 
 If the candidate, question, or dependent design decision cannot be established from the request and relevant material, recommend `ideate` to frame it and stop. Otherwise ask here for missing constraints or a deciding criterion that materially changes the answer; do not invent them or require an `ideate` detour. If the facts are already settled by applicable existing evidence, cite that evidence and avoid a redundant experiment. Do not expand a narrow question into building the system.
 
 Start with the most consequential uncertainty. Related questions may share one run and report; do not require a new invocation or approval per question. Report when an answer makes another experiment unnecessary.
 
-A request to validate a named design hypothesis authorizes its scoped safe probe, not production implementation. State the smallest suitable method and effort estimate and proceed; do not request an effort budget or approval of an estimate. Missing deciding inputs still need clarification, and explicit user limits follow the shared repository rules. This does not waive the specific sign-off below. No separate approval is needed to record observed results.
+A request to validate a named design hypothesis authorizes its scoped safe probe, not production implementation. State the smallest suitable method and proceed. Missing deciding inputs still need clarification. This does not waive the specific sign-off below. No separate approval is needed to record observed results.
 
 ## Safety before experiments
 
@@ -38,7 +38,7 @@ Missing tools, representative data, hardware, permission, or safe targets are ev
 1. Use primary documentation or existing code when they can establish the actual claim. If external research is unavailable, state the missing evidence; do not present memory as current verification.
 2. When applicable evidence cannot settle runtime behavior, write the smallest isolated probe with an observable check and run it. Do not mock the dimension being tested: a fake database cannot prove database authorization, and a tiny fixture cannot prove production capacity.
 3. Record actual commands, versions, inputs, outputs, and relevant rejected cases. Distinguish observations from interpretation and limited examples from general guarantees.
-4. Stop when the deciding criterion is answered, no evidence-backed next probe remains, or an explicit user limit prevents continuation. Report remaining gaps without soliciting a budget extension. Do not turn evidence gathering into a product build or unbounded optimization loop.
+4. Stop when the deciding criterion is answered, no evidence-backed next probe remains, or continuing would exceed the authorized scope. Report remaining evidence gaps. Do not turn evidence gathering into a product build or unbounded optimization loop.
 
 Judge each question as:
 
@@ -61,7 +61,7 @@ Save `docs/features/YYYYMMDD-<semantic-name>/spike.md`. Append a dated run when 
 <the candidate, hypothesis, deciding criterion, and dependent design choice>
 
 ### Method and conditions
-<versions, environment, representative inputs, isolation, commands, and effort boundary>
+<versions, environment, representative inputs, isolation, commands, and probe scope>
 
 ### Observations
 <actual results, including failures, rejected cases, and why the run stopped>

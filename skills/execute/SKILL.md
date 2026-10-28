@@ -79,7 +79,7 @@ Fixes need fresh focused and affected checks and a scoped re-check, not a restar
 
 ## Failed checks and fixes
 
-Revisit the evidence changed by the failure. Continue while new evidence supports a concrete next investigation or correction within scope and existing authorization. Do not repeat an unchanged failing approach. Attempt count alone does not require renewed approval; explicit limits follow the shared repository rules.
+Revisit the evidence changed by the failure. Continue while new evidence supports a concrete next investigation or correction within scope and existing authorization. Do not repeat an unchanged failing approach.
 
 If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop affected work and report the evidence and smallest missing input. Expected TDD RED is normal progress, not a reason to stop. Unavailable required checks follow the DoD gate; they are not passes.
 
@@ -140,7 +140,7 @@ For persisted plans, read the current approved spec and required internal append
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
-For a session plan or small change whose conversation was lost, first recover scope, execution authority, and change boundaries from the current request, available records, and Git evidence. Ask only for what remains ambiguous; a diff alone cannot prove authorization. Recover available failure evidence and unresolved blockers from task results or existing work records. Missing attempt counts alone do not require approval; explicit limits follow the shared repository rules. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
+For a session plan or small change whose conversation was lost, first recover scope, execution authority, and change boundaries from the current request, available records, and Git evidence. Ask only for what remains ambiguous; a diff alone cannot prove authorization. Recover available failure evidence and unresolved blockers from task results or existing work records. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
 
 ## Tests and verification
 

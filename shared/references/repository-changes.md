@@ -10,8 +10,6 @@ Inspect the branch and record the initial staged and unstaged changes plus relev
 
 On the default branch (`main` or `master`), obtain consent for writes there or create `feature/YYYYMMDD-<semantic-name>` before writing. Honor consent already given for that exact branch and scope. Do not switch away from a branch pinned by the request or review without agreement. Document and work-record writes count too; a conversation-only draft or dry-run does not.
 
-Do not require a time, token, retry, or cost budget to start authorized work or invent quotas. Honor explicit user limits as stop conditions, not approval stages. If a stated limit is reached or its remaining allowance cannot be established, preserve the work and report the partial result without soliciting a budget increase. Do not keep attempt counters unless needed to enforce an explicit limit.
-
 ## Feature review base
 
 When the invoking skill needs a feature-wide review base, reconcile the caller, existing state and ledger with feature history and local refs before branch or record writes. Reuse a consistent recorded base; a supplied base must not silently override it. Without a recorded base, use a user-supplied commit or a uniquely evidenced feature base and state the basis without a confirmation prompt. Current HEAD or a new branch's starting commit is valid only when no earlier feature increment exists. Do not assume `main` or treat the first skill invocation as the start of the feature. Conflicting or unknown bases need clarification, not a replacement HEAD. Resolve the chosen base to a full commit SHA and keep it fixed for the whole-feature review; repositories without commits follow the invoking skill's initial-file-state rules.
