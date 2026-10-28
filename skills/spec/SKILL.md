@@ -89,7 +89,7 @@ Preserve precise implementation-relevant content from supplied designs. Do not s
 
 Before revising, read the current spec and its required internal appendices in full, any approved `ui-spec.md`, applicable `DESIGN.md` constraints, and affected plan tasks with relevant briefs or execution records when present.
 
-Preserve unaffected decisions, stable IDs, and history; do not re-interview or revalidate everything. Present affected UI decisions and plan tasks with the proposed contract changes. Spec approval does not settle conflicting UI decisions or reconcile a stale plan. Identify the needed `ui-design` and `plan` revisions before dependent work resumes; unaffected decisions keep their approval. Do not edit UI documents, tasks, or execution records here.
+Preserve unaffected decisions, stable IDs, and history; do not re-interview or revalidate everything. Present affected UI decisions and plan tasks with the proposed contract changes. Spec approval does not settle conflicting UI decisions or reconcile a stale plan. Identify the needed UI and implementation-plan alignment before dependent work resumes; unaffected decisions keep their approval. Do not edit UI documents, tasks, or execution records here.
 
 ## Review and approval
 
@@ -110,7 +110,7 @@ Read `./references/repository-changes.md` before saving the approved contract or
 
 ## Finish
 
-Report the saved spec, required appendices, approval, and commit. Recommend `ui-design` first when presentation decisions remain or existing UI decisions need realignment with the revised contract. Otherwise recommend `plan` when task decomposition or reconciliation is needed, or `execute` for a ready small change. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
+Report the saved spec, required appendices, approval, and commit. Recommend `ui-design` first when presentation decisions remain or existing UI decisions need realignment with the revised contract. Otherwise recommend `plan` for explicitly requested separate planning; without that request, recommend `execute` when a plan already exists or for a ready small change, and `plan` only when initial task decomposition is needed. Subsequent `execute` must verify applicable execution authority and reconcile any existing plan under its revision contract. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
 
 ## References
 

@@ -59,7 +59,7 @@ Use the first matching rule:
 After choosing a skill:
 
 1. State `Route: <skill>` and give one short reason.
-2. Locate that skill's `SKILL.md` under the configured skills directory. If it is not installed, tell the user which skill is missing and offer to install it or directly handle the request without it; wait for their choice. Do not install automatically or claim the skill was loaded. If they choose direct handling, follow the request, project constraints, and authorization boundaries without inventing the missing skill's workflow, then return to the user. Name the missing target without diagnosing the whole installation; optional skills may be absent.
+2. Locate that skill's `SKILL.md` under the configured skills directory. If it is not installed, disclose the missing target. When the request and scope are clear, available capabilities can safely complete it, and the user has not required that exact skill, directly handle the request in the same turn without a selection prompt. Before any direct-handling repository write or state-changing command, read `./references/repository-changes.md`. Follow the original request, project constraints, and authorization boundaries without inventing the missing skill's workflow, then return to the user. Otherwise report the blocker and ask only for the missing decision or permission. Do not install without explicit authorization or claim the missing skill was loaded. Optional skills may be absent; do not diagnose the whole installation.
 3. If installed, read the selected skill file.
 4. Follow it immediately in the same turn.
 5. Do not ask the user to invoke the selected skill.

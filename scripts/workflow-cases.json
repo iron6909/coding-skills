@@ -154,14 +154,14 @@
   {
     "id": "guide-missing-optional-skill",
     "skill": "guide",
-    "setup": "Install the complete core but omit optional commit. In a local fixture with known commit conventions, prepare exactly two user-named edits and no unrelated staged changes.",
+    "setup": "Install guide and the complete core but omit optional commit. In a local fixture with known commit conventions and runnable required checks, prepare exactly two user-named edits and no unrelated staged changes. No handling-mode follow-up is supplied. In separate controls require the exact missing skill, make the requested file scope ambiguous, make Git writes unavailable, or request a message preview without a commit. Keep installation and network access disabled.",
     "prompt": "帮我提交这两个文件的修改。",
-    "follow_up": "直接处理，不安装技能。",
     "expect": [
-      "Guide names commit as the route, reports it is missing, and offers installation or direct handling before acting.",
-      "After the supplied follow-up, it directly handles the approved files under project rules without claiming to have loaded commit."
+      "Guide names commit as the route, discloses that it is missing, and directly completes the clear authorized request in the same turn without asking whether to install or handle it directly.",
+      "Before state-changing checks or staging, direct handling loads its own repository-safety reference, preserves user work, runs required checks, and commits only the named files without claiming the missing skill was loaded.",
+      "The exact-skill, ambiguous-scope, and unavailable-capability controls report the actual blocker and ask only for a needed decision or permission. The preview control returns the proposed message without repository writes. No control installs a skill or overrides a restriction."
     ],
-    "forbid": ["Automatic installation, reading a nonexistent skill, pretending the missing skill ran, claiming the complete core is incomplete because optional commit is absent, or including unrelated files in the commit."]
+    "forbid": ["Routine handling-mode approval, unauthorized installation, reading a nonexistent skill, pretending the missing skill ran, bypassing required checks, claiming the complete core is incomplete because optional commit is absent, or including unrelated files in the commit."]
   },
   {
     "id": "guide-ui-only-completed-feature",
@@ -1025,5 +1025,31 @@
       "Audit-only and preview variants report findings without metadata, file, branch, or commit writes. The no-move variant permits only otherwise authorized in-place updates and reports proposed moves without silently archiving."
     ],
     "forbid": ["Requiring code/domain disappearance for an already eligible authorized move, reapproving every file, archiving uncertain/current entries, changing out-of-scope citations, overwriting an archive, or mutating an audit-only run."]
+  },
+  {
+    "id": "spec-existing-plan-handoff",
+    "skill": "spec",
+    "setup": "Provide an approved native spec, a supported non-UI contract revision, and an existing plan with completed history and unfinished tasks needing alignment. Product decisions are settled by the requested revision. In a no-plan control, initial task decomposition is needed. In a separate-planning control, the approval follow-up explicitly asks to use plan separately for the existing plan; it still forbids implementation. Preserve unrelated user edits.",
+    "prompt": "按已讨论的决定修订规格，检查对现有计划的影响，先展示草稿，不改计划或代码。",
+    "follow_up": "批准这份规格变更，保存并提交规格，说明下一步；不要修改计划或开始实施。",
+    "expect": [
+      "After the one requested specification approval, only the specification and necessary approved appendices are saved and committed. Existing plan tasks, completed history, and product code remain unchanged.",
+      "With an existing plan, the handoff recommends execute to verify applicable execution authority and reconcile unfinished arrangements under its revision contract, without requiring a separate plan invocation. It does not claim the stale plan is already aligned or that spec approval authorizes implementation.",
+      "The no-plan and explicit separate-planning controls recommend plan. No variant invokes the recommended skill automatically."
+    ],
+    "forbid": ["Routing every plan-alignment need back to plan, silently editing downstream records, inferring execution authority from spec approval, dropping needed initial decomposition, or ignoring an explicit separate-planning request."]
+  },
+  {
+    "id": "ui-design-existing-plan-handoff",
+    "skill": "ui-design",
+    "setup": "Provide an approved product spec, an existing design system, and an existing plan with unfinished tasks affected by a presentation-only revision. In a settled-input control all UI decisions already match the product contract: request only a readiness check and next-step recommendation, with no follow-up. Other controls omit the plan where initial decomposition is needed, or explicitly request separate planning in the approval follow-up. No variant authorizes implementation or plan writes.",
+    "prompt": "按已批准规格给出这次界面调整方案，先让我确认；指出对现有计划的影响，不改计划或代码。",
+    "follow_up": "批准这些界面决定，保存并提交界面规格，说明下一步；不要开始实施或改计划。",
+    "expect": [
+      "The revision saves and commits only the approved UI specification, preserves the existing design system and plan history, and identifies the unfinished arrangements needing alignment.",
+      "Both the approved-revision and settled-input variants recommend execute for the existing plan, with execution authority and revision-contract checks still required. The settled-input variant skips document writes and an unnecessary UI approval; neither variant requires a separate plan handoff.",
+      "The no-plan and explicit separate-planning controls recommend plan. UI approval alone never starts implementation or another skill."
+    ],
+    "forbid": ["Unconditionally recommending plan when UI design is skipped or a plan already exists, rewriting settled UI documents, changing the product contract, editing plan tasks here, or treating UI approval as execution authority."]
   }
 ]

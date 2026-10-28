@@ -19,7 +19,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 // source file -> skill directories that ship a copy
 const MAP = {
-  "repository-changes.md": ["autoflow", "bugfix", "code-review", "commit", "execute", "ideate", "learning", "learning-refresh", "plan", "simplify", "spec", "spike", "survey", "ui-design", "ui-review"],
+  "repository-changes.md": ["autoflow", "bugfix", "code-review", "commit", "execute", "guide", "ideate", "learning", "learning-refresh", "plan", "simplify", "spec", "spike", "survey", "ui-design", "ui-review"],
   "glossary-format.md": ["survey", "spec"],
   "design-input.md": ["ideate", "spike", "spec"],
   "subagent-dispatch.md": ["survey", "spec", "plan", "execute", "ideate"],

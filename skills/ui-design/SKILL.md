@@ -7,7 +7,7 @@ description: Create or revise ui-spec.md beside an approved spec before dependen
 
 Refine an approved product contract into layout, components, presentation states, interactions, and tokens. If a proposed UI decision changes or conflicts with the product contract, stop and recommend `spec` for that decision before UI approval. This skill selects no implementation tasks and writes no application code.
 
-Skip this stage only after confirming that every in-scope layout, presentation-state, and interaction decision is settled by approved inputs or unchanged existing behavior, and that those decisions match the current product contract. Recommend `plan` without starting it.
+Skip this stage only after confirming that every in-scope layout, presentation-state, and interaction decision is settled by approved inputs or unchanged existing behavior, and that those decisions match the current product contract. Use the final handoff step in Phase 4 without creating or revising documents.
 
 ## Output
 
@@ -118,7 +118,7 @@ Check the specification using the quick checklist in `./references/wcag-checklis
    ```
    docs(ui-design): add design specifications for <feature-name>
    ```
-4. Recommend `plan` to create a plan or align affected decisions in an existing one. Name those decisions and do not declare dependent work ready until conflicts are resolved. Do not start `plan`.
+4. Recommend `plan` for explicitly requested separate planning. Otherwise recommend `execute` when a plan already exists or for a ready small change, and `plan` only when initial task decomposition is needed. Subsequent `execute` must verify applicable execution authority and reconcile any existing plan under its revision contract. Name affected decisions and do not declare dependent work ready until conflicts are resolved. Do not start another skill.
 
 ## References
 

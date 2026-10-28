@@ -88,7 +88,10 @@ assert.ok(designInput.includes("It does not own `proposal.md` or import a comple
 assert.ok(designInput.includes("For `spike`, read only material needed to frame, interpret, or reproduce the bounded design evidence") && designInput.includes("The following full-design preservation and import checks apply to `ideate` and `spec`, not `spike`"), "shared input rules must scope spike reading separately from full design imports");
 
 const guide = read("skills/guide/SKILL.md");
-assert.ok(guide.includes("not installed") && guide.includes("directly handle"), "guide must offer installation or direct execution when its target is absent");
+for (const rule of ["not installed", "directly handle", "request and scope are clear", "available capabilities can safely complete it", "user has not required that exact skill", "without a selection prompt", "Before any direct-handling repository write", "Do not install without explicit authorization"]) {
+  assert.ok(guide.includes(rule), `missing safe direct-handling rule: ${rule}`);
+}
+assert.doesNotMatch(guide, /wait for their choice|If they choose direct handling/, "a missing optional skill must not impose a handling-mode approval");
 assert.doesNotMatch(guide, /Use (?:`guide` )?when the request does not name a skill/, "an unnamed skill alone must not force routing through guide");
 assert.match(guide, /A clear request belongs directly to its matching specialist/, "guide must leave clear requests to their specialist");
 const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
@@ -125,10 +128,8 @@ for (const skill of installedSkills) {
     assert.doesNotMatch(description, /\bUse (?:after|before)\b/, `${skill} must not use workflow timing alone as a trigger`);
   }
   if (skill === "autoflow") assert.match(description, /user explicitly asks for autonomous delivery/, "autoflow must distinguish delivery authorization from spec approval");
-  if (skill !== "guide") {
-    assert.ok(source.includes("./references/repository-changes.md"), `${skill} can write repository files or Git state and must load shared safety and delivery`);
-    assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
-  }
+  assert.ok(source.includes("./references/repository-changes.md"), `${skill} can write repository files or Git state and must load shared safety and delivery`);
+  assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
 }
 for (const skill of ["execute", "bugfix", "code-review", "simplify", "ui-review", "commit"]) {
   const source = read(`skills/${skill}/SKILL.md`);
@@ -563,7 +564,14 @@ const uiDesign = read("skills/ui-design/SKILL.md");
 assert.ok(uiDesign.includes("stop and recommend `spec` for that decision before UI approval"), "UI approval must not change the product contract");
 assert.ok(uiDesign.includes("every in-scope layout, presentation-state, and interaction decision"), "settled styling or component reuse alone must not skip UI design");
 assert.ok(uiDesign.includes("read it and the relevant existing plan") && uiDesign.includes("Preserve unaffected UI decisions"), "UI revision must inspect existing inputs and preserve settled decisions");
-assert.ok(uiDesign.includes("align affected decisions in an existing one") && uiDesign.includes("do not declare dependent work ready"), "UI changes must identify stale plan decisions without advancing dependent work");
+assert.ok(uiDesign.includes("Name affected decisions") && uiDesign.includes("do not declare dependent work ready"), "UI changes must identify stale plan decisions without advancing dependent work");
+for (const [skill, source] of [["spec", spec], ["ui-design", uiDesign]]) {
+  for (const rule of ["explicitly requested separate planning", "recommend `execute` when a plan already exists", "initial task decomposition", "verify applicable execution authority", "under its revision contract"]) {
+    assert.ok(source.includes(rule), `${skill} must avoid a redundant plan handoff: ${rule}`);
+  }
+}
+assert.ok(uiDesign.includes("Use the final handoff step in Phase 4 without creating or revising documents"), "settled UI decisions use the same handoff rule without writing documents");
+assert.doesNotMatch(spec + uiDesign, /when task decomposition or reconciliation is needed|Recommend `plan` without starting it|Recommend `plan` to create a plan or align/, "existing plans must not unconditionally return to plan");
 const uiAccessibility = read("skills/ui-design/references/wcag-checklist.md");
 assert.ok(uiAccessibility.includes("WCAG 1.4.3 and 1.4.11") && uiAccessibility.includes("inactive controls and unmodified user-agent appearance are exempt"), "non-text contrast must name its criterion and component exceptions");
 assert.doesNotMatch(uiAccessibility, /All UI components.*3:1/, "the quick checklist must not turn conditional non-text contrast into a universal rule");
