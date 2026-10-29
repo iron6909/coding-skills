@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **仓库自检**：`check-examples` 只保留包清单、技能结构与可移植性、场景格式及可执行示例检查，不再逐句比对技能原文；规则改动的行为证据以手工场景实跑为准。
+
 ### Fixed
 
 - **重复审批**：默认分支上首次提交前自动创建功能分支，不再询问；已暂存的无关改动保持原样，整文件范围按路径提交，仅按 hunk 暂存时才停下确认；`commit` 直接使用用户要求逐字保留的提交信息，并报告与项目规范的差异。
