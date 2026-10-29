@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.0.0] - 2026-10-29
+
 ### Breaking Changes
 
 - **autoflow 不再保存状态文件**：删除 `state-management.md` 与 schema v5（`approved_inputs`、`plan_blob`、`request_evidence`、审查坐标）。已提交的计划、执行账本与 Git 历史就是记录，请求中的约束写入计划的 Constraints 供新会话恢复；已提交的规格、附录和 UI/设计文档是批准证据，计划提交之后未提交的修改、被删除或新增的必读输入先停下交其所属技能，纯排版修改无需重新审批。旧版 `.coding/autoflow-state*.json` 原样保留，只读取其中的用户限制与具体高风险停点，不再作为授权或完成证据。升级后无需迁移：已有计划与账本照常续跑。
@@ -699,7 +701,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v13.1.2...HEAD
+[Unreleased]: https://github.com/iron6909/coding-skills/compare/v14.0.0...HEAD
+[14.0.0]: https://github.com/iron6909/coding-skills/compare/v13.1.2...v14.0.0
 [13.1.2]: https://github.com/iron6909/coding-skills/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/iron6909/coding-skills/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/iron6909/coding-skills/compare/v13.0.1...v13.1.0
