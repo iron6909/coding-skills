@@ -9,8 +9,6 @@ Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` 
 
 Choose persistence, not a larger process: **Brief** keeps the task list and checks in conversation, with no files or ledger; **Full** saves one `plan.md` when the user needs persistence, later resumption, or an autoflow run. A short plan may use Full simply to survive a pause. File count, module boundaries, and risk do not determine the tier. Both retain the same task contract, and neither requires task briefs by default.
 
-Read `./references/output-tier.md` only when resolving an older instruction that points to the former tier guidance; the rules now live here.
-
 **Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
 ## Preconditions
