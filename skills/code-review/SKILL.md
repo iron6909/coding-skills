@@ -7,7 +7,7 @@ description: Independently review a local branch, completed feature, or commit r
 
 Review a branch, completed feature, or historical commits, including the feature-wide stage called by `autoflow`. This does not replace the task reviews inside `execute`.
 
-Deliver feedback in conversation only. Do not write review reports or persist findings in another file, ledger, or state field. The current request or the plan's Review focus supplies specific concerns.
+Deliver feedback in conversation only. Do not write review reports or persist findings in another file or ledger. The current request or the plan's Review focus supplies specific concerns.
 
 Read `./references/repository-changes.md` before checks that may change state or any authorized fix; reviewing code alone remains read-only. Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
 
@@ -100,6 +100,6 @@ Continue authorized Blocking/Important fixes and fix-caused regressions while ne
 
 ## Completion
 
-Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it owns only its bounded stage state, not a copy of the findings.
+Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it keeps no copy of the findings.
 
 Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill.

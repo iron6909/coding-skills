@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- **autoflow 不再保存状态文件**：删除 `state-management.md` 与 schema v5（`approved_inputs`、`plan_blob`、`request_evidence`、审查坐标）。已提交的计划、执行账本与 Git 历史就是记录，请求中的约束写入计划的 Constraints 供新会话恢复；已提交的规格、附录和 UI/设计文档是批准证据，计划提交之后未提交的修改、被删除或新增的必读输入先停下交其所属技能，纯排版修改无需重新审批。旧版 `.coding/autoflow-state*.json` 原样保留，只读取其中的用户限制与具体高风险停点，不再作为授权或完成证据；本次修改未做行为实跑。
+
 ### Changed
 
 - **仓库自检**：`check-examples` 只保留包清单、技能结构与可移植性、场景格式及可执行示例检查，不再逐句比对技能原文；规则改动的行为证据以手工场景实跑为准。

@@ -127,7 +127,7 @@ Fix evidence-based gaps directly. If a gap requires a product decision, recommen
 
 ## Authorization
 
-When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
+When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Record the binding limits it passes under Constraints. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
 
 When called independently, a request to create or revise a plan authorizes that planning output, not implementation. Self-review and deliver Brief in conversation or save and commit Full as requested, without routine plan approval. A review-only, draft, preview, or explicit approval-first request remains conversation-only until the user authorizes saving. Approval of the spec alone is not a request to plan or execute, and a plan commit is not execution authority. Missing product decisions and specific high-risk actions still need their applicable decisions.
 
