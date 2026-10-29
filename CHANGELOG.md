@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- **autoflow 不再保存状态文件**：删除 `state-management.md` 与 schema v5（`approved_inputs`、`plan_blob`、`request_evidence`、审查坐标）。已提交的计划、执行账本与 Git 历史就是记录，请求中的约束写入计划的 Constraints 供新会话恢复；已提交的规格、附录和 UI/设计文档是批准证据，计划提交之后未提交的修改、被删除或新增的必读输入先停下交其所属技能，纯排版修改无需重新审批。旧版 `.coding/autoflow-state*.json` 原样保留，只读取其中的用户限制与具体高风险停点，不再作为授权或完成证据；本次修改未做行为实跑。
+- **autoflow 不再保存状态文件**：删除 `state-management.md` 与 schema v5（`approved_inputs`、`plan_blob`、`request_evidence`、审查坐标）。已提交的计划、执行账本与 Git 历史就是记录，请求中的约束写入计划的 Constraints 供新会话恢复；已提交的规格、附录和 UI/设计文档是批准证据，计划提交之后未提交的修改、被删除或新增的必读输入先停下交其所属技能，纯排版修改无需重新审批。旧版 `.coding/autoflow-state*.json` 原样保留，只读取其中的用户限制与具体高风险停点，不再作为授权或完成证据。升级后无需迁移：已有计划与账本照常续跑。
 
 ### Changed
 
@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **可逆性与授权**：共享副作用规则明确，可 `git revert` 的受跟踪本地文件（夹具、样例数据、合成密钥）属于普通工作，无需专项授权；真实数据、真实凭据或访问、外部服务、已发布产物，以及任何离开仓库的材料仍需授权。`execute` 的不可逆条件改为引用该规则。同一夹具实跑两次：修改前一次把合成密钥轮换误判为越权并自我阻塞，修改后两次均先观察 RED→GREEN、独立审查后正常交付。
 - **空审查范围**：`code-review` 用 `git diff --quiet <base>...<head>` 的退出码判定空范围，不再靠目测；记录的基线等于被审 HEAD 属有效证据而非冲突，返回 `No new diff to review` 且不派发审查者。单独夹具实跑六次：修改前 1 次仍派发审查；加退出码判断后 1 次反问基线、1 次通过；补基线澄清后连续 3 次通过。
 - **多余确认**：`survey` 写入前不再先汇总待确认，`bugfix` 说明默认测量负载后直接继续，`execute` 移除笼统的“无法解释”风险确认，需求条件修订不再额外要求计划审批；规格与界面审批、具体高风险操作和必需验证门槛不变。
+
+### Verification
+
+- Windows、Node 24.10.0、Pi 1.4.0 下，仓库检查与离线打包通过。
+- 20 个重写场景在独立本地夹具中各实跑主变体一次，模型均解析为 `remote/group/auto`，逐条对照预期判定：16 个通过，2 个部分通过（各有一个对照变体未跑），首轮 2 个失败均已修复并复验（见上文空审查范围与可逆性两条）。审计后重跑三个恢复场景：去掉泄露答案的提示文件、补全规格、改用新会话续跑，均通过；其中新会话仅凭计划 Constraints 恢复了三条请求限制。
+- 未覆盖：各场景声明的对照变体、默认分支上的自动建分支、无法委派审查者时的内联降级，以及 `simplify` 删除读取顺序规则后的重新实跑。每个场景一次观察，不代表通用遵循率。
 
 ## [13.1.2] - 2026-10-28
 
