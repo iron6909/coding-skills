@@ -10,7 +10,7 @@ Use stable IDs to trace acceptance conditions from spec to tasks, tests, and com
 - Assign one ID to each observable acceptance condition, including testable performance, security, or data-integrity properties.
 - New specs have sequential IDs. Revisions append after the highest ID ever assigned, including retired IDs.
 - IDs are immutable: never renumber them, move them to another requirement, or reuse a retired ID.
-- Implementation choices, coding conventions, exclusions, and Testing Boundary entry points do not get requirement IDs. Put them in Decisions, Constraints, Out of scope, or Testing Boundary instead.
+- Implementation choices, coding conventions, exclusions, and Testing Boundary entry points do not get requirement IDs. Put them in Design, Constraints and failure behavior, Scope and non-goals, or Testing Boundary instead.
 - Make the condition testable before assigning its ID; an ID does not make “fast” or “intuitive” verifiable.
 
 ```markdown
@@ -69,7 +69,7 @@ In an authorized plan revision, remove the retired ID from unfinished executable
 
 ### Change
 
-Keep the ID when revising the same acceptance condition. Record a significant scope change in Decisions and obtain approval before revising the plan. A genuinely new condition gets a new ID rather than taking over an existing one.
+Keep the ID when revising the same acceptance condition. A genuinely new condition gets a new ID rather than taking over an existing one.
 
 ## Verification
 

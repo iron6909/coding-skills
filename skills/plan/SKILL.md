@@ -9,8 +9,6 @@ Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` 
 
 Choose persistence, not a larger process: **Brief** keeps the task list and checks in conversation, with no files or ledger; **Full** saves one `plan.md` when the user needs persistence, later resumption, or an autoflow run. A short plan may use Full simply to survive a pause. File count, module boundaries, and risk do not determine the tier. Both retain the same task contract, and neither requires task briefs by default.
 
-Read `./references/output-tier.md` only when resolving an older instruction that points to the former tier guidance; the rules now live here.
-
 **Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
 ## Preconditions
@@ -129,7 +127,7 @@ Fix evidence-based gaps directly. If a gap requires a product decision, recommen
 
 ## Authorization
 
-When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
+When called by `autoflow`, its invocation authorizes creating or revising an in-scope Full plan. Complete self-review, save and commit it, then return to the orchestrator without requesting plan approval. Do not describe a generated plan as user-approved. Record the binding limits it passes under Constraints. Missing product decisions, user-constraint conflicts, and specific high-risk actions still block affected work.
 
 When called independently, a request to create or revise a plan authorizes that planning output, not implementation. Self-review and deliver Brief in conversation or save and commit Full as requested, without routine plan approval. A review-only, draft, preview, or explicit approval-first request remains conversation-only until the user authorizes saving. Approval of the spec alone is not a request to plan or execute, and a plan commit is not execution authority. Missing product decisions and specific high-risk actions still need their applicable decisions.
 

@@ -17,7 +17,7 @@ Use the impact criteria in `./references/ui-review-checklist.md`. Detection conf
 
 ## Workspace safety
 
-Read `./references/repository-changes.md` before saving the report, running state-changing checks, or applying authorized fixes. Code inspection alone needs no branch change; saving the report is a repository write.
+Read `./references/repository-changes.md` before saving the report, running state-changing checks, or applying authorized fixes. Code inspection and the uncommitted report need no branch change.
 
 Read `./references/definition-of-done.md` before choosing verification for code fixes; it owns unavailable required checks and explicit verification waivers.
 

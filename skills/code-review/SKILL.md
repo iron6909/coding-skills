@@ -7,7 +7,7 @@ description: Independently review a local branch, completed feature, or commit r
 
 Review a branch, completed feature, or historical commits, including the feature-wide stage called by `autoflow`. This does not replace the task reviews inside `execute`.
 
-Deliver feedback in conversation only. Do not write review reports or persist findings in another file, ledger, or state field. The current request or the plan's Review focus supplies specific concerns.
+Deliver feedback in conversation only. Do not write review reports or persist findings in another file or ledger. The current request or the plan's Review focus supplies specific concerns.
 
 Read `./references/repository-changes.md` before checks that may change state or any authorized fix; reviewing code alone remains read-only. Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
 
@@ -45,6 +45,8 @@ git log <review_base_sha>..<review_head_sha> --oneline
 ```
 
 Confirm both commits resolve. Keep both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to the reviewer. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
+
+Decide emptiness with the pinned command's exit code, not by inspection: run `git diff --quiet <review_base_sha>...<review_head_sha>` (endpoint form for `A..B`). Exit 0 means no diff, and no reviewer is dispatched. A recorded or supplied base that equals the reviewed head is valid evidence, not a conflict: the feature's increments can predate that base, so do not ask to widen the range.
 
 If the pinned diff is empty, confirm that the base matches the intended scope, including any supplied feature-base and ledger evidence. Return `No new diff to review` with both SHAs, comparison mode, and any uncommitted-change limit, then stop without dispatching a reviewer. This is neither `Ready` nor an independent passing review, and does not prove requirements are satisfied. Under `autoflow`, return this result to it; only verified existing requirement coverage and fresh final verification can establish a no-change delivery. Do not manufacture a diff, task, commit, or finding.
 
@@ -88,7 +90,7 @@ Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Mi
 
 Review alone does not authorize code changes. If the current request already authorizes fixes, honor its exact scope after adjudicating findings without asking again. Only a review-only request needs a later fix decision; deliver its findings before offering repairs. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. An unresolved product, architectural, security-policy, or data-loss decision stops affected work; implementing an already approved security contract locally is not a new risk approval.
 
-Before editing, confirm the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
+Before editing, verify the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Do not switch away from the pinned review branch to satisfy the shared safety gate. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
 
 For behavior fixes, read `./references/tdd.md` and follow it. Behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, then apply the DoD to the final fixed code. Failed or unavailable required checks block fix completion and commits unless the DoD's explicit verification-waiver gate is satisfied.
 
@@ -100,6 +102,6 @@ Continue authorized Blocking/Important fixes and fix-caused regressions while ne
 
 ## Completion
 
-Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it owns only its bounded stage state, not a copy of the findings.
+Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it keeps no copy of the findings.
 
 Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill.

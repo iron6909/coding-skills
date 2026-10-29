@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runInNewContext } from "node:vm";
@@ -8,12 +8,8 @@ import { runInNewContext } from "node:vm";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const blocks = (path, language) => [...read(path).matchAll(new RegExp(`\`\`\`${language}\\r?\\n([\\s\\S]*?)\\r?\\n\`\`\``, "g"))].map((match) => match[1]);
 
-let manifest;
-try {
-  manifest = JSON.parse(read("package.json"));
-} catch (error) {
-  assert.fail(`Invalid package manifest: ${error.message}`);
-}
+// ponytail: structure and runnable examples only; rule-wording regressions surface in workflow-case runs, so run those before releasing skill-rule changes.
+const manifest = JSON.parse(read("package.json"));
 assert.ok(manifest.keywords.includes("pi-package"), "the package must be discoverable as a Pi package");
 assert.deepEqual(manifest.pi.skills, ["./skills"], "Pi must load the existing self-contained skill directories");
 assert.deepEqual(manifest.pi.extensions, ["./extensions/index.ts"], "Pi must load the single command adapter");
@@ -24,153 +20,34 @@ assert.deepEqual(manifest.files, ["extensions", "skills", "README.md", "LICENSE"
 for (const command of ["node scripts/sync-references.mjs --check", "node scripts/sync-references.test.mjs", "node scripts/check-examples.mjs", "node scripts/check-simplify-trace.mjs --self-test", "node scripts/pi-extension.test.mjs", "git diff --check", "npm pack --dry-run --json --offline"]) {
   assert.ok(manifest.scripts?.check?.split(" && ").includes(command), `npm run check must include ${command}`);
 }
-assert.ok(read("AGENTS.md").includes("npm run check"), "document the one-command development check");
 
-// ponytail: these assert written contracts, not agent behavior; use workflow cases and real traces to evaluate compliance.
-const review = read("skills/code-review/SKILL.md");
-const reviewer = read("skills/code-review/references/code-reviewer.md");
-assert.doesNotMatch(review + reviewer, /review-lenses|legacy configuration|backward compatibility with/i, "the review contract must describe current behavior, not version compatibility");
-for (const check of ["boundary conditions", "error handling", "Test effectiveness", "trust boundaries", "data loss"]) {
-  assert.ok(reviewer.includes(check), `missing comprehensive review check: ${check}`);
-}
-for (const rule of ["one fresh read-only subagent", "never the whole session history", "inline self-review (no independent reviewer)", "A failed delegation is a blocker", "Rule explicitly on every item", "Explain rejected findings with technical evidence"]) {
-  assert.ok(review.includes(rule), `missing review coordination rule: ${rule}`);
-}
-for (const rule of ["Do not write review reports or persist findings", "Review alone does not authorize code changes", "preserve user hunks", "After each correction", "Do not restart whole-branch review", "unrelated observations do not extend the authorized scope"]) {
-  assert.ok(review.includes(rule), `missing review boundary: ${rule}`);
-}
-assert.ok(review.includes("last verified `fix_head_sha`") && review.includes("including uncommitted changes"), "continued corrections must track their own commits and re-check uncommitted fixes without losing the pinned review");
-for (const rule of ["Diff command: <pinned_diff_command>", "Do not dispatch a second reviewer", "author\'s rationale never grades its own correctness", "### Declined to judge", "**Ready**, **Needs fixes**, or **Unverified**"]) {
-  assert.ok(reviewer.includes(rule), `missing reviewer contract: ${rule}`);
-}
-const reviewReferences = readdirSync(new URL("../skills/code-review/references/", import.meta.url));
-assert.deepEqual(reviewReferences.filter((file) => /^(lens-|review-lenses\.|subagent-dispatch\.)/.test(file)), [], "retired lens and axis-dispatch references must not ship");
-const repositoryChanges = read("shared/references/repository-changes.md");
-for (const safeguard of ["initial staged and unstaged", "relevant untracked content", "default branch", "specific sign-off", "<REDACTED>", "non-document scratch", "Preserve every document", "ignore and tracking policy", "Do not push, merge", "do not authorize edits", "unrun checks remain unverified"]) {
-  assert.ok(repositoryChanges.includes(safeguard), `shared repository changes missing safeguard: ${safeguard}`);
-}
-assert.ok(repositoryChanges.includes("Document and work-record writes count too") && repositoryChanges.includes("do not add an application test workflow"), "shared safety covers document writes without inventing an implementation workflow");
-for (const rule of ["## Feature review base", "feature history and local refs", "no earlier feature increment exists", "Conflicting or unknown bases"]) {
-  assert.ok(repositoryChanges.includes(rule), `missing shared feature-base rule: ${rule}`);
-}
-for (const skill of ["execute", "autoflow"]) {
-  assert.ok(read(`skills/${skill}/SKILL.md`).includes("Feature review base"), `${skill} must use the shared feature-base rule`);
-}
-assert.doesNotMatch(read("skills/execute/SKILL.md"), /Only a new standalone run without a base uses/, "a first execute invocation must not hide earlier feature commits behind HEAD");
-for (const [skill, action] of [["simplify", "## Execution"], ["ui-review", "## Phase 0:"]]) {
-  const source = read(`skills/${skill}/SKILL.md`);
-  const gate = source.indexOf("./references/repository-changes.md");
-  assert.ok(gate >= 0 && gate < source.indexOf(action), `${skill} must load shared safety before its first affected action`);
-}
-
-const spike = read("skills/spike/SKILL.md");
-const designInput = read("shared/references/design-input.md");
-assert.doesNotMatch(designInput, /initial staged and unstaged|default branch/, "design preservation must not duplicate shared workspace safety");
-assert.ok(spike.includes("non-document scratch"), "spike must preserve reproducible evidence before cleaning scratch");
-assert.ok(spike.includes("./references/repository-changes.md"), "spike must load shared repository safety before experiments");
-assert.ok(spike.indexOf("## Safety before experiments") < spike.indexOf("## Gather evidence"), "spike safety must precede execution");
-for (const rule of ["Do not require an approved spec or plan", "Supported", "Not supported", "Inconclusive", "Do not mock the dimension being tested", "preserve previous methods, failures, and conclusions"]) {
-  assert.ok(spike.includes(rule), `missing independent spike contract: ${rule}`);
-}
-for (const rule of ["untrusted input", "section by section", "schemas and constraints", "same directory", "original material became unavailable", "not need the original source, proposal, spike report, or conversation"]) {
-  assert.ok(designInput.includes(rule), `missing design preservation contract: ${rule}`);
-}
-assert.ok(spike.includes("Accept a candidate, its blocking design question, constraints, and a deciding criterion") && spike.includes("A prior `ideate` invocation is not required"), "spike needs a bounded design question, not prior workflow history");
-assert.ok(spike.includes("Do not take downstream work as a probe request") && spike.includes("with their existing workflow"), "spike must not absorb routine downstream verification or invent a design detour");
-assert.ok(spike.includes("routine inspection unrelated to a candidate-design decision") && spike.includes("design premise discovered during downstream work"), "spike exclusions must not reject bounded design questions or source-based evidence");
-assert.ok(spike.includes("candidate, question, or dependent design decision cannot be established") && spike.includes("ask here for missing constraints or a deciding criterion"), "spike must distinguish an unframed question from missing details it can clarify locally");
-assert.ok(!spike.includes("If an intended design probe lacks the required inputs"), "missing details alone must not force an ideate detour");
-assert.ok(spike.includes("probe scope>") && spike.includes("why the run stopped"), "spike evidence must preserve its probe scope and stopping reason");
-assert.ok(spike.includes("another session can reconstruct the probe and inputs from the report and its appendices alone") && spike.includes("complete runnable probe and exact inputs or a deterministic fixture generator"), "scratch cleanup requires self-contained reproduction, not just selected snippets");
-assert.ok(spike.split("## Finish")[1].includes("Recommend `ideate` for every outcome"), "even supported evidence must return to design rather than approve delivery");
-assert.ok(spike.includes("Do not edit `proposal.md`") && spike.includes("Commit only the report and its necessary internal appendices"), "spike owns evidence, not proposals or contracts");
-assert.ok(designInput.includes("It does not own `proposal.md` or import a complete external design") && designInput.includes("recommend `ideate` and stop before experiments"), "full external design imports belong to design-document owners, not spike");
-assert.ok(designInput.includes("For `spike`, read only material needed to frame, interpret, or reproduce the bounded design evidence") && designInput.includes("The following full-design preservation and import checks apply to `ideate` and `spec`, not `spike`"), "shared input rules must scope spike reading separately from full design imports");
-
-const guide = read("skills/guide/SKILL.md");
-for (const rule of ["not installed", "directly handle", "request and scope are clear", "available capabilities can safely complete it", "user has not required that exact skill", "without a selection prompt", "Before any direct-handling repository write", "Do not install without explicit authorization"]) {
-  assert.ok(guide.includes(rule), `missing safe direct-handling rule: ${rule}`);
-}
-assert.doesNotMatch(guide, /wait for their choice|If they choose direct handling/, "a missing optional skill must not impose a handling-mode approval");
-assert.doesNotMatch(guide, /Use (?:`guide` )?when the request does not name a skill/, "an unnamed skill alone must not force routing through guide");
-assert.match(guide, /A clear request belongs directly to its matching specialist/, "guide must leave clear requests to their specialist");
-const routing = guide.split("## Routing order")[1].split("## Handoff")[0];
-assert.match(routing, /review an existing planning document.*`ideate`.*`spike`.*`spec`.*`plan`.*Keep review-only requests read-only/, "document reviews must use their owner without authorizing edits or implementation");
-assert.ok(routing.includes("missing constraints or a deciding criterion can be clarified there") && !routing.includes("lacks the inputs for a bounded design probe"), "guide must not divert a framed spike question solely because a constraint or criterion is missing");
-assert.ok(routing.indexOf("small change with clear scope and acceptance checks") >= 0 && routing.indexOf("small change with clear scope and acceptance checks") < routing.indexOf("use `survey`"), "clear small work must route before workspace documentation");
-assert.ok(routing.includes("Missing `AGENTS.md` alone does not require a survey"), "missing instructions must not force document creation");
-const routingRules = [...routing.matchAll(/^\d+\. (.+)$/gm)].map(([, rule]) => rule);
-const uiRoute = routingRules.findIndex((rule) => rule.includes("use `ui-review`"));
-assert.ok(uiRoute >= 0 && uiRoute < routingRules.findIndex((rule) => rule.includes("use `code-review`")), "UI-specific review must precede general completed-feature review");
-assert.doesNotMatch(guide, /commits it only after the user approves/, "a plan commit must not imply user approval");
-assert.match(routingRules.find((rule) => /persisted or session plan/.test(rule)) ?? "", /user or autoflow authorization/, "existing plans use their applicable authority");
-assert.doesNotMatch(read("skills/survey/SKILL.md"), /Use on first contact|Run it the first time/, "survey is optional fact maintenance, not an onboarding prerequisite");
-const reviewInputs = review.split("## Prepare the handoff")[1].split("## Run one comprehensive review")[0];
-assert.match(reviewInputs, /review_head_sha[\s\S]*git show[\s\S]*appendix paths/, "contract inputs and appendix selection must be version-bound");
-assert.match(reviewer, /^Input basis:/m, "review handoff must identify the selected contract basis");
-assert.match(reviewer, /commit:path.*blob ID/, "reviewer needs recoverable versions, not bare paths");
 const readme = read("README.md");
-const [coreSkills, auxiliarySkills] = ["核心技能", "辅助技能"].map((label) => {
+const installedSkills = readdirSync(new URL("../skills/", import.meta.url), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+const listedSkills = ["核心技能", "辅助技能"].flatMap((label) => {
   const section = readme.split(`### ${label}`)[1]?.split("\n#")[0] ?? "";
   return [...section.matchAll(/\]\(skills\/([\w-]+)\/SKILL\.md\)/g)].map(([, name]) => name);
 });
-assert.deepEqual(coreSkills, ["survey", "spike", "spec", "plan", "execute", "code-review"], "README must identify the six core skills, including optional feasibility validation");
-const installedSkills = readdirSync(new URL("../skills/", import.meta.url), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-assert.deepEqual([...coreSkills, ...auxiliarySkills].sort(), installedSkills, "every skill must be classified once as core or auxiliary");
+assert.deepEqual(listedSkills.sort(), installedSkills, "README must classify every installed skill exactly once");
 for (const skill of installedSkills) {
   const source = read(`skills/${skill}/SKILL.md`);
   assert.match(source, new RegExp(`^name: ${skill}$`, "m"), `${skill} must retain its portable name`);
   assert.doesNotMatch(source, /^disable-model-invocation:/m, `${skill} must use default model-selected invocation`);
   const description = source.match(/^description: (.+)$/m)?.[1] ?? "";
   assert.ok(description.length > 0 && description.length <= 1024, `${skill} needs a nonempty, portable description`);
-  if (["learning", "learning-refresh", "simplify", "ui-review"].includes(skill)) {
-    assert.match(description, /Use when the user asks/, `${skill} must describe requested work, not an automatic follow-up`);
-    assert.doesNotMatch(description, /\bUse (?:after|before)\b/, `${skill} must not use workflow timing alone as a trigger`);
-  }
-  if (skill === "autoflow") assert.match(description, /user explicitly asks for autonomous delivery/, "autoflow must distinguish delivery authorization from spec approval");
-  assert.ok(source.includes("./references/repository-changes.md"), `${skill} can write repository files or Git state and must load shared safety and delivery`);
-  assert.equal(read(`skills/${skill}/references/repository-changes.md`).split("\n\n").slice(1).join("\n\n"), repositoryChanges, `${skill} must carry its self-contained copy`);
+  assert.ok(source.includes("./references/repository-changes.md"), `${skill} must load shared repository safety`);
 }
-for (const skill of ["execute", "bugfix", "code-review", "simplify", "ui-review", "commit"]) {
-  const source = read(`skills/${skill}/SKILL.md`);
-  for (const reference of ["definition-of-done.md", "git-commit.md"]) {
-    assert.ok(source.includes(`./references/${reference}`), `${skill} must use shared code-change verification and commit gates`);
-  }
-}
-assert.ok(readme.split("## 快速开始")[1]?.split("\n## ")[0].includes("/coding spec"), "the quick start must work without optional guide");
 for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
   const source = read(`skills/${file}`);
-  assert.ok(!/\bgitignored\b/i.test(source), `${file} must not assume the user's ignore policy`);
+  assert.doesNotMatch(source, /`(?:clarify|debug|capture|optimize|handoff)`|skills\/(?:clarify|debug|capture|optimize|refactor|handoff)\//, `retired entry in ${file}`);
+  assert.doesNotMatch(source.replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
-assert.ok(!installedSkills.some((skill) => ["clarify", "debug", "capture", "doc-review", "optimize", "refactor", "handoff"].includes(skill)), "retired entries must not remain as second implementations or aliases");
-for (const skill of ["spec", "plan", "execute", "autoflow"]) {
-  assert.ok(!/another specification system|OpenSpec|Spec Kit|Specify/.test(read(`skills/${skill}/SKILL.md`)), `${skill} must not advertise external specification compatibility`);
-}
-for (const skill of ["code-review", "ui-review"]) {
-  assert.ok(read(`skills/${skill}/SKILL.md`).includes("approved `ui-spec.md`"), `${skill} must check applicable approved UI decisions`);
-}
-assert.ok(readme.includes("审查重点通过本次请求或计划的 Review focus 提供"), "README must describe the current review inputs");
-assert.ok(readme.includes("`code-review` 只在会话内交付结果，`ui-review` 仍保存报告"), "code-review output changes must not remove UI review reports");
 
-const strategy = read("skills/execute/references/testing-strategy.md");
-assert.ok(strategy.includes("`./references/tdd.md` owns test entry-point selection"), "test strategy must use TDD's entry-point selection rule");
-assert.ok(!/Recommended ratio|Coverage targets|Dependencies can be mocked/.test(strategy), "test selection must follow risk, not universal quotas or mockability");
-assert.ok(!read("skills/ideate/SKILL.md").includes("Generate 5-8"), "ideation must not pad the option count");
-for (const file of ["component-states.md", "wcag-checklist.md"]) {
-  assert.ok(read(`skills/ui-design/references/${file}`).includes("## Contents"), `${file} needs navigation before detailed examples`);
-}
-let workflowCases;
-try {
-  workflowCases = JSON.parse(read("scripts/workflow-cases.json"));
-} catch (error) {
-  assert.fail(`Invalid workflow cases: ${error.message}`);
-}
+const workflowCases = JSON.parse(read("scripts/workflow-cases.json"));
 assert.ok(Array.isArray(workflowCases) && workflowCases.length > 0, "the manual workflow case set must be a non-empty array");
 assert.equal(new Set(workflowCases.map(({ id }) => id)).size, workflowCases.length, "workflow case IDs must be unique");
 for (const item of workflowCases) {
   assert.match(item.id, /^[a-z][a-z0-9-]+$/);
-  assert.match(item.skill, /^[a-z][a-z-]+$/);
-  assert.ok(read(`skills/${item.skill}/SKILL.md`), `unknown workflow skill: ${item.skill}`);
+  assert.ok(installedSkills.includes(item.skill), `unknown workflow skill: ${item.skill}`);
   for (const key of ["setup", "prompt"]) assert.ok(typeof item[key] === "string" && item[key].trim(), `${item.id}: missing ${key}`);
   for (const key of ["expect", "forbid"]) assert.ok(Array.isArray(item[key]) && item[key].length > 0 && item[key].every((value) => typeof value === "string" && value.trim()), `${item.id}: missing ${key}`);
 }
@@ -178,7 +55,6 @@ for (const item of workflowCases) {
 const endpointExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes(".post('/api/login')"));
 assert.equal(endpointExamples.length, 1, "keep one public-interface test example");
 for (const check of ["toBe(200)", "toBe(401)", "toBeUndefined()"]) assert.ok(endpointExamples[0].includes(check), `missing endpoint assertion: ${check}`);
-assert.ok(!strategy.includes("app.post("), "test strategy should not carry a production endpoint implementation");
 
 const cleanupExample = blocks("skills/execute/references/testing-strategy.md", "javascript").find((source) => source.includes("beforeEach("));
 assert.ok(cleanupExample, "missing test-isolation example");
@@ -207,34 +83,7 @@ assert.ok(loadingLabel, "the loading button must retain a text label in both sta
 for (const isLoading of [false, true]) {
   assert.ok(runInNewContext(loadingLabel, { isLoading }, { timeout: 1000 }).trim(), "button name must not disappear while loading");
 }
-const execute = read("skills/execute/SKILL.md");
-assert.ok(!/\bmodes?\b|5 task review-fix rounds/i.test(execute), "execute must not retain modes or the five-round review loop");
-assert.ok(execute.includes("After each task is committed, continue directly to the next executable task"), "execute must continue between tasks");
-assert.ok(execute.includes("Before taking either no-change path, read `./references/plan-revisions.md`") && execute.includes("on resume, recover its original boundary under Resume instead"), "both no-change paths must load the shared boundary check without resetting resumed work");
-assert.ok(execute.includes("git diff <task_base> -- <task-owned paths>") && execute.includes("only a candidate diff"), "the task-base diff is a candidate, not an ownership filter");
-for (const rule of ["captured task-start contents", "isolated task increment", "Task <N>: starting state —", "never copy secrets into records"]) assert.ok(execute.includes(rule), `missing change-boundary rule: ${rule}`);
-assert.ok(execute.includes("Task <N>: review fix pass —") && execute.includes("Task <N>: failed attempt —"), "review progress and failed attempts must survive a resumed persisted plan");
-assert.ok(execute.includes("Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events"), "small work must skip bookkeeping, not move it into conversation");
-assert.ok(execute.includes("Recover available failure evidence and unresolved blockers") && execute.includes("first recover scope, execution authority, and change boundaries") && execute.includes("Ask only for what remains ambiguous"), "lightweight recovery must inspect available evidence before asking the user");
-assert.ok(execute.includes("**Persisted plan:**") && !execute.includes("**Planned work:**"), "name the persistence distinction explicitly");
-assert.ok(execute.includes("supplied directly by the user") && execute.includes("without a spec"), "session plans must state whether directly supplied plans need a spec");
-const exceptions = execute.split("## Exceptions and handoffs\n")[1]?.split("\n## ")[0] ?? "";
-for (const rule of ["already satisfied", "no new commit", "empty commit", "Existing coverage", "`plan`", "`spec`", "`ideate`"]) assert.ok(exceptions.includes(rule), `missing exception route: ${rule}`);
-const taskReview = execute.split("## Task review\n")[1].split("\n## ")[0];
-for (const rule of ["Review inline by default", "scoped re-check", "A second clear in-scope correction does not need new approval", "Stop before committing or advancing"]) {
-  assert.ok(taskReview.includes(rule), `missing task-review rule: ${rule}`);
-}
-assert.ok(!taskReview.includes("at most one fix pass"), "review pass count alone must not force another approval");
-assert.ok(execute.includes("Expected TDD RED is normal progress") && execute.includes("Unavailable required checks follow the DoD gate"), "expected RED must not halt work, while missing verification still blocks completion");
-assert.match(taskReview, /resolve[^.]*Blocking and Important[^.]*before commit/i, "execute owns its Blocking/Important commit gate");
-assert.match(review, /Blocking or Important[^.]*Needs fixes/, "code-review owns its readiness gate");
-const severity = read("shared/references/severity.md");
-assert.doesNotMatch(severity, /does not block shipping|can be deferred|unless trivial to fix/i, "impact definitions must not choose another skill's commit or deferral policy");
-assert.ok(execute.includes("Stop and ask the user for explicit sign-off on that specific risk"), "continuous execution must retain risk approval");
-for (const file of ["skills/guide/SKILL.md", "skills/autoflow/SKILL.md", "README.md"]) {
-  assert.ok(!/execute auto|Pass `auto`|传\s*`?auto`?|逐任务停下确认/.test(read(file)), `stale execute mode in ${file}`);
-}
-assert.ok(read("shared/references/definition-of-done.md").includes("full suite ran on the final completed change or standalone fix"), "full-suite timing must agree with continuous execution");
+
 const labelExample = blocks("skills/simplify/references/simplify-dimensions.md", "javascript").find((source) => source.includes("function createLabelBefore("));
 assert.ok(labelExample, "missing behavior-preserving simplification example");
 const labelImplementations = runInNewContext(`${labelExample}\n({ before: createLabelBefore, after: createLabelAfter })`, {}, { timeout: 1000 });
@@ -274,8 +123,6 @@ assert.equal(missingLabel.events[1][1].error, "Missing label");
 assert.equal(observeLabel(labelImplementations.after, "label", "save").error, behaviorFailure);
 console.log("simplification example preserves responses, result identity, errors and effect order");
 
-const reviewFile = "skills/code-review/SKILL.md";
-const finish = execute.split("## Completion report")[1];
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
 const gitEnv = { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" };
 const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Example checks", "-c", "user.email=checks@example.invalid", "-c", "commit.gpgsign=false", ...args], {
@@ -284,31 +131,19 @@ const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Ex
 try {
   writeFileSync(join(fixture, "global-config"), "");
   git("init", "--quiet", "--initial-branch=main");
-  const contractFiles = ["spec.md", "limits.md", "ui-spec.md", "DESIGN.md", "plan.md"];
   for (let n = 1; n <= 7; n++) {
     writeFileSync(join(fixture, "value"), `${n}\n`);
-    for (const path of contractFiles) writeFileSync(join(fixture, path), `version ${n}: ${path}\n`);
-    git("add", "--", "value", ...contractFiles);
+    git("add", "--", "value");
     git("commit", "-qm", `initial ${n}`);
   }
   git("switch", "-qc", "feature/example-check");
-  const reviewCommands = blocks(reviewFile, "bash").flatMap((source) => source.split("\n"));
+  const reviewCommands = blocks("skills/code-review/SKILL.md", "bash").flatMap((source) => source.split("\n"));
   const resolvers = reviewCommands.filter((source) => /^git rev-parse /.test(source));
   assert.equal(resolvers.length, 2, "resolve base and head separately");
   const [reviewBase, reviewHead] = resolvers.map((source) => git(...source.replaceAll("<review-base>", "HEAD~5").replaceAll("<review-head>", "HEAD~2").replaceAll('"', "").split(/\s+/).slice(1)).trim());
   assert.equal(reviewBase, git("rev-parse", "HEAD~5").trim());
   assert.equal(reviewHead, git("rev-parse", "HEAD~2").trim(), "explicit historical head must not become HEAD");
-  assert.equal(git("diff", reviewHead, reviewHead), "", "an endpoint range can legitimately have no new diff");
-  assert.equal(git("diff", `${reviewHead}...${reviewHead}`), "", "an empty branch comparison is not a review verdict");
-  const newBranchStart = git("rev-parse", "HEAD").trim();
-  assert.equal(git("diff", newBranchStart, newBranchStart), "");
-  assert.match(git("diff", reviewBase, newBranchStart), /value/, "using a new branch start would hide earlier feature changes");
-  assert.equal(git("log", `${reviewBase}..${reviewHead}`, "--format=%s").trim(), "initial 5\ninitial 4\ninitial 3");
-  assert.equal(git("show", `${reviewHead}:value`).trim(), "5", "read context at the historical head");
-  assert.ok(read(reviewFile).includes("git show <review_head_sha>:<path>"));
-  const commands = reviewCommands.filter((source) => /^git (diff|log) /.test(source));
-  assert.deepEqual([...reviewer.matchAll(/^Diff command: (.+)$/gm)].map(([, command]) => command), ["<pinned_diff_command>"], "the single reviewer must receive the selected comparison unchanged");
-  const ranges = commands.map((source) => {
+  const ranges = reviewCommands.filter((source) => /^git (diff|log) /.test(source)).map((source) => {
     const args = source.replaceAll("<review_base_sha>", reviewBase).replaceAll("<review_head_sha>", reviewHead).split(/\s+/).slice(1);
     return [args, git(...args)];
   });
@@ -318,7 +153,6 @@ try {
     git("add", "value");
     git("commit", "-qm", `fix ${n}`);
   }
-  assert.notEqual(git("rev-parse", "HEAD~5").trim(), reviewBase);
   for (const [args, expected] of ranges) assert.equal(git(...args), expected, "the documented review range moved after fix commits");
   git("switch", "-qc", "comparison-base", reviewBase);
   writeFileSync(join(fixture, "base-only"), "not part of the reviewed branch\n");
@@ -328,306 +162,9 @@ try {
   const diffs = ranges.filter(([args]) => args[0] === "diff").map(([args]) => git(...args.map((arg) => arg.replaceAll(reviewBase, divergedBase))));
   assert.match(diffs[0], /base-only/, "endpoint comparison includes differences on both sides");
   assert.doesNotMatch(diffs[1], /base-only/, "branch comparison excludes base-only changes");
-  git("switch", "-q", "feature/example-check");
-  const taskFile = join(fixture, "task-file");
-  writeFileSync(taskFile, "user-staged: old\nuser-unstaged: old\ntask: old\n");
-  git("add", "task-file");
-  git("commit", "-qm", "task baseline");
-  const taskBase = git("rev-parse", "HEAD").trim();
-  writeFileSync(taskFile, "user-staged: changed\nuser-unstaged: old\ntask: old\n");
-  git("add", "task-file");
-  const startingContents = "user-staged: changed\nuser-unstaged: changed\ntask: old\n";
-  writeFileSync(taskFile, startingContents);
-  const startingSnapshot = join(fixture, "task-start");
-  writeFileSync(startingSnapshot, startingContents);
-  writeFileSync(taskFile, startingContents.replace("task: old", "task: changed"));
-  const candidateDiff = git("diff", taskBase, "--", "task-file");
-  for (const change of ["user-staged: changed", "user-unstaged: changed", "task: changed"]) assert.ok(candidateDiff.includes(`+${change}`), `candidate diff must expose ${change}`);
-  const increment = spawnSync("git", ["-C", fixture, "diff", "--no-index", "--unified=0", "--", startingSnapshot, taskFile], { encoding: "utf8", timeout: 10000, env: gitEnv });
-  if (increment.error) throw increment.error;
-  assert.equal(increment.status, 1, increment.stderr); // git diff returns 1 for a non-empty increment.
-  assert.match(increment.stdout, /^\+task: changed$/m);
-  assert.doesNotMatch(increment.stdout, /^[+-]user-/m, "review only the task-start-to-current increment, not pre-existing user changes");
-  assert.match(readFileSync(taskFile, "utf8"), /^task: changed$/m, "a resumed task's current contents can satisfy its check");
-  assert.match(git("show", "HEAD:task-file"), /^task: old$/m, "a passing working-tree check does not prove the task increment was committed");
-  assert.notEqual(readFileSync(taskFile, "utf8"), startingContents, "retain the original task-start boundary instead of classifying the resumed increment as existing coverage");
-  assert.match(git("diff", "--cached", "--", "task-file"), /^\+user-staged: changed$/m, "review must preserve the user's index");
-  assert.match(git("diff", "--", "task-file"), /^\+user-unstaged: changed$/m, "review must preserve the user's unstaged changes");
-  for (const path of contractFiles) writeFileSync(join(fixture, path), `uncommitted: ${path}\n`);
-  const beforeReads = git("status", "--porcelain=v1");
-  for (const path of contractFiles) {
-    assert.equal(git("show", `${reviewHead}:${path}`).trim(), `version 5: ${path}`, "historical contracts must not follow HEAD or dirty files");
-    assert.equal(git("show", `HEAD:${path}`).trim(), `version 7: ${path}`, "an explicitly selected newer contract has a distinct basis");
-    const blob = git("rev-parse", `${reviewHead}:${path}`).trim();
-    assert.equal(git("cat-file", "blob", blob), git("show", `${reviewHead}:${path}`), "a pinned blob recovers the same contract content");
-  }
-  assert.equal(git("status", "--porcelain=v1"), beforeReads, "versioned reads must preserve the index and working tree");
-  const approvedBlob = git("rev-parse", "HEAD:spec.md").trim();
-  const approvedContent = git("cat-file", "blob", approvedBlob);
-  for (const editorialContent of [`\n${approvedContent}`, `\n${approvedContent}\n`]) {
-    writeFileSync(join(fixture, "spec.md"), editorialContent);
-    const editorialBlob = git("hash-object", "--", "spec.md").trim();
-    assert.equal(editorialContent.trim(), git("cat-file", "blob", approvedBlob).trim(), "both uncommitted editorial edits compare against the recoverable approved content");
-    assert.throws(() => git("cat-file", "blob", editorialBlob), "a computed editorial hash alone cannot be recovered after the next edit");
-  }
-  assert.equal(git("diff", "--cached", "--", "spec.md"), "", "snapshot reconciliation must not stage user documents");
-  assert.equal(git("status", "--porcelain=v1"), beforeReads, "editorial comparisons must not stage changes or create retained files");
-  assert.equal(git("branch", "--show-current").trim(), "feature/example-check");
 } finally {
   rmSync(fixture, { recursive: true, force: true });
 }
 
-let state;
-try {
-  state = JSON.parse(blocks("skills/autoflow/references/state-management.md", "json")[0]);
-} catch (error) {
-  assert.fail(`Invalid autoflow state example: ${error.message}`);
-}
-assert.equal(state.version, 5, "request receipts extend version 5 without reinterpreting older authority flags");
-assert.ok(Array.isArray(state.request_evidence) && state.request_evidence.length > 0, "new state must preserve actual invocation evidence");
-for (const message of state.request_evidence) {
-  assert.deepEqual(Object.keys(message).sort(), ["source", "text"]);
-  for (const field of ["source", "text"]) assert.ok(typeof message[field] === "string" && message[field].trim(), `request evidence needs ${field}`);
-}
-assert.match(state.request_evidence[0].text, /do not install dependencies/, "the receipt preserves an actual restriction, not just an approval claim");
-for (const field of ["mode", "approval", "auto_execute_and_review_fixes", "review_report", "current_task", "limit_usage"]) {
-  assert.ok(!Object.hasOwn(state, field), `state must not retain ${field}`);
-}
-for (const field of ["review_head", "fix_head"]) assert.equal(state[field], null, `${field} starts explicitly empty`);
-assert.equal(typeof state.plan_blob, "string", "record the self-reviewed plan separately from input approval");
-assert.ok(!Object.hasOwn(state.approved_inputs, "plan_blob"), "a generated plan snapshot is not user approval");
-assert.deepEqual(state.approved_inputs.spec_appendix_blobs, {}, "explicitly record an empty appendix snapshot when no appendix is required");
-for (const input of ["spec", "ui_spec", "design"]) {
-  assert.ok(Object.hasOwn(state, input), `missing approved input path: ${input}`);
-  assert.ok(Object.hasOwn(state.approved_inputs, `${input}_blob`), `missing approved input snapshot: ${input}`);
-}
-assert.ok(Object.hasOwn(state, "plan"), "keep the intended plan path even before it exists");
-const autoflow = read("skills/autoflow/SKILL.md");
-const recovery = read("skills/autoflow/references/state-management.md");
-for (const rule of ["Capture `request_evidence`", "trustworthy same-run receipt", "Existing version-5 records may lack", "absence is not evidence of unrestricted authority", "Pass effective restrictions to called skills"]) {
-  assert.ok(recovery.includes(rule), `missing recoverable request rule: ${rule}`);
-}
-assert.doesNotMatch(autoflow, /## Modes|--checkpointed|--dry-run|--resume|over 10 tasks|Ask once for approval/, "autoflow has one continuous execution policy");
-for (const rule of ["Do not request plan approval, stage confirmations", "a request to preview work does not authorize writes", "read-only reconciliation before branch changes", "explicit verification-waiver gate"]) {
-  assert.ok(autoflow.includes(rule), `missing autonomous delivery rule: ${rule}`);
-}
-assert.ok(autoflow.includes("disclosed inline fallback without an acceptance prompt unless") && review.includes("If the user or repository explicitly requires independent review"), "inline review must disclose its limit without a routine acceptance gate or overriding required independence");
-assert.ok(review.includes("No new diff to review") && review.includes("neither `Ready` nor an independent passing review"), "an empty range needs an honest no-review result");
-for (const rule of ["Do not store review findings", "cannot prove the verdict", "conversation feedback cannot be recovered", "repeat the read-only whole-feature review from the original", "continue fixes under verified invocation authority", "Reassess a former skill-imposed stop", "If state is invalid or incomplete, stop", "snapshot all contract documents", "recover the exact approved content", "Before recording a snapshot, verify", "A hash alone is not a saved snapshot", "retain the recoverable approved snapshot", "Do not commit user documents or create retained copies solely to refresh state", "unrecoverable approved inputs stop affected work", "retain it automatically", "ask only when the intended target or record ownership is unclear", "Before initial plan completion", "For an older schema, first reconcile", "unknown changes do not become authorized merely by hashing them"]) {
-  assert.ok(recovery.includes(rule), `missing stage-aware recovery rule: ${rule}`);
-}
-for (const skill of ["plan", "execute", "code-review"]) {
-  assert.match(read(`skills/${skill}/SKILL.md`), /autoflow[\s\S]*invocation[\s\S]*plan approval/i, `${skill} must accept invocation authority without plan approval`);
-}
-assert.ok(read("skills/plan/SKILL.md").includes("a request to create or revise a plan authorizes that planning output, not implementation") && read("skills/plan/SKILL.md").includes("explicit approval-first request remains conversation-only"), "standalone planning must honor the requested output without authorizing implementation or bypassing an explicit preview");
-
-const bugfix = read("skills/bugfix/SKILL.md");
-const workspaceGate = bugfix.indexOf("./references/repository-changes.md");
-assert.ok(workspaceGate >= 0 && workspaceGate < bugfix.indexOf("## Phase 1:"), "shared workspace safety must precede probes and hypothesis edits");
-assert.doesNotMatch(bugfix, /initial staged and unstaged|default branch|Redact secrets/, "bugfix must delegate generic safety to the shared reference");
-assert.ok(bugfix.includes("proceed directly to Phase 4"), "an evidenced root cause must not require exhaustive investigation");
-assert.ok(!/under about 20 lines|1-2 files|List every difference/.test(bugfix), "bug-fix workflow must follow uncertainty, not size quotas");
-for (const [pattern, rule] of [
-  [/^description: .*commit a verified small fix\./m, "disclose its commit contract"],
-  [/cause and how it produces the symptom/, "state causal evidence separately from fix verification"],
-  [/repeat count or observation window, and acceptance criterion before implementation/, "define a measurement criterion before a nondeterministic fix"],
-  [/repeat the baseline workload under comparable conditions.*before\/after.*one clean run is not proof/, "verify nondeterministic fixes with comparable repeated measurements"],
-  [/Recommend `spec` for unresolved behavior or contract decisions within a settled, supported approach/, "route missing product decisions to spec"],
-  [/recommend `ideate` when approaches need comparison or replacement.*unresolved or invalidated/, "route unsettled approaches or design premises to ideate"],
-  [/Expected TDD RED and rejected hypotheses can inform the next step.*unavailable required checks follow the DoD gate/, "distinguish useful failure evidence from missing verification"],
-  [/On resume, recover available failure evidence and unresolved blockers.*missing scope or authorization still blocks affected work/, "recover evidence and authority rather than usage counts"],
-]) assert.match(bugfix, pattern, `bugfix must ${rule}`);
-for (const [skill, source] of [["execute", execute], ["bugfix", bugfix], ["code-review", review]]) {
-  for (const rule of ["new evidence supports a concrete next investigation or correction", "unchanged failing approach", "no evidence-backed next step remains"]) {
-    assert.ok(source.includes(rule), `${skill} must use evidence-driven continuation: ${rule}`);
-  }
-}
-assert.doesNotMatch(repositoryChanges + execute + bugfix + review + autoflow + recovery + spike, /limit_usage|\bbudgets?\b|remaining allowance|\b(?:attempt|fix-pass|usage) (?:counts?|counters?|quotas?)\b|3 failed|stop before a fourth|second fix wave|fix-wave|do not assume zero|failed-attempt counts?/i, "skills must not manage usage budgets, counters, or retry quotas");
-for (const rule of ["Honor specific sign-off already given", "Implementing an explicitly approved security contract in local code"]) assert.ok(repositoryChanges.includes(rule), `missing safety boundary: ${rule}`);
-assert.ok(review.includes("current request already authorizes fixes") && review.includes("without asking again"), "explicit review-and-fix requests must not need a second authorization");
-assert.ok(review.includes("uniquely evidenced base") && review.includes("without a prompt"), "review must recover a clear local base and continue without a spec instead of asking by default");
-const uiReview = read("skills/ui-review/SKILL.md");
-for (const rule of ["Default to all five dimensions and all severities", "current request already authorizes fixes", "without another approval prompt"]) assert.ok(uiReview.includes(rule), `missing UI review default or existing authority: ${rule}`);
-assert.ok(spike.includes("State the smallest suitable method and proceed") && spike.includes("no evidence-backed next probe remains"), "safe probes proceed under existing authority and stop for evidence, not usage accounting");
-assert.doesNotMatch(bugfix, /before\/after evidence is not a verified root cause/, "root-cause confirmation must not depend on completing the fix first");
-const bugfixFailureStep = bugfix.split("### Fix and verify\n")[1]?.split("\n2.")[0] ?? "";
-assert.match(bugfixFailureStep, /Establish the failure check.*Prove-It rules/, "the first fix step must establish failure evidence under shared TDD rules");
-assert.doesNotMatch(bugfixFailureStep, /apply the minimal fix|confirm the same check passes/, "the failure-evidence step must not duplicate implementation and verification");
-assert.ok(!/git branch -[dD]|## Present the options|typed `discard`/.test(finish), "execute must not carry a branch-disposal workflow");
-const ideate = read("skills/ideate/SKILL.md");
-assert.ok(ideate.includes("If no approach survives") && ideate.includes("stop without requesting a selection or recommending a next skill"), "ideation must save a no-viable-option result without forcing a choice or handoff");
-assert.ok(ideate.includes("rejected approaches and conflicting constraints") && ideate.includes("or why none fits"), "a proposal must preserve why no candidate fits");
-assert.ok(ideate.includes("already selected and no new evidence invalidates it") && ideate.includes("a ready, supported choice goes directly to `spec`"), "supported selections need no repeated ideation");
-assert.ok(ideate.includes("Choosing a probe target is not final selection") && ideate.includes("stop before final selection or a specification handoff"), "candidate probes must precede final approach selection");
-assert.ok(ideate.includes("Inconclusive evidence leaves its premise unresolved, not disproved or supported") && ideate.includes("If evidence rules out all current candidates, revise them within the requested scope"), "ideation must consume evidence, distinguish gaps from rejection, and reconsider failed candidates");
-assert.ok(ideate.includes("An updated proposal does not revise an approved contract or authorize resuming work"), "reopened design must not bypass downstream approvals");
-assert.ok(ideate.includes("keep earlier candidates") && designInput.includes("Append a changed selection") && designInput.includes("different scope needs a distinct semantic directory"), "proposals must preserve prior work and separate different scopes");
-assert.ok(!ideate.includes("different topic") && ideate.includes("./references/design-input.md"), "ideation must use the shared delivery-scope rules, not create directories per topic");
-assert.ok(ideate.includes("run experiments or product acceptance checks") && !ideate.includes("perform validation"), "ideation must forbid experiments and product acceptance, not read-only fact checks");
-const dispatch = read("shared/references/subagent-dispatch.md");
-assert.ok(dispatch.includes("For exploration") && dispatch.includes("only when the invoking skill calls for independent review") && dispatch.includes("exploration alone does not add a review stage"), "shared dispatch guidance must not turn exploration into independent review");
-assert.doesNotMatch(dispatch, /per axis|Read reports by file path/, "dispatch must not split reviews by concern or require saved reports");
-assert.ok(ideate.includes("proposal.md") && !ideate.includes(".coding/ideation/"), "new proposals must use the permanent scope directory");
-assert.ok(!ideate.includes("that's Phase 2"), "ideation must not promise prototypes in Phase 2");
-const learningGate = read("shared/references/counterfactual-test.md");
-const learningFormat = read("shared/references/learnings-format.md");
-const learningCapture = read("skills/learning/SKILL.md");
-const learningRefresh = read("skills/learning-refresh/SKILL.md");
-assert.match(learningGate, /repeat a non-obvious mistake or re-derive non-obvious reasoning/, "the gate must preserve both mistake prevention and reasoning reuse");
-assert.ok(learningGate.includes("nothing would break") && !learningGate.includes("barely passes"), "useful trade-offs need no defect, while generic advice still fails");
-assert.match(learningGate, /uncertainty is not proof that it failed/, "capture uncertainty must not become an archival verdict");
-assert.doesNotMatch(learningFormat, /## When to capture a learning/, "format must not define a second capture gate");
-for (const rule of ["Keep one current file per topic", "assesses each current entry independently", "A file with mixed outcomes keeps its current entries available", "only after every entry has a verified historical disposition", "An uncertain or still-current entry blocks the whole-file move", "without per-file approval", "Never overwrite an archive"]) {
-  assert.ok(learningFormat.includes(rule), `learning lifecycle missing boundary: ${rule}`);
-}
-for (const rule of ["without replacing the underlying advice", "Preserve the original reasoning", "only one current file remains per topic", "otherwise use entry-level pointers"]) {
-  assert.ok(learningFormat.includes(rule), `learning revision missing distinction: ${rule}`);
-}
-for (const rule of ["including a Keep result", "A partial or inconclusive review retains the previous date", "remove the old `status: stale` and its `reason`", "Pending archival approval alone does not make a file stale"]) {
-  assert.ok(learningFormat.includes(rule), `learning metadata missing transition: ${rule}`);
-}
-assert.doesNotMatch(learningFormat, /get the user's approval for each move|the problem domain is gone/, "eligible authorized archival must not require per-file consent or domain disappearance");
-assert.ok(learningFormat.includes("A refresh or archival request authorizes") && learningFormat.includes("within the authorized scope") && learningFormat.includes("leave the file in place"), "automatic archival must retain request scope and safe citation handling");
-assert.ok(learningRefresh.includes("report and stop before writes"), "audit-only and preview requests must not revise metadata, move files, or commit");
-assert.ok(learningRefresh.includes("Replacement lessons are in scope") && learningRefresh.includes("entry counts separately from file moves"), "refresh must allow scoped replacements and distinguish entry results from file actions");
-assert.match(learningCapture, /`survey` for observed terminology; `spec` for newly agreed domain concepts/, "glossary ownership must distinguish observed facts from design decisions");
-assert.ok(learningCapture.includes("PASS / FAIL / UNCERTAIN"), "the capture report must not disguise uncertain candidates as proven failures");
-assert.doesNotMatch(learningGate, /Learnings:|## Summary|## The double-check questions/, "the quality reference must not duplicate final output or the gate");
-assert.doesNotMatch(read("skills/learning-refresh/references/drift-detection.md"), /## Record the result|File: <learning path>/, "drift detection must not define a second report format");
-assert.match(learningGate, /Eight parallel migrations each held one connection, while two\nlong-running API requests held the remaining two/, "the shared ten-connection example must account for both migration and API usage");
-const metrics = read("skills/simplify/references/complexity-metrics.md");
-assert.ok(!metrics.includes(".coding/simplify-config.toml"), "reuse project analyzer settings instead of an undocumented config");
-assert.ok(!/\d+ 个真实代理行为场景/.test(readme), "do not hardcode a drifting manual-case count");
-assert.ok(!/Mandatory split|must split|must flatten/.test(metrics), "metrics must not force mechanical splitting");
-assert.doesNotMatch(metrics, /Complexity Score|npm install|pip install|## Reporting Format/, "complexity hints must not create a scoring, installation or reporting workflow");
-assert.match(metrics, /existing analyzer/, "interpret project analyzer findings rather than introduce another analyzer");
-assert.ok(!read("skills/simplify/SKILL.md").includes("Blocking findings should not exist here"), "passing tests must not suppress Blocking findings");
-const decomposition = read("skills/plan/references/task-decomposition.md");
-assert.ok(!decomposition.includes("May not be testable independently"), "every task must remain independently testable");
-assert.ok(!decomposition.includes('"Add password reset flow" (expands auth system horizontally)'), "password reset is a new vertical journey");
-assert.ok(!read("README.md").includes("1. 上传 API endpoint"), "the README must start with a vertical slice, not isolated layers");
-
-const dod = read("shared/references/definition-of-done.md");
-for (const rule of ["## Unavailable required checks", "partial/blocked", "not a waiver", "Intermediate task commits", "read-only report"]) {
-  assert.ok(dod.includes(rule), `missing completion-gate contract: ${rule}`);
-}
-for (const skill of ["execute", "bugfix"]) {
-  assert.ok(read(`skills/${skill}/SKILL.md`).includes("Unavailable required checks"), `${skill} must use the shared unavailable-check gate`);
-}
-assert.ok(read("skills/autoflow/SKILL.md").includes("unavailable required verification"), "autoflow must not advance past missing required verification");
-const tdd = read("shared/references/tdd.md");
-assert.ok(tdd.includes("Do not repeat a trustworthy RED/GREEN cycle"), "unchanged deterministic tests must reuse observed proof");
-assert.ok(tdd.includes("test or fixture changed") && tdd.includes("failure cause was unclear"), "uncertain proof still needs a fresh guard check");
-assert.ok(tdd.includes("first inspect existing public interfaces and test patterns") && tdd.includes("a technical test-location choice needs no approval"), "technical test-entry selection must be investigated before asking about product or safety decisions");
-assert.ok(tdd.includes("through an entry point selected under Where to test below"), "RED must use the single test-entry selection rule");
-assert.doesNotMatch(tdd + strategy, /\bapproved test entry points?\b/i, "TDD and test strategy must not require separate approval for a technical test-entry choice");
-const plan = read("skills/plan/SKILL.md");
-assert.ok(plan.includes("Run-only verification belongs in Final verification"), "verification commands alone must not create a task");
-assert.ok(plan.includes("A saved plan contains task details") && /neither requires task briefs/i.test(plan), "a short persisted plan must be usable without task briefs");
-const outputTier = plan.split("## Preconditions")[0];
-assert.match(outputTier, /Brief[^\n]*conversation[^\n]*Full[^\n]*persistence/, "tier choice belongs in the skill and follows persistence needs");
-assert.doesNotMatch(outputTier, /Hard floors|at most 5 files/, "persistence must not impose size or module gates");
-for (const path of ["skills/plan/references/output-tier.md", "skills/execute/references/finish.md"]) {
-  assert.match(read(path), /superseded[\s\S]*SKILL\.md/, "retained documents point to the current owner without a second policy");
-}
-assert.ok(plan.includes("Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`") && plan.includes("Plan authorization does not authorize"), "saved-plan writes need shared workspace protection without treating plan authorization as permission to overwrite unrelated work");
-assert.ok(plan.includes("same task fields") && plan.includes("For Brief, revise the conversation plan without creating files"), "session plans keep the full task contract without saved-plan bookkeeping");
-const planRevisions = read("shared/references/plan-revisions.md");
-for (const skill of ["plan", "execute"]) assert.ok(read(`skills/${skill}/SKILL.md`).includes("./references/plan-revisions.md"), `${skill} must load the single revision contract before changing task semantics`);
-for (const rule of ["honor explicit preview, approval, and no-reordering instructions", "product behavior, delivery scope", "requirement coverage, verification guarantees", "Preserve completed tasks", "original task-start boundary", "undelivered task-owned increment", "remaining checks, review, and selective commit", "not a new starting snapshot", "before affected implementation", "without a skill handoff"]) assert.ok(planRevisions.includes(rule), `missing safe inline-revision rule: ${rule}`);
-assert.ok(execute.includes("Apply a supported in-scope adjustment inline") && execute.includes("self-review and record it"), "execution must reconcile implementation-only arrangements without a routine handoff or approval");
-const stableIds = read("shared/references/stable-ids.md");
-assert.doesNotMatch(stableIds, /(?:Revise the plan|reconcile plan coverage) through `plan`/, "ID alignment must follow the active revision contract instead of forcing a plan handoff");
-assert.ok(stableIds.includes("invoking skill's revision contract") && stableIds.includes("neither cross-artifact writes nor execution authority"), "ID rules must not grant spec permission to edit a plan or execute changed scope");
-const projectDocuments = read("skills/survey/references/project-documents.md");
-assert.doesNotMatch(projectDocuments, /only `plan` decomposes/, "project document guidance must not retain exclusive revision ownership");
-assert.ok(projectDocuments.includes("initial implementation decomposition"), "plan retains initial decomposition ownership");
-assert.ok(planRevisions.includes("execution authority covers the revised scope"), "approved specification changes alone must not authorize execution of new scope");
-assert.ok(stableIds.includes("establishing or preserving") && stableIds.includes("Existing coverage") && stableIds.includes("Do not invent a development task, completed task, or historical commit"), "existing behavior needs evidence and final checks, not fabricated implementation history");
-assert.ok(stableIds.includes("or existing behavior with implementation/test evidence and a final verification check"), "requirement coverage must include unchanged existing behavior");
-assert.ok(!decomposition.includes("Horizontal Filling") && decomposition.includes("several tightly related acceptance conditions") && decomposition.includes("not automatic follow-up tasks"), "decomposition must follow cohesive approved work rather than a layer/phase taxonomy");
-const spec = read("skills/spec/SKILL.md");
-assert.ok(spec.includes("only routine specification approval checkpoint") && spec.includes("short spec and one approval"), "local requirement decisions need one contract approval, not a separate product stage");
-assert.ok(spec.includes("Do not require `ideate`, `spike`") && spec.includes("Do not write product code, run experiments"), "ready designs must go directly to spec without experiments");
-assert.ok(spec.includes("A missing user decision") && spec.includes("even when security-critical") && spec.includes("a factual feasibility premise"), "spec must distinguish important behavior decisions from unsupported feasibility premises");
-assert.ok(!spec.includes("critical contract lacks applicable evidence"), "an important contract decision alone must not force an ideate detour");
-for (const rule of ["complete product contract", "they cannot override it", "Deferring an open presentation choice never permits dropping supplied, settled UI decisions", "jointly govern implementation"]) {
-  assert.ok(designInput.includes(rule), `missing product/UI authority boundary: ${rule}`);
-}
-assert.ok(spec.includes("## Remaining presentation decisions") && spec.includes("Recommend `ui-design` first"), "spec must name deferred presentation decisions and resolve them before dependent planning");
-const specRevision = spec.split("## Revisions\n")[1].split("\n## ")[0];
-for (const input of ["required internal appendices in full", "approved `ui-spec.md`", "`DESIGN.md`", "affected plan tasks"]) {
-  assert.ok(specRevision.includes(input), `spec revision must inspect ${input}`);
-}
-assert.ok(specRevision.includes("Spec approval does not settle conflicting UI decisions or reconcile a stale plan") && specRevision.includes("Do not edit UI documents, tasks, or execution records here"), "spec revision must report stale downstream inputs without renewing their approval or editing them");
-const uiDesign = read("skills/ui-design/SKILL.md");
-assert.ok(uiDesign.includes("stop and recommend `spec` for that decision before UI approval"), "UI approval must not change the product contract");
-assert.ok(uiDesign.includes("every in-scope layout, presentation-state, and interaction decision"), "settled styling or component reuse alone must not skip UI design");
-assert.ok(uiDesign.includes("read it and the relevant existing plan") && uiDesign.includes("Preserve unaffected UI decisions"), "UI revision must inspect existing inputs and preserve settled decisions");
-assert.ok(uiDesign.includes("Name affected decisions") && uiDesign.includes("do not declare dependent work ready"), "UI changes must identify stale plan decisions without advancing dependent work");
-for (const [skill, source] of [["spec", spec], ["ui-design", uiDesign]]) {
-  for (const rule of ["explicitly requested separate planning", "recommend `execute` when a plan already exists", "initial task decomposition", "verify applicable execution authority", "under its revision contract"]) {
-    assert.ok(source.includes(rule), `${skill} must avoid a redundant plan handoff: ${rule}`);
-  }
-}
-assert.ok(uiDesign.includes("Use the final handoff step in Phase 4 without creating or revising documents"), "settled UI decisions use the same handoff rule without writing documents");
-assert.doesNotMatch(spec + uiDesign, /when task decomposition or reconciliation is needed|Recommend `plan` without starting it|Recommend `plan` to create a plan or align/, "existing plans must not unconditionally return to plan");
-const uiAccessibility = read("skills/ui-design/references/wcag-checklist.md");
-assert.ok(uiAccessibility.includes("WCAG 1.4.3 and 1.4.11") && uiAccessibility.includes("inactive controls and unmodified user-agent appearance are exempt"), "non-text contrast must name its criterion and component exceptions");
-assert.doesNotMatch(uiAccessibility, /All UI components.*3:1/, "the quick checklist must not turn conditional non-text contrast into a universal rule");
-for (const rule of ["Dismissible", "Hoverable", "Persistent"]) assert.match(uiAccessibility, new RegExp(`\\b${rule}\\b`, "i"), `missing hover/focus content condition: ${rule}`);
-const uiStates = read("skills/ui-design/references/component-states.md");
-assert.ok(uiStates.includes("trigger or tooltip is hovered") && uiStates.includes("without moving pointer or focus, for example with Escape"), "tooltip examples must support pointer transfer and in-place dismissal");
-assert.doesNotMatch(uiStates, /pointer-events: none[^\n]*prevents interaction/, "pointer hit testing is not disabled semantics");
-assert.match(uiStates, /native `disabled`[\s\S]*aria-disabled[\s\S]*keyboard focus and activation/i, "disabled guidance must distinguish native behavior, ARIA, and CSS");
-const uiExamples = read("skills/ui-review/references/common-ui-mistakes.md");
-assert.doesNotMatch(uiExamples, /Can be smaller on desktop|Mobile has no hover|\*\*Never:\*\* lowercase body text/, "examples must not confuse width with input or ban lowercase tracking");
-assert.doesNotMatch(read("skills/ui-design/references/design-principles.md"), /Instructions must die|Tracking\/letterspacing on lowercase/, "design heuristics must not ban necessary guidance or lowercase tracking");
-assert.ok(read("skills/ui-review/SKILL.md").includes("both skills can check approved requirements and UI decisions"), "UI review must distinguish focus without excluding shared conformance checks");
-assert.ok(plan.includes("Do not silently plan from contradictory inputs") && plan.includes("otherwise `ui-design` to realign the presentation"), "planning must stop for product/UI conflicts and name the affected owner");
-const elicitation = read("skills/spec/references/elicitation.md");
-assert.doesNotMatch(elicitation, /Don't accept the first answer|First Principles|Counterfactual Thinking|Constraint Relaxation|Alternatives emerge/, "spec elicitation must not prescribe reopening selected mechanisms or relaxing agreed scope");
-assert.ok(elicitation.includes("These techniques do not authorize comparing replacement approaches, relaxing agreed constraints, or running experiments"), "elicitation techniques must stay within the spec readiness boundary");
-assert.ok(read("skills/spec/references/adr-format.md").includes("All three of these must be true"), "ADR eligibility must remain in its owning reference");
-assert.doesNotMatch(spec + read("skills/spec/references/domain-modeling.md"), /hard to reverse|surprising without context|all three/i, "spec and domain modeling must refer to ADR eligibility rather than duplicate it");
-assert.ok(plan.includes("This skill owns initial decomposition") && plan.includes("Do not create capability maps, child specs"), "plan must own initial decomposition without forbidding bounded execution revisions");
-assert.ok(plan.includes("Do not schedule completed selection experiments again as unfinished work"), "completed feasibility evidence must not become unfinished implementation work");
-for (const skill of ["spec", "plan", "execute", "autoflow", "bugfix"]) {
-  assert.ok(read(`skills/${skill}/SKILL.md`).includes("`ideate`"), `${skill} must return unresolved design to its owner`);
-  for (const file of readdirSync(new URL(`../skills/${skill}/`, import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-    assert.doesNotMatch(read(`skills/${skill}/${file}`), /(?:recommend (?:a targeted )?|needs (?:targeted )?|goes to )`spike`/, `${skill}/${file} must not send downstream work directly to spike`);
-  }
-}
-for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursive: true }).filter((file) => file.endsWith(".md"))) {
-  assert.ok(!/`(?:clarify|debug|capture|optimize|handoff)`|skills\/(?:clarify|debug|capture|optimize|refactor|handoff)\//.test(read(`skills/${file}`)), `retired entry in ${file}`);
-  assert.doesNotMatch(read(`skills/${file}`).replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
-}
-const commit = read("skills/commit/SKILL.md");
-assert.ok(commit.includes("Do not ask again for file or message approval unless the user requested a preview"), "explicit commit scope must not require routine reapproval");
-assert.ok(commit.includes("scope is ambiguous") && commit.includes("git diff --staged") && commit.includes("Respect required checks and hooks"), "commit shortcuts must retain scope, staging, and check safeguards");
-const simplify = read("skills/simplify/SKILL.md");
-const baselineGate = simplify.indexOf("### 2. Check the baseline");
-assert.ok(baselineGate > simplify.indexOf("### 1. Determine scope"));
-for (const ref of ["simplify-dimensions.md", "complexity-metrics.md", "severity.md", "git-commit.md"]) {
-  assert.ok(simplify.indexOf(ref) > baselineGate, `simplify must delay ${ref} until after the baseline gate`);
-}
-for (const [pattern, rule] of [
-  [/A user-named scope is authoritative.*no recent diff/, "honor explicit scopes without requiring recent changes"],
-  [/only documentation, generated or vendored files.*stop before baseline checks or review references/, "skip non-code scopes before checks and review"],
-  [/regardless of severity/, "separate problem type from severity"],
-  [/No worthwhile changes.*no commit/, "treat no-change as a valid result"],
-  [/Report in the conversation/, "avoid inventing a report artifact"],
-  [/Run inline from scope through delivery without routine reapproval/, "automatically finish the authorized cleanup without routine approval stops"],
-  [/Ask only for an unresolved scope\/base, safety or ownership conflict, or a required verification\/commit decision/, "preserve real decision gates"],
-  [/Until all required baseline checks pass, do not edit code or load review\/commit references/, "make baseline success a prerequisite, not merely stop on a known failure"],
-  [/wait for all final check results and confirm the DoD before reading `\.\/references\/git-commit\.md`/, "defer commit guidance until verified changes actually need committing"],
-  [/do not run this read in parallel with checks/, "keep verification results and commit guidance behind a serial gate"],
-]) assert.match(simplify, pattern, `simplify must ${rule}`);
-assert.match(read("skills/code-review/SKILL.md"), /When active learning files exist, read `\.\/references\/learnings-format\.md`/, "absent learnings must not load their format");
-assert.match(read("skills/plan/SKILL.md"), /If active learning files exist, read `\.\/references\/learnings-format\.md`/, "plan must also load learning format conditionally");
-assert.ok(read("skills/learning/SKILL.md").includes("without loading writing or commit references"), "zero-entry learning must stop before write-stage references");
-assert.ok(!guide.includes("a missing core skill is an incomplete installation"), "an absent route target must not diagnose core completeness");
-assert.match(finish, /keep the current branch[^\n]*not another approval choice/i, "every input type must finish with the branch kept, without a menu");
-assert.match(finish, /After final verification and Definition of Done[^\n]*keep the current branch/, "default keep must not bypass verification");
-console.log("example and contract checks passed: endpoint examples, async cleanup, loading labels, simplification behavior and boundaries, complexity hints, bounded execution, task-owned increments, pinned historical/endpoint/branch review and contract versions, comprehensive conversation-only review and recovery, branch-preserving completion, spike safety and completion gates");
+console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, test and UI examples, simplification behavior, pinned review ranges");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

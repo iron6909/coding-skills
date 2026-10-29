@@ -55,7 +55,7 @@ Route other exceptions by the decision that is missing:
 | Evidence | Action |
 |----------|--------|
 | Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the current plan or briefs. |
-| Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Return a revised plan snapshot to `autoflow` when called by it. |
+| Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Return the revised plan and its commit to `autoflow` when called by it. |
 | A proposed revision changes delivery scope, approved contracts, requirement coverage, verification guarantees, or an explicit user constraint | Stop affected work for that specific decision; recommend `spec` for product changes or `plan` for arrangements needing user resolution. Do not hide the change as an implementation detail. |
 | Missing or unapproved product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`. After approval, reconcile the plan under `./references/plan-revisions.md`; approval alone does not authorize executing changed scope. |
 | An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design and contract inputs need their applicable approvals before resuming; reconcile affected plans under their authorization contract. |
@@ -87,9 +87,8 @@ If no evidence-backed next step remains, or continuing needs a new user decision
 
 Check before affected actions and whenever new evidence changes the risk:
 
-- **Irreversible**: deleting data, dropping or rewriting a schema, rotating or destroying a key, publishing, or anything else `git revert` cannot undo.
+- **Irreversible**: deleting real data, dropping or rewriting a schema, rotating or destroying a real key, publishing, or another effect `git revert` cannot undo; the shared sign-off rule decides what is reversible here.
 - **Security-sensitive**: an unresolved security-policy decision or real-resource effect under the shared safety rule, not merely implementing an already approved security contract in local code.
-- **Unexplained**: a decision you cannot justify from the approved input or repository evidence.
 
 When a trigger lacks specific authorization, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Reuse sign-off already given for the same action, target, and effects. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
 
@@ -161,5 +160,3 @@ For persisted plans, also report the plan path, completed and skipped tasks, led
 After final verification and Definition of Done are satisfied, keep the current branch and all documents; this is not another approval choice or a verification waiver. Do not offer merge, discard, or cleanup menus. State that task reviews and final verification are not an independent whole-feature review.
 
 When called by `autoflow`, return the results to it for whole-feature review. Otherwise stop; recommend `code-review` when useful, or `learning` only for non-obvious reasoning not already preserved. Do not invoke another skill.
-
-Read `./references/finish.md` only when resolving an older instruction that points to the former handoff location; the rules now live here.

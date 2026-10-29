@@ -20,7 +20,7 @@ git diff --staged
 
 Inspect relevant untracked files directly. Include staged-only changes within the requested scope; do not infer them from the unstaged diff.
 
-An explicit request to commit named files or hunks authorizes that scope. Do not ask again for file or message approval unless the user requested a preview. If the scope is ambiguous or exclusions are unclear, ask before staging.
+An explicit request to commit named files or hunks authorizes that scope on the current branch, including the default branch. Do not ask again for file or message approval unless the user requested a preview. If the scope is ambiguous or exclusions are unclear, ask before staging.
 
 ## 2. Stage and commit
 
@@ -28,17 +28,17 @@ Enumerate the authorized paths or hunks. For whole-file scope:
 
 ```bash
 git add -- <specified-files>
-git diff --staged
+git diff --staged -- <specified-files>
 ```
 
 For partial-file staging, follow the shared Git rules.
 
-Use a supplied message when compatible with project rules. Adapt an incompatible message without changing its intent, unless the user requires it verbatim; then stop and ask. If none was supplied, write a concise message from the inspected diff.
+Use a supplied message when compatible with project rules. Adapt an incompatible message without changing its intent; use a message the user requires verbatim as-is and report the convention mismatch. If none was supplied, write a concise message from the inspected diff.
 
 Respect required checks and hooks; run the checks and do not bypass either.
 
 ```bash
-git commit -m "<subject>"
+git commit -m "<subject>" -- <specified-files>   # omit the paths after partial-file staging
 git log -1 --stat
 ```
 

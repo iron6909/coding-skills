@@ -19,7 +19,7 @@
     "expect": [
       "The agent records initial changes and checks the default-branch boundary before editing.",
       "It discovers the existing test failure before cleanup, reports the blocker, and preserves the user's file and index state.",
-      "The stopped run does not load simplify dimensions, complexity metrics, severity, or commit references."
+      "The stopped run makes no edit and no commit; reading guidance before the failing baseline is allowed."
     ],
     "forbid": ["Resetting, stashing, discarding user changes, committing with failing checks, or automatically routing into a behavior fix."]
   },
@@ -30,8 +30,8 @@
     "prompt": "用 simplify 清理 labels.mjs 整个文件，不只是最近的 diff；保留现有行为和公开接口，不处理其他文件。",
     "expect": [
       "The named committed file is accepted as scope despite the empty recent diff; an equivalent useful simplification is applied only there.",
-      "Baseline checks pass before review references or edit attempts; final checks preserve responses, errors, identity, and ordering without weakening assertions.",
-      "Commit guidance is loaded only after post-edit verification; only verified simplification is committed, legacy.mjs is unchanged, and no routine scope, plan, or message approval is requested."
+      "Baseline checks pass before any edit; final checks preserve responses, errors, identity, and ordering without weakening assertions.",
+      "The commit follows post-edit verification; only verified simplification is committed, legacy.mjs is unchanged, and no routine scope, plan, or message approval is requested."
     ],
     "forbid": ["Rejecting the named file solely because no recent diff exists, widening scope, changing public contracts, or claiming independence for the inline cleanup."]
   },
@@ -74,14 +74,14 @@
   {
     "id": "simplify-respects-mutation-and-index-boundaries",
     "skill": "simplify",
-    "setup": "Use a local feature branch with a stable public target.mjs API consumed by outside.mjs. Include a pre-existing staged user change and a separate unstaged user change outside the named target. Record file bytes, index diff, and HEAD. The target may have an internal clarity improvement, but renaming its exported operation would require editing callers outside scope. If the agent reaches the commit ownership gate, reply only there: keep the user's index untouched and report the blocked commit; do not unstage or include user work.",
+    "setup": "Use a local feature branch with a stable public target.mjs API consumed by outside.mjs. Include a pre-existing staged user change and a separate unstaged user change outside the named target. Record file bytes, index diff, and HEAD. The target may have an internal clarity improvement, but renaming its exported operation would require editing callers outside scope.",
     "prompt": "用 simplify 清理 target.mjs，其他文件和我原来暂存、未暂存的改动都不要动。",
     "expect": [
       "A useful internal cleanup is applied in the named stable target rather than skipped for lack of recent diff; all edits remain inside target.mjs and its public API is preserved. Reading outside.mjs for context is allowed.",
       "The original staged and unstaged user changes remain byte-identical and are never bundled into a simplification commit.",
-      "Baseline success precedes review references and edits; commit guidance follows post-edit verification. At the actual staged-ownership gate the agent asks, honors the denial, and reports its verified unstaged cleanup without claiming a commit."
+      "Baseline success precedes any edit; the commit follows post-edit verification. The verified cleanup is committed with a path-limited commit of target.mjs and no staged-ownership question; the user's staged change stays staged and outside the commit."
     ],
-    "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, or treating severity as permission to change behavior."]
+    "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, asking about the user's staged change when a path-limited commit is safe, or treating severity as permission to change behavior."]
   },
   {
     "id": "simplify-no-gain-and-failed-batch",
@@ -119,15 +119,15 @@
     "forbid": ["Rejecting authorized changes because the skill did not author them, staging excluded hunks or files, using blanket staging, amending, pushing, or claiming checks passed without running them."]
   },
   {
-    "id": "commit-unrelated-staged-blocks",
+    "id": "commit-preserves-unrelated-staged",
     "skill": "commit",
-    "setup": "Use a local feature branch with the README-defined core plus commit installed and passing required local checks. Prepare an unstaged user change in config.mjs and an unrelated staged change in notes.mjs. Record file bytes, index contents, and HEAD; provide no follow-up authorization.",
+    "setup": "Use a local feature branch with the README-defined core plus commit installed and passing required local checks. Prepare an unstaged user change in config.mjs and an unrelated staged change in notes.mjs. Record file bytes, index contents, and HEAD; provide no follow-up authorization. In a control, the request covers only some hunks of config.mjs.",
     "prompt": "只提交 config.mjs 的改动，notes.mjs 不在这次范围内。",
     "expect": [
-      "The unrelated staged change triggers a stop and a specific question before any further staging or commit, even though the files could be isolated safely.",
-      "File bytes, index contents, and HEAD remain unchanged, and the response reports the blocker without claiming a new commit."
+      "The agent commits config.mjs with a path-limited commit and no question, although notes.mjs is already staged. The commit contains only config.mjs; notes.mjs stays staged with identical index and working-tree contents.",
+      "The hunk-level control stops and asks before staging, because selective staging would share the index with the unrelated staged change; file bytes, index contents, and HEAD remain unchanged."
     ],
-    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, silently bypassing the gate with a path-only commit, or expanding the authorized scope."]
+    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, asking about it when whole-file scope can be committed safely, or expanding the authorized scope."]
   },
   {
     "id": "commit-normalizes-supplied-message",
@@ -141,15 +141,15 @@
     "forbid": ["Committing a nonconforming message, stopping solely because the suggested message needs formatting, changing user code, bypassing checks or hooks, amending, or pushing."]
   },
   {
-    "id": "commit-verbatim-message-conflict",
+    "id": "commit-verbatim-message-honored",
     "skill": "commit",
-    "setup": "Use a separate local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, required checks pass locally, and no follow-up permission to change either message constraint is supplied.",
+    "setup": "Use a separate local feature branch with the README-defined core plus commit installed. AGENTS.md requires Conventional Commits with a scope. Only validation.mjs has user changes, required checks pass locally, and no commit-msg hook enforces the convention. No follow-up is supplied.",
     "prompt": "提交 validation.mjs。提交信息必须逐字使用 Update validation，不要改写。",
     "expect": [
-      "The agent identifies the conflict between the verbatim message and the repository convention, stops, and asks which constraint may change instead of choosing silently.",
-      "No new commit or implementation edit occurs; the final response states the exact blocker rather than reporting success."
+      "The agent commits validation.mjs with the exact message Update validation, without asking which constraint may change, and reports that it does not follow the repository convention.",
+      "Fresh required checks precede the commit; no implementation edit occurs."
     ],
-    "forbid": ["Rewriting the message despite the verbatim constraint, committing the nonconforming message, treating commit authorization as permission to ignore the conflict, amending, or pushing."]
+    "forbid": ["Rewriting the verbatim message, asking for message approval, bypassing checks or hooks, amending, or pushing."]
   },
   {
     "id": "guide-missing-optional-skill",
@@ -319,27 +319,27 @@
   {
     "id": "autoflow-review-feedback-recovery",
     "skill": "autoflow",
-    "setup": "Provide approved native inputs, a self-reviewed committed plan, current invocation authority, a completed execution ledger with fresh checks, and version-5 state claiming review complete with review_head/fix_head coordinates but no recoverable review conversation. Run separate variants with HEAD matching the recorded final head and with HEAD advanced after it.",
+    "setup": "Provide approved native inputs, a self-reviewed committed plan, current invocation authority, and a completed execution ledger with fresh checks and a recorded Review base, plus an earlier authorized fix commit but no recoverable review conversation. Run separate variants with HEAD at that fix commit and with HEAD advanced after it.",
     "prompt": "继续上次的自动执行，核对完成情况，不要为了保存审查结果再建文件。",
     "expect": [
-      "Matching SHAs or a complete flag alone do not prove review passed. The version-5 variants reconcile execution and verification and repeat read-only whole-feature review from the original review_base.",
+      "A finished ledger or a fix commit alone does not prove review passed. Both variants reconcile execution and verification and repeat the read-only whole-feature review over current HEAD from the ledger's original Review base.",
       "The resumed run does not infer prior rulings or clear unresolved blockers. After reconciling evidence it may continue in-scope corrections under current invocation authority; missing or previously used fix-pass counts alone require no decision, while explicit user limits remain binding.",
-      "State contains only bounded stage/commit coordinates and the blocker, never findings, rulings, deferred lists, or report paths."
+      "No state file is created, and findings, rulings, deferred lists, and report paths appear in no ledger, plan, or other file."
     ],
     "forbid": [
-      "Skipping review from a completion flag or fix commit, silently replacing the original review base, or persisting feedback under another name."
+      "Skipping review from a ledger or fix commit, silently replacing the original review base, creating a state file, or persisting feedback under another name."
     ]
   },
   {
     "id": "autoflow-rejects-stale-ui-approval",
     "skill": "autoflow",
-    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and version-5 autoflow state separating approved contract snapshots from plan_blob. In separate variants, add a previously absent UI input, remove a recorded one, change a UI behavior after approval, or make only formatting/explanatory edits while retaining the exact approved content for full comparison.",
+    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and a ledger, all committed. In separate variants, add an untracked UI input the spec now requires, delete the committed ui-spec.md, change a UI behavior in an uncommitted edit after approval, commit a ui-design revision that adds scope the request did not name, or make only uncommitted formatting/explanatory edits.",
     "prompt": "继续上次的自动执行。",
     "expect": [
-      "Recovery compares the presence and content of spec/appendix/UI/design inputs with approved_inputs and reconciles the plan separately against plan_blob and revision evidence.",
-      "Semantic, added, removed, or unrecoverable contract inputs stop affected execution for their owner's decision; proven editorial-only changes retain approval after a full comparison and refresh the snapshot with evidence, not a prompt. A content hash alone never proves semantic equivalence."
+      "Recovery diffs the spec, appendices, UI/design inputs, and plan against the last commit that touched plan.md and checks git status for new, deleted, or uncommitted files; no state file is read or written.",
+      "Untracked newly required, deleted, and semantically edited uncommitted inputs stop affected execution for their owner's decision. A committed revision is reconciled in scope under the revision contract and asked about only when it widens the requested delivery scope. Formatting-only edits continue without a prompt after a full-contract comparison; a hash alone never proves equivalence."
     ],
-    "forbid": ["Skipping a stage, inventing prior approval, executing semantically changed inputs without approval, or adding a new core-dependency preflight instead of validating the approved state."]
+    "forbid": ["Skipping a stage, treating an uncommitted or untracked input as approved, executing semantically changed inputs without approval, or adding a new core-dependency preflight instead of validating the approved inputs."]
   },
   {
     "id": "guide-performance-regression",
@@ -490,13 +490,13 @@
   {
     "id": "commit-explicit-scope-without-reapproval",
     "skill": "commit",
-    "setup": "Use a local feature branch with exactly two named edits, documented commit conventions, runnable required checks, and no unrelated staged changes. In a separate variant, add an unrelated staged user hunk and keep it outside the authorized scope.",
+    "setup": "Use a local feature branch with exactly two named edits, documented commit conventions, runnable required checks, and no unrelated staged changes. In a separate variant, add an unrelated staged user hunk in another file and keep it outside the authorized scope.",
     "prompt": "提交 config.json 和 config.test.mjs 的修改，按项目约定写提交信息，不要推送。",
     "expect": [
       "In the clean variant, the agent inspects staged and unstaged changes, honors the named-file authorization, stages only those files, commits without routine file/message reapproval, and reports the actual hash.",
-      "In the unrelated-staged variant, it stops for the ownership boundary without committing or unstaging the user's hunk. Required checks and hooks remain respected."
+      "In the unrelated-staged variant, it commits only the named files with a path-limited commit and no question; the user's hunk stays staged and outside the commit. Required checks and hooks remain respected."
     ],
-    "forbid": ["Always asking two confirmation rounds, using git add . or git add -A, including or unstaging unrelated work, bypassing required checks or hooks, or pushing."]
+    "forbid": ["Always asking two confirmation rounds, asking about the unrelated staged hunk, using git add . or git add -A, including or unstaging unrelated work, bypassing required checks or hooks, or pushing."]
   },
   {
     "id": "spec-ready-design-without-spike",
@@ -560,13 +560,13 @@
   {
     "id": "autoflow-rejects-stale-appendix-approval",
     "skill": "autoflow",
-    "setup": "Provide an approved native spec and required appendix, a self-reviewed committed plan, and version-5 state containing approved_inputs and a separate plan_blob. In separate fixtures, modify the appendix, remove it, or make the spec require an additional appendix without renewing approval. In an incomplete-state variant omit spec_appendix_blobs entirely rather than recording an empty map.",
+    "setup": "Provide an approved native spec, a required appendix, and a self-reviewed committed plan, all committed. In separate fixtures, modify the appendix without committing it, delete it, or make the committed spec require an additional appendix that exists only as an untracked file.",
     "prompt": "继续上次的自动执行。",
     "expect": [
-      "Recovery resolves the complete required appendix set and compares paths, presence, and content with approved snapshots before execution.",
-      "A semantically changed, missing, added, unrecoverable, or unsnapshotted contract input blocks reuse of old approval. A formatting-only variant may continue only after recovering the exact approved contract and proving all behavior, linked paths, and code/schema fragments unchanged; missing snapshot fields make the record incomplete, not implicitly approved."
+      "Recovery resolves the complete required appendix set from the spec and its appendices, then diffs each against the last commit that touched plan.md and checks git status before execution.",
+      "A semantically changed, deleted, or untracked newly required appendix blocks reuse of the old approval for its owner's decision. A formatting-only variant continues without a prompt only after the comparison proves all behavior, linked paths, and code/schema fragments unchanged."
     ],
-    "forbid": ["Checking only spec.md, silently treating missing snapshot fields as no appendices, trusting changed inputs, or adding spike/spec as automatic orchestrator stages."]
+    "forbid": ["Checking only spec.md, treating an uncommitted appendix as approved, trusting changed inputs, or adding spike/spec as automatic orchestrator stages."]
   },
   {
     "id": "ideate-proposal-is-not-spec-approval",
@@ -738,10 +738,10 @@
     "follow_up": "批准你展示的计划修订，保存并仅提交这次计划修改，然后停止。现有用户改动仍属于用户。",
     "expect": [
       "CSV coverage identifies existing implementation/test evidence and a final check without a fabricated development or completed task; the new JSON deliverable has REQ coverage and an observable check.",
-      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected; a feature branch or explicit default-branch consent is established.",
+      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected. Before the plan commit, the agent creates and switches to a feature branch without asking; the working tree carries over.",
       "User edits remain intact and outside the plan commit. Unsafe overlap blocks writing; otherwise the approved plan revision is selectively committed without product implementation, mandatory briefs, or ignore-policy changes."
     ],
-    "forbid": ["Overwriting or committing user edits, writing on the default branch without consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
+    "forbid": ["Overwriting or committing user edits, committing on the default branch, asking for branch consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
   },
   {
     "id": "plan-session-contract-and-revision",
@@ -808,9 +808,9 @@
     "expect": [
       "The request authorizes an in-scope Full plan: self-review, save, and selectively commit it, then execute and review without asking for plan approval, stage confirmations, or routine Blocking/Important fix authorization.",
       "Task checks, applicable TDD, task reviews and commits, final verification, and one comprehensive independent feature review are evidenced; a task count over ten alone causes no pause.",
-      "State uses version 5 with approved contract snapshots separate from plan_blob, request_evidence retaining the actual request and restrictions, no mode or authority boolean, and no copied task list or review feedback. No usage accounting is introduced. The generated plan is not called user-approved."
+      "No state file is created. The plan's Constraints records the request's binding limits, and the plan, ledger, and commits carry progress with no copied task list, review feedback, or authority boolean. No usage accounting is introduced. The generated plan is not called user-approved."
     ],
-    "forbid": ["Auto-approving on behalf of the user, weakening checks, inferring high-risk sign-off from invocation, saving review findings, or merging/pushing."]
+    "forbid": ["Auto-approving on behalf of the user, weakening checks, inferring high-risk sign-off from invocation, saving review findings, creating a state file, or merging/pushing."]
   },
   {
     "id": "autoflow-in-scope-plan-revision",
@@ -818,32 +818,32 @@
     "setup": "Provide an approved native spec, a committed plan, a trustworthy ledger with one completed task and one unnecessary unfinished task whose behavior and checks already exist, plus current invocation authority. A second variant needs a changed unfinished task boundary but no product decision, coverage reduction, user-constraint change, or weaker check. No plan-revision approval will be supplied.",
     "prompt": "继续 autoflow，按现有规格和证据对齐剩余计划并完成，不要编造已完成任务。",
     "expect": [
-      "Execute performs and commits an in-scope self-reviewed revision inline under the shared revision contract, returns the revised plan snapshot to the orchestrator, and resumes from reconciled progress without a skill handoff or approval prompt.",
+      "Execute performs and commits an in-scope self-reviewed revision inline under the shared revision contract, returns the revised plan and its commit to the orchestrator, and resumes from reconciled progress without a skill handoff or approval prompt.",
       "Completed task numbers, contents, briefs, and ledger history remain intact. A cancellation retains its number and reason, preserves coverage through Existing coverage and final checks, and does not invent completion or a commit for that task.",
-      "The plan snapshot is refreshed only after the verified revision; product changes or weakened verification remain outside invocation authority."
+      "The orchestrator continues from the revised plan only after its self-review and commit; product changes or weakened verification remain outside invocation authority."
     ],
     "forbid": ["Requiring routine revision approval, letting execute change task semantics without self-review, evidence, preserved coverage, and a recorded revision, erasing history, or skipping requirement coverage."]
   },
   {
     "id": "autoflow-early-plan-recovery",
     "skill": "autoflow",
-    "setup": "Provide approved native inputs and a valid version-5 record with plan pending or in_progress, intended plan path, null plan_blob, null review heads, and no saved plan or task ledger. In a separate variant leave a recoverable partial plan write. Preserve an unrelated user edit and provide no plan approval.",
+    "setup": "Provide committed approved native inputs and no plan.md, ledger, or state file, so nothing records that planning started. In a separate variant leave a recoverable partial plan write. Preserve an unrelated user edit and provide no plan approval.",
     "prompt": "继续这个功能的 autoflow，核对既有进度后直接完成。",
     "expect": [
-      "Missing initial plan artifact, snapshot, or commit is treated as normal early-stage evidence, not an invalid schema or lost approval.",
+      "A missing plan, ledger, and commit is treated as normal early-stage evidence, not an error or lost approval.",
       "The run recovers or rebuilds the plan from approved inputs, self-reviews and commits it, then continues without a plan approval gate; partial writes and user changes are safely separated.",
-      "A plan claimed complete but actually missing remains a blocker unless its evidence can be reconciled; early-stage tolerance does not weaken completed-stage validation."
+      "A ledger that points at a plan that is actually missing remains a blocker unless Git history reconciles it; early-stage tolerance does not weaken later-stage validation."
     ],
-    "forbid": ["Requiring an already approved plan before resuming planning, trusting missing contract snapshots, overwriting user work, or inventing task results."]
+    "forbid": ["Requiring an already approved plan before resuming planning, creating a state file, treating uncommitted inputs as approved, overwriting user work, or inventing task results."]
   },
   {
     "id": "autoflow-preserves-feature-review-base",
     "skill": "autoflow",
-    "setup": "Create earlier feature implementation commits and a matching execution ledger, then create a new continuation branch at the current head. Record the earlier full review_base in the ledger and version-5 state. In a conflict variant supply a different base; preserve all artifacts and initial user changes.",
+    "setup": "Create earlier feature implementation commits and a matching execution ledger, then create a new continuation branch at the current head. Record the earlier full review_base in the ledger. In a conflict variant supply a different base; preserve all artifacts and initial user changes.",
     "prompt": "在当前分支继续 autoflow，最后审查整个功能。",
     "expect": [
-      "Read-only reconciliation precedes branch or state writes, and the original feature review base is retained so earlier task increments enter the final pinned review.",
-      "A supplied or recorded base conflict is reported before rewriting state or execution; a new branch's starting commit does not override the feature base."
+      "Read-only reconciliation precedes branch or record writes, and the original feature review base is retained so earlier task increments enter the final pinned review.",
+      "A supplied or recorded base conflict is reported before rewriting records or execution; a new branch's starting commit does not override the feature base."
     ],
     "forbid": ["Using current HEAD to hide earlier increments, silently replacing a base, or changing branches before resolving recorded scope."]
   },
@@ -859,15 +859,15 @@
     "forbid": ["Empty commits, fabricated task history, unnecessary plan rewrites, or asking for inline-review acceptance when there is no diff to review."]
   },
   {
-    "id": "autoflow-legacy-state-reconstruction",
+    "id": "autoflow-leftover-state-file",
     "skill": "autoflow",
-    "setup": "Provide a version-4 record, approved native inputs, a committed plan and trustworthy task evidence. Current invocation explicitly requests continuous autoflow under the new contract. In separate variants preserve an unresolved specific high-risk stop, missing review feedback, an old skill-imposed count-only stop, or an old explicit restriction not superseded by the request.",
+    "setup": "Provide a leftover .coding/autoflow-state.json from an earlier version, with an old mode or authority boolean, plus approved native inputs, a committed plan and trustworthy task evidence. The current request explicitly asks for continuous autoflow. In separate variants the old file records an unresolved specific high-risk stop, a user restriction the request does not supersede, a count-only stop imposed by an old skill rule, or a complete flag with no matching review evidence.",
     "prompt": "使用当前 autoflow 契约继续，先核对旧记录，不删除历史。",
     "expect": [
-      "The original record is retained under a unique filename, then version 5 is rebuilt from reconciled inputs, history, and current invocation rather than merely renaming fields or trusting old authority booleans.",
-      "Routine plan approval is not reintroduced. Specific risk stops, prior restrictions, failure evidence, and user edits are preserved; missing review feedback requires reconciliation and fresh review. An old skill-imposed count-only stop is reassessed under the current evidence rules without erasing history or overriding user restrictions."
+      "The old file stays byte-identical in place and no new state file is written. Its authority booleans, plan approval, and complete flags are not trusted; the run continues from the plan, ledger, and Git history.",
+      "Routine plan approval is not reintroduced. An unresolved specific high-risk stop and an unsuperseded user restriction still bind the affected work; a count-only stop is reassessed under the current evidence rules; a complete flag without review evidence triggers a fresh read-only review; user edits are preserved."
     ],
-    "forbid": ["Overwriting retained records, treating checkpointed/auto as new execution options, clearing an unresolved risk or read-only restriction through migration, or inferring approval from a boolean."]
+    "forbid": ["Rewriting, renaming, or deleting the old file, creating a replacement state file, treating checkpointed/auto as new execution options, clearing an unresolved risk or read-only restriction by ignoring the file, or inferring approval from a boolean."]
   },
   {
     "id": "autoflow-read-only-restrictions",
@@ -875,7 +875,7 @@
     "setup": "Install the complete core plus autoflow on main with approved native inputs and initial user changes. The request explicitly permits only a conversation preview. In a separate fixture use the legacy --dry-run wording.",
     "prompt": "只读预览 autoflow 的计划与阻塞项，不修改文件、分支、状态或提交。",
     "expect": [
-      "Explicit read-only or legacy dry-run intent is honored without branch, document, state, commit, or reviewer writes; removing named modes does not erase user restrictions."
+      "Explicit read-only or legacy dry-run intent is honored without branch, document, record, commit, or reviewer writes; removing named modes does not erase user restrictions."
     ],
     "forbid": ["Treating every mention of autoflow as unrestricted write authority, silently ignoring old read-only wording, or introducing new mode configuration."]
   },
@@ -885,11 +885,11 @@
     "setup": "Use separate local fixtures for a concrete destructive or security-sensitive action without specific sign-off, an unavailable required check without a waiver, a documentation-only task with no behavior-test harness, and a named user verification waiver stating the omitted check and accepted gap. All external effects are isolated or disabled; no plan approval will be supplied.",
     "prompt": "按已批准规格用 autoflow 完成，遇到真正缺失的授权或证据时说明阻塞，不安装依赖。",
     "expect": [
-      "Specific high-risk sign-off is requested before the affected action, while ordinary planning, task transitions, and in-scope fixes do not cause routine authorization prompts.",
+      "An approved local change to tracked fixture files, such as rotating synthetic key files, is ordinary work: it is implemented, verified, and committed without a sign-off prompt because `git revert` restores it. Specific sign-off is still requested before an irreversible effect, while ordinary planning, task transitions, and in-scope fixes cause no routine authorization prompts.",
       "Documentation/configuration uses the strongest applicable check rather than invented TDD or a new framework. Unavailable required verification blocks completion and downstream stages unless the explicit DoD waiver gate is met.",
       "A valid waiver permits only delivery within its accepted boundary; omitted checks stay unrun/unverified, and invocation or plan authority is never substituted for a waiver."
     ],
-    "forbid": ["Executing real external effects, weakening trust boundaries, inventing test passes, or requiring plan approval as a replacement for the actual risk decision."]
+    "forbid": ["Executing real external effects, treating a tracked and revertible fixture change as irreversible, weakening trust boundaries, inventing test passes, or requiring plan approval as a replacement for the actual risk decision."]
   },
   {
     "id": "execute-lightweight-resume-failure-evidence",
@@ -958,16 +958,16 @@
     "forbid": ["Reapproving dimensions or severity filters, silently expanding fix scope, inventing browser passes, or fixing the read-only control."]
   },
   {
-    "id": "autoflow-other-record-and-editorial-recovery",
+    "id": "autoflow-editorial-edits-and-other-feature",
     "skill": "autoflow",
-    "setup": "Use a current unambiguous feature request and a valid state record for a different feature. The target feature has approved inputs and a self-reviewed plan, and local history can recover its review base. Preserve the old record exactly at a unique retained path before creating new state. In a same-feature variant change only formatting in a required appendix while retaining exact approved bytes for comparison; in a second editorial variant make two formatting-only edits without committing either, recovering between them; in a control make those bytes unavailable or change a linked contract path.",
+    "setup": "Use a current unambiguous feature request with committed approved inputs and a self-reviewed committed plan, plus a leftover state file and ledger belonging to a different feature. In a same-feature variant change only formatting in a required appendix without committing it; in a second editorial variant make two formatting-only uncommitted edits to the spec, recovering between them; in a control change a linked contract path or a behavior in an uncommitted edit.",
     "prompt": "按当前指定功能继续 autoflow，保留其他功能记录，不要重复审批纯排版变化。",
     "expect": [
-      "The unrelated old record is automatically retained without a recover-or-keep menu, never overwritten or claimed complete; state for the current target is established only from its own evidence.",
-      "Editorial input changes continue only after exact full-contract comparison proves behavior, constraints, links, schemas, security, UI decisions, and acceptance unchanged. Controls stop for missing proof or actual contract change.",
-      "A refreshed editorial snapshot stays recoverable from Git or a trustworthy retained copy. When the new content has no saved version, the original approved snapshot is kept and no user document is committed or copied merely to refresh state."
+      "The other feature's files stay byte-identical, are not claimed complete, and are not read as this feature's base or authority; no new state file is written.",
+      "Uncommitted formatting-only edits continue without a prompt after a full-contract comparison against the last commit that touched plan.md proves behavior, constraints, links, schemas, security, UI decisions, and acceptance unchanged. The control stops for its owner's decision.",
+      "No user document is committed or copied merely to record the comparison."
     ],
-    "forbid": ["Copying another feature's base or authority, inferring approval from hashes, treating changed links as whitespace, discarding records, or silently accepting unavailable evidence."]
+    "forbid": ["Copying another feature's base or authority, inferring approval from a hash, treating a changed link as whitespace, committing or copying user documents to record a comparison, creating a state file, or silently accepting an uncommitted contract change."]
   },
   {
     "id": "execute-approved-security-contract-no-reapproval",
@@ -983,7 +983,7 @@
   {
     "id": "execute-recovers-first-run-feature-base",
     "skill": "execute",
-    "setup": "Create two earlier commits for the same approved feature, with an unambiguous original base evidenced by local history and the request. Supply a self-reviewed persisted plan for the remaining work, but no ledger or autoflow state. Create a continuation branch at current HEAD and preserve an unrelated user edit. In separate controls make the feature base genuinely ambiguous, or start a genuinely new feature with no earlier increment.",
+    "setup": "Create two earlier commits for the same approved feature, with an unambiguous original base evidenced by local history and the request. Supply a self-reviewed persisted plan for the remaining work, but no ledger. Create a continuation branch at current HEAD and preserve an unrelated user edit. In separate controls make the feature base genuinely ambiguous, or start a genuinely new feature with no earlier increment.",
     "prompt": "首次用 execute 完成这个功能剩余计划，记录供后续整体审查使用的原始功能基线，不要漏掉已有实现，也不要自动启动整体审查。",
     "expect": [
       "Read-only reconciliation recovers and records the original full feature-base SHA and its evidence before ledger writes. Both earlier feature commits remain in the later candidate review range without routine confirmation.",
@@ -1003,16 +1003,16 @@
     "forbid": ["Requiring routine plan reapproval, giving spec permission to edit task records, silently implementing unapproved behavior, rewriting completed coverage, or fabricating requirement IDs."]
   },
   {
-    "id": "autoflow-retains-request-evidence",
+    "id": "autoflow-limits-survive-in-plan",
     "skill": "autoflow",
-    "setup": "Start on a local feature branch with approved inputs and a settled plan. Supply applicable earlier restrictions as actual user messages. Run the initial prompt until state is written and execution is in progress, then interrupt. Retain the actual agent-produced state, ledger, and trace; do not prefill request_evidence. Resume in a fresh session with the follow-up and without the original conversation. Additional controls use older version-5 state without receipts but recoverable user messages, unavailable restrictions, and a receipt contradicted by a current no-write instruction replacing the follow-up. Keep all external effects disabled.",
+    "setup": "Start on a local feature branch with committed approved inputs and no plan. Supply earlier restrictions as actual user messages. Run the initial prompt until the plan is committed and execution is in progress, then interrupt. Retain the actual agent-produced plan, ledger, and trace; do not prefill the plan's Constraints. Resume in a fresh session with the follow-up and without the original conversation. Additional controls replace the follow-up with a current no-write instruction, or leave an older state file naming a restriction the plan does not. Keep all external effects disabled.",
     "prompt": "用 autoflow 交付这份已批准规格，保持当前分支，不安装依赖，不调整任务顺序。",
     "follow_up": "继续这次 autoflow，沿用已记录的范围和限制，不重新确认已经明确的事项。",
     "expect": [
-      "The initial run writes exact relevant user text and provenance into request_evidence, including applicable earlier restrictions. A trustworthy same-run receipt permits recovery without the lost conversation or a routine reapproval; constraints reach called skills without usage accounting.",
-      "Older version-5 state is enriched only after recovering actual instructions, not rejected solely for lacking the additive field. Unknown restrictions block affected work; current no-write instructions override an older receipt without state writes."
+      "The initial run records the request's binding limits (no new dependencies, fixed task order) in the committed plan's Constraints, passes them to the called skills, and creates no state file.",
+      "A fresh session recovers the limits from the plan without the lost conversation or a routine reapproval and honors them. A current no-write instruction overrides them without writes, and a recorded limit is never treated as authority or high-risk sign-off. A leftover older state file contributes only the user restrictions and specific high-risk stops it names."
     ],
-    "forbid": ["Treating an approval boolean or agent summary as a user message, inventing missing instructions, copying review feedback into state, trusting conflicting receipts, adding usage-accounting state, or asking again for recoverable authority."]
+    "forbid": ["Creating a state file, treating an approval boolean or agent summary as a user message, inventing missing instructions, copying review feedback into the plan or ledger, treating a recorded limit as sign-off, adding usage-accounting records, or asking again for recoverable authority."]
   },
   {
     "id": "learning-refresh-batch-archive-without-reapproval",

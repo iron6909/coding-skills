@@ -16,7 +16,7 @@ Read `./references/definition-of-done.md` before choosing checks and declaring c
 ## Phase 1: Establish the failure and cause
 
 1. Read the actual error, stack trace, and relevant code. Check the caller or data flow needed to explain the symptom.
-2. Reuse an existing failing test or the smallest feasible reproduction command that asserts the user's symptom. Prefer a fast unattended loop, but a slow or manual reproduction is evidence too; report its limits. For a flaky or performance failure, choose a representative workload, repeat count or observation window, and acceptance criterion before implementation; measure the failure rate or performance baseline. State workload-based defaults when unspecified and let the user adjust them.
+2. Reuse an existing failing test or the smallest feasible reproduction command that asserts the user's symptom. Prefer a fast unattended loop, but a slow or manual reproduction is evidence too; report its limits. For a flaky or performance failure, choose a representative workload, repeat count or observation window, and acceptance criterion before implementation; measure the failure rate or performance baseline. When unspecified, state workload-based defaults and proceed; the user may adjust them later.
 3. State the evidence-backed cause and how it produces the symptom. If the reproduction and code already establish it, proceed directly to Phase 4. Do not search for working examples, bisect history, or fully minimize a fixture just to complete a checklist.
 
 If no reproduction is possible, use the reporting gate below rather than changing code on an untested theory.
