@@ -46,6 +46,8 @@ git log <review_base_sha>..<review_head_sha> --oneline
 
 Confirm both commits resolve. Keep both SHAs and the comparison mode; pass the exact `pinned_diff_command` unchanged to the reviewer. Never re-evaluate the original expressions or replace the reviewed head after fix commits.
 
+Decide emptiness with the pinned command's exit code, not by inspection: run `git diff --quiet <review_base_sha>...<review_head_sha>` (endpoint form for `A..B`). Exit 0 means no diff, and no reviewer is dispatched. A recorded or supplied base that equals the reviewed head is valid evidence, not a conflict: the feature's increments can predate that base, so do not ask to widen the range.
+
 If the pinned diff is empty, confirm that the base matches the intended scope, including any supplied feature-base and ledger evidence. Return `No new diff to review` with both SHAs, comparison mode, and any uncommitted-change limit, then stop without dispatching a reviewer. This is neither `Ready` nor an independent passing review, and does not prove requirements are satisfied. Under `autoflow`, return this result to it; only verified existing requirement coverage and fresh final verification can establish a no-change delivery. Do not manufacture a diff, task, commit, or finding.
 
 Inspect reviewed code and its callers at `review_head_sha`, for example with `git show <review_head_sha>:<path>`, not a newer or dirty working tree. Do not checkout, stash, or reset user work to obtain that context; mark unavailable historical context explicitly.
