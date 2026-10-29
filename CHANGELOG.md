@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **仓库自检**：`check-examples` 只保留包清单、技能结构与可移植性、场景格式及可执行示例检查，不再逐句比对技能原文；规则改动的行为证据以手工场景实跑为准。
+- **简化流程**：`simplify` 不再限制在基线检查通过前读取参考文档，读取不改变状态；仍须基线通过后才修改、最终检查通过后才提交。轨迹检查同步只校验修改与提交顺序。
 
 ### Removed
 

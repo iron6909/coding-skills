@@ -19,11 +19,11 @@ A user-named scope is authoritative, even when it has no recent diff. A named fi
 
 Without an explicit scope, inspect relevant staged and unstaged diffs plus clearly related untracked files. Include committed work only with the user's base or a locally verifiable base that clearly matches the work. Resolve it with `git rev-parse --verify <base>^{commit}`; ask when the base or range is ambiguous. A working-tree-only request needs no commit baseline. Do not assume a branch name, fetch, or query hosting services.
 
-Inspect hunks and necessary context, not just filenames. Do not fall back to unrelated older work or whole-repository cleanup. If there is no candidate code, or only documentation, generated or vendored files, dependencies, lockfiles, or mechanical churn, report no simplification needed and stop before baseline checks or review references. In a mixed scope, retain only the substantive code.
+Inspect hunks and necessary context, not just filenames. Do not fall back to unrelated older work or whole-repository cleanup. If there is no candidate code, or only documentation, generated or vendored files, dependencies, lockfiles, or mechanical churn, report no simplification needed and stop before baseline checks. In a mixed scope, retain only the substantive code.
 
 ### 2. Check the baseline
 
-Run the applicable checks for the confirmed scope. Until all required baseline checks pass, do not edit code or load review/commit references; a blocked cleanup needs no review. If a required check fails or cannot run, report the blocker and stop without fixing the existing failure.
+Run the applicable checks for the confirmed scope. Until all required baseline checks pass, do not edit code. If a required check fails or cannot run, report the blocker and stop without fixing the existing failure.
 
 ### 3. Review and apply
 
@@ -41,7 +41,7 @@ If simplification causes a failure, correct it within the original scope or roll
 
 ### 5. Commit and report
 
-No worthwhile changes, or all simplifications reverted: report no change and make no commit. Otherwise, wait for all final check results and confirm the DoD before reading `./references/git-commit.md`; do not run this read in parallel with checks. Commit only this run's verified simplifications, using the repository's convention (`refactor(simplify): ...` when Conventional Commits applies).
+No worthwhile changes, or all simplifications reverted: report no change and make no commit. Otherwise, commit only after all final checks pass and the DoD is confirmed, following `./references/git-commit.md`. Commit only this run's verified simplifications, using the repository's convention (`refactor(simplify): ...` when Conventional Commits applies).
 
 Report in the conversation: the actual scope, meaningful changes, skipped candidates and blockers, check commands and fresh outcomes, the applied DoD and its skips or accepted limits, and the commit if any. Do not create a separate report, fill empty categories, or invent performance gains.
 

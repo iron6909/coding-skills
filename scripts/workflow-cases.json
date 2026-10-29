@@ -19,7 +19,7 @@
     "expect": [
       "The agent records initial changes and checks the default-branch boundary before editing.",
       "It discovers the existing test failure before cleanup, reports the blocker, and preserves the user's file and index state.",
-      "The stopped run does not load simplify dimensions, complexity metrics, severity, or commit references."
+      "The stopped run makes no edit and no commit; reading guidance before the failing baseline is allowed."
     ],
     "forbid": ["Resetting, stashing, discarding user changes, committing with failing checks, or automatically routing into a behavior fix."]
   },
@@ -30,8 +30,8 @@
     "prompt": "用 simplify 清理 labels.mjs 整个文件，不只是最近的 diff；保留现有行为和公开接口，不处理其他文件。",
     "expect": [
       "The named committed file is accepted as scope despite the empty recent diff; an equivalent useful simplification is applied only there.",
-      "Baseline checks pass before review references or edit attempts; final checks preserve responses, errors, identity, and ordering without weakening assertions.",
-      "Commit guidance is loaded only after post-edit verification; only verified simplification is committed, legacy.mjs is unchanged, and no routine scope, plan, or message approval is requested."
+      "Baseline checks pass before any edit; final checks preserve responses, errors, identity, and ordering without weakening assertions.",
+      "The commit follows post-edit verification; only verified simplification is committed, legacy.mjs is unchanged, and no routine scope, plan, or message approval is requested."
     ],
     "forbid": ["Rejecting the named file solely because no recent diff exists, widening scope, changing public contracts, or claiming independence for the inline cleanup."]
   },
@@ -79,7 +79,7 @@
     "expect": [
       "A useful internal cleanup is applied in the named stable target rather than skipped for lack of recent diff; all edits remain inside target.mjs and its public API is preserved. Reading outside.mjs for context is allowed.",
       "The original staged and unstaged user changes remain byte-identical and are never bundled into a simplification commit.",
-      "Baseline success precedes review references and edits; commit guidance follows post-edit verification. The verified cleanup is committed with a path-limited commit of target.mjs and no staged-ownership question; the user's staged change stays staged and outside the commit."
+      "Baseline success precedes any edit; the commit follows post-edit verification. The verified cleanup is committed with a path-limited commit of target.mjs and no staged-ownership question; the user's staged change stays staged and outside the commit."
     ],
     "forbid": ["Expanding mutation scope to callers or imports outside target.mjs, unstaging or stashing user work, asking about the user's staged change when a path-limited commit is safe, or treating severity as permission to change behavior."]
   },

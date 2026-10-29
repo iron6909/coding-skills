@@ -30,7 +30,7 @@ export function checkTrace(events, variant) {
   const checks = calls.filter(call => /\bnode(?:\.exe)?\s+["']?(?:\.\/)?check\.mjs\b/.test(call.args.command ?? ""));
   const passed = checks.filter(call => !call.result.isError && /\bchecks? passed\b/.test(call.output) && !/AssertionError|Command exited with code [1-9]/.test(call.output));
   const reviews = calls.filter(call => /references\/(simplify-dimensions|complexity-metrics|severity)\.md/.test(call.input));
-  const commits = calls.filter(call => /references\/git-commit\.md/.test(call.input));
+  const commitCalls = calls.filter(call => /\bgit\s+(?:-[Cc]\s+\S+\s+)*commit\b/.test(call.args.command ?? ""));
   const edits = calls.filter(call => ["edit", "write"].includes(call.toolName));
   const changes = edits.filter(call => !call.result.isError);
   const questions = calls.filter(call => call.toolName === "contact_supervisor" && ["need_decision", "interview_request"].includes(call.args.reason));
@@ -39,8 +39,8 @@ export function checkTrace(events, variant) {
   if (docs) applicable = checks.length === 0;
   else if (dirty) applicable = checks.length === 1 && checks[0].output.includes("pre-existing fixture failure");
   const engagement = source.length > 0 && applicable;
-  const baselineFirst = docs || dirty ? reviews.length + commits.length + edits.length === 0 : [...reviews, ...commits, ...edits].every(call => passed.some(check => check.result.index < call.index));
-  const commitLast = commits.every(call => {
+  const baselineFirst = docs || dirty ? edits.length === 0 : edits.every(call => passed.some(check => check.result.index < call.index));
+  const commitLast = commitCalls.every(call => {
     const priorChanges = changes.filter(edit => edit.result.index < call.index);
     return priorChanges.length > 0 && passed.some(check => check.index > priorChanges.at(-1).result.index && check.result.index < call.index);
   });
@@ -48,8 +48,8 @@ export function checkTrace(events, variant) {
   const readProtocol = !calls.some(call => call.result.isError && /Edit without read|have not read/i.test(call.output));
   return [
     { text: "Actually inspect the named scope and complete its applicable baseline/review or legitimate early exit", passed: engagement, evidence: `source reads=${source.length}; checks=${checks.length}; passing checks=${passed.length}; review reads=${reviews.length}; fixture=${variant}` },
-    { text: "Complete a passing baseline before loading review/commit references or attempting edits; blocked/no-code runs load none", passed: baselineFirst, evidence: `passing baseline result events=${passed.map(call => call.result.index)}; review/commit/edit start events=${[...reviews, ...commits, ...edits].map(call => call.index)}` },
-    { text: "Load commit guidance only after own changes have passed post-edit verification", passed: commitLast, evidence: `commit guidance start events=${commits.map(call => call.index)}; edit result events=${changes.map(call => call.result.index)}; passing check result events=${passed.map(call => call.result.index)}` },
+    { text: "Complete a passing baseline before attempting edits; blocked/no-code runs make none", passed: baselineFirst, evidence: `passing baseline result events=${passed.map(call => call.result.index)}; edit start events=${edits.map(call => call.index)}` },
+    { text: "Commit only after own changes have passed post-edit verification", passed: commitLast, evidence: `commit start events=${commitCalls.map(call => call.index)}; edit result events=${changes.map(call => call.result.index)}; passing check result events=${passed.map(call => call.result.index)}` },
     { text: "Do not request routine scope, plan, or staged-ownership approval", passed: noQuestions, evidence: `blocking questions=${questions.length}` },
     { text: "Follow the host read-before-edit protocol without rejected write attempts", passed: readProtocol, evidence: `read-before-edit rejections=${calls.filter(call => call.result.isError && /Edit without read|have not read/i.test(call.output)).length}` },
   ];
@@ -62,19 +62,30 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const baseline = ["bash", { command: "node check.mjs" }, "behavior checks passed"];
     const dimensions = ["read", { path: ".pi/skills/simplify/references/simplify-dimensions.md" }];
     const edit = ["edit", { path: "target.mjs", edits: [] }];
-    const commit = ["read", { path: ".pi/skills/simplify/references/git-commit.md" }];
+    const commit = ["bash", { command: "git commit -m \"refactor(simplify): tidy\" -- target.mjs" }];
     const normal = [read, baseline, dimensions, edit, baseline, commit];
     assert.ok(checkTrace(trace(normal), "mutation-boundary").every(item => item.passed));
+    assert.ok(checkTrace(trace([read, dimensions, baseline, edit, baseline, commit]), "mutation-boundary").every(item => item.passed), "reading guidance before the baseline is allowed");
+    assert.ok(checkTrace(trace([read, ["bash", { command: "git rev-parse --verify HEAD^{commit}" }], baseline, dimensions, edit, baseline, commit]), "mutation-boundary").every(item => item.passed), "resolving a commit is not committing");
     for (const toolName of ["edit", "write"]) assert.equal(checkTrace(trace([baseline, dimensions, [toolName, { path: "target.mjs" }], baseline]), "no-gain")[0].passed, false, "a write is not a source read");
     assert.equal(checkTrace(trace([["read", { path: "target.mjs" }, "missing file", true], baseline, dimensions]), "no-gain")[0].passed, false, "a failed read is not source inspection");
     const concurrent = trace(normal);
     [concurrent[3], concurrent[4]] = [concurrent[4], concurrent[3]];
-    assert.equal(checkTrace(concurrent, "mutation-boundary")[1].passed, false, "starting a check is not completing it");
+    assert.equal(checkTrace(concurrent, "mutation-boundary")[1].passed, true, "reordering a read with a check does not matter");
+    // The edit starts while the baseline check is still running, so the baseline has not completed first.
+    const editBeforeCheckEnds = [
+      { recordType: "tool_start", toolName: "read", toolCallId: "r", argsPayload: JSON.stringify({ path: "target.mjs" }) },
+      { recordType: "message", role: "toolResult", toolCallId: "r", text: "ok", isError: false },
+      { recordType: "tool_start", toolName: "bash", toolCallId: "c", argsPayload: JSON.stringify({ command: "node check.mjs" }) },
+      { recordType: "tool_start", toolName: "edit", toolCallId: "e", argsPayload: JSON.stringify({ path: "target.mjs" }) },
+      { recordType: "message", role: "toolResult", toolCallId: "c", text: "checks passed", isError: false },
+      { recordType: "message", role: "toolResult", toolCallId: "e", text: "ok", isError: false },
+    ];
+    assert.equal(checkTrace(editBeforeCheckEnds, "mutation-boundary")[1].passed, false, "starting a check is not completing it");
     assert.equal(checkTrace(trace([["read", { path: "contracts.mjs" }]]), "contracts")[0].passed, false, "an empty-diff exit is not a completed code review");
-    assert.equal(checkTrace(trace([read, dimensions, baseline]), "mutation-boundary")[1].passed, false);
     assert.equal(checkTrace(trace([read, edit, baseline]), "mutation-boundary")[1].passed, false);
     assert.equal(checkTrace(trace([read, baseline, dimensions, edit, commit]), "mutation-boundary")[2].passed, false);
-    assert.equal(checkTrace(trace([["bash", { command: "node check.mjs; cat .pi/skills/simplify/references/simplify-dimensions.md" }, "checks passed"]]), "mutation-boundary")[1].passed, false, "same-call ordering is unverified");
+    assert.equal(checkTrace(trace([["bash", { command: "node check.mjs; cat target.mjs" }, "checks passed"], edit]), "mutation-boundary")[1].passed, true);
     assert.equal(checkTrace(trace([["contact_supervisor", { reason: "need_decision", message: "Confirm scope?" }], ...normal]), "mutation-boundary")[3].passed, false);
     assert.equal(checkTrace(trace([...normal, ["edit", { path: "target.mjs" }, "Edit without read", true]]), "mutation-boundary")[4].passed, false);
     assert.ok(checkTrace(trace([["read", { path: "README.md" }]]), "docs-only").every(item => item.passed));
