@@ -20,7 +20,7 @@ Use this canonical template:
 ---
 date: "YYYYMMDD"
 area: <module, subsystem, or domain>
-tags: [<3-6 lowercase module, tool, or concept tags>]
+tags: [<relevant lowercase module, tool, or concept tags>]
 ---
 
 # <Topic>
@@ -39,7 +39,7 @@ tags: [<3-6 lowercase module, tool, or concept tags>]
 - `docs/adr/NNNN-<related>.md`
 ```
 
-Repeat the entry section only for related lessons. Omit `Related` when unused. Keep each entry short: a pointer to reasoning, not a tutorial.
+Repeat the entry section only for related lessons. Use only tags that help retrieve the topic; there is no count quota. Omit `Related` when unused. Keep each entry short: a pointer to reasoning, not a tutorial.
 
 Keep lifecycle metadata in the same YAML frontmatter. Use quoted `YYYYMMDD` dates:
 

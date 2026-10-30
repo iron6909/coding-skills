@@ -88,7 +88,7 @@ For authorized fixes:
 1. Resolve any open design decision with the user before changing code. Work in severity order, Blocking first, and make the smallest change that fixes each finding.
 2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.
 3. Apply the loaded DoD's unavailable-check gate; accepted limits remain explicitly unverified in the report, not verified.
-4. After verification, read `./references/git-commit.md` and commit one finding per commit, with `fix(ui): <what changed> (<FINDING-ID>)` and the actual report path in the body. Stage only this finding's changes, excluding the original reviewed work. Do not commit the report.
+4. After verification, read `./references/git-commit.md`. Commit each independently verifiable logical fix; related findings may share a commit when they require the same change or must be verified together. Follow the repository's message convention, using `fix(ui): <what changed>` otherwise, and cite the addressed finding IDs and report path in the body. Include only fix-owned changes, excluding the original reviewed work and the report.
 
 Report verified fixes, unverified changes, and remaining findings. Post-commit rechecks are welcome but do not replace the checks before committing.
 

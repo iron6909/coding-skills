@@ -24,25 +24,11 @@ An explicit request to commit named files or hunks authorizes that scope. Do not
 
 ## 2. Stage and commit
 
-Enumerate the authorized paths or hunks. For whole-file scope:
-
-```bash
-git add -- <specified-files>
-git diff --staged -- <specified-files>
-```
-
-For partial-file staging, follow the shared Git rules.
+Stage and commit the authorized paths or hunks using `./references/git-commit.md`; it owns whole-file and temporary-index handling.
 
 Use a supplied message when compatible with project rules. Adapt an incompatible message without changing its intent; use a message the user requires verbatim as-is and report the convention mismatch. If none was supplied, write a concise message from the inspected diff.
 
-Respect required checks and hooks; run the checks and do not bypass either.
-
-```bash
-git commit -m "<subject>" -- <specified-files>   # omit the paths after partial-file staging
-git log -1 --stat
-```
-
-Create a new commit; do not amend.
+Run required checks and hooks without bypassing them, then create a new commit under the shared Git rules; do not amend.
 
 ## Examples
 

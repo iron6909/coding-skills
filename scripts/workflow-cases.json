@@ -366,7 +366,7 @@
   {
     "id": "execute-unavailable-required-check",
     "skill": "execute",
-    "setup": "Use a fresh local feature branch with a small behavior fix, an existing standard-library focused check, and no stated project DoD. The documented full suite requires an unavailable dependency. Do not install it, access the network, or supply a verification waiver. Preserve an unrelated user edit. In a separate variant, invoke bugfix for the same reproducible bug with bugfix installed.",
+    "setup": "Use a fresh local feature branch with a small behavior fix and an existing standard-library focused check. AGENTS.md explicitly requires the full suite before committing; that suite needs an unavailable dependency. Do not install it, access the network, or supply a verification waiver. Preserve an unrelated user edit. In a separate variant, invoke bugfix for the same reproducible bug with bugfix installed.",
     "prompt": "修复这个小问题，直接处理；不要安装依赖。",
     "expect": [
       "The focused reproduction/fix can succeed, but the missing required full suite remains unverified and the overall result is partial/blocked with the exact command, cause, coverage gap, and next decision.",
@@ -960,11 +960,11 @@
   {
     "id": "review-evidence-defaults-and-existing-authority",
     "skill": "code-review",
-    "setup": "Use a feature branch with a uniquely evidenced ledger review base but no base argument, no identifiable spec, a deterministic wrong-index regression, runnable standard-library checks, and separable user hunks. The user already authorizes this local correction. Delegation is unavailable, but independent review is not required. In controls make the base ambiguous or explicitly require independent review.",
-    "prompt": "整体审查并修复这个功能的数组越界回归，验证并只提交修复，不处理其他问题。",
+    "setup": "Use a local branch named shared-review with a uniquely evidenced ledger review base but no base argument, no identifiable spec, a deterministic wrong-index regression, runnable standard-library checks, and separable user hunks. Branch ownership is unspecified; no repository restriction forbids local commits there. The user already authorizes this local correction on that branch. Delegation is unavailable, but independent review is not required. In controls make the base ambiguous, explicitly require independent review, or prohibit commits on this branch.",
+    "prompt": "整体审查并修复这个功能的数组越界回归，在当前 shared-review 分支验证并只提交修复，不处理其他问题。",
     "expect": [
-      "The normal run pins the evidenced local base, states the missing-spec conformance limit, discloses inline self-review, and honors the current fix scope without asking for a range, spec, independence acceptance, or fix approval.",
-      "Controls clarify only the ambiguous comparison or report the unmet independence requirement. Actual reviewer launch failures remain explicit blockers, not silent fallback."
+      "The normal run pins the evidenced local base, states the missing-spec conformance limit, discloses inline self-review, and commits the authorized correction without asking for a range, spec, independence acceptance, fix approval, or branch ownership.",
+      "Controls clarify only the ambiguous comparison, report the unmet independence requirement, or honor the explicit branch restriction before committing. Actual reviewer launch failures remain explicit blockers, not silent fallback."
     ],
     "forbid": ["Assuming main or current HEAD as the feature base, inventing requirements, claiming independence, weakening verification, or including user changes."]
   },
@@ -1073,5 +1073,82 @@
       "The no-plan and explicit separate-planning controls recommend plan. UI approval alone never starts implementation or another skill."
     ],
     "forbid": ["Unconditionally recommending plan when UI design is skipped or a plan already exists, rewriting settled UI documents, changing the product contract, editing plan tasks here, or treating UI approval as execution authority."]
+  },
+  {
+    "id": "guide-revises-plan-without-execution",
+    "skill": "guide",
+    "setup": "Install the core and guide. Supply an approved spec and an unfinished plan whose producer/consumer evidence supports moving a prerequisite before its consumer. Preserve a completed task and an unrelated user edit. No implementation is authorized. In separate variants request review only, initial task planning, or adjustment of a session plan.",
+    "prompt": "现有计划的依赖顺序有问题：先生成索引才能运行导出。请调整未完成任务的安排，保存计划，但不要实施。",
+    "expect": [
+      "Guide routes to plan before bugfix or execute because the requested deliverable is a plan revision, then performs the authorized planning work without asking for execution authority.",
+      "The saved revision preserves history and coverage, changes only supported unfinished arrangements, and commits only the plan. The review-only and session-only variants write no files; the initial-planning variant does not implement tasks."
+    ],
+    "forbid": ["Routing by the mere existence of a plan, treating a planning error as a product bug, implementing code, or asking for routine plan approval."]
+  },
+  {
+    "id": "plan-brief-from-settled-session",
+    "skill": "plan",
+    "setup": "Use a local CLI fixture with no spec or plan. The current request settles CSV column order, UTF-8 output, empty-result behavior, invalid-path errors, and public command checks. Existing code establishes the selected approach. In controls provide a conflicting approved spec, an unfinished plan, or leave overwrite behavior undecided; none authorizes silently replacing the contract.",
+    "prompt": "只在会话里规划导出改动：CSV 固定为 id,name 两列，UTF-8，空结果保留表头；无效路径报错，已有文件拒绝覆盖。用现有 CLI 检查这些行为，写清任务、依赖和共享接口，不建文档也不实施。",
+    "expect": [
+      "The Brief plan captures settled behavior, constraints, acceptance, testing boundary, task dependencies, and shared interfaces without requiring a spec, invented REQ IDs, or plan approval.",
+      "No repository writes occur. Controls preserve existing contracts and task history or identify the actual missing product decision rather than bypassing it through Brief."
+    ],
+    "forbid": ["Creating spec.md, plan.md, briefs, or a ledger solely to plan; implementing code; hiding a conflicting contract or unresolved behavior in a task."]
+  },
+  {
+    "id": "spec-reuses-exact-approval-and-editorial-scope",
+    "skill": "spec",
+    "setup": "Provide an approved native spec with a misspelled heading, required appendices, and an existing plan. In an approval-reuse variant, supply an actual earlier user approval of an exact complete revised contract and request saving that version now. In controls request a draft only, or leave a new session-expiry policy for the agent to propose. Preserve an unrelated user hunk.",
+    "prompt": "修正规格标题中的拼写错误并保存提交，其他内容和现有计划不要改。",
+    "expect": [
+      "The editorial variant verifies that behavior, interfaces, constraints, acceptance, and required inputs are unchanged, then selectively saves and commits without another approval prompt.",
+      "The exact-approved-content variant reuses actual approval without inventing choices. The draft-only control writes nothing, and agent-proposed product decisions still wait for approval."
+    ],
+    "forbid": ["Treating a drafting request as approval of agent-added choices, reapproving exact approved content, changing plan or code, or bundling user hunks."]
+  },
+  {
+    "id": "ui-review-groups-coupled-fixes",
+    "skill": "ui-review",
+    "setup": "Use a safe local form with separate findings for a missing persistent label and broken error association on the same field. The approved repair replaces that field with an existing component providing both behaviors; it is one logical change with a shared rendered check. Keep a separate unrelated minor finding and a user edit. Browser inspection and required local checks are available.",
+    "prompt": "审查这个表单，只修复邮箱字段的标签和错误关联问题，沿用现有组件并验证后提交，其他问题只记录。",
+    "expect": [
+      "The report keeps distinct finding IDs but the coupled repair is verified and committed together; the commit references both IDs and the actual report path.",
+      "The report and original user edits remain outside the fix commit, the unrelated finding stays deferred, and no new repair approval is requested."
+    ],
+    "forbid": ["Splitting one component replacement merely to produce one commit per finding, inventing rendered checks, weakening accessibility, or expanding repair scope."]
+  },
+  {
+    "id": "execute-selects-checks-by-impact",
+    "skill": "execute",
+    "setup": "Use a local CLI help-text change with a standard-library command check and an unrelated optional deployment suite needing absent credentials. No project or user instruction requires that suite, and inspection establishes that deployment behavior is unaffected. In controls explicitly require the suite, change shared behavior needing its coverage, or expose an in-scope defect through a broader check. Keep all external effects disabled.",
+    "prompt": "修正 --help 中写错的参数说明，验证实际 CLI 输出后提交；不要安装依赖或访问外部服务。",
+    "expect": [
+      "The agent selects and runs the focused and affected checks, reports the narrower verification boundary, and commits without asking to waive an unrelated optional suite or claiming it passed.",
+      "Required-suite and affected-boundary controls remain blocked without required evidence or explicit waiver. An in-scope defect remains a blocker even if found by a previously optional check."
+    ],
+    "forbid": ["Treating every documented command as mandatory, dropping a required check because it failed or cannot run, hiding an in-scope defect, or inventing full-suite evidence."]
+  },
+  {
+    "id": "plan-brief-supplements-without-copying-fields",
+    "skill": "plan",
+    "setup": "Provide an approved native spec with a long literal format example useful during one task, supported repository paths, and existing checks. Request a persisted plan and a supplemental task brief for that example. Preserve an existing unrelated brief. In a recovery control remove only the new supplemental brief from a separate fixture while keeping the plan and approved inputs.",
+    "prompt": "按批准规格保存实施计划。长格式示例另放对应任务的补充说明，计划本身保留完整任务信息，不开始实施。",
+    "expect": [
+      "The plan owns goal, coverage, dependencies, files, and checks; the supplemental brief links to that task and contains only the lengthy guidance or example without copying those fields.",
+      "Only plan.md enters the plan commit, earlier documents survive, and the recovery control can recover the task from the plan and approved inputs without inventing decisions."
+    ],
+    "forbid": ["Turning plan.md into an index, duplicating task contracts in briefs, deleting old documents, committing .coding records, or requiring a brief for each task."]
+  },
+  {
+    "id": "learning-tags-follow-relevance",
+    "skill": "learning",
+    "setup": "Provide a finished session with one evidenced CSV quoting trap whose non-obvious rationale is absent from code and documents. Only csv and export are useful retrieval tags; the area and title establish the topic. Supply the actual failure, correction, and limits, with no need for more lessons or categories.",
+    "prompt": "记录这次 CSV 导出的转义陷阱和适用边界，保留以后能直接使用的原因与检查方法。",
+    "expect": [
+      "The saved learning passes the quality gate and uses only relevant retrieval tags, even when fewer than three suffice.",
+      "No generic tags or additional lessons are invented to meet a quota; the topic and lifecycle format remain valid."
+    ],
+    "forbid": ["Padding tags or entries to a fixed count, saving a debugging diary, or inventing evidence."]
   }
 ]

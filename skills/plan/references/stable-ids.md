@@ -33,7 +33,7 @@ Each plan task lists the acceptance conditions it is responsible for establishin
 2. Task 2: Resize uploaded avatars — **Covers:** REQ-2 — depends on: Task 1
 ```
 
-When a supplemental task brief is needed, it carries the same requirement IDs and checks as the plan. Do not create briefs just for ID mapping or assign new IDs to test instructions.
+Keep requirement coverage and checks in the plan; a supplemental brief links to its task rather than duplicating them. Do not create briefs just for ID mapping or assign new IDs to test instructions.
 
 When the approved spec has IDs, reference the IDs whose implementation or regression coverage the task changes, and describe that change accurately, for example:
 

@@ -22,7 +22,7 @@ Finish read-only reconciliation before branch changes or other writes:
 
 ## Contract approval
 
-Approval comes from the user: the current request, earlier decisions, or an owning skill's approval gate (`spec` and `ui-design` save and commit only after approval). A commit or hash identifies which version was approved, not who approved it. Treat a document committed through that gate as approved at that version unless the conversation or repository says otherwise, and reuse that approval without asking again.
+Approval comes from the user: the current request, earlier decisions, or the owning skill's approval contract. `spec` and `ui-design` may reuse approval of exact decisions; verified editorial changes preserve it. A commit or hash identifies content, not approval. Reuse approval established through those contracts unless the conversation or repository says otherwise.
 
 Compare every later change, committed or not, with the approved version. A verified editorial-only change keeps approval. A change to behavior, scope, constraints, interfaces, security, UI decisions, or acceptance counts as approved only when it came through its owner's gate; otherwise it stops affected work for that owner (`spec` or `ui-design`). A deleted or missing required input blocks dependent work. Ask only when the approval source or applicability is genuinely unclear.
 

@@ -1,24 +1,24 @@
 ---
 name: plan
-description: Use when the user asks to create, review, or revise an implementation plan from an approved spec. Decompose work into ordered, testable tasks; keep a Brief plan in conversation or save a Full plan.md beside the spec in docs/features/. Do not implement tasks or resolve unsettled product decisions.
+description: Use when the user asks to create, review, or revise implementation tasks from an approved spec or settled session requirements. Keep a Brief plan in conversation, or save a Full plan.md beside an approved spec in docs/features/. Do not implement tasks or resolve unsettled product decisions.
 ---
 
 # Plan
 
-Turn this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` into an implementation plan. This skill owns initial decomposition of delivery work into phases and tasks. Do not write product code or start implementation.
+Turn settled requirements into ordered, testable tasks. This skill owns initial decomposition of delivery work into phases and tasks. Do not write product code or start implementation.
 
-Choose persistence, not a larger process: **Brief** keeps the task list and checks in conversation, with no files or ledger; **Full** saves one `plan.md` when the user needs persistence, later resumption, or an autoflow run. A short plan may use Full simply to survive a pause. File count, module boundaries, and risk do not determine the tier. Both retain the same task contract, and neither requires task briefs by default.
+**Brief** keeps the task list and checks in conversation, with no files or ledger. **Full** saves one `plan.md` beside this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` when persistence, later resumption, or autoflow needs it. A short plan may use Full. Both retain the same task information; file count, module boundaries, and risk do not determine the tier.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
 ## Preconditions
 
-- Read applicable `AGENTS.md` files, the approved spec, and every explicitly required internal appendix in full. Use this skill set's format and approval contract. The contract must remain usable without external originals, proposals, or the conversation.
-- Read an approved `ui-spec.md` beside the spec and relevant `DESIGN.md` constraints when present. Fold these decisions into tasks rather than creating a task per screen.
-- Confirm the problem, scope, selected approach, constraints, acceptance conditions, and testing boundary are settled.
-- If the spec is missing, a draft, or leaves a product decision open, stop and recommend `spec`. If new evidence leaves a load-bearing design premise unresolved or invalidates it, stop dependent planning and recommend `ideate` with the affected claim and evidence. Do not organize feasibility probes or hide the unknown in an executable task; any changed design must return through specification approval before planning resumes. If necessary layout, state, or interaction decisions are missing, recommend `ui-design`. Settled frontend work does not need a UI document merely because it has UI.
+- Read applicable `AGENTS.md` files and any existing plan for the requested work.
+- When a spec exists, read it and every required internal appendix in full; its approval and source-independence contract governs both tiers. Read applicable approved `ui-spec.md` and `DESIGN.md` constraints with either input.
+- Without a spec, Brief may use the user's settled scope, behavior, interfaces, constraints, acceptance conditions, and testing boundary from the conversation. Carry these into the task list so `execute` can use it without inventing product decisions. Do not create a spec or requirement IDs merely to plan, or use Brief to bypass a draft spec or unfinished plan.
+- Full requires an approved native spec. If that input is missing or a product decision remains open, recommend `spec`. If new evidence leaves a load-bearing design premise unresolved or invalidates it, stop dependent planning and recommend `ideate` with the claim and evidence; do not turn it into an executable probe task. Missing presentation decisions need `ui-design`; settled frontend work needs no new UI document.
 
-The spec is the product authority. Record a needed product change there through its approval process before planning from it. Stop dependent planning if UI/design inputs conflict with that contract: recommend `spec` if the product contract must change, otherwise `ui-design` to realign the presentation. Do not silently plan from contradictory inputs.
+An existing spec remains the product authority. Resolve conflicting inputs through `spec` for product changes or `ui-design` for presentation alignment before dependent planning.
 
 ## Revising an existing plan
 
@@ -50,7 +50,7 @@ For a new user journey, prefer a vertical slice that proves integration early, r
 
 For each task, name:
 
-- the deliverable and existing REQ-N IDs it covers
+- the deliverable and acceptance conditions it covers, using existing REQ-N IDs when available
 - files and responsibilities
 - dependencies and any shared interfaces, with matching producer/consumer names
 - the observable check and expected result
@@ -59,11 +59,11 @@ Every slice includes the input validation, authorization, data integrity, access
 
 Use a test-first order when the project supports it. For documentation, configuration, or a project without a feasible test harness, name the strongest available check rather than inventing a framework.
 
-Read `./references/stable-ids.md` before mapping requirement coverage and apply its checks before saving. Keep the spec's IDs; do not assign requirement IDs to test instructions.
+When the spec has REQ-N IDs, read `./references/stable-ids.md` before mapping coverage and apply its checks before saving. Otherwise name the settled acceptance conditions directly.
 
 ## Plan format
 
-Use the same task fields below for both tiers, including requirement coverage, dependencies, and shared interfaces when needed. Brief keeps them, any existing coverage, and final verification in conversation. Full saves them in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
+Use the task fields below for both tiers. Brief keeps them, existing coverage, and final verification in conversation; without a spec, replace the Spec link with the settled session contract and use acceptance descriptions under Covers. Full saves them in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
 
 ```markdown
 # <Feature name> Implementation Plan
@@ -98,16 +98,16 @@ Use the same task fields below for both tiers, including requirement coverage, d
 ## Final verification
 
 - Run: `<focused command>` → <expected result>
-- Run: `<broader command>` → <expected result>
+- Run when required by the DoD or affected risk: `<broader command>` → <expected result>
 ```
 
-Repeat only the tasks needed. Omit empty sections and use repository-relative paths supported by evidence. A saved plan contains task details; it is not merely an index and has no arbitrary line cap.
+Repeat only the tasks needed. Omit empty sections and unneeded checks; label an optional check explicitly so it does not become a binding gate by accident. Use repository-relative paths supported by evidence. A saved plan contains task details; it is not merely an index and has no arbitrary line cap.
 
 ## Optional task briefs
 
 For lengthy task-specific instructions only, add `.coding/features/YYYYMMDD-<semantic-name>/impl/task-<N>.md` after authorization and self-review and link it from that task in the plan.
 
-Use the same task number, goal, requirement IDs, dependencies, files, and checks as the plan, followed by any additional steps or examples the task needs. Do not duplicate the spec's requirement text or introduce decisions absent from approved inputs. The plan must remain sufficient to recover the task if this supplemental file is unavailable.
+Link back to the plan's task number and add only lengthy instructions or examples. Keep goal, coverage, dependencies, files, and checks in the plan rather than copying them. The plan must remain sufficient to recover the task without the brief; supplemental text cannot introduce new decisions.
 
 Briefs are work records, not part of the plan commit. The user owns `.coding/` ignore and tracking policy. Do not create a brief for every task merely to fill a template or remove existing briefs when revising a plan.
 
@@ -115,7 +115,7 @@ Briefs are work records, not part of the plan commit. The user owns `.coding/` i
 
 Before presenting or saving the plan, confirm:
 
-- active requirements are covered under `./references/stable-ids.md`
+- every settled acceptance condition is covered, applying `./references/stable-ids.md` when the spec has IDs
 - each task has a clear deliverable, files, and observable check
 - dependencies and shared interfaces match
 - relevant error, empty, boundary, and compatibility cases are covered

@@ -74,7 +74,7 @@ Use one fresh read-only subagent for the whole pinned diff, not one per concern.
 
 If delegation is unavailable, perform the same review as a separate inline pass and label it `inline self-review (no independent reviewer)`. Disclose the limitation and deliver without a separate acceptance prompt. If the user or repository explicitly requires independent review, its absence blocks that requirement, not delivery of an honest limited report. A failed delegation is a blocker to report, not permission to silently substitute inline review.
 
-The reviewer returns feedback in its response, without editing files or dispatching more reviewers. Do not ask it to rerun an entire suite already evidenced for the same revision. A concrete unanswered doubt may justify a focused check; the main process owns safe execution and the DoD gates.
+Do not ask the reviewer to rerun an entire suite already evidenced for the same revision. A concrete unanswered doubt may justify a focused check; the main process owns safe execution and the DoD gates.
 
 ## Adjudicate and deliver
 
@@ -82,7 +82,7 @@ Read all feedback before acting. Verify each finding against code, callers, appr
 
 Rule explicitly on every item the reviewer declined to judge. Spec silence does not excuse ordinary broken behavior, unsafe trust boundaries, or data loss, but is not permission to add speculative features. Clarify ambiguous feedback or conflicts with user decisions before implementing affected fixes. Explain rejected findings with technical evidence; surface unresolved disputes and their consequences to the user.
 
-Deliver the reference's feedback structure in conversation. Include every valid finding, rejection, deferred item, and verification gap; do not silently drop a reviewer's concern. State which DoD applied. A read-only review can be delivered with unavailable checks, but cannot verify the implementation from missing evidence.
+Use the reference's feedback structure, including valid findings, rejections, deferred items, and verification gaps. Apply the DoD's reporting and unavailable-check rules.
 
 Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Minor findings are deferred. Missing required verification or explicitly required independent review means `Unverified`, not `Ready`. An inline result is never independent assurance; it needs no extra acceptance unless independence is explicitly required.
 
@@ -90,7 +90,7 @@ Readiness gate: unresolved Blocking or Important findings mean `Needs fixes`; Mi
 
 Review alone does not authorize code changes. If the current request already authorizes fixes, honor its exact scope after adjudicating findings without asking again. Only a review-only request needs a later fix decision; deliver its findings before offering repairs. When called by `autoflow`, its verified invocation authority for the approved contract, current self-reviewed plan, and target branch covers in-scope Blocking/Important fixes without another routine prompt or plan approval. Minor changes, scope changes, and high-risk decisions are not covered. An unresolved product, architectural, security-policy, or data-loss decision stops affected work; implementing an already approved security contract locally is not a new risk approval.
 
-Before editing, verify the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Apply the shared Work branch rule without changing the review SHAs or comparison. Get consent before committing on a branch the user does not own; preserve user hunks even in fix-owned files.
+Before editing, verify the target branch and that its head is still `review_head_sha`, or the last verified `fix_head_sha` after this run's fix commits; otherwise stop and reconcile with the user. Apply the shared Work branch and change-boundary rules without changing the review SHAs or comparison. Existing authorization to fix on the target branch needs no ownership confirmation; honor explicit branch restrictions and preserve user hunks.
 
 For behavior fixes, read `./references/tdd.md` and follow it. Behavior-preserving cleanup uses existing checks without inventing a failing behavior test. Run fresh focused and affected checks before each fix commit, then apply the DoD to the final fixed code. Failed or unavailable required checks block fix completion and commits unless the DoD's explicit verification-waiver gate is satisfied.
 
@@ -102,6 +102,6 @@ Continue authorized Blocking/Important fixes and fix-caused regressions while ne
 
 ## Completion
 
-Confirm the pinned range, grounded findings, explicit rulings, verification limits, no unauthorized changes, and no report file was created. Return the adjudicated feedback and, if fixes ran, their range, commits, fresh checks, addressed/open findings, and deferred minors in conversation. When called by `autoflow`, return these results to it; it keeps no copy of the findings.
+Deliver the adjudicated feedback. If fixes ran, add their range, commits, fresh checks, and each finding's addressed/open/deferred status. When called by `autoflow`, return these results to it.
 
 Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill.

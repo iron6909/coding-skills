@@ -104,7 +104,7 @@ Before presenting the draft, check:
 - the contract passes the preservation and source-loss checks
 - the text contains design decisions, not implementation task sequencing
 
-Present the resolved contract and any glossary, ADR, or appendix changes together. Wait for approval before saving `spec.md` or changing an approved contract. This is the only routine specification approval checkpoint; it does not authorize experiments, product code, or high-risk operations.
+Present new or changed contract decisions and any glossary, ADR, or appendix changes together for approval before saving. Reuse explicit approval of the exact content from the current request or earlier decisions; a request to draft a spec alone does not approve choices the agent adds. Requested editorial corrections may be saved after verifying that behavior, scope, interfaces, constraints, acceptance, and required inputs are unchanged. Honor review-only, draft, and approval-first restrictions. This checkpoint grants no implementation or high-risk authority.
 
 ## Save and commit
 
