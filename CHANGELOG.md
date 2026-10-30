@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [14.2.0] - 2026-10-30
+
+### Added
+
+- **独立 Full 计划**：已明确的完整用户需求可直接保存在 `docs/features/YYYYMMDD-<name>/plan.md`，供跨会话执行与审查，无需为持久化补建规格。计划保留需求契约与决策来源；既有规格和必读附录仍优先，缺失引用不能由计划文字替代，`autoflow` 仍要求已批准规格。
+
+### Changed
+
+- **技能精简**：合并重复的执行、验证与汇报说明，压缩通用教程及重复示例；43 份去重 Markdown 内容源减少 342 行、约 6.4% 词数，安装所需的共享副本保留。
+- **路由与引用**：`guide` 改为意图映射和重叠优先级；规划、审查及执行按需读取经验匹配与需求编号章节，保留授权、恢复、历史审查版本和选择性提交规则。
+- **UI 与反馈**：界面模式仅在解释实际设计决定或发现时记录；审查聚焦有效问题、实质排除项与争议，不再强制列出优点或所有非问题，其他技能省去例行评分表和空汇报段落。单个综合审查者规则不变。
+
+### Verification
+
+- Windows、Node 24.10.0 下，仓库检查与离线打包通过；101 个手工场景定义通过结构校验。
+- 使用 `magpie/remote/group/power` 和原生 PowerShell，在独立本地夹具完成五组新旧版各一次实跑：新版通过 14/14 项预声明断言，旧版 13/14，唯一差异为 UI 模式标注。计划保存与恢复执行、规格冲突、必需检查不可用四组两版均通过，十个夹具均保留原有暂存和未暂存改动。
+- 两份 CSV 实现各通过 13 项独立 CLI 检查。先前代理定义与 Bash/WSL 启动失败保留记录、不计分；生成计划到执行的串联、无规格审查输入、缺失引用契约、浏览器交互和故障注入未实跑，单次观察不证明通用质量等价或效率提升。
+
 ## [14.1.1] - 2026-10-30
 
 ### Fixed
