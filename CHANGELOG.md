@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [14.1.0] - 2026-10-30
 
 ### Changed
 
@@ -713,7 +713,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持 TDD、代码审查、重构、性能优化
 - 本地化开发，无需外部 issue tracker
 
-[Unreleased]: https://github.com/iron6909/coding-skills/compare/v14.0.0...HEAD
+[14.1.0]: https://github.com/iron6909/coding-skills/compare/v14.0.0...v14.1.0
 [14.0.0]: https://github.com/iron6909/coding-skills/compare/v13.1.2...v14.0.0
 [13.1.2]: https://github.com/iron6909/coding-skills/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/iron6909/coding-skills/compare/v13.1.0...v13.1.1
