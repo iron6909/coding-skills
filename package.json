@@ -1,6 +1,6 @@
 {
   "name": "@iron6909/coding-skills",
-  "version": "14.1.0",
+  "version": "14.1.1",
   "type": "module",
   "scripts": {
     "check": "node scripts/sync-references.mjs --check && node scripts/sync-references.test.mjs && node scripts/check-examples.mjs && node scripts/check-simplify-trace.mjs --self-test && node scripts/pi-extension.test.mjs && git diff --check && npm pack --dry-run --json --offline"
