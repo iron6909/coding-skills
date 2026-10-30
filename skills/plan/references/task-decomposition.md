@@ -17,19 +17,6 @@ Split when results can be explained, reviewed, and checked separately and keepin
 
 Identify what each task consumes, which earlier task produces it, and the contract between them. Put producers before consumers and name dependencies explicitly. Necessary setup can be a step inside the first usable slice rather than its own layer-only task.
 
-For example:
-
-```markdown
-Task 1: User can register and see confirmation
-- Step 1: Add the users table and required constraints
-- Step 2: Implement registration through the approved entry point
-- Check: valid registration succeeds; invalid and duplicate input is rejected
-
-Task 2: User can log in
-- Depends on: Task 1
-- Check: registered credentials work; invalid credentials are rejected
-```
-
 No dependency between two tasks proves only that their delivery order is unconstrained. Shared files, interfaces, or fixtures can still prevent concurrent editing; do not label tasks parallel-safe from numbering alone.
 
 ## Show shared interfaces in usable tasks
@@ -48,25 +35,7 @@ Task 2: User can view their own settings
 - Check: own settings are visible; anonymous and cross-user access is rejected
 ```
 
-## Example: new behavior followed by an approved enhancement
-
-These are illustrative boundaries, not default avatar requirements:
-
-```markdown
-Task 1: Safely upload and display an avatar
-- Enforce ownership, approved content/type and size limits before storage
-- Connect storage, retrieval, and UI with required failure feedback
-- Check: a valid upload displays; invalid and unauthorized uploads are rejected
-
-Task 2: Preview the selected avatar
-- Depends on: Task 1
-- Add only the preview behavior required by the spec
-- Check: preview works without bypassing server validation
-```
-
-Task 1 proves integration. Task 2 is justified only if the approved scope requests that enhancement. Error guidance, resizing, pagination, monitoring, or a separate polish phase are not automatic follow-up tasks.
-
-For an already implemented journey, plan only the required change and its regression coverage. Use the stable-ID reference's existing-coverage rule for behavior that needs no work, rather than replaying its original implementation.
+For an existing journey, plan only the requested change and its regression coverage; use Existing coverage for behavior needing no work. Error guidance, monitoring, or a separate polish phase are not automatic follow-up tasks.
 
 ## Avoid mechanical decomposition
 

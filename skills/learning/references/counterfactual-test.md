@@ -54,39 +54,6 @@ justify that work. Revisit the choice if client-to-server push is needed.
 
 This passes because it preserves a non-obvious elimination reason, not because WebSockets would cause a defect.
 
-### A boundary hidden across layers
-
-```markdown
-## The upload file limit is not the request limit
-
-The file validator and Nginx both allow 5 MiB. A multipart request carrying
-a file at that exact limit exceeds Nginx's client_max_body_size because the
-request also includes fields and multipart overhead, and is rejected.
-
-Set the request limit to accommodate the permitted file plus bounded fields
-and overhead, or lower the file limit accordingly. Test a maximum-size file
-with the supported form fields; do not assume a fixed overhead percentage.
-```
-
-The validator alone does not reveal the effective request boundary.
-
-### A failure investigation reduced to its reusable lesson
-
-```markdown
-## Parallel migrations starve API connections during deployments
-
-All services connect through a shared database proxy capped at 10 backend
-connections. Eight parallel migrations each held one connection, while two
-long-running API requests held the remaining two. New API requests queued
-and timed out; the same workload passed outside deployments.
-
-Serialize migrations or reserve enough capacity for the measured concurrent
-API workload. Verify by deploying while running representative API traffic;
-normal-load checks alone do not exercise this boundary.
-```
-
-The topology and connection counts explain the contention. The sequence of debugging attempts adds no reusable reasoning.
-
 ## Failing examples
 
 | Candidate | Why it fails |

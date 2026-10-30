@@ -86,7 +86,7 @@ Before saving a plan:
 - [ ] No unfinished executable task covers a retired or non-existent ID
 - [ ] Completed task coverage remains unchanged as history, even when an ID is later retired
 
-Before a task commit:
+### Before a task commit
 
 - [ ] If the approved spec has IDs, the message references the IDs whose implementation or regression coverage changed
 - [ ] Any ID cited in code still refers to the intended condition

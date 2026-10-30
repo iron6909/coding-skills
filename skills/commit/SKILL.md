@@ -30,12 +30,6 @@ Use a supplied message when compatible with project rules. Adapt an incompatible
 
 Run required checks and hooks without bypassing them, then create a new commit under the shared Git rules; do not amend.
 
-## Examples
-
-- "Commit the timeout change in config.yml" → inspect the authorized diff, stage only that change, commit, and report the hash.
-- "Commit validation in user.js, not its logging changes" → isolate the validation hunks, inspect the staged diff, and commit only those.
-- "Show me the message before committing" → inspect, propose the message, and wait as requested.
-
 ## Finish
 
-Follow the shared safety and Definition of Done reporting rules. Include the commit hash and committed files or hunks, or why no commit was made, plus any hook issue. State that nothing was pushed, then stop.
+Report the commit hash and scope, checks and any hook issue, or why no commit was made. Stop.

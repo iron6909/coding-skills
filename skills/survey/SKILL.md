@@ -144,19 +144,4 @@ Read `./references/git-commit.md` for commit rules.
 
 ## Finish
 
-Report:
-
-- files created or updated (AGENTS.md, GLOSSARY.md if created) and the commit hash
-- facts recorded
-- terms defined (if GLOSSARY.md was created)
-- unknowns or conflicts
-- whether subagents were used for read-only exploration
-
-```text
-Survey complete.
-Files: <AGENTS.md path, GLOSSARY.md path if created> — <commit short hash>
-Unknowns: <list, or None>
-Next: spec (or execute for a ready small change)
-```
-
-Stop after the survey. Let `ideate`, `spike`, `spec`, `plan`, `execute`, or `bugfix` handle the next development step.
+Report changed files, the commit, meaningful facts or terms recorded, and unresolved gaps. Recommend the next skill only when the request needs further work, then stop.

@@ -13,7 +13,7 @@ Reviewed head: <full review_head_sha>
 Comparison: <endpoint | branch>
 Diff command: <pinned_diff_command>
 Commit log: git log <review_base_sha>..<review_head_sha> --oneline
-Requirements: <approved spec and all required appendices: commit:path or blob ID with exact supplied content, or explicitly absent>
+Requirements: <governing spec and required appendices, or settled plan Requirements when no spec governs: immutable versions or exact supplied content with decision source; otherwise explicitly absent>
 UI/design inputs: <applicable approved versions in the same form, or explicitly absent>
 Plan Review focus: <verbatim with source version, or none supplied>
 Repository context: <versioned standards, glossary, ADRs, and matching learnings; current safety instructions>
@@ -54,10 +54,6 @@ Return concise feedback using these sections. Omit empty severity subsections an
 
 State both full review SHAs, comparison mode, input versions used or missing, any explicit alternative to the reviewed-head contract, and whether this was an independent review or inline self-review.
 
-### Strengths
-
-Name specific things done well, with evidence. Do not add generic praise to fill the section.
-
 ### Issues
 
 Group confirmed findings by **Blocking**, **Important**, then **Minor**. For each, give:
@@ -68,9 +64,9 @@ Group confirmed findings by **Blocking**, **Important**, then **Minor**. For eac
 
 Do not duplicate one defect under several checks. A missing implementation may cite the relevant interface or requirement rather than invent a code line.
 
-### Declined to judge
+### Material exclusions and disputes
 
-List every behavior considered but set aside as outside the requirements or scope, with the reason and relevant evidence; write `None` when empty. The main process rules on each item, so exclusions cannot hide ordinary defects. In its final response the main process also lists rejected findings with reasons and deferred items here.
+Report an exclusion or unresolved question when it could change the verdict, with evidence and why it was not judged. Include safety or correctness concerns set aside because the spec is silent; omit routine non-issues and the empty section. The main process resolves these items and reports rejected findings with reasons and deferred items.
 
 ### Verification and assessment
 

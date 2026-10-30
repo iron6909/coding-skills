@@ -36,32 +36,4 @@ Do not label multiple passes over a collection waste merely because they are mul
 
 Latency, throughput, memory, and cost gains need measurements. Systematic profiling, cache policies, pooling, and concurrency redesign are outside this cleanup. Without measurements, describe only the redundant operation removed, not a performance gain.
 
-## Example: flattening without changing responses
-
-This example changes control-flow shape only. It keeps both response paths, their messages, the saved value's identity, and errors thrown by the response or save operations.
-
-```javascript
-function createLabelBefore(label, reply, save) {
-  if (label === null) {
-    return reply.status(400).json({ error: "Missing label" });
-  } else {
-    if (label === "") {
-      return reply.status(400).json({ error: "Empty label" });
-    } else {
-      return save(label);
-    }
-  }
-}
-
-function createLabelAfter(label, reply, save) {
-  if (label === null) {
-    return reply.status(400).json({ error: "Missing label" });
-  }
-  if (label === "") {
-    return reply.status(400).json({ error: "Empty label" });
-  }
-  return save(label);
-}
-```
-
-By contrast, replacing the response with a thrown error, an object result with a `Map`, or an owned result with a caller-managed buffer changes a contract. Do not present those as equivalent simplifications.
+Replacing a response with a thrown error, an object result with a `Map`, or an owned result with a caller-managed buffer changes a contract. Even a control-flow cleanup must preserve result identity, errors, and effect order.

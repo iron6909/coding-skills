@@ -44,14 +44,4 @@ Read `./references/git-commit.md` before committing. Stage only the learning fil
 
 ## 5. Report and stop
 
-```text
-Learnings: <saved paths, or none worth recording>
-Entries saved: <N>
-Skipped: <N> candidates
-Evaluation:
-- <candidate>: <PASS / FAIL / UNCERTAIN> — <one-line reason>
-Commit: <short hash, or none>
-Next: None
-```
-
-Report each candidate's gate outcome and reason so the user can assess the filter. Stop after reporting; do not invoke another skill.
+Report the saved paths and commit, or why nothing qualified. Explain material exclusions or uncertainty when useful; routine rejected candidates need no scorecard. Stop without invoking another skill.

@@ -52,29 +52,6 @@ for (const item of workflowCases) {
   for (const key of ["expect", "forbid"]) assert.ok(Array.isArray(item[key]) && item[key].length > 0 && item[key].every((value) => typeof value === "string" && value.trim()), `${item.id}: missing ${key}`);
 }
 
-const endpointExamples = blocks("skills/execute/references/testing-strategy.md", "javascript").filter((source) => source.includes(".post('/api/login')"));
-assert.equal(endpointExamples.length, 1, "keep one public-interface test example");
-for (const check of ["toBe(200)", "toBe(401)", "toBeUndefined()"]) assert.ok(endpointExamples[0].includes(check), `missing endpoint assertion: ${check}`);
-
-const cleanupExample = blocks("skills/execute/references/testing-strategy.md", "javascript").find((source) => source.includes("beforeEach("));
-assert.ok(cleanupExample, "missing test-isolation example");
-let cleanupHook, finishDatabaseCleanup;
-const cleanupEvents = [];
-const databaseCleanup = new Promise((resolve) => { finishDatabaseCleanup = resolve; });
-runInNewContext(cleanupExample, {
-  beforeEach: (hook) => { cleanupHook = hook; },
-  db: { users: { deleteAll: () => databaseCleanup.then(() => cleanupEvents.push("database")) } },
-  jest: { clearAllMocks: () => cleanupEvents.push("mocks") },
-  app: { reset: () => cleanupEvents.push("application") },
-}, { timeout: 1000 });
-const cleaning = cleanupHook();
-assert.equal(typeof cleaning?.then, "function", "the test hook must return its cleanup promise");
-assert.deepEqual(cleanupEvents, [], "test setup must wait for database cleanup");
-finishDatabaseCleanup();
-await cleaning;
-assert.deepEqual(cleanupEvents, ["database", "mocks", "application"]);
-assert.ok(cleanupExample.includes("await app.reset()"), "asynchronous application reset must also finish before tests");
-
 // ponytail: check this JSX example's label branches without React; use a DOM accessibility check if its naming becomes structural.
 const loadingButton = blocks("skills/ui-review/references/common-ui-mistakes.md", "jsx").find((source) => source.includes("disabled={isLoading}"));
 assert.ok(loadingButton?.includes('<span aria-hidden="true"><Spinner /></span>'), "the loading spinner must be decorative");
@@ -83,45 +60,6 @@ assert.ok(loadingLabel, "the loading button must retain a text label in both sta
 for (const isLoading of [false, true]) {
   assert.ok(runInNewContext(loadingLabel, { isLoading }, { timeout: 1000 }).trim(), "button name must not disappear while loading");
 }
-
-const labelExample = blocks("skills/simplify/references/simplify-dimensions.md", "javascript").find((source) => source.includes("function createLabelBefore("));
-assert.ok(labelExample, "missing behavior-preserving simplification example");
-const labelImplementations = runInNewContext(`${labelExample}\n({ before: createLabelBefore, after: createLabelAfter })`, {}, { timeout: 1000 });
-const behaviorFailure = new Error("effect failed");
-const replyResult = Symbol("reply result");
-const observeLabel = (fn, label, failAt) => {
-  const events = [];
-  const effect = (kind, value) => {
-    events.push([kind, value]);
-    if (kind === failAt) throw behaviorFailure;
-  };
-  const reply = {
-    status(code) { effect("status", code); return this; },
-    json(body) { effect("json", body); return replyResult; },
-  };
-  try {
-    const result = fn(label, reply, (value) => { effect("save", value); return value; });
-    return { result, error: null, events };
-  } catch (error) {
-    return { result: undefined, error, events };
-  }
-};
-for (const label of [null, "", "label", undefined, 0, false, [], {}, Symbol("label")]) {
-  for (const failAt of [undefined, "status", "json", "save"]) {
-    const before = observeLabel(labelImplementations.before, label, failAt);
-    const after = observeLabel(labelImplementations.after, label, failAt);
-    assert.deepEqual(after, before, "preserve returns, response bodies, thrown errors and effect order");
-    assert.equal(after.result, before.result, "preserve result identity, not just equal values");
-    assert.equal(after.error, before.error, "propagate the original thrown error");
-  }
-}
-const missingLabel = observeLabel(labelImplementations.after, null);
-assert.equal(missingLabel.result, replyResult);
-assert.deepEqual(missingLabel.events.map(([kind]) => kind), ["status", "json"]);
-assert.equal(missingLabel.events[0][1], 400);
-assert.equal(missingLabel.events[1][1].error, "Missing label");
-assert.equal(observeLabel(labelImplementations.after, "label", "save").error, behaviorFailure);
-console.log("simplification example preserves responses, result identity, errors and effect order");
 
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
 const gitEnv = { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" };
@@ -202,5 +140,5 @@ try {
   rmSync(fixture, { recursive: true, force: true });
 }
 
-console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, test and UI examples, simplification behavior, pinned review ranges, temporary-index partial commits");
+console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, UI example, pinned review ranges, temporary-index partial commits");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

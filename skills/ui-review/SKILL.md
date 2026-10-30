@@ -29,7 +29,7 @@ Default to all five dimensions and all severities, prioritizing Blocking and Imp
 
 ## Phase 1: Establish the baseline
 
-Read `DESIGN.md` if present and enough code to locate the framework, components, and styling sources. Apply the context rules in `./references/ui-review-checklist.md` to identify each surface's mode and the consistency baseline.
+Read `DESIGN.md` if present and enough code to locate the framework, components, and styling sources. Apply the context rules in `./references/ui-review-checklist.md` to establish the consistency baseline; use surface modes only when they affect the assessment.
 
 When the review matches a feature, read its approved `ui-spec.md`, originating spec, and all required internal appendices. Check the approved layouts, breakpoints, component states, and interactions separately from design-system consistency; matching tokens does not prove those decisions were implemented. If no matching UI spec exists, state that and continue the ordinary interface review without inventing one.
 
@@ -56,7 +56,7 @@ Date: YYYY-MM-DD HH:MM
 Scope: <what was reviewed>
 Baseline: DESIGN.md, or the inferred system, or none found
 Approved UI inputs: <spec/ui-spec paths, or none applicable>
-Modes: <per surface>
+Design context: <surface purpose or mode only when it affects a finding>
 Evidence: <source, rendered views, interactions; limits>
 
 ## Summary

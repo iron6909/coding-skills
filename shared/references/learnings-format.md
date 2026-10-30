@@ -50,9 +50,9 @@ Keep lifecycle metadata in the same YAML frontmatter. Use quoted `YYYYMMDD` date
 
 ## Matching and reading learnings
 
-**When to read**: during `plan` (task selection) and `code-review` (matching recorded traps to the diff).
+`plan` and `code-review` need only this section. Search Markdown files directly under `docs/learnings/` by tags, area, title, and content. Accept legacy body metadata or missing frontmatter; a date or `last_verified` value alone does not prove current applicability.
 
-Search Markdown files directly under `docs/learnings/`; `_archived/` is history, not the default matching set. Skip explicitly historical entries as current advice. Follow their replacement pointers when relevant; a retained historical file does not compete with its current replacement.
+Use current entries as candidate advice. Skip `Historical` entries and archived files except to follow a relevant replacement or citation. Treat `status: stale` as unverified evidence, not established guidance. Read the relevant implementation or tests when applicability matters; a past decision is not a new standard.
 
 **Match by** (case-insensitive):
 1. **Tags**: exact match or substring (e.g., tag `auth` matches `authentication`)

@@ -1097,6 +1097,29 @@
     "forbid": ["Creating spec.md, plan.md, briefs, or a ledger solely to plan; implementing code; hiding a conflicting contract or unresolved behavior in a task."]
   },
   {
+    "id": "plan-full-from-settled-session",
+    "skill": "plan",
+    "setup": "Use the plan-brief-from-settled-session CLI fixture without a spec. Request a saved plan instead of Brief, preserving an unrelated staged note. In controls leave overwrite behavior undecided or provide a conflicting approved spec. Run a fresh execution session from the resulting plan with no original conversation, explicitly authorizing its tasks; keep autoflow's approved-spec prerequisite separate.",
+    "prompt": "保存 CSV 导出的实施计划，方便下次执行：命令为 node cli.mjs export INPUT OUTPUT，输入是本地 JSON 数组，每条记录有字符串 id 和 name；输出固定 id,name 两列、UTF-8、LF 换行，按 CSV 规则转义逗号、引号和换行，空数组保留表头。无效输入或路径报错且不留下半成品，已有文件拒绝覆盖。不加依赖、不访问网络。用现有 Node 标准库检查实际 CLI。只保存和提交计划，不建规格、不实施。",
+    "expect": [
+      "The Full plan preserves the complete settled contract and actual decision source, tasks, dependencies, interfaces, checks, and final verification under docs/features/ without demanding a spec, invented REQ IDs, or routine approval.",
+      "Only the plan is committed; unrelated staged work is preserved. A fresh authorized execute session can recover the contract and implement from that plan without the original conversation.",
+      "Controls preserve existing product authority or stop for the actual unresolved decision; persistence does not authorize invented requirements or bypass autoflow's spec prerequisite."
+    ],
+    "forbid": ["Creating a redundant spec, treating a plan commit as execution authority, silently choosing overwrite behavior, replacing conflicting approved requirements, or bundling user work."]
+  },
+  {
+    "id": "ui-design-established-pattern-no-mode",
+    "skill": "ui-design",
+    "setup": "Use a local feature branch with an approved product spec and existing DESIGN.md plus native form styles. The user already approved all exact presentation decisions named in the request; no open visual or product decision remains. Request recording those decisions in a new ui-spec.md. Preserve product code, design tokens, and an unrelated user note.",
+    "prompt": "把这些已批准的邮箱表单界面决定保存为 ui-spec.md 并提交：沿用现有单列布局、间距和字体，宽屏最大 32rem、窄屏保留现有边距；可见邮箱标签，提交中保留按钮文字并禁止重复提交，失败保留输入并在字段旁显示关联错误，成功用现有状态消息反馈。继续使用原生控件和现有焦点样式，不改 DESIGN.md、产品代码或计划。",
+    "expect": [
+      "The UI spec preserves the exact approved layout, input, pending, error, success, and accessibility decisions without renewed approval or a mandatory surface-mode classification exercise.",
+      "Only ui-spec.md is committed; existing system, product code, and user changes remain untouched. Specification checks are not claimed as rendered or interaction verification."
+    ],
+    "forbid": ["Inventing a visual direction, rewriting tokens, adding a new design decision without approval, starting implementation, or claiming browser checks ran."]
+  },
+  {
     "id": "spec-reuses-exact-approval-and-editorial-scope",
     "skill": "spec",
     "setup": "Provide an approved native spec with a misspelled heading, required appendices, and an existing plan. In an approval-reuse variant, supply an actual earlier user approval of an exact complete revised contract and request saving that version now. In controls request a draft only, or leave a new session-expiry policy for the agent to propose. Preserve an unrelated user hunk.",

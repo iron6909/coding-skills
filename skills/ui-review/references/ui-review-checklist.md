@@ -4,7 +4,7 @@ Review the agreed scope across these five dimensions. The skill owns evidence co
 
 ## Context and grading
 
-Classify each surface: **Persuade** earns a decision; **Operate** supports a task; **Read** supports understanding; **Experience** lets the work lead. Judge its role and approved purpose, not a generic product category.
+Judge each surface's approved purpose. When useful, distinguish **Persuade** (decision), **Operate** (task), **Read** (understanding), and **Experience** (exploration). Record a mode only when it explains a finding; established interfaces need no classification exercise.
 
 Approved `DESIGN.md` tokens govern consistency. Without that file, infer the stable system from code and label the inference; do not invent a scale. Preserve explicit brand choices and familiar task UI. A matching token is not drift, but it cannot excuse an accessibility failure. Check approved UI decisions separately: correct tokens do not prove layouts, states, or journeys conform.
 

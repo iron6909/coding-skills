@@ -24,7 +24,7 @@ Skip this stage only after confirming that every in-scope layout, presentation-s
 2. When it is missing, extract what the code already ships: CSS custom properties, a Tailwind or theme config, component styles. A working project usually has a de facto system. Record it instead of replacing it.
 3. Read `spec.md` and all its required internal appendices in full, confirm the contract is approved, and list every surface it mentions. Stop for approval if it is still a draft.
 4. If `ui-spec.md` exists, read it and the relevant existing plan before proposing revisions. Preserve unaffected UI decisions and identify changes needed to match the current product contract. Do not edit the plan here.
-5. Read `./references/design-principles.md` and identify each surface's mode, even when `DESIGN.md` exists. Record modes in the relevant `ui-spec.md` surface descriptions, not as a single product-wide choice.
+5. Read `./references/design-principles.md` when visual choices remain open or conflict. Use its surface modes only when they explain a consequential layout, density, or expression decision; an established pattern needs no new label.
 
 State what you found before proposing anything. A project with an inferred system and one with none need different questions.
 
@@ -52,7 +52,7 @@ Prepare the proposed `DESIGN.md` in conversation in this shape, giving every tok
 # Design System
 
 ## Applicable surfaces
-shared visual rules and their scope; individual surface modes belong in ui-spec.md
+shared visual rules and their scope
 
 ## Colors
 primary / primary-hover / primary-active
@@ -91,7 +91,7 @@ feature and its surfaces
 screens, navigation, journeys
 
 ## Screens
-per screen: mode, wireframe, layout per breakpoint, components with applicable states
+per screen: wireframe, layout per breakpoint, components with applicable states; mode only when it explains a decision
 
 ## Interactions
 pointer, keyboard, touch
@@ -122,6 +122,6 @@ Check the specification using the quick checklist in `./references/wcag-checklis
 
 ## References
 
-- `./references/design-principles.md`: read in Phase 0 before classifying surfaces, and whenever a visual decision needs justifying.
+- `./references/design-principles.md`: read when visual choices remain open or conflict, or a visual decision needs justification.
 - `./references/component-states.md`: read during Phase 2 when defining a component's state set.
 - `./references/wcag-checklist.md`: read during Phase 3, and whenever an accessibility criterion needs checking.

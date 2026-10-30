@@ -2,7 +2,7 @@
 
 Use these decisions within the approved brief and existing system, not as a reason to redesign settled work.
 
-## Choose a mode per surface
+## Use modes when they clarify a decision
 
 | Mode | Visitor's goal | Design priorities |
 |------|----------------|-------------------|
@@ -11,7 +11,7 @@ Use these decisions within the approved brief and existing system, not as a reas
 | **Read** | Understand and find information | Legible typography, hierarchy, navigation, examples |
 | **Experience** | Explore or appreciate the work | Content-led composition, intentional expression and interaction, smooth performance |
 
-A product can contain several modes. An expressive headline needs a reason specific to the product; replacing one fashionable font with another is not a design strategy. Familiar body/UI faces and system stacks can be right for Operate and Read.
+A product can contain several modes; record one only when it explains a consequential design choice. An expressive headline needs a product-specific reason. Familiar body/UI faces and system stacks can suit task and reading surfaces.
 
 ## Preserve the system
 

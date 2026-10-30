@@ -1,24 +1,24 @@
 ---
 name: plan
-description: Use when the user asks to create, review, or revise implementation tasks from an approved spec or settled session requirements. Keep a Brief plan in conversation, or save a Full plan.md beside an approved spec in docs/features/. Do not implement tasks or resolve unsettled product decisions.
+description: Use when the user asks to create, review, or revise implementation tasks from an approved spec or settled requirements. Keep a Brief plan in conversation, or save a Full plan.md in docs/features/, beside the spec when present. Do not implement tasks or resolve unsettled product decisions.
 ---
 
 # Plan
 
 Turn settled requirements into ordered, testable tasks. This skill owns initial decomposition of delivery work into phases and tasks. Do not write product code or start implementation.
 
-**Brief** keeps the task list and checks in conversation, with no files or ledger. **Full** saves one `plan.md` beside this skill set's approved `docs/features/YYYYMMDD-<semantic-name>/spec.md` when persistence, later resumption, or autoflow needs it. A short plan may use Full. Both retain the same task information; file count, module boundaries, and risk do not determine the tier.
+**Brief** keeps the plan in conversation, with no files or ledger. **Full** saves `docs/features/YYYYMMDD-<semantic-name>/plan.md` for persistence or resumption, beside the approved spec when one exists. Both retain the same contract and task information; choose by persistence needs, not size or risk. `autoflow` still requires an approved spec.
 
 **Load the Definition of Done**: read `./references/definition-of-done.md`. Name the commands that decide each applicable item, in Final verification for Full or in the task list for Brief.
 
 ## Preconditions
 
-- Read applicable `AGENTS.md` files and any existing plan for the requested work.
+- Read applicable `AGENTS.md` files and any existing plan for the requested work. Missing contract documents referenced by that plan block dependent planning; do not replace them with session requirements.
 - When a spec exists, read it and every required internal appendix in full; its approval and source-independence contract governs both tiers. Read applicable approved `ui-spec.md` and `DESIGN.md` constraints with either input.
-- Without a spec, Brief may use the user's settled scope, behavior, interfaces, constraints, acceptance conditions, and testing boundary from the conversation. Carry these into the task list so `execute` can use it without inventing product decisions. Do not create a spec or requirement IDs merely to plan, or use Brief to bypass a draft spec or unfinished plan.
-- Full requires an approved native spec. If that input is missing or a product decision remains open, recommend `spec`. If new evidence leaves a load-bearing design premise unresolved or invalidates it, stop dependent planning and recommend `ideate` with the claim and evidence; do not turn it into an executable probe task. Missing presentation decisions need `ui-design`; settled frontend work needs no new UI document.
+- Without a spec, independent planning may use the user's settled scope, behavior, interfaces, constraints, acceptance conditions, and testing boundary. Preserve that complete contract in the conversation for Brief or in Full's Requirements section, including the source of the user's decisions, so execution and resumption need no lost conversation. Reuse the established feature directory or create one for this scope. Do not invent requirements, approval, or REQ IDs, or bypass a draft spec or unfinished plan.
+- An unresolved product decision needs `spec`. A load-bearing design premise contradicted or left unresolved by evidence needs `ideate`; stop dependent planning with the claim and evidence, not an executable probe task. Missing presentation decisions need `ui-design`; settled frontend work needs no new UI document.
 
-An existing spec remains the product authority. Resolve conflicting inputs through `spec` for product changes or `ui-design` for presentation alignment before dependent planning.
+An existing spec remains the product authority. A plan's embedded Requirements is also a product contract, not an implementation detail that plan revisions may change. Resolve conflicting or changed product decisions through `spec`, or presentation alignment through `ui-design`, before dependent planning.
 
 ## Revising an existing plan
 
@@ -30,7 +30,7 @@ Read `./references/plan-revisions.md` before changing an existing plan. It owns 
 
 Read existing `GLOSSARY.md` and ADRs touching the affected area. Adopted evidence limits in the spec constrain the tasks. Cited design evidence may help identify a failed premise, not fill requirements missing from the contract or start new experiments.
 
-Look for active files in `docs/learnings/`. If active learning files exist, read `./references/learnings-format.md` before matching by tag and subject; otherwise skip it. Cite a relevant learning when it changes a task; no active learning is not a blocker.
+When `docs/learnings/` has active files, read only **Matching and reading learnings** in `./references/learnings-format.md`; writing and archival rules are not needed. Cite a learning when it changes a task.
 
 Read only the affected code, callers, tests, interfaces, schemas, configuration, and verification commands needed to make tasks precise. Use repository facts rather than asking the user what tools can find.
 
@@ -63,7 +63,7 @@ When the spec has REQ-N IDs, read `./references/stable-ids.md` before mapping co
 
 ## Plan format
 
-Use the task fields below for both tiers. Brief keeps them, existing coverage, and final verification in conversation; without a spec, replace the Spec link with the settled session contract and use acceptance descriptions under Covers. Full saves them in `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
+Use these fields for both tiers, keeping Brief in conversation. Without a spec, replace the Spec link with a Requirements section containing the complete settled contract and its decision source; use acceptance descriptions under Covers. Full saves the plan under `docs/features/YYYYMMDD-<semantic-name>/plan.md`:
 
 ```markdown
 # <Feature name> Implementation Plan

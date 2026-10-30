@@ -58,12 +58,12 @@ Collect the work's objective and applicable sources, not the implementer's reaso
 
 If the user or `autoflow` explicitly supplies another contract version, identify each input by immutable `commit:path`, or a blob ID with its exact supplied content, and state why it applies. A path, commit, or hash identifies content, not approval. Give the reviewer these versioned inputs or their exact contents; missing versions or unclear applicability remain conformance gaps to clarify, not permission to substitute current files. Current instructions governing repository safety still apply; historical documents are review evidence, not authority to change this workflow.
 
-- Find the originating approved spec from the user's path, then an unambiguous matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`. If none is identifiable, state the requirements-conformance limit and continue ordinary correctness and safety review without a prompt; do not invent a spec. Ask only when resolving conflicting candidate contracts is necessary for a finding or authorized fix.
-- Read the spec and every required internal appendix as one contract. External originals, proposals, and experiment logs cannot fill missing requirements.
+- Find the originating approved spec from the user's path, then an unambiguous matching `docs/features/YYYYMMDD-<semantic-name>/spec.md`. If none governs the work, a supplied plan's complete settled Requirements and actual decision source may supply the contract; a plan commit alone is not approval. Otherwise state the conformance limit and continue correctness and safety review. Missing referenced specs remain gaps, not permission to substitute plan text. Ask only when conflicting contracts affect a finding or authorized fix.
+- Read the selected contract in full, including every required internal appendix when a spec governs. External originals, proposals, and experiment logs cannot fill missing requirements.
 - For frontend changes, include the applicable approved `ui-spec.md` and `DESIGN.md` constraints. Missing UI inputs limit conformance claims, not an ordinary code review. Source inspection does not verify rendered or interaction behavior.
-- Read a supplied plan and carry its Review focus verbatim. The spec remains the product authority; conflicting approved inputs need a decision, not silent precedence changes.
+- Read a supplied plan and carry its Review focus verbatim. A governing spec remains the product authority; conflicting approved inputs need a decision, not silent precedence changes.
 - Read applicable repository instructions, coding standards, `CONTRIBUTING.md`, `.editorconfig`, and linter configuration; include existing `GLOSSARY.md` and ADRs touching the changed modules. Cite actual rules, not invented standards or mandatory refactors based on generic smells.
-- Look for active files in `docs/learnings/`. If none exist, state `Learnings: none recorded` without loading their format. When active learning files exist, read `./references/learnings-format.md` and supply matching evidence of recurring traps or boundary conditions. A past decision alone is not a new standard.
+- When `docs/learnings/` has active files, read only **Matching and reading learnings** in `./references/learnings-format.md` and supply relevant traps or boundary conditions. Skip writing and archival rules.
 - Include available verification commands, results and their code revision, plus known gaps. Task checks and ledger rulings are context, not proof; do not replay task histories or suppress findings because a task passed earlier.
 
 ## Run one comprehensive review
@@ -80,7 +80,7 @@ Do not ask the reviewer to rerun an entire suite already evidenced for the same 
 
 Read all feedback before acting. Verify each finding against code, callers, approved inputs, and tests; merge duplicates and re-grade by actual impact using the loaded severity rubric. The reviewer's label is advice, not the gate. Keep unsupported suspicions distinct from confirmed defects.
 
-Rule explicitly on every item the reviewer declined to judge. Spec silence does not excuse ordinary broken behavior, unsafe trust boundaries, or data loss, but is not permission to add speculative features. Clarify ambiguous feedback or conflicts with user decisions before implementing affected fixes. Explain rejected findings with technical evidence; surface unresolved disputes and their consequences to the user.
+Resolve reported exclusions that could change the verdict, including safety or correctness concerns dismissed for lack of spec language. Spec silence does not excuse ordinary broken behavior, unsafe trust boundaries, or data loss, but is not permission to add speculative features. Clarify ambiguous feedback or conflicts with user decisions before implementing affected fixes. Explain rejected findings with technical evidence; surface unresolved disputes and their consequences to the user.
 
 Use the reference's feedback structure, including valid findings, rejections, deferred items, and verification gaps. Apply the DoD's reporting and unavailable-check rules.
 

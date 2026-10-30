@@ -5,57 +5,43 @@ description: Route an ambiguous development request to the smallest suitable ski
 
 # Guide
 
-Choose the smallest suitable skill for the user's current request, then follow that skill immediately.
+Choose the skill for the user's requested result, using the map below. The selected skill checks its own inputs, authority, and delivery boundary.
 
 ## Skills
 
-- `survey`: inspect a workspace and create or refresh `AGENTS.md` and `GLOSSARY.md`.
-- `ideate`: develop and converge candidate approaches, consuming design evidence before selection.
-- `spike`: answer bounded candidate-design feasibility questions and return evidence to `ideate`.
-- `spec`: clarify requirements and internalize designs into one approved contract for the requested scope.
-- `plan`: create, review, or revise testable tasks. Full saves `plan.md` beside an approved spec; Brief uses that spec or settled session requirements.
-- `execute`: continuously implement authorized tasks or a small, clear change, with lightweight task checks, separate commits, and final verification. Stop only for blockers or safety decisions.
-- `bugfix`: build a reproduction loop, find the root cause, fix it with a regression test, and commit a small fix.
-- `code-review`: independently review a branch or commit range, including a completed feature.
-- `commit`: create high-quality commits for ad-hoc changes, detecting project conventions and staging only specified files.
-- `autoflow`: automate `plan` → `execute` → `code-review` from an already approved spec.
-- `learning`: record the non-obvious reasoning, traps, and boundary conditions from a finished session into `docs/learnings`.
-- `learning-refresh`: audit and refresh the learnings store in `docs/learnings/` for staleness.
-- `simplify`: clean up working code in an explicit scope or recent changes for reuse, clarity, and efficiency without changing behavior.
-- `ui-design`: turn an approved frontend spec into `ui-spec.md`, establishing `DESIGN.md` if absent.
-- `ui-review`: review implemented frontend UI for design quality, consistency, accessibility, and performance.
+| Requested result | Skill |
+|------------------|-------|
+| Record or refresh workspace facts in AGENTS.md and GLOSSARY.md | `survey` |
+| Compare or revise approaches, including a failed design premise | `ideate` |
+| Answer a bounded candidate-design feasibility question with evidence | `spike` |
+| Define behavior, scope, interfaces, constraints, or acceptance; internalize a ready design | `spec` |
+| Create, review, or revise implementation tasks, in conversation or plan.md | `plan` |
+| Implement or resume settled work, or a small change with clear acceptance | `execute` |
+| Reproduce and fix a failure or regression, including performance regressions | `bugfix` |
+| Review a branch, commit range, or completed feature as a whole | `code-review` |
+| Commit specified ad-hoc changes | `commit` |
+| Explicitly requested autonomous delivery from an approved spec with settled UI decisions | `autoflow` |
+| Preserve non-obvious reasoning from finished work in docs/learnings/ | `learning` |
+| Audit or refresh existing learnings | `learning-refresh` |
+| Simplify working code without behavior changes or structural redesign | `simplify` |
+| Settle presentation and interaction details within an approved product contract | `ui-design` |
+| Review or improve an implemented interface's design and usability | `ui-review` |
 
-## Routing order
+## Resolve overlaps
 
-Use the first matching rule:
+Apply these priorities:
 
-1. If the user explicitly selects a target skill other than `guide`, use it. Invoking `guide` itself requests routing; continue matching below.
-2. If the request is limited to creating, reviewing, or revising a planning document or session plan, use its owner: `ideate` for a proposal, `spike` for an evidence report, `spec` for a specification, or `plan` for an implementation plan. Keep review-only requests read-only. A request to adjust tasks is planning even when a plan already exists; follow the owner's input checks without starting implementation.
-3. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
-4. If the user reports a failure, error, broken behavior, or regression, use `bugfix`, including performance regressions even when they ask for profiling or optimization. An already identified failed design premise goes to `ideate` instead.
-5. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.
-6. If the request is specifically to review, audit, or improve implemented frontend UI (signals: "review UI", "check design", "audit interface", "improve design quality", "check accessibility"), use `ui-review`, including UI-only reviews of a completed feature or branch.
-7. If the user asks for an overall review of a branch, commit range, or completed feature (signals: "review this branch", "audit these commits", "review the implementation"), use `code-review`. Including UI concerns in an overall review does not make it UI-only. Per-task reviews inside `execute` remain part of that skill.
-8. If the user asks for a bounded design-stage probe with an identifiable candidate, feasibility question, and dependent design decision, use `spike`; missing constraints or a deciding criterion can be clarified there. Its evidence returns to `ideate`. No prior skill invocation is required. A design premise that failed during later work goes to `ideate` first, not directly to a probe. Routine inspection unrelated to a candidate-design decision and product acceptance are not spike work.
-9. If the user says "not sure how to implement" or "explore options", needs to compare approaches, lacks a framed candidate-design question, or needs to revisit a failed design premise, use `ideate`. A ready, supported external design can go directly to `spec`.
-10. If the user asks to record what a finished session taught (signals: "capture the learnings", "write down why we did it this way", "note the trap so we don't repeat it"), use `learning`. The work it draws from must already be finished; if it is not, route to the skill that does the work.
-11. If the user asks to audit or refresh learnings (signals: "learnings are stale", "clean up learnings", "update docs/learnings"), use `learning-refresh`.
-12. If the user asks to simplify or clean up working code (signals: "simplify this", "clean up", "refactor for clarity"), use `simplify`. This is for code-level cleanup, not structural changes.
-13. If the user requests a small change with clear scope and acceptance checks, use `execute` directly. Missing `AGENTS.md` alone does not require a survey; read the relevant code and commands as needed. Do not use this shortcut for unfinished planned work or unresolved product decisions.
-14. If the user asks to establish or refresh workspace facts (commands, structure, conventions), use `survey`.
-15. If scope, behavior, interfaces, constraints, or acceptance need definition, or a supplied design needs internalization without a feasibility blocker, use `spec`. Do not route a whole system through repeated per-module specifications.
-16. If an approved spec still needs layout, presentation-state, or interaction details within its settled product behavior, use `ui-design`. Missing DESIGN.md alone does not require a design stage when the relevant choices are already settled.
-17. If a persisted or session plan exists for the request, use `execute` to verify its applicable user or autoflow authorization before acting. A request to execute the current self-reviewed plan supplies execution authority without another routine approval; a plan commit alone does not.
-18. If the spec is approved and the work needs task decomposition but no plan exists, use `plan`; that skill chooses the output tier.
-19. If the approved work is clear and ready for code changes, use `execute`.
-20. If no rule matches, use `spec` instead of guessing.
+1. Honor an explicitly selected skill other than `guide`; invoking `guide` itself requests routing.
+2. A document-only request belongs to its owner: proposal → `ideate`, evidence report → `spike`, specification → `spec`, implementation plan → `plan`. Keep review-only requests read-only. An existing plan or a reported error in it does not authorize implementation or turn planning into debugging.
+3. Match the requested outcome in the map. UI-only review uses `ui-review`, even for a completed feature; overall review uses `code-review`, even when it includes UI concerns. A failure uses `bugfix` even if the user says "optimize", unless evidence already identifies a failed design premise, which belongs to `ideate`.
+4. A direct `spike` request needs an identifiable candidate, feasibility question, and dependent design decision; missing criteria can be clarified there. Unframed choices or premises invalidated during downstream work go to `ideate`. Routine inspection and product acceptance stay with their existing workflow.
+5. An explicit autonomous-delivery request with an approved spec and settled UI uses `autoflow`; otherwise route the actual missing decision. For ordinary delivery, unresolved product behavior needs `spec`; unresolved presentation within approved behavior needs `ui-design`. Use `execute` for an existing plan or a ready small change, and `plan` when initial decomposition is needed. Explicit separate planning takes precedence. Missing AGENTS.md or DESIGN.md alone does not add a stage; small work cannot bypass an unfinished plan or unresolved decisions. Whole systems do not require per-module specifications.
+6. If intent still cannot be matched, use `spec` to clarify it.
 
 ## Handoff
 
-After choosing a skill:
+Briefly name the selected skill and why, then locate and read its `SKILL.md` and follow it in the same turn. Do not ask the user to invoke it or route through `guide` again.
 
-1. State `Route: <skill>` and `Reason: <one short reason>`; do not print a full workflow or several alternatives.
-2. Locate that skill's `SKILL.md` under the configured skills directory. If it is not installed, disclose the missing target. When the request and scope are clear, available capabilities can safely complete it, and the user has not required that exact skill, directly handle the request in the same turn without a selection prompt. Before any direct-handling repository write or state-changing command, read `./references/repository-changes.md`. Follow the original request, project constraints, and authorization boundaries without inventing the missing skill's workflow, then return to the user. Otherwise report the blocker and ask only for the missing decision or permission. Do not install without explicit authorization or claim the missing skill was loaded. Optional skills may be absent; do not diagnose the whole installation.
-3. If installed, read and follow the selected skill immediately in the same turn, without asking the user to invoke it or routing through `guide` again.
+If the target is absent, disclose that. Handle the request directly when scope is clear, available capabilities suffice, and the user has not required that exact skill. Before any repository write or state-changing command, read `./references/repository-changes.md`; obey the original request and project constraints without inventing the missing skill's workflow. Otherwise ask only for the missing decision or permission. Do not install without authorization or claim the missing skill ran.
 
-The selected skill owns its actions, authorization, and delivery boundary. Return to the user when it finishes; `autoflow` owns its three-stage sequence.
+Return when the selected skill finishes. Selection supplies no additional approval or scope; only `autoflow` owns its three-stage sequence.

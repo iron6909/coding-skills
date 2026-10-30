@@ -34,38 +34,6 @@ Use local/test resources, temporary directories, and isolated representative fix
 
 Tests should run independently and in any order. Await setup and cleanup, reset application state, and use deterministic time or randomness when relevant. Stub external boundaries, not the in-process behavior being verified.
 
-```javascript
-beforeEach(async () => {
-  await db.users.deleteAll(); // isolated test database only
-  jest.clearAllMocks();
-  await app.reset();
-});
-```
-
-## Example: login endpoint regression
-
-Exercise the endpoint rather than asserting which helper it calls. Add a regression for the observed failure, run it before the fix, and keep both success and failure assertions:
-
-```javascript
-test('POST /api/login returns a token on valid credentials', async () => {
-  const response = await request(app)
-    .post('/api/login')
-    .send({ email: 'user@example.com', password: 'password123' });
-  expect(response.status).toBe(200);
-  expect(response.body.token).toBeDefined();
-});
-
-test('POST /api/login rejects an incorrect password', async () => {
-  const response = await request(app)
-    .post('/api/login')
-    .send({ email: 'user@example.com', password: 'wrong' });
-  expect(response.status).toBe(401);
-  expect(response.body.token).toBeUndefined();
-});
-```
-
-These assertions do not replace malformed-input, permission, or error-path checks. Verify the implementation's trust-boundary protections through the same public interface; do not infer safety from a green happy path.
-
 ## Coverage and reporting
 
 Use the project's coverage requirements and the actual risk, not generic percentage targets. Cover meaningful permission, error, and data-loss paths explicitly; line coverage alone cannot prove they work. If a project threshold is absent, record the cases and boundaries checked rather than inventing one.
