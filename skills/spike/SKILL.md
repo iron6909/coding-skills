@@ -1,6 +1,6 @@
 ---
 name: spike
-description: Validate a candidate design's blocking feasibility questions and save evidence, conclusions, and limits in docs/features/YYYYMMDD-<semantic-name>/spike.md. Use only for bounded questions during approach design; return every outcome to ideate for design decisions. Not for specification, planning, implementation, debugging, optimization, or product acceptance work.
+description: Validate a candidate design's blocking feasibility questions and save evidence, conclusions, and limits in docs/features/YYYYMMDD-<semantic-name>/spike.md, or review an existing report without new experiments. Use only for bounded questions during approach design; return every outcome to ideate for design decisions. Not for specification, planning, implementation, debugging, optimization, or product acceptance work.
 ---
 
 # Spike
@@ -8,6 +8,10 @@ description: Validate a candidate design's blocking feasibility questions and sa
 Answer a candidate design's concrete feasibility question with the least evidence-producing work. A failed hypothesis is a valid result. The output is evidence for `ideate`, not approach selection, a specification, or an implementation plan.
 
 Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, design-document ownership, and preservation.
+
+## Review-only requests
+
+For a review-only request, check the report's question, method, observations, reproducibility, conclusions, and limits against available sources, and return findings and evidence gaps in conversation. Stop there: no probes, report updates, or commits; recommend a new run when evidence is missing.
 
 ## Frame the question
 

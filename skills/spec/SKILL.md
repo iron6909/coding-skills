@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Clarify requirements and internalize supplied designs into one approved spec.md in docs/features/YYYYMMDD-<semantic-name>/. Use when a settled approach needs behavior, scope, interfaces, or acceptance formalized. Return unresolved approach decisions or failed design premises to ideate; leave all implementation slicing to plan.
+description: Clarify requirements and internalize supplied designs into one approved spec.md in docs/features/YYYYMMDD-<semantic-name>/, or review an existing specification without writes. Use when a settled approach needs behavior, scope, interfaces, or acceptance formalized. Return unresolved approach decisions or failed design premises to ideate; leave all implementation slicing to plan.
 ---
 
 # Spec
@@ -8,6 +8,8 @@ description: Clarify requirements and internalize supplied designs into one appr
 Formalize the selected approach into the product design and acceptance contract for the user's requested delivery scope. Approach generation and selection belong to `ideate`. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
 
 Do not write product code, run experiments, create `plan.md` or capability maps, split work into features or tasks, or start another skill.
+
+For a review-only request, assess the existing contract using the readiness and review checks below, return findings in conversation, and stop without drafting a replacement, requesting approval, or saving documents.
 
 ## Inputs and readiness
 
@@ -83,7 +85,7 @@ For a small change, include only the problem, chosen behavior and scope, REQ-N a
 
 The spec is not an experiment plan or a production acceptance report. Record testable targets without claiming they have been achieved. Do not leave a load-bearing design choice as “validate later”; return it to `ideate` before formalizing the contract.
 
-Preserve precise implementation-relevant content from supplied designs. Do not shorten a detailed design into an outline that sends implementers back to an external original or an old proposal. The specification can be long when its content earns that space; appendices do not create separate specifications or approval cycles.
+Apply the loaded design-input reference's preservation and source-loss checks. A long specification is fine when its content earns the space; appendices create no separate specification or approval cycle.
 
 ## Revisions
 

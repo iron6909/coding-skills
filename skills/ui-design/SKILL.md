@@ -14,7 +14,7 @@ Skip this stage only after confirming that every in-scope layout, presentation-s
 | Artifact | Path | When |
 |----------|------|------|
 | Design system | `DESIGN.md` at the project root | Only when none exists |
-| Interface spec | `docs/features/YYYYMMDD-<semantic-name>/ui-spec.md` | Always |
+| Interface spec | `docs/features/YYYYMMDD-<semantic-name>/ui-spec.md` | When UI decisions are added or revised |
 
 `DESIGN.md` is the reusable system and belongs to the whole project. `ui-spec.md` is scoped to one feature and sits beside the `spec.md` it serves, so `plan` finds it in the same directory.
 
