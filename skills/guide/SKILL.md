@@ -33,7 +33,7 @@ The underlying mechanisms, such as TDD and subagents, are not routing targets.
 
 Use the first matching rule:
 
-1. If the user explicitly names a skill, use it.
+1. If the user explicitly selects a target skill other than `guide`, use it. Invoking `guide` itself requests routing; continue matching below.
 2. If the user asks to commit specific changes outside a skill workflow (signals: "commit these changes", "make a commit for this", ad-hoc edits), use `commit`.
 3. If the user reports a failure, error, broken behavior, or regression, use `bugfix`, including performance regressions even when they ask for profiling or optimization. An already identified failed design premise goes to `ideate` instead.
 4. If the user asks for autonomous delivery (signals: "just do it", "full auto", "automate this") and an approved spec with settled requirements and UI decisions is ready, use `autoflow`. Otherwise continue matching below; automation does not replace clarification.

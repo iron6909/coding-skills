@@ -1,6 +1,6 @@
 ---
 name: ideate
-description: Develop and converge candidate approaches in docs/features/YYYYMMDD-<semantic-name>/proposal.md. Use when designs need comparison, feasibility evidence, or revision after a premise fails. Own approach selection, recommend spike for bounded design questions, and consume its evidence before recommending spec. Do not run experiments or define the formal specification.
+description: Develop, review, and converge candidate approaches in docs/features/YYYYMMDD-<semantic-name>/proposal.md. Use when designs need comparison, feasibility evidence, review, or revision after a premise fails. Own approach selection, recommend spike for bounded design questions, and consume its evidence before recommending spec. Do not run experiments or define the formal specification.
 ---
 
 # Ideate
@@ -8,6 +8,10 @@ description: Develop and converge candidate approaches in docs/features/YYYYMMDD
 Find a suitable approach before committing to a design contract. The output is a proposal, not evidence that the approach works and not an approved specification.
 
 Do not write product code, build prototypes, create tasks, or invoke another skill. If the approach is already selected and no new evidence invalidates it, address only any remaining design unknowns; a ready, supported choice goes directly to `spec`. Supplied external designs need ideation only when a design choice or its feasibility remains open.
+
+## Review-only requests
+
+For a review-only request, check the proposal's claims, constraints, evidence, and trade-offs, and return findings, gaps, and repair directions in conversation. Stop there: no save, commit, or selection prompt. A request to revise it uses the flow below.
 
 ## Ground the question
 

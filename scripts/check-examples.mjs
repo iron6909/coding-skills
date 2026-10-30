@@ -125,9 +125,10 @@ console.log("simplification example preserves responses, result identity, errors
 
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
 const gitEnv = { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith("GIT_"))), GIT_CONFIG_GLOBAL: join(fixture, "global-config"), GIT_CONFIG_NOSYSTEM: "1" };
-const git = (...args) => execFileSync("git", ["-C", fixture, "-c", "user.name=Example checks", "-c", "user.email=checks@example.invalid", "-c", "commit.gpgsign=false", ...args], {
-  encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 10000, env: gitEnv,
+const gitAt = (dir, env, ...args) => execFileSync("git", ["-C", dir, "-c", "user.name=Example checks", "-c", "user.email=checks@example.invalid", "-c", "commit.gpgsign=false", ...args], {
+  encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 10000, env: { ...gitEnv, ...env },
 });
+const git = (...args) => gitAt(fixture, {}, ...args);
 try {
   writeFileSync(join(fixture, "global-config"), "");
   git("init", "--quiet", "--initial-branch=main");
@@ -162,9 +163,44 @@ try {
   const diffs = ranges.filter(([args]) => args[0] === "diff").map(([args]) => git(...args.map((arg) => arg.replaceAll(reviewBase, divergedBase))));
   assert.match(diffs[0], /base-only/, "endpoint comparison includes differences on both sides");
   assert.doesNotMatch(diffs[1], /base-only/, "branch comparison excludes base-only changes");
+
+  // Run the documented temporary-index commit beside an unrelated staged file.
+  const repo = join(fixture, "hunks");
+  git("init", "--quiet", "--initial-branch=main", "hunks");
+  const hunkGit = (env, ...args) => gitAt(repo, env, ...args);
+  const lines = Array.from({ length: 30 }, (_, n) => `line ${n + 1}`);
+  const version = (changes) => lines.map((line, n) => changes[n + 1] ?? line).join("\n") + "\n";
+  writeFileSync(join(repo, "user.mjs"), version({}));
+  writeFileSync(join(repo, "notes.mjs"), "notes\n");
+  hunkGit({}, "add", "--", "user.mjs", "notes.mjs");
+  hunkGit({}, "commit", "-qm", "base");
+  writeFileSync(join(repo, "user.mjs"), version({ 3: "staged validation" }));
+  writeFileSync(join(repo, "notes.mjs"), "unrelated staged note\n");
+  hunkGit({}, "add", "--", "user.mjs", "notes.mjs");
+  const worktree = version({ 3: "staged validation", 15: "excluded logging", 27: "unstaged validation" });
+  writeFileSync(join(repo, "user.mjs"), worktree);
+  const [header, ...hunks] = hunkGit({}, "diff", "--", "user.mjs").split(/^(?=@@)/m);
+  assert.equal(hunks.length, 2, "the fixture needs separate in-scope and excluded unstaged hunks");
+  const paths = Object.fromEntries(["temp-index", "staged-scope.patch", "unstaged-scope.patch"].map((name) => [`<${name}>`, hunkGit({}, "rev-parse", "--path-format=absolute", "--git-path", `example-${name}`).trim()]));
+  writeFileSync(paths["<staged-scope.patch>"], hunkGit({}, "diff", "--cached", "--", "user.mjs"));
+  writeFileSync(paths["<unstaged-scope.patch>"], header + hunks.find((hunk) => hunk.includes("+unstaged validation")));
+  const temporaryIndexCommit = blocks("skills/commit/references/git-commit.md", "bash").find((source) => source.includes("GIT_INDEX_FILE"));
+  for (const source of temporaryIndexCommit.split("\n")) {
+    const [, temporary, command] = source.match(/^(GIT_INDEX_FILE=<temp-index> )?git (.+)$/);
+    const args = command.replaceAll('"<subject>"', "partial-validation").split(/\s+/).map((token) => paths[token] ?? token);
+    hunkGit(temporary ? { GIT_INDEX_FILE: paths["<temp-index>"] } : {}, ...args);
+  }
+  assert.equal(hunkGit({}, "show", "HEAD:user.mjs"), version({ 3: "staged validation", 27: "unstaged validation" }), "commit exactly the authorized hunks");
+  assert.equal(hunkGit({}, "diff", "--name-only", "HEAD~1", "HEAD").trim(), "user.mjs", "keep the unrelated staged file out of the commit");
+  assert.equal(hunkGit({}, "diff", "--cached", "--name-only").trim(), "notes.mjs", "only the unrelated file remains staged");
+  assert.equal(hunkGit({}, "show", ":notes.mjs"), "unrelated staged note\n");
+  const remaining = hunkGit({}, "diff", "--", "user.mjs");
+  assert.match(remaining, /^\+excluded logging$/m, "the excluded hunk stays unstaged");
+  assert.doesNotMatch(remaining, /validation/, "committed hunks are reconciled into the original index");
+  assert.equal(readFileSync(join(repo, "user.mjs"), "utf8"), worktree, "the working tree is untouched");
 } finally {
   rmSync(fixture, { recursive: true, force: true });
 }
 
-console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, test and UI examples, simplification behavior, pinned review ranges");
+console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, test and UI examples, simplification behavior, pinned review ranges, temporary-index partial commits");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

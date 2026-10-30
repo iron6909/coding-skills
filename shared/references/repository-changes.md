@@ -1,6 +1,6 @@
 # Repository safety and delivery
 
-Read before the first repository write or command that may change state, including probes, tests, document/report saves, work records, staging, and commits. Read-only inspection needs no branch change. These rules constrain authorized work; they do not authorize edits, commits, new artifacts, or another workflow stage.
+Read before the first repository write or command that may change state, including probes, tests, document/report saves, work records, staging, and commits. These rules constrain authorized work; they do not authorize edits, commits, new artifacts, or another workflow stage.
 
 ## Establish the boundary
 
@@ -8,7 +8,13 @@ Read applicable `AGENTS.md` and `CLAUDE.md`, existing `GLOSSARY.md`, and ADRs to
 
 Inspect the branch and record the initial staged and unstaged changes plus relevant untracked content, not just filenames or a commit SHA. Preserve user work even in files this run will change. If overlapping changes cannot be isolated safely, stop and agree on the boundary before writing or staging. Reuse a trustworthy recorded boundary on resume; do not redefine initial user changes as this run's work.
 
-Before the first commit on the default branch (`main` or `master`), create and switch to `feature/YYYYMMDD-<semantic-name>` without asking; the working tree carries over. Skip the switch when the user or repository instructions direct commits to that branch. Do not switch away from a branch pinned by the request or review without agreement. Uncommitted edits, reports, work records, and probes need no branch change.
+## Work branch
+
+Document work, scratch-file design probes, read-only reviews, and user-directed ad-hoc commits stay on the current branch, including the default branch. A commit alone never triggers a branch change.
+
+Implementation, debugging, code cleanup, and authorized review fixes run on a work branch, created before their first file edit, including tests and diagnostic probes. On the default branch (`main` or `master`), create and switch to `feature/YYYYMMDD-<semantic-name>` without asking; the recorded user changes carry over. Later tasks and resumed runs reuse it, and an autonomous delivery run creates it before writing its plan. Report a branch you create.
+
+A user or repository instruction to work on a particular branch, including the default branch, takes precedence; naming a branch only as the review target is not such an instruction. Do not switch away from an instructed branch without agreement.
 
 ## Feature review base
 

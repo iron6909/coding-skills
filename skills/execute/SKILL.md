@@ -11,11 +11,11 @@ Use one of three execution inputs:
 - **Session plan:** use a task list from `plan` or supplied directly by the user with execution authority. Read its approved spec and required internal appendices in full when present; that contract governs behavior. For a list without a spec, the approved list itself must settle scope, behavior, acceptance checks, dependencies, and shared interfaces.
 - **Small change:** use the approved request as one task when its scope and acceptance checks are clear. No spec or plan file is required.
 
-Both plan inputs require settled scope and verification, a self-reviewed task list, and a user request to execute it or autoflow's invocation authority. A request to execute the current plan authorizes implementation without a separate routine plan approval. Honor explicit approval-first or no-change restrictions that remain unresolved. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
+Both plan inputs require settled scope and verification, a self-reviewed task list, and a user request to execute it or autoflow's invocation authority for its feature, target branch, approved contract inputs, and current plan. Either authorizes the whole in-scope run without a routine plan approval or confirmation between tasks. Honor explicit approval-first or no-change restrictions that remain unresolved. Persistence adds records, not permission to bypass an incomplete existing plan, missing contract, or scope approval. Do not infer approval from the diff.
 
 ## Workspace safety
 
-Read `./references/repository-changes.md` before editing, writing records, or running checks that may change state. It owns the repository-wide safety, cleanup, and delivery rules; the task-specific boundaries and doubt-driven checkpoints below still apply.
+Read `./references/repository-changes.md` before editing, writing records, or running checks that may change state. It owns the repository-wide safety, work-branch, specific sign-off, cleanup, and delivery rules; the task-specific boundaries below still apply.
 
 Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` constraints. Identify the existing test, lint, build, and type-check commands.
 
@@ -23,9 +23,9 @@ Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` cons
 
 **Load the Definition of Done**: read `./references/definition-of-done.md` before choosing verification and declaring completion. Every task must satisfy the applicable DoD and its acceptance conditions.
 
-## Continuous execution
+## Execution boundaries
 
-Work through every remaining executable task without routine pauses. A request to execute already approved work authorizes that run; do not ask again between tasks. When called by `autoflow`, use its invocation authority for the feature, target branch, approved contract inputs, and current self-reviewed plan; do not request plan approval. Changes to product/UI meaning require their owner's clarification or approval; verified editorial-only changes do not reopen settled decisions. In-scope plan revisions follow the route below. Missing authority or an unresolved user constraint blocks affected work.
+Changes to product/UI meaning require their owner's clarification or approval; verified editorial-only changes do not reopen settled decisions. In-scope plan revisions follow Exceptions and handoffs below. Missing authority or an unresolved user constraint blocks affected work.
 
 Small changes and session plans need no feature or task base SHAs, task briefs, pre-flight rows, or ledger events. Keep only the task list, starting change boundaries, check results, and failure evidence needed to do the work. Skip Persisted-plan records and Ledger entries below. A small change is not a miniature feature workflow.
 
@@ -36,13 +36,13 @@ The main process owns all writes. Read `./references/subagent-dispatch.md` only 
 For each executable task, in dependency order:
 
 1. Read the task and relevant code. Confirm any earlier outputs it needs exist and match. For a new task, capture its starting staged and unstaged patches and relevant untracked contents so its changes can be separated from user work and earlier tasks; on resume, recover its original boundary under Resume instead. For persisted plans, also record the boundary as described below. If no change is needed, use Exceptions and handoffs before editing.
-2. Check the doubt-driven triggers before affected actions. Follow the loaded TDD loop for behavior changes, or the appropriate alternative check. Read `./references/testing-strategy.md` when the right test level or isolation boundary is unclear.
+2. Apply the shared side-effect and sign-off rules before affected actions. Follow the loaded TDD loop for behavior changes, or the appropriate alternative check. Read `./references/testing-strategy.md` when the right test level or isolation boundary is unclear.
 3. Implement the smallest in-scope change and run focused and affected checks. Do not weaken a test to match incorrect behavior. If a check fails, follow Failed checks and fixes below.
 4. Inspect the task-owned diff and run the task review below. Fix valid in-scope findings, run fresh affected checks, and re-check the fixes and their affected paths. Leave Minor cleanup deferred.
-5. Commit only after review passes, checks are fresh, and no doubt trigger is open. Inspect `git diff --check` and `git status`, then follow `./references/git-commit.md` for selective staging and messages. When the spec has REQ-N IDs, read `./references/stable-ids.md` and reference the implemented IDs; do not invent IDs for a standalone request.
+5. Commit only after review passes, checks are fresh, and no required sign-off is missing. Inspect `git diff --check` and `git status`, then follow `./references/git-commit.md` for selective staging and messages. When the spec has REQ-N IDs, read `./references/stable-ids.md` and reference the implemented IDs; do not invent IDs for a standalone request.
 6. For persisted plans, record completion and the commit in the ledger. Otherwise, retain only a concise task result in conversation.
 
-After each task is committed, continue directly to the next executable task. Do not ask for routine confirmation.
+After each task is committed, continue directly to the next executable task.
 
 ## Exceptions and handoffs
 
@@ -83,14 +83,9 @@ Revisit the evidence changed by the failure. Continue while new evidence support
 
 If no evidence-backed next step remains, or continuing needs a new user decision, permission, or unavailable input or resource, stop affected work and report the evidence and smallest missing input. Expected TDD RED is normal progress, not a reason to stop. Unavailable required checks follow the DoD gate; they are not passes.
 
-## Doubt-driven checkpoints
+## Risk decisions
 
-Check before affected actions and whenever new evidence changes the risk:
-
-- **Irreversible**: deleting real data, dropping or rewriting a schema, rotating or destroying a real key, publishing, or another effect `git revert` cannot undo; the shared sign-off rule decides what is reversible here.
-- **Security-sensitive**: an unresolved security-policy decision or real-resource effect under the shared safety rule, not merely implementing an already approved security contract in local code.
-
-When a trigger lacks specific authorization, do not perform the affected action or commit the task. Stop and ask the user for explicit sign-off on that specific risk. Reuse sign-off already given for the same action, target, and effects. Record the decision in conversation, or in the ledger for persisted plans. A general execution approval or a green suite does not clear a specific risk, and reporting it after the action is too late.
+The loaded repository reference owns risk definitions and sign-off reuse. Record an applicable decision in conversation, or in the ledger for persisted plans; keep the affected task uncommitted while its required sign-off is unresolved.
 
 ## Persisted-plan records
 
@@ -155,7 +150,7 @@ Before claiming completion, confirm the task loop or already-satisfied small-req
 
 For a small change or session plan, report the change or already-satisfied evidence, checks and results, commit or no new commit, current branch, and any remaining gap. Omit empty bookkeeping sections.
 
-For persisted plans, also report the plan path, completed and skipped tasks, ledger path, actual rulings, cleared risk checkpoints, and deferred findings.
+For persisted plans, also report the plan path, completed and skipped tasks, ledger path, actual rulings, risk sign-offs, and deferred findings.
 
 After final verification and Definition of Done are satisfied, keep the current branch and all documents; this is not another approval choice or a verification waiver. Do not offer merge, discard, or cleanup menus. State that task reviews and final verification are not an independent whole-feature review.
 

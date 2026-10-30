@@ -20,7 +20,7 @@ git diff --staged
 
 Inspect relevant untracked files directly. Include staged-only changes within the requested scope; do not infer them from the unstaged diff.
 
-An explicit request to commit named files or hunks authorizes that scope on the current branch, including the default branch. Do not ask again for file or message approval unless the user requested a preview. If the scope is ambiguous or exclusions are unclear, ask before staging.
+An explicit request to commit named files or hunks authorizes that scope. Do not ask again for file or message approval unless the user requested a preview. If the scope is ambiguous or exclusions are unclear, ask before staging.
 
 ## 2. Stage and commit
 

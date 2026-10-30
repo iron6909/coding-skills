@@ -33,17 +33,9 @@ Test behavior through public interfaces, not implementation details. A good test
 
 ## Bug fixes and regressions: the Prove-It pattern
 
-Follow these five steps in order:
-
-1. **Prove** — write a test that reproduces the bug. It must fail.
-2. **Confirm** — read the failure and confirm it fails for the right reason: the bug itself, not a typo or a broken setup.
-3. **Fix** — apply the minimal change that addresses the root cause.
-4. **Verify** — run the test and confirm it passes.
-5. **Guard** — run the affected checks and confirm no regression. Follow the applicable Definition of Done for full-suite timing.
+Use the loop above with a regression test that reproduces the reported failure. An existing test can supply RED when its observed failure has the correct cause. The applicable Definition of Done controls full-suite timing.
 
 Do not repeat a trustworthy RED/GREEN cycle: an observed correct-cause failure followed by a pass with the same deterministic test and fixture already proves the guard. If the test or fixture changed after RED, the failure cause was unclear, no trustworthy pre-fix failure was observed, or results are nondeterministic, obtain fresh guard evidence. When safe, temporarily revert only this fix, confirm the intended failure, restore the fix, and confirm it passes. Preserve user changes; if the fix cannot be isolated safely, stop and agree on a safe reproducer. This does not replace affected checks or final verification.
-
-A fix that skips steps 1 and 2 is a guess. A fix that skips step 5 is unverified.
 
 ## Configuration and documentation
 

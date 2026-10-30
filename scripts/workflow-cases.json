@@ -17,7 +17,7 @@
     "setup": "Use a local fixture on main with a user-named changed file, a pre-existing user hunk, and a deterministic existing test failure. Record the file bytes and staged/unstaged diff before invocation.",
     "prompt": "清理这个文件最近改过的代码，不改变行为。",
     "expect": [
-      "The agent records initial changes and checks the default-branch boundary before editing.",
+      "The agent records the initial changes and current branch before any edit.",
       "It discovers the existing test failure before cleanup, reports the blocker, and preserves the user's file and index state.",
       "The stopped run makes no edit and no commit; reading guidance before the failing baseline is allowed."
     ],
@@ -125,9 +125,9 @@
     "prompt": "只提交 config.mjs 的改动，notes.mjs 不在这次范围内。",
     "expect": [
       "The agent commits config.mjs with a path-limited commit and no question, although notes.mjs is already staged. The commit contains only config.mjs; notes.mjs stays staged with identical index and working-tree contents.",
-      "The hunk-level control stops and asks before staging, because selective staging would share the index with the unrelated staged change; file bytes, index contents, and HEAD remain unchanged."
+      "In the hunk-level control, the agent commits only the requested config.mjs hunks through a temporary index without asking; notes.mjs stays staged with identical contents, the excluded config.mjs hunks stay uncommitted, and working-tree bytes are unchanged."
     ],
-    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, asking about it when whole-file scope can be committed safely, or expanding the authorized scope."]
+    "forbid": ["Unstaging, stashing, overwriting, or committing notes.mjs, asking about it when the requested scope can be isolated safely, or expanding the authorized scope."]
   },
   {
     "id": "commit-normalizes-supplied-message",
@@ -162,6 +162,17 @@
       "The exact-skill, ambiguous-scope, and unavailable-capability controls report the actual blocker and ask only for a needed decision or permission. The preview control returns the proposed message without repository writes. No control installs a skill or overrides a restriction."
     ],
     "forbid": ["Routine handling-mode approval, unauthorized installation, reading a nonexistent skill, pretending the missing skill ran, bypassing required checks, claiming the complete core is incomplete because optional commit is absent, or including unrelated files in the commit."]
+  },
+  {
+    "id": "guide-named-routes-review-only-documents",
+    "skill": "guide",
+    "setup": "Install guide and the complete core plus ideate, and invoke guide by name, for example /coding guide <prompt>. Provide a committed unselected proposal with an unsupported compatibility claim and, in a separate fixture, a committed spike report whose conclusion generalizes one fixture result. Record file bytes, index, HEAD, and branch. In controls, invoke ideate or spike directly with the same prompt.",
+    "prompt": "审查这份文档，指出问题和证据缺口，不要修改。",
+    "expect": [
+      "Naming guide does not make guide its own target: routing continues to the document's owner, ideate for the proposal or spike for the report, and that skill is read and followed.",
+      "Findings, evidence gaps, and repair directions are returned in conversation only. File bytes, index, HEAD, and branch stay unchanged, and no approach-selection prompt appears. Direct invocations behave the same."
+    ],
+    "forbid": ["Routing to guide itself, saving or committing the document, running a probe or experiment, requesting an approach selection, or starting spec."]
   },
   {
     "id": "guide-ui-only-completed-feature",
@@ -395,6 +406,17 @@
       "The trace stops before loading learning-format or commit references."
     ],
     "forbid": ["Inventing a lesson to meet a quota, duplicating AGENTS.md, or treating zero entries as failure."]
+  },
+  {
+    "id": "execute-creates-work-branch-commit-stays",
+    "skill": "execute",
+    "setup": "Use a local fixture on main with an unrelated unstaged user edit, runnable standard-library checks, and a clear small behavior change. Record file bytes, index, HEAD, and branch. In a separate control on main with commit installed, request a commit of one named user-edited file instead.",
+    "prompt": "把重试次数上限从 3 改为 5，补测试并提交。对照场景改为：提交 config.mjs 的改动。",
+    "expect": [
+      "Before the first test or code edit, execute creates and switches to feature/YYYYMMDD-<semantic-name> without asking; the user's edit carries over uncommitted, the task commit lands on that branch, and the report names it.",
+      "The commit control commits config.mjs on main without creating a branch or asking about branches."
+    ],
+    "forbid": ["Asking for branch consent, editing or committing on main in the execute variant, creating a branch for the commit control, or committing the unrelated user edit."]
   },
   {
     "id": "execute-keep-only-without-reprompt",
@@ -738,10 +760,10 @@
     "follow_up": "批准你展示的计划修订，保存并仅提交这次计划修改，然后停止。现有用户改动仍属于用户。",
     "expect": [
       "CSV coverage identifies existing implementation/test evidence and a final check without a fabricated development or completed task; the new JSON deliverable has REQ coverage and an observable check.",
-      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected. Before the plan commit, the agent creates and switches to a feature branch without asking; the working tree carries over.",
+      "No artifact changes before draft approval. Before writing, branch and initial file changes are inspected. The plan commit lands on the current master branch without creating a branch or asking about branches.",
       "User edits remain intact and outside the plan commit. Unsafe overlap blocks writing; otherwise the approved plan revision is selectively committed without product implementation, mandatory briefs, or ignore-policy changes."
     ],
-    "forbid": ["Overwriting or committing user edits, committing on the default branch, asking for branch consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
+    "forbid": ["Overwriting or committing user edits, creating or switching branches, asking for branch consent, inventing task history or a verification-only task, changing .coding policy, or implementing the plan."]
   },
   {
     "id": "plan-session-contract-and-revision",
