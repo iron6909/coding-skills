@@ -12,7 +12,21 @@ Before committing, verify that the staged diff contains exactly the intended in-
 git diff --staged
 ```
 
-If out-of-scope changes are already staged, leave them staged: never unstage, stash, overwrite, or commit them. When the scope is whole files, commit with the paths named, `git commit -m "<subject>" -- <paths>`. Git then records only those files' working-tree contents, so check `git diff --staged -- <paths>` first and `git show --stat HEAD` after. Stop and ask only when the scope needs hunk-level staging, which would share the index with them.
+If out-of-scope changes are already staged, leave them staged: never unstage, stash, overwrite, or commit them. When the scope is whole files, commit with the paths named, `git commit -m "<subject>" -- <paths>`. Git then records only those files' working-tree contents, so check `git diff HEAD -- <paths>` first and `git show --stat HEAD` after.
+
+When the scope needs hunk-level staging alongside them, build the commit in a temporary index instead. Save the in-scope staged hunks and the in-scope unstaged hunks as two patches, and put them and the index at new absolute paths inside the Git directory (`git rev-parse --path-format=absolute --git-path <name>`). Skip any command whose patch is empty:
+
+```bash
+GIT_INDEX_FILE=<temp-index> git read-tree HEAD
+GIT_INDEX_FILE=<temp-index> git apply --cached <staged-scope.patch>
+GIT_INDEX_FILE=<temp-index> git apply --cached <unstaged-scope.patch>
+GIT_INDEX_FILE=<temp-index> git diff --cached
+git apply --cached --check <unstaged-scope.patch>
+GIT_INDEX_FILE=<temp-index> git commit -m "<subject>"
+git apply --cached <unstaged-scope.patch>
+```
+
+The temporary diff must show exactly the authorized scope. The last command stages the newly committed unstaged hunks in the real index, so excluded staged changes stay staged and the working tree is untouched; hooks and required checks still run. A clear, separable hunk selection needs no renewed approval. Stop before committing only when ownership is unclear or a patch does not apply cleanly. Afterwards, check `git show --stat HEAD` and the remaining staged and unstaged changes against the recorded boundary, then remove only this run's temporary index and patches.
 
 ## Commit message
 
