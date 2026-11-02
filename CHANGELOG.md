@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [14.2.1] - 2026-11-02
+
+### Fixed
+
+- **连续执行**：16 个技能在入口加载共享续跑规则，明确任务、批次、里程碑、提交、进度汇报和代理自估上下文不足都不构成重新授权门槛；上下文压缩后保留原请求、授权、约束和进度，实际宿主中断须如实报告。
+- **阶段交接与恢复**：`execute` 修订计划后继续剩余任务，`autoflow` 不把无具体阻塞的部分结果当作阶段完成；明确 `code-review` 返回编排器的边界，Brief 计划和经验提取优先恢复保留的摘要，避免要求用户重述已有信息。
+- **阻塞判定**：必需检查不可用时先尝试已授权的安全本地恢复；UI 修复按证据继续。停止时须指出受阻动作、证据、缺失决定及适用规则，仅阻塞受影响工作；专项授权、用户限制、验证门槛和依赖关系仍有效。
+
+### Verification
+
+- Windows、Node 24.10.0 下，`npm run check` 与离线包核验通过；104 个手工场景定义通过结构校验，全部 16 个技能入口加载共享续跑引用。
+- 使用 `magpie/remote/group/power`（响应模型 `gpt-6-astra`）完成四组新旧版各一次隔离实跑，两版各通过 12 项预声明断言，合计 68 项文件、Git 和实际命令核验通过，用户暂存与未暂存改动均保留。
+- 本轮未复现原始的自估上下文停顿。压缩通过保留摘要模拟，真实上下文耗尽、异步唤醒、独立审查及用户明确暂停未实跑；最后的入口调整和 learning 恢复措辞仅做静态核验，不据此声称通用遵循率或效率提升。
+
 ## [14.2.0] - 2026-10-30
 
 ### Added
