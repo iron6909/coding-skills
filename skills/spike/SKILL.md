@@ -7,7 +7,7 @@ description: Validate a candidate design's blocking feasibility questions and sa
 
 Answer a candidate design's concrete feasibility question with the least evidence-producing work. A failed hypothesis is a valid result. The output is evidence for `ideate`, not approach selection, a specification, or an implementation plan.
 
-Read `./references/design-input.md` before accepting material or writing. It owns scope reuse, design-document ownership, and preservation.
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries. Read `./references/design-input.md` before accepting material or writing; it owns scope reuse, design-document ownership, and preservation.
 
 ## Review-only requests
 
@@ -33,7 +33,7 @@ A request to validate a named design hypothesis authorizes its scoped safe probe
 
 ## Safety before experiments
 
-Read `./references/repository-changes.md` before any probe edit, state-changing command, or report write. Use new isolated scratch files, not product files. Dependency installation needs approval.
+Apply the loaded repository safety rules before any probe edit, state-changing command, or report write. Use new isolated scratch files, not product files. Dependency installation needs approval.
 
 Missing tools, representative data, hardware, permission, or safe targets are evidence gaps, not permission to simulate success.
 

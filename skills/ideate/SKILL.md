@@ -5,6 +5,8 @@ description: Develop, review, and converge candidate approaches in docs/features
 
 # Ideate
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Find a suitable approach before committing to a design contract. The output is a proposal, not evidence that the approach works and not an approved specification.
 
 Do not write product code, build prototypes, create tasks, or invoke another skill. If the approach is already selected and no new evidence invalidates it, address only any remaining design unknowns; a ready, supported choice goes directly to `spec`. Supplied external designs need ideation only when a design choice or its feasibility remains open.
@@ -42,7 +44,7 @@ If any survive, rank them and recommend one with remaining unknowns explicit; ot
 
 ## Save the proposal
 
-Read `./references/repository-changes.md` before saving a proposal or its appendices. Save `docs/features/YYYYMMDD-<semantic-name>/proposal.md`:
+Save `docs/features/YYYYMMDD-<semantic-name>/proposal.md`:
 
 ```markdown
 # <Name> Proposal

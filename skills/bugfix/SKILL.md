@@ -9,7 +9,7 @@ Fix the root cause, not the symptom. Start with the evidence already available; 
 
 ## Safety and verification
 
-Read `./references/repository-changes.md` before probes, hypothesis edits, or reproduction commands that may write state; it owns workspace safety, side effects, cleanup, and delivery boundaries.
+Read `./references/repository-changes.md` at entry, before probes, hypothesis edits, or reproduction commands that may write state; it owns workspace safety, side effects, cleanup, and delivery boundaries.
 
 Read `./references/definition-of-done.md` before choosing checks and declaring completion. Apply its Unavailable required checks gate before committing or claiming the fix is done.
 

@@ -5,6 +5,8 @@ description: Use when the user asks to audit or refresh existing docs/learnings/
 
 # Learning Refresh
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Refresh recorded traps, trade-offs, and boundary conditions against current evidence.
 
 ## 1. Inventory
@@ -27,7 +29,7 @@ Present the evidence, per-entry outcomes, and proposed file actions. For audit-o
 
 ## 4. Apply changes
 
-Read `./references/repository-changes.md` before editing or moving a learning. Apply the proposed entry revisions, lifecycle metadata, and permitted file actions using the format reference, including its citation and destination-collision checks. Do not migrate unrelated files.
+Apply the proposed entry revisions, lifecycle metadata, and permitted file actions using the format reference, including its citation and destination-collision checks. Do not migrate unrelated files.
 
 Recheck each affected file's current entries and historical dispositions before finalizing metadata or a move.
 

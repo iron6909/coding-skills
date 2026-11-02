@@ -9,7 +9,7 @@ Run inline from scope through delivery without routine reapproval. The invocatio
 
 ## Workspace safety
 
-Read `./references/repository-changes.md` before the first edit or check that may write state. Read `./references/definition-of-done.md` before selecting baseline and final checks; apply its commit and unavailable-check gates.
+Read `./references/repository-changes.md` at entry, before the first edit or check that may write state. Read `./references/definition-of-done.md` before selecting baseline and final checks; apply its commit and unavailable-check gates.
 
 ## Execution
 

@@ -5,6 +5,8 @@ description: Clarify requirements and internalize supplied designs into one appr
 
 # Spec
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Formalize the selected approach into the product design and acceptance contract for the user's requested delivery scope. Approach generation and selection belong to `ideate`. A whole system can have one specification; module boundaries are design content, not separate feature workflows.
 
 Do not write product code, run experiments, create `plan.md` or capability maps, split work into features or tasks, or start another skill.
@@ -108,7 +110,7 @@ Present new or changed contract decisions and any glossary, ADR, or appendix cha
 
 ## Save and commit
 
-Read `./references/repository-changes.md` before saving the approved contract or changing a glossary or ADR. Save `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal appendices. Follow `./references/git-commit.md` for only these documents and approved glossary or ADR changes. Use the repository convention or `docs(spec): add <name>` / `docs(spec): update <name>`.
+Save `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal appendices. Follow `./references/git-commit.md` for only these documents and approved glossary or ADR changes. Use the repository convention or `docs(spec): add <name>` / `docs(spec): update <name>`.
 
 ## Finish
 

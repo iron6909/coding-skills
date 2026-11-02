@@ -1,12 +1,22 @@
 # Repository safety and delivery
 
-Read before the first repository write or command that may change state, including probes, tests, document/report saves, work records, staging, and commits. These rules constrain authorized work; they do not authorize edits, commits, new artifacts, or another workflow stage.
+Read at skill entry for continuation and context recovery, including read-only work. Apply the safety rules before the first repository write or command that may change state, including probes, tests, document/report saves, work records, staging, and commits. These rules constrain authorized work; they do not authorize edits, commits, new artifacts, or another workflow stage.
 
 ## Establish the boundary
 
 Read applicable `AGENTS.md` and `CLAUDE.md`, existing `GLOSSARY.md`, and ADRs touching the affected area. Use the project's terms and obey the invoking skill's scope and approval gates.
 
 Inspect the branch and record the initial staged and unstaged changes plus relevant untracked content, not just filenames or a commit SHA. Preserve user work even in files this run will change. If overlapping changes cannot be isolated safely, stop and agree on the boundary before writing or staging. Reuse a trustworthy recorded boundary on resume; do not redefine initial user changes as this run's work.
+
+## Continue authorized work
+
+Carry the requested scope through the invoking skill's delivery boundary. Task, batch, milestone, commit, and progress-report boundaries do not require another permission prompt. Do not invent a stopping rule from task count, elapsed effort, estimated remaining context, or a self-imposed time/token budget. A progress update is followed by the next authorized action, not “shall I continue?”. Honor an explicit user pause or approval-first limit.
+
+When context grows, use available compaction or continuation support and keep working. Preserve the original request and authority, constraints, current task and next action, change boundaries, evidence, and unresolved blockers in the session handoff and any work records the skill already requires. Compaction does not revoke authorization or start a new task. Reconcile retained context and repository evidence before asking for genuinely missing information; do not invent approval, additional state files, or usage accounting. If the host actually interrupts execution, preserve recoverable progress and report the observed limitation; do not present an estimated limit as an observed failure or claim unattended continuation the host cannot provide.
+
+Before requesting a decision, inspect available evidence and try safe in-scope recovery. State the exact blocked action, evidence, and missing input or authorization; when citing a rule, name its source and explain why existing authorization does not satisfy it. Stop only affected work when independent authorized work remains safe and the user's ordering permits it. Do not cross a blocked dependency, bypass verification, or broaden scope to keep busy.
+
+An asynchronous check or delegated result still running is pending work, not a request for the user to restart the workflow. Use the host's completion mechanism and continue when it returns. Pending work is not a passing result or permission to start dependent actions.
 
 ## Work branch
 
@@ -42,6 +52,6 @@ Preserve every document, including superseded designs, reports, ledgers, and tas
 
 The invoking skill defines what to save, what to commit, and when approval is needed. A report-only skill does not gain code-edit or commit permission from this reference. Follow its named Git commit rules when committing; do not bundle unrelated changes or manufacture an empty commit. Work records and reports stay uncommitted unless that skill explicitly includes them.
 
-Report the actual change or no-change result, applicable checks and fresh results, accepted limits, and the artifact paths or commits the skill calls for. Keep output bounded and identify remaining blockers; do not create a separate report or ledger merely to satisfy this reference. Stop at the skill's delivery boundary; only an explicitly authorized orchestrator may continue to another stage.
+Report the actual change or no-change result, applicable checks and fresh results, accepted limits, and the artifact paths or commits the skill calls for. Keep output bounded and identify remaining blockers; do not create a separate report or ledger merely to satisfy this reference. Stop at the skill's delivery boundary when invoked independently. Under `autoflow`, return control and results to the orchestrator so it continues the already authorized stages; a called skill's finish instruction does not end the whole run. Only an explicitly authorized orchestrator may continue to another stage.
 
 Do not push, merge, publish, deploy, or delete branches. Leave integration and branch disposal to the user.

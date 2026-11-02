@@ -835,12 +835,47 @@
     "forbid": ["Auto-approving on behalf of the user, weakening checks, inferring high-risk sign-off from invocation, saving review findings, creating a state file, or merging/pushing."]
   },
   {
+    "id": "autoflow-resumes-partial-stage",
+    "skill": "autoflow",
+    "setup": "Install the complete core plus autoflow in a fresh local fixture with an approved non-UI spec, a self-reviewed committed plan grouped into phases, runnable standard-library checks, a fixed feature review base, and preserved user edits. Seed a completed first task and an unnecessary second task whose behavior is already covered, leaving a third executable task. Supply a retained session summary with the original autoflow request and binding limits; it records that the previous agent voluntarily stopped after the first phase because it estimated insufficient context. No host interruption, new user pause, product decision, or additional approval exists. Delegation is unavailable and independence is not required. In a control, the retained request explicitly says to stop after the first phase.",
+    "prompt": "用 autoflow 按已批准规格完成全部任务和审查，保持当前分支，不推送。",
+    "expect": [
+      "The ordinary variant treats the retained original invocation as authority, reconciles the completed task and fixed review base, and does not treat the former agent's estimated-context pause as a user constraint.",
+      "It reconciles the unnecessary task under the revision contract, preserves its history, and continues the third task through review, checks, commit, final verification, and disclosed inline whole-feature review without a plan, batch, context, or stage confirmation.",
+      "Progress updates and the plan-revision result do not end execution. The explicit user-pause control stops at its requested boundary and reports that actual restriction."
+    ],
+    "forbid": ["Asking whether to continue solely because a batch finished or context was compressed, demanding a new request after compaction, skipping unfinished tasks, changing the review base, creating a state or budget file, bypassing checks, or overriding an explicit user stop."]
+  },
+  {
+    "id": "execute-recovers-local-verification",
+    "skill": "execute",
+    "setup": "Use a fresh feature branch with a settled small change, existing standard-library tests, and an explicit required pre-commit check. The check reports a missing synthetic local fixture; AGENTS.md documents a dependency-free setup command that creates only a gitignored test fixture and makes the original check runnable. The requested product behavior is otherwise testable without that fixture. Preserve unrelated user edits. In a separate control, make the required check depend on an unavailable credential and forbid network, installation, and real-resource access.",
+    "prompt": "实现这个已明确的小改动，按仓库要求验证并提交，保留我已有的改动。",
+    "expect": [
+      "The ordinary variant inspects the documented setup, prepares the isolated local fixture within existing authority, reruns the original required check, and completes the change and commit without asking for a waiver or routine permission.",
+      "The control reports the exact unavailable check, evidence gap, and missing credential or safe alternative before commit; it neither claims a pass nor treats implementation authority as a verification waiver.",
+      "Both variants preserve user work and keep the required verification guarantee unchanged."
+    ],
+    "forbid": ["Stopping at the first recoverable setup error, replacing the required check with a weaker one, installing packages or touching real resources without authority, committing while required checks remain unavailable, or asking a generic continue question."]
+  },
+  {
+    "id": "execute-resumes-session-summary",
+    "skill": "execute",
+    "setup": "Use a fresh local feature fixture with no spec, persisted plan, or ledger. Supply a retained compaction summary containing the user's original execution request, a self-reviewed two-task Brief plan with settled behavior and acceptance, original user-change boundaries, binding no-dependency and branch limits, and evidence for the first completed task. The second task is small and all checks are runnable. No later user instruction or extra approval is supplied. In a control, omit one consequential behavior decision from the recoverable inputs.",
+    "prompt": "按这份会话任务清单完成两个任务，验证并提交，不安装依赖。",
+    "expect": [
+      "The complete-summary variant recovers authority, scope, and boundaries and finishes the remaining task with fresh checks and a selective commit without asking the user to restate the plan or creating a Full plan or ledger.",
+      "The incomplete-summary control asks only for the missing behavior decision after inspecting recoverable evidence; it does not invent approval or ask to reconfirm the entire plan."
+    ],
+    "forbid": ["Treating compaction as revoked authorization, requiring persistence solely for context recovery, resetting task boundaries, committing user edits, or ignoring a material missing decision."]
+  },
+  {
     "id": "autoflow-in-scope-plan-revision",
     "skill": "autoflow",
     "setup": "Provide an approved native spec, a committed plan, a trustworthy ledger with one completed task and one unnecessary unfinished task whose behavior and checks already exist, plus current invocation authority. A second variant needs a changed unfinished task boundary but no product decision, coverage reduction, user-constraint change, or weaker check. No plan-revision approval will be supplied.",
     "prompt": "继续 autoflow，按现有规格和证据对齐剩余计划并完成，不要编造已完成任务。",
     "expect": [
-      "Execute performs and commits an in-scope self-reviewed revision inline under the shared revision contract, returns the revised plan and its commit to the orchestrator, and resumes from reconciled progress without a skill handoff or approval prompt.",
+      "Execute performs and commits an in-scope self-reviewed revision inline under the shared revision contract, continues unfinished execution without a skill handoff or approval prompt, and includes the revised plan and its commit in the eventual stage result to the orchestrator.",
       "Completed task numbers, contents, briefs, and ledger history remain intact. A cancellation retains its number and reason, preserves coverage through Existing coverage and final checks, and does not invent completion or a commit for that task.",
       "The orchestrator continues from the revised plan only after its self-review and commit; product changes or weakened verification remain outside invocation authority."
     ],

@@ -5,13 +5,15 @@ description: Use when the user asks to preserve lessons or pitfalls from finishe
 
 # Learning
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Record reasoning this session learned that the repository does not already preserve. Save to `docs/learnings/YYYYMMDD-<topic>.md` using the topic and lifecycle rules below.
 
 Read `GLOSSARY.md` if it exists and use the project's terms.
 
 ## 1. Gather evidence
 
-Look for a rejected hypothesis and its reason, an abandoned approach and its failure, a surprising failed check, or a constraint discovered late. If the session is not visible, ask the user what to capture; do not invent lessons from the diff.
+Look for a rejected hypothesis and its reason, an abandoned approach and its failure, a surprising failed check, or a constraint discovered late. Recover that reasoning from retained session summaries and available evidence before asking the user what is missing; loss of the full transcript alone is not a blocker. Do not invent lessons from the diff.
 
 Check existing documents for reasoning already preserved. Maintain their facts and decisions through their owning skills, not through this capture:
 
@@ -32,7 +34,7 @@ Evaluate each candidate under that gate. If none qualify, use the report below a
 
 ## 3. Write
 
-Read `./references/repository-changes.md` before saving any learning. Read `./references/learnings-format.md` for the canonical template, metadata, matching rules, and lifecycle. Use that format rather than inventing another.
+Read `./references/learnings-format.md` for the canonical template, metadata, matching rules, and lifecycle. Use that format rather than inventing another.
 
 Match the topic before creating a file. Append related entries to its current file and use the entry revision rules for corrections or changed conclusions. Archival belongs to `learning-refresh` under the lifecycle gates.
 

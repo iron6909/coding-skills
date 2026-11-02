@@ -5,6 +5,8 @@ description: Route an ambiguous development request to the smallest suitable ski
 
 # Guide
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Choose the skill for the user's requested result, using the map below. The selected skill checks its own inputs, authority, and delivery boundary.
 
 ## Skills
@@ -42,6 +44,6 @@ Apply these priorities:
 
 Briefly name the selected skill and why, then locate and read its `SKILL.md` and follow it in the same turn. Do not ask the user to invoke it or route through `guide` again.
 
-If the target is absent, disclose that. Handle the request directly when scope is clear, available capabilities suffice, and the user has not required that exact skill. Before any repository write or state-changing command, read `./references/repository-changes.md`; obey the original request and project constraints without inventing the missing skill's workflow. Otherwise ask only for the missing decision or permission. Do not install without authorization or claim the missing skill ran.
+If the target is absent, disclose that. Handle the request directly when scope is clear, available capabilities suffice, and the user has not required that exact skill. Apply the loaded repository safety rules before any repository write or state-changing command; obey the original request and project constraints without inventing the missing skill's workflow. Otherwise ask only for the missing decision or permission. Do not install without authorization or claim the missing skill ran.
 
 Return when the selected skill finishes. Selection supplies no additional approval or scope; only `autoflow` owns its three-stage sequence.

@@ -5,6 +5,8 @@ description: Survey a workspace and create or refresh its project facts in AGENT
 
 # Survey
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Inspect the workspace and record or refresh project facts in `AGENTS.md`. First contact with a repository or a missing instruction file alone does not require this stage.
 
 Keep the result short. Record facts and project rules, not generic engineering advice.
@@ -132,7 +134,7 @@ Create `GLOSSARY.md` in the repository root only when project-specific terms exi
 
 ## Write
 
-Read `./references/repository-changes.md` before any instruction or glossary write. Write the smallest safe update without a pre-write confirmation; the Finish report covers what changed. Do not append duplicate sections on repeated runs.
+Write the smallest safe update without a pre-write confirmation; the Finish report covers what changed. Do not append duplicate sections on repeated runs.
 
 The root `AGENTS.md` contains shared rules. A child `AGENTS.md` contains only that project's differences. `GLOSSARY.md` is always at the root (not per-child-project).
 

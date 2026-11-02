@@ -9,7 +9,7 @@ Review a branch, completed feature, or historical commits, including the feature
 
 Deliver feedback in conversation only. Do not write review reports or persist findings in another file or ledger. The current request or the plan's Review focus supplies specific concerns.
 
-Read `./references/repository-changes.md` before checks that may change state or any authorized fix; reviewing code alone remains read-only. Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
+Read `./references/repository-changes.md` at entry, including read-only reviews, and before checks that may change state or any authorized fix. Read `./references/definition-of-done.md` before choosing verification. Read `./references/severity.md` for the impact rubric supplied to the reviewer and used for your own grading.
 
 ## Pin the review range
 
@@ -104,4 +104,4 @@ Continue authorized Blocking/Important fixes and fix-caused regressions while ne
 
 Deliver the adjudicated feedback. If fixes ran, add their range, commits, fresh checks, and each finding's addressed/open/deferred status. When called by `autoflow`, return these results to it.
 
-Stop after delivery. The user decides fixes or integration; recommend `simplify` only when deferred cleanup merits it, without invoking another skill.
+Under `autoflow`, return control to the orchestrator after the authorized review and fixes. When invoked independently, stop after delivery; a review-only request leaves fixes to the user. Integration remains the user's decision. Recommend `simplify` only when deferred cleanup merits it, without invoking another skill.

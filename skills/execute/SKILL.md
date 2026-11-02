@@ -15,7 +15,7 @@ Both plan inputs require settled scope and verification, a self-reviewed task li
 
 ## Workspace safety
 
-Read `./references/repository-changes.md` before editing, writing records, or running checks that may change state. It owns the repository-wide safety, work-branch, specific sign-off, cleanup, and delivery rules; the task-specific boundaries below still apply.
+Read `./references/repository-changes.md` at entry, before editing, writing records, or running checks that may change state. It owns repository safety, continuous execution and context recovery, work branches, specific sign-off, cleanup, and delivery rules; the task-specific boundaries below still apply.
 
 Read the execution input and relevant approved `ui-spec.md` and `DESIGN.md` constraints. Identify the existing test, lint, build, and type-check commands.
 
@@ -42,7 +42,7 @@ For each executable task, in dependency order:
 5. Commit only after the task's acceptance, DoD, review, and required sign-offs are satisfied. Inspect `git diff --check` and `git status`, then follow `./references/git-commit.md`. When the spec has REQ-N IDs, read only **Task and commit references** and **Before a task commit** in `./references/stable-ids.md`; do not invent IDs.
 6. For persisted plans, record completion and the commit in the ledger. Otherwise, retain only a concise task result in conversation.
 
-After each task is committed, continue directly to the next executable task.
+After each task is committed or reconciled as skipped under the revision contract, continue directly to the next executable task under the shared **Continue authorized work** rule. A phase heading or progress summary does not finish execution. Complete the authorized task list and final verification before returning a successful stage result.
 
 ## Exceptions and handoffs
 
@@ -55,7 +55,7 @@ Route other exceptions by the decision that is missing:
 | Evidence | Action |
 |----------|--------|
 | Repository-proven path/name correction or equivalent commands | Continue only if deliverables, task boundaries, REQ coverage, dependencies, shared contracts, and verification guarantees are unchanged. Record the correction in the ledger or conversation; do not rewrite the current plan or briefs. |
-| Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Return the revised plan and its commit to `autoflow` when called by it. |
+| Implementation-only task detail, boundary, dependency, interface arrangement, or unnecessary task | Read `./references/plan-revisions.md` before revising; it owns revision authority, history, coverage checks, and persistence. Apply a supported in-scope adjustment inline, self-review and record it, then continue without a skill handoff or renewed approval. Include the revised plan and its commit in the eventual stage result to `autoflow`; the revision itself does not end execution. |
 | A proposed revision changes delivery scope, approved contracts, requirement coverage, verification guarantees, or an explicit user constraint | Stop affected work for that specific decision; recommend `spec` for product changes or `plan` for arrangements needing user resolution. Do not hide the change as an implementation detail. |
 | Missing or unapproved product contract, or an unresolved behavior choice | Stop affected work and recommend `spec`. After approval, reconcile the plan under `./references/plan-revisions.md`; approval alone does not authorize executing changed scope. |
 | An unresolved or invalidated load-bearing design premise | Stop affected work and recommend `ideate` with the claim and evidence. Do not organize feasibility probes or silently choose a fallback. Changed design and contract inputs need their applicable approvals before resuming; reconcile affected plans under their authorization contract. |
@@ -128,7 +128,7 @@ For persisted plans, read the plan and its governing contract (the approved spec
 
 After a `Plan revised` entry, re-read the affected inputs and check dependencies of unfinished tasks. Recover a missing boundary only from unambiguous Git and ledger evidence; otherwise stop and ask. Do not trust old check results or restart an interrupted review from zero.
 
-For a session plan or small change whose conversation was lost, first recover scope, execution authority, and change boundaries from the current request, available records, and Git evidence. Ask only for what remains ambiguous; a diff alone cannot prove authorization. Recover available failure evidence and unresolved blockers from task results or existing work records. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
+For a session plan or small change, first recover scope, execution authority, and change boundaries from the retained request or compaction summary, any later user instructions, available records, and Git evidence. Ask only for what remains ambiguous; a diff alone cannot prove authorization. Recover available failure evidence and unresolved blockers from task results or existing work records. Do not force a larger plan solely because context was compressed. Work records may supply evidence, not invented approval.
 
 ## Tests and verification
 
@@ -144,4 +144,4 @@ For persisted plans, also report the plan path, completed and skipped tasks, led
 
 Keep the branch and documents without an integration menu. State that task reviews and final verification are not an independent whole-feature review.
 
-When called by `autoflow`, return the results to it for whole-feature review. Otherwise stop; recommend `code-review` when useful, or `learning` only for non-obvious reasoning not already preserved. Do not invoke another skill.
+When called by `autoflow`, return verified execution results to it for whole-feature review, or an exact blocker with unfinished tasks clearly marked; the orchestrator retains control. Otherwise stop after the authorized work is complete or concretely blocked; recommend `code-review` when useful, or `learning` only for non-obvious reasoning not already preserved. Do not invoke another skill.

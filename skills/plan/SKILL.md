@@ -5,6 +5,8 @@ description: Use when the user asks to create, review, or revise implementation 
 
 # Plan
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Turn settled requirements into ordered, testable tasks. This skill owns initial decomposition of delivery work into phases and tasks. Do not write product code or start implementation.
 
 **Brief** keeps the plan in conversation, with no files or ledger. **Full** saves `docs/features/YYYYMMDD-<semantic-name>/plan.md` for persistence or resumption, beside the approved spec when one exists. Both retain the same contract and task information; choose by persistence needs, not size or risk. `autoflow` still requires an approved spec.
@@ -133,7 +135,7 @@ When called independently, a request to create or revise a plan authorizes that 
 
 ## Before saving
 
-Before any Full-plan, brief, or existing-ledger write, read `./references/repository-changes.md`. Plan authorization does not authorize overwriting or committing unrelated work.
+Apply the loaded repository safety rules before any Full-plan, brief, or existing-ledger write. Plan authorization does not authorize overwriting or committing unrelated work.
 
 ## Commit
 
@@ -145,4 +147,4 @@ Brief has no plan artifact to commit.
 
 Report the tier, task list or saved plan path, authorization source, any supplemental briefs, and the commit when present. Omit empty artifact sections.
 
-When called by `autoflow`, return to it for execution without another approval. Otherwise stop and recommend `execute`. Do not invoke it yourself or modify product files. For Brief, state that later resumption needs the task list to be restated or saved; lost conversation context alone does not require a Full replan.
+When called by `autoflow`, return to it for execution without another approval. Otherwise stop and recommend `execute`. Do not invoke it yourself or modify product files. For Brief, retain the task list and settled requirements in the session handoff; on resumption recover them from available context before asking for any missing details. Persistence is optional, and context compaction alone does not require a Full replan.

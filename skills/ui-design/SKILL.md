@@ -5,6 +5,8 @@ description: Create or revise ui-spec.md beside an approved spec before dependen
 
 # UI Design
 
+Read `./references/repository-changes.md` at entry for continuation, context recovery, and safety boundaries.
+
 Refine an approved product contract into layout, components, presentation states, interactions, and tokens. If a proposed UI decision changes or conflicts with the product contract, stop and recommend `spec` for that decision before UI approval. This skill selects no implementation tasks and writes no application code.
 
 Skip this stage only after confirming that every in-scope layout, presentation-state, and interaction decision is settled by approved inputs or unchanged existing behavior, and that those decisions match the current product contract. Use the final handoff step in Phase 4 without creating or revising documents.
@@ -112,7 +114,7 @@ Check the specification using the quick checklist in `./references/wcag-checklis
 ## Phase 4: Save and hand off
 
 1. Present the proposed documents, new design decisions, tradeoffs, and assumptions. Wait for approval before saving; approval of the product spec does not settle open visual choices. Honor existing approval of these exact decisions without asking again. Changed decisions need renewed approval.
-2. Before saving, read `./references/repository-changes.md`. Save `DESIGN.md` only when it did not exist, and create or update `ui-spec.md` beside the approved spec. Do not rewrite an existing system as a side effect.
+2. Apply the loaded repository safety rules before saving. Save `DESIGN.md` only when it did not exist, and create or update `ui-spec.md` beside the approved spec. Do not rewrite an existing system as a side effect.
 3. After the specification checks pass, read `./references/git-commit.md` and commit only the approved documents and this skill's changes:
 
    ```

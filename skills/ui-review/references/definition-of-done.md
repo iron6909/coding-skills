@@ -43,7 +43,9 @@ Use this when the repository documents none; apply the check selection above.
 
 ## Unavailable required checks
 
-An unavailable required check is not inapplicable. Missing dependencies, services, credentials, or a supported runtime leave it unverified; disclosure is not a waiver. Preserve the work and report partial/blocked with the exact check, cause, coverage gap, and smallest next decision. Do not declare the affected unit complete or start finish/integration or a downstream stage.
+An unavailable required check is not inapplicable. First inspect its documented setup and try safe recovery within existing authority, such as selecting an installed supported runtime or starting the intended isolated local fixture. Do not replace the check with a weaker one, install dependencies without authority, or touch real resources to avoid a blocker.
+
+If it remains unavailable, missing dependencies, services, credentials, or a supported runtime leave it unverified; disclosure is not a waiver. Preserve the work and report partial/blocked with the exact check, cause, recovery attempted, coverage gap, and smallest next decision. Do not declare the affected unit complete or enter a stage that depends on that verification; independent authorized work follows the shared continuation rule.
 
 Do not commit a standalone fix or task whose required pre-commit checks cannot run. Intermediate task commits may precede required final checks only when their own required checks pass and the applicable DoD permits that timing; a missing required final check still blocks overall completion.
 

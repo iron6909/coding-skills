@@ -17,7 +17,7 @@ Use the impact criteria in `./references/ui-review-checklist.md`. Detection conf
 
 ## Workspace safety
 
-Read `./references/repository-changes.md` before saving the report, running state-changing checks, or applying authorized fixes. Code inspection and the uncommitted report need no branch change.
+Read `./references/repository-changes.md` at entry, before saving the report, running state-changing checks, or applying authorized fixes. Code inspection and the uncommitted report need no branch change.
 
 Read `./references/definition-of-done.md` before choosing verification for code fixes; it owns unavailable required checks and explicit verification waivers.
 
@@ -86,7 +86,7 @@ Present the report. If the current request already authorizes fixes, honor its e
 For authorized fixes:
 
 1. Resolve any open design decision with the user before changing code. Work in severity order, Blocking first, and make the smallest change that fixes each finding.
-2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, fix within scope or stop; do not commit or report the finding as successfully fixed.
+2. Re-run the affected checks and relevant rendered or interaction checks. If a check fails, investigate and correct it while evidence supports an authorized next step; use the shared continuation rule for a concrete blocker. Do not commit or report an unresolved finding as successfully fixed.
 3. Apply the loaded DoD's unavailable-check gate; accepted limits remain explicitly unverified in the report, not verified.
 4. After verification, read `./references/git-commit.md`. Commit each independently verifiable logical fix; related findings may share a commit when they require the same change or must be verified together. Follow the repository's message convention, using `fix(ui): <what changed>` otherwise, and cite the addressed finding IDs and report path in the body. Include only fix-owned changes, excluding the original reviewed work and the report.
 
