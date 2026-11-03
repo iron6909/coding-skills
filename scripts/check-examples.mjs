@@ -3,13 +3,19 @@ import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "n
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { runInNewContext } from "node:vm";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const readJson = (path) => {
+  try {
+    return JSON.parse(read(path));
+  } catch (error) {
+    throw new Error(`Cannot read JSON: ${path}`, { cause: error });
+  }
+};
 const blocks = (path, language) => [...read(path).matchAll(new RegExp(`\`\`\`${language}\\r?\\n([\\s\\S]*?)\\r?\\n\`\`\``, "g"))].map((match) => match[1]);
 
 // ponytail: structure and runnable examples only; rule-wording regressions surface in workflow-case runs, so run those before releasing skill-rule changes.
-const manifest = JSON.parse(read("package.json"));
+const manifest = readJson("package.json");
 assert.ok(manifest.keywords.includes("pi-package"), "the package must be discoverable as a Pi package");
 assert.deepEqual(manifest.pi.skills, ["./skills"], "Pi must load the existing self-contained skill directories");
 assert.deepEqual(manifest.pi.extensions, ["./extensions/index.ts"], "Pi must load the single command adapter");
@@ -42,7 +48,7 @@ for (const file of readdirSync(new URL("../skills/", import.meta.url), { recursi
   assert.doesNotMatch(source.replaceAll("...", ""), /\.\.\//, `non-portable parent path in ${file}`);
 }
 
-const workflowCases = JSON.parse(read("scripts/workflow-cases.json"));
+const workflowCases = readJson("scripts/workflow-cases.json");
 assert.ok(Array.isArray(workflowCases) && workflowCases.length > 0, "the manual workflow case set must be a non-empty array");
 assert.equal(new Set(workflowCases.map(({ id }) => id)).size, workflowCases.length, "workflow case IDs must be unique");
 for (const item of workflowCases) {
@@ -50,15 +56,6 @@ for (const item of workflowCases) {
   assert.ok(installedSkills.includes(item.skill), `unknown workflow skill: ${item.skill}`);
   for (const key of ["setup", "prompt"]) assert.ok(typeof item[key] === "string" && item[key].trim(), `${item.id}: missing ${key}`);
   for (const key of ["expect", "forbid"]) assert.ok(Array.isArray(item[key]) && item[key].length > 0 && item[key].every((value) => typeof value === "string" && value.trim()), `${item.id}: missing ${key}`);
-}
-
-// ponytail: check this JSX example's label branches without React; use a DOM accessibility check if its naming becomes structural.
-const loadingButton = blocks("skills/ui-review/references/common-ui-mistakes.md", "jsx").find((source) => source.includes("disabled={isLoading}"));
-assert.ok(loadingButton?.includes('<span aria-hidden="true"><Spinner /></span>'), "the loading spinner must be decorative");
-const loadingLabel = loadingButton.match(/\{(isLoading \? '[^']+' : '[^']+')\}/)?.[1];
-assert.ok(loadingLabel, "the loading button must retain a text label in both states");
-for (const isLoading of [false, true]) {
-  assert.ok(runInNewContext(loadingLabel, { isLoading }, { timeout: 1000 }).trim(), "button name must not disappear while loading");
 }
 
 const fixture = mkdtempSync(join(tmpdir(), "skill-git-examples-"));
@@ -140,5 +137,5 @@ try {
   rmSync(fixture, { recursive: true, force: true });
 }
 
-console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, UI example, pinned review ranges, temporary-index partial commits");
+console.log("structure and example checks passed: manifest, skill layout and portability, workflow cases, pinned review ranges, temporary-index partial commits");
 console.log(`Validated ${workflowCases.length} manual workflow cases; no agent runs or behavioral pass claims.`);

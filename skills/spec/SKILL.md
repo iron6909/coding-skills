@@ -76,7 +76,7 @@ For a small change, include only the problem, chosen behavior and scope, REQ-N a
 <entry points, real versus mocked dependencies, and what must be checked>
 
 ## Remaining presentation decisions
-<open layout, visual treatment, or component interaction details for ui-design; omit when settled>
+<open layout, visual treatment, or component interaction details; settle them with the user before dependent planning; omit when settled>
 
 ## Required internal appendices
 <explicit local document paths only when needed; these are part of the contract>
@@ -114,7 +114,7 @@ Save `docs/features/YYYYMMDD-<semantic-name>/spec.md` and any justified internal
 
 ## Finish
 
-Report the saved spec, required appendices, approval, and commit. Recommend `ui-design` first when presentation decisions remain or existing UI decisions need realignment with the revised contract. Otherwise recommend `plan` for explicitly requested separate planning; without that request, recommend `execute` when a plan already exists or for a ready small change, and `plan` only when initial task decomposition is needed. Subsequent `execute` must verify applicable execution authority and reconcile any existing plan under its revision contract. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
+Report the saved spec, required appendices, approval, and commit. When presentation decisions remain or existing UI decisions conflict with the revised contract, identify the alignment needed before dependent planning and do not invoke another skill. Otherwise recommend `plan` for explicitly requested separate planning; without that request, recommend `execute` when a plan already exists or for a ready small change, and `plan` only when initial task decomposition is needed. Subsequent `execute` must verify applicable execution authority and reconcile any existing plan under its revision contract. Settled frontend work does not require a new UI document. Stop; do not invoke the next skill.
 
 ## References
 

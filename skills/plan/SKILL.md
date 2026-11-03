@@ -18,9 +18,9 @@ Turn settled requirements into ordered, testable tasks. This skill owns initial 
 - Read applicable `AGENTS.md` files and any existing plan for the requested work. Missing contract documents referenced by that plan block dependent planning; do not replace them with session requirements.
 - When a spec exists, read it and every required internal appendix in full; its approval and source-independence contract governs both tiers. Read applicable approved `ui-spec.md` and `DESIGN.md` constraints with either input.
 - Without a spec, independent planning may use the user's settled scope, behavior, interfaces, constraints, acceptance conditions, and testing boundary. Preserve that complete contract in the conversation for Brief or in Full's Requirements section, including the source of the user's decisions, so execution and resumption need no lost conversation. Reuse the established feature directory or create one for this scope. Do not invent requirements, approval, or REQ IDs, or bypass a draft spec or unfinished plan.
-- An unresolved product decision needs `spec`. A load-bearing design premise contradicted or left unresolved by evidence needs `ideate`; stop dependent planning with the claim and evidence, not an executable probe task. Missing presentation decisions need `ui-design`; settled frontend work needs no new UI document.
+- An unresolved product decision needs `spec`. A load-bearing design premise contradicted or left unresolved by evidence needs `ideate`; stop dependent planning with the claim and evidence, not an executable probe task. Settle missing presentation decisions with the user or available design capabilities before dependent planning; settled frontend work needs no new UI document.
 
-An existing spec remains the product authority. A plan's embedded Requirements is also a product contract, not an implementation detail that plan revisions may change. Resolve conflicting or changed product decisions through `spec`, or presentation alignment through `ui-design`, before dependent planning.
+An existing spec remains the product authority. A plan's embedded Requirements is also a product contract, not an implementation detail that plan revisions may change. Resolve conflicting or changed product decisions through `spec` and align affected presentation decisions before dependent planning.
 
 ## Revising an existing plan
 

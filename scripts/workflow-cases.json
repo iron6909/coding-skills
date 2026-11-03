@@ -177,14 +177,25 @@
   {
     "id": "guide-ui-only-completed-feature",
     "skill": "guide",
-    "setup": "Install the core plus guide and ui-review in an isolated local feature branch with a completed login feature, approved UI inputs, and a pinned implementation range. In separate fixtures request a UI-only review or an overall branch review that also includes UI concerns. No code fixes are authorized.",
+    "setup": "Install the core and guide in an isolated local feature branch with a completed login feature, approved UI inputs, and a pinned implementation range. In separate fixtures request a UI-only review or an overall branch review that also includes UI concerns. No code fixes are authorized.",
     "prompt": "审查刚完成的登录功能，只看界面和可访问性，不要修改代码。对照场景改为整体审查这个分支，包括接口、安全和界面。",
     "expect": [
-      "The UI-only request routes to ui-review despite naming a completed feature; it does not first demand a whole-code-review range or independent code reviewer.",
+      "The UI-only request is handled directly within its requested scope, without claiming a dedicated skill ran or demanding a whole-code-review range or independent reviewer.",
       "The overall-review variant routes to code-review rather than treating any UI keyword as a UI-only request.",
-      "The selected skill retains its own output, verification, and fix-authorization boundaries."
+      "Both variants preserve the read-only request, approved UI inputs, and actual verification limits."
     ],
-    "forbid": ["Matching the general completed-feature rule before the explicit UI-only scope, dropping non-UI concerns from the overall review, or applying unrequested fixes."]
+    "forbid": ["Applying a whole-branch workflow to the UI-only request, dropping non-UI concerns from the overall review, or applying unrequested fixes."]
+  },
+  {
+    "id": "guide-ui-only-design-request",
+    "skill": "guide",
+    "setup": "Install the core and guide in an isolated local feature branch with an approved product specification, an existing design system, and unresolved presentation details. The request permits design proposals only; no file writes, plan, or implementation are authorized.",
+    "prompt": "登录行为已经批准了，帮我设计这个页面的布局和交互，先在会话里给出方案，不要保存或写代码。",
+    "expect": [
+      "Guide handles the UI-only design request directly within the existing product contract, without requiring a new product specification or claiming a dedicated specialist ran.",
+      "The proposed presentation preserves approved behavior and existing design constraints; no files or code are changed."
+    ],
+    "forbid": ["Routing a UI-only design proposal to implementation, changing approved product behavior, inventing approval, or writing without authorization."]
   },
   {
     "id": "guide-autoflow-plan-authority",
@@ -210,54 +221,6 @@
       "The explicit alternative uses the chosen contract version, identifies its basis, and reports differences against that contract without presenting them as violations of B's original contract."
     ],
     "forbid": ["Silently reading current contracts, mixing appendix sets from different spec versions, treating a hash as approval, checking out or stashing user work, saving feedback, or applying fixes."]
-  },
-  {
-    "id": "approved-ui-is-not-just-tokens",
-    "skill": "ui-review",
-    "setup": "Provide an approved native spec and ui-spec with a mobile stacked layout and focus-return behavior. Implement the design tokens correctly but omit the mobile layout and focus restoration. Make browser inspection unavailable; keep source inspection available.",
-    "prompt": "审查这个功能的界面，不要直接修改。",
-    "expect": [
-      "The report names the approved UI inputs and separates design-system consistency from approved-decision conformance.",
-      "It identifies supported source-level mismatches while rendered and interaction checks remain explicitly Not checked or unverified."
-    ],
-    "forbid": ["Treating matching tokens as complete design compliance, claiming browser checks passed, or fixing code without authorization."]
-  },
-  {
-    "id": "ui-design-skip-needs-settled-decisions",
-    "skill": "ui-design",
-    "setup": "Run separate local fixtures with approved product behavior, settled visual direction, and unchanged reusable controls. In one, narrow-layout arrangement and dialog focus behavior remain open. In the other, every required presentation and interaction decision is already settled by approved inputs or unchanged existing behavior; DESIGN.md is absent. No planning or implementation is authorized.",
-    "prompt": "根据已批准规格判断是否还需要界面设计；需要就展示草稿，否则说明下一步。先不要保存或实现。",
-    "expect": [
-      "Open layout or interaction choices produce a UI draft despite the fixed styling and reused controls; settled product behavior and supplied UI decisions are preserved.",
-      "The fully settled variant is skipped without inventing a design stage merely because DESIGN.md is absent.",
-      "Neither variant saves documents, starts plan, or writes application code before the relevant authorization."
-    ],
-    "forbid": ["Skipping unresolved interface decisions because styling is settled or components are reused, reopening settled product behavior, or automatically invoking the next skill."]
-  },
-  {
-    "id": "ui-design-revision-preserves-approved-inputs",
-    "skill": "ui-design",
-    "setup": "Use an isolated local feature branch with an approved revised product spec, an existing ui-spec.md, DESIGN.md, and an approved plan. The revised spec requires confirmation before deletion and preservation on cancellation, while the UI and an unfinished plan task still specify immediate deletion. Other UI decisions remain valid. No application changes or plan edits are authorized.",
-    "prompt": "对齐现有界面规格，保留不受影响的决定，指出计划中需要调整的部分。先给我审批草稿。",
-    "follow_up": "只批准界面规格的这些变更，保存提交后停止；不要修改计划或代码。",
-    "expect": [
-      "The agent reads the current product contract, existing UI specification, design system, and relevant plan before proposing revisions.",
-      "Unaffected approved UI choices are preserved without renewed approval; only new or changed decisions go through UI approval.",
-      "After approval, only ui-spec.md is updated and committed. The affected plan decisions are named for plan alignment, with dependent work not declared ready."
-    ],
-    "forbid": ["Overwriting unrelated approved UI decisions, changing DESIGN.md or the plan as a side effect, editing application code, or treating UI approval as approval of a conflicting plan."]
-  },
-  {
-    "id": "ui-review-contextual-a11y-and-inputs",
-    "skill": "ui-review",
-    "setup": "Use a safe local frontend fixture with browser inspection available. Include an inactive low-contrast control, a 36 by 36 CSS px effective touch target on a wide coarse-pointer viewport with no assessed exception, and a custom tooltip that disappears when the pointer moves from trigger to tooltip and cannot be dismissed in place while obscuring content. Preserve an approved readable font treatment with lowercase tracking. No fixes are authorized.",
-    "prompt": "专项审查界面的可用性和无障碍，结合已批准设计判断，不要修改代码。",
-    "expect": [
-      "The inactive control is not reported as a contrast failure solely for low contrast; approved readable lowercase tracking is not rejected by a blanket rule.",
-      "The wide viewport does not excuse a difficult touch target. The report distinguishes the 44px design goal and demonstrated usability impact from a universal AA threshold.",
-      "The tooltip's hoverability and applicable dismissal failures are identified with rendered or interaction evidence; unavailable checks, if any, remain explicitly unverified."
-    ],
-    "forbid": ["Inferring input capability from viewport width, treating every small target as an AA failure, applying aesthetic bans without contextual evidence, or fixing code without authorization."]
   },
   {
     "id": "native-spec-not-external-adapter",
@@ -344,7 +307,7 @@
   {
     "id": "autoflow-rejects-stale-ui-approval",
     "skill": "autoflow",
-    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and a ledger, all committed. In separate variants, add an untracked UI input the spec now requires, delete the committed ui-spec.md, change a UI behavior in an uncommitted edit after approval, commit a ui-design revision that adds scope the request did not name, or make only uncommitted formatting/explanatory edits.",
+    "setup": "Install the complete core and create an approved native spec, a self-reviewed committed plan, and a ledger, all committed. In separate variants, add an untracked UI input the spec now requires, delete the committed ui-spec.md, change a UI behavior in an uncommitted edit after approval, commit an approved UI revision that adds scope the request did not name, or make only uncommitted formatting/explanatory edits.",
     "prompt": "继续上次的自动执行。",
     "expect": [
       "Recovery diffs the spec, appendices, UI/design inputs, and plan against the last commit that touched plan.md and checks git status for new, deleted, or uncommitted files; no state file is read or written.",
@@ -724,7 +687,7 @@
     "follow_up": "批准这份产品规格及列出的必读附录，保存提交后停止。",
     "expect": [
       "The native spec preserves cancellation, validation, failure behavior, the supplied validation message, and applicable constraints with observable acceptance; no supplied UI decision is dropped as future work.",
-      "Only unsettled presentation choices are named for ui-design. After specification approval and its document commit, the agent recommends ui-design before dependent planning without invoking it."
+      "Only unsettled presentation choices are named. After specification approval and its document commit, the agent identifies those choices as needing resolution before dependent planning without invoking another skill."
     ],
     "forbid": ["Treating open layout as an unresolved product requirement or feasibility blocker, deciding a replacement architecture, deferring cancellation behavior to UI design, dropping settled source details, or automatically creating a plan or UI document."]
   },
@@ -736,7 +699,7 @@
     "follow_up": "只批准这次规格及必要附录的变更，保存提交；界面和计划稍后单独对齐，不要继续实现。",
     "expect": [
       "Before drafting, the agent reads the current spec and required appendix, approved UI/design inputs, and relevant task/history records. It preserves stable IDs, unaffected decisions, completed tasks, and prior records.",
-      "It identifies the conflicting UI decisions and unfinished task details, reports the required ui-design and plan revisions, and does not treat spec approval as resolving conflicting UI decisions or automatically reconciling the plan.",
+      "It identifies the conflicting UI decisions and unfinished task details, reports the required UI and plan alignment, and does not treat spec approval as resolving conflicting UI decisions or automatically reconciling the plan.",
       "After approval, only invocation-owned specification documents are changed and committed. UI, plan, briefs, ledger, and product code remain unchanged, and dependent work is not declared ready."
     ],
     "forbid": ["Editing downstream documents, silently reconciling conflicting inputs in implementation, reapproving unaffected decisions, reopening the selected mechanism, or treating stale UI and plan approvals as valid for the revised behavior."]
@@ -1004,17 +967,6 @@
     "forbid": ["Assuming main or current HEAD as the feature base, inventing requirements, claiming independence, weakening verification, or including user changes."]
   },
   {
-    "id": "ui-review-defaults-and-authorized-fixes",
-    "skill": "ui-review",
-    "setup": "Use a safe local frontend increment with approved UI decisions, a missing accessible button name, browser inspection and existing checks available, and an unrelated user edit. Supply no review-dimension or severity preferences. In a control request review only.",
-    "prompt": "审查当前界面改动，只修复其中的无障碍问题，按已有设计验证后单独提交修复。",
-    "expect": [
-      "The agent states the identifiable increment scope and default dimensions/severities without a preflight questionnaire. It preserves requested accessibility-only fix scope and does not seek the already given repair permission again.",
-      "The report retains actual evidence and limits, verified fixes are committed without user hunks or the report, and the review-only control makes no code changes."
-    ],
-    "forbid": ["Reapproving dimensions or severity filters, silently expanding fix scope, inventing browser passes, or fixing the read-only control."]
-  },
-  {
     "id": "autoflow-editorial-edits-and-other-feature",
     "skill": "autoflow",
     "setup": "Use a current unambiguous feature request with committed approved inputs and a self-reviewed committed plan, plus a leftover state file and ledger belonging to a different feature. In a same-feature variant change only formatting in a required appendix without committing it; in a second editorial variant make two formatting-only uncommitted edits to the spec, recovering between them; in a control change a linked contract path or a behavior in an uncommitted edit.",
@@ -1097,19 +1049,6 @@
     "forbid": ["Routing every plan-alignment need back to plan, silently editing downstream records, inferring execution authority from spec approval, dropping needed initial decomposition, or ignoring an explicit separate-planning request."]
   },
   {
-    "id": "ui-design-existing-plan-handoff",
-    "skill": "ui-design",
-    "setup": "Provide an approved product spec, an existing design system, and an existing plan with unfinished tasks affected by a presentation-only revision. In a settled-input control all UI decisions already match the product contract: request only a readiness check and next-step recommendation, with no follow-up. Other controls omit the plan where initial decomposition is needed, or explicitly request separate planning in the approval follow-up. No variant authorizes implementation or plan writes.",
-    "prompt": "按已批准规格给出这次界面调整方案，先让我确认；指出对现有计划的影响，不改计划或代码。",
-    "follow_up": "批准这些界面决定，保存并提交界面规格，说明下一步；不要开始实施或改计划。",
-    "expect": [
-      "The revision saves and commits only the approved UI specification, preserves the existing design system and plan history, and identifies the unfinished arrangements needing alignment.",
-      "Both the approved-revision and settled-input variants recommend execute for the existing plan, with execution authority and revision-contract checks still required. The settled-input variant skips document writes and an unnecessary UI approval; neither variant requires a separate plan handoff.",
-      "The no-plan and explicit separate-planning controls recommend plan. UI approval alone never starts implementation or another skill."
-    ],
-    "forbid": ["Unconditionally recommending plan when UI design is skipped or a plan already exists, rewriting settled UI documents, changing the product contract, editing plan tasks here, or treating UI approval as execution authority."]
-  },
-  {
     "id": "guide-revises-plan-without-execution",
     "skill": "guide",
     "setup": "Install the core and guide. Supply an approved spec and an unfinished plan whose producer/consumer evidence supports moving a prerequisite before its consumer. Preserve a completed task and an unrelated user edit. No implementation is authorized. In separate variants request review only, initial task planning, or adjustment of a session plan.",
@@ -1144,17 +1083,6 @@
     "forbid": ["Creating a redundant spec, treating a plan commit as execution authority, silently choosing overwrite behavior, replacing conflicting approved requirements, or bundling user work."]
   },
   {
-    "id": "ui-design-established-pattern-no-mode",
-    "skill": "ui-design",
-    "setup": "Use a local feature branch with an approved product spec and existing DESIGN.md plus native form styles. The user already approved all exact presentation decisions named in the request; no open visual or product decision remains. Request recording those decisions in a new ui-spec.md. Preserve product code, design tokens, and an unrelated user note.",
-    "prompt": "把这些已批准的邮箱表单界面决定保存为 ui-spec.md 并提交：沿用现有单列布局、间距和字体，宽屏最大 32rem、窄屏保留现有边距；可见邮箱标签，提交中保留按钮文字并禁止重复提交，失败保留输入并在字段旁显示关联错误，成功用现有状态消息反馈。继续使用原生控件和现有焦点样式，不改 DESIGN.md、产品代码或计划。",
-    "expect": [
-      "The UI spec preserves the exact approved layout, input, pending, error, success, and accessibility decisions without renewed approval or a mandatory surface-mode classification exercise.",
-      "Only ui-spec.md is committed; existing system, product code, and user changes remain untouched. Specification checks are not claimed as rendered or interaction verification."
-    ],
-    "forbid": ["Inventing a visual direction, rewriting tokens, adding a new design decision without approval, starting implementation, or claiming browser checks ran."]
-  },
-  {
     "id": "spec-reuses-exact-approval-and-editorial-scope",
     "skill": "spec",
     "setup": "Provide an approved native spec with a misspelled heading, required appendices, and an existing plan. In an approval-reuse variant, supply an actual earlier user approval of an exact complete revised contract and request saving that version now. In controls request a draft only, or leave a new session-expiry policy for the agent to propose. Preserve an unrelated user hunk.",
@@ -1164,17 +1092,6 @@
       "The exact-approved-content variant reuses actual approval without inventing choices. The draft-only control writes nothing, and agent-proposed product decisions still wait for approval."
     ],
     "forbid": ["Treating a drafting request as approval of agent-added choices, reapproving exact approved content, changing plan or code, or bundling user hunks."]
-  },
-  {
-    "id": "ui-review-groups-coupled-fixes",
-    "skill": "ui-review",
-    "setup": "Use a safe local form with separate findings for a missing persistent label and broken error association on the same field. The approved repair replaces that field with an existing component providing both behaviors; it is one logical change with a shared rendered check. Keep a separate unrelated minor finding and a user edit. Browser inspection and required local checks are available.",
-    "prompt": "审查这个表单，只修复邮箱字段的标签和错误关联问题，沿用现有组件并验证后提交，其他问题只记录。",
-    "expect": [
-      "The report keeps distinct finding IDs but the coupled repair is verified and committed together; the commit references both IDs and the actual report path.",
-      "The report and original user edits remain outside the fix commit, the unrelated finding stays deferred, and no new repair approval is requested."
-    ],
-    "forbid": ["Splitting one component replacement merely to produce one commit per finding, inventing rendered checks, weakening accessibility, or expanding repair scope."]
   },
   {
     "id": "execute-selects-checks-by-impact",

@@ -15,16 +15,16 @@ Called skills own task design, testing, review, and commits. Their autoflow-spec
 
 Finish read-only reconciliation before branch changes or other writes:
 
-1. Read applicable `AGENTS.md` and `CLAUDE.md`, this skill set's `docs/features/YYYYMMDD-<semantic-name>/spec.md`, every required internal appendix, and applicable `ui-spec.md` and `DESIGN.md` constraints. Establish their approval under Contract approval below. Conflicting inputs or unresolved product/UI decisions block delivery: recommend `spec` or `ui-design`, without invoking either. An unresolved or failed design premise returns to `ideate` outside this orchestrator.
+1. Read applicable `AGENTS.md` and `CLAUDE.md`, this skill set's `docs/features/YYYYMMDD-<semantic-name>/spec.md`, every required internal appendix, and applicable `ui-spec.md` and `DESIGN.md` constraints. Establish their approval under Contract approval below. Conflicting inputs or unresolved product or presentation decisions block delivery: recommend `spec` for product decisions and settling presentation decisions with the user or available design capabilities, without invoking another skill. An unresolved or failed design premise returns to `ideate` outside this orchestrator.
 2. Read `./references/repository-changes.md` at entry and apply its **Continue authorized work** rule throughout this run. Inspect the existing plan, execution ledger, and Git history first, and reconcile the initial working-tree boundary rather than treating existing changes as this run's work. Apply Recovery below when progress already exists.
 3. Establish the fixed feature review base under the loaded repository reference's **Feature review base** rule. Pass that same base to execution and whole-feature review.
 4. Establish the target branch under the shared **Work branch** rule. Reuse a plan only after checking it against the current contract and preserved task history. Commits alone do not establish completion.
 
 ## Contract approval
 
-Approval comes from the user: the current request, earlier decisions, or the owning skill's approval contract. `spec` and `ui-design` may reuse approval of exact decisions; verified editorial changes preserve it. A commit or hash identifies content, not approval. Reuse approval established through those contracts unless the conversation or repository says otherwise.
+Approval comes from the user: the current request, earlier decisions, or the owning skill's approval contract. `spec` may reuse approval of exact decisions; verified editorial changes preserve it. A commit or hash identifies content, not approval. Reuse approval established through those contracts unless the conversation or repository says otherwise.
 
-Compare every later change, committed or not, with the approved version. A verified editorial-only change keeps approval. A change to behavior, scope, constraints, interfaces, security, UI decisions, or acceptance counts as approved only when it came through its owner's gate; otherwise it stops affected work for that owner (`spec` or `ui-design`). A deleted or missing required input blocks dependent work. Ask only when the approval source or applicability is genuinely unclear.
+Compare every later change, committed or not, with the approved version. A verified editorial-only change keeps approval. A change to behavior, scope, constraints, interfaces, security, UI decisions, or acceptance counts as approved only when it came through its applicable approval process; otherwise stop affected work for the missing decision. A deleted or missing required input blocks dependent work. Ask only when the approval source or applicability is genuinely unclear.
 
 ## Stage 1: Plan
 

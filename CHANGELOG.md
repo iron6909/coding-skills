@@ -4,6 +4,16 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)，版本号遵循 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)。
 
+## [15.0.0] - 2026-11-03
+
+### 移除
+
+- **破坏性变更**：移除 `ui-design` 和 `ui-review` 技能及其入口。界面设计和专项审查可由可用能力直接处理；既有界面规格、设计系统和历史审查报告继续保留。
+
+### 验证
+
+- Windows、Node 24.10.0 下 `npm run check` 通过；97 个手工场景通过结构检查，离线包不含已移除技能。未实跑代理行为场景。
+
 ## [14.2.2] - 2026-11-03
 
 ### 变更
