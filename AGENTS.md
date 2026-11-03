@@ -1,128 +1,122 @@
-# Agents
+# AGENTS.md
 
-Rules for AI coding agents that develop and maintain this repository. This file is not part of the skills and is not installed with them.
-
-`README.md` is the project introduction: what each skill does, the paths it writes, the vocabulary. This file holds only development rules and constraints. A fact that describes the project belongs in `README.md`; a rule for changing the project belongs here.
-
-## Repository layout
+## 仓库结构
 
 ```
-extensions/ # Shipped. Thin Pi command adapter.
-skills/    # Shipped. One directory per skill: SKILL.md + references/
-shared/    # NOT shipped. Source of files copied into several skills
-scripts/   # NOT shipped. Maintenance scripts (sync-references.mjs)
-refer/     # NOT shipped. Git submodules of source projects, read-only
-tmp/       # Gitignored scratch: audit reports, drafts
+extensions/ # 轻量 Pi 命令适配器
+skills/    # 技能目录
+shared/    # 供多个技能复制使用的共享源文件
+scripts/   # 维护脚本（sync-references.mjs）
+refer/     # 参考项目的 Git 子模块，只读，禁止修改
+tmp/       # Git 忽略的临时目录：审计报告、草稿等
 ```
 
-Never edit `refer/`, and never make a skill depend on a path inside it. It is inspiration only.
+## 范围
 
-## Scope
+- 只做本地工具。不要给任何技能加问题跟踪系统集成（GitHub、Linear、Jira）、CI 定义、PR 描述生成或多用户状态同步。
+- 优先删除或简化。只有确有必要时，才新增技能或引用。
+- 代理用量统计不属于技能职责。时间、token、费用预算、剩余额度、重试配额，一律不加。
 
-- Local-only. Do not add issue-tracker integration (GitHub, Linear, Jira), CI definitions, PR-description generation, or multi-user state sync to any skill.
-- Prefer deleting or simplifying over adding. A new skill or reference must earn its place.
-- Agent usage accounting is outside skill scope. Do not add time/token/cost budgets, remaining-allowance state, or retry quotas.
+## Pi 扩展改动
 
-## Pi extension changes
+- `/coding` 应保持为能识别资源来源的原生适配器，不承担工作流编排。不要重复维护技能列表、另写 frontmatter 解析逻辑或添加短别名。
+- 打印和 JSON 模式必须沿用原生输入管线，等待处理完成，不得改成发出请求后立即返回。使用 UI 能力前先检查是否可用。
+- 使用 Pi 提供的 API 和 TypeScript 加载器。宿主依赖由宿主提供，不要将宿主打包，也不要为适配器引入构建流程。
 
-- Keep `/coding` a source-aware native adapter, not a workflow engine. Do not duplicate skill lists or frontmatter parsing, or add short aliases.
-- Preserve the native awaited input pipeline for print/JSON and guard UI capabilities. Do not replace it with fire-and-forget dispatch.
-- Use Pi's provided API and TypeScript loader. Keep host dependencies peer-provided; do not bundle the host or add a build chain for this adapter.
+## 技能必须自包含
 
-## Skills are self-contained
+`npx skills add` 只安装技能目录。因此，技能不得读取同级技能、`shared/` 或自身目录之外的文件。
 
-`npx skills add` installs skill directories only. A skill must never read a sibling skill's files, `shared/`, or anything outside its own directory.
+- 引用写成 `./references/<name>.md`，相对技能自己的 `SKILL.md`。不要用 `../`。
+- `references/` 中每个文件都必须在该技能的 `SKILL.md` 中列出，并说明何时读取。没有入口指向的引用文件没有保留价值。
+- 依赖别的技能只写名字，比如“交给 `plan`”，不要写路径。
+- `skills/` 只放用户可以直接调用的技能。
 
-- Reference files by `./references/<name>.md`, relative to the skill's own `SKILL.md`. Never use `../`.
-- Every file in `references/` must be named in that skill's `SKILL.md`, with a line saying when to read it. A reference nothing points to is dead.
-- Depend on another skill by name in prose ("route to `plan`"), never by path.
-- A sub-skill idea (for example domain modeling) becomes a **reference** of the skill that needs it, not a new skill. `skills/` holds only skills a user can invoke.
+## 输出路径
 
-## Output paths
+技能创建的路径包括 `docs/features/`、`docs/learnings/`、`docs/adr/`、`.coding/*`、`GLOSSARY.md` 和 `DESIGN.md`，统一在 README 的“文档结构”中说明。新增路径前，先更新 README。
 
-The paths a skill creates in a project — `docs/features/`, `docs/learnings/`, `docs/adr/`, `.coding/*`, `GLOSSARY.md`, `DESIGN.md` — are documented once, in README's 文档结构. A new path is a README change first.
+- `.coding/` 保存工作记录和用户维护的配置。在使用技能的项目中，由用户决定忽略还是提交这些内容，技能不得自动修改忽略或跟踪规则。需要长期保留的方案、可行性验证证据、规格和计划放在 `docs/features/`，不放在 `.coding/`。
+- 目录名用 `YYYYMMDD-<semantic-name>`，语义部分是 2 到 4 个 kebab-case 单词。
 
-- `.coding/` holds work records and user-maintained configuration. In consuming projects, users decide whether to ignore or commit it; skills must not change ignore or tracking rules automatically. Keep permanent proposals, spike evidence, specifications, and plans under `docs/features/`, never `.coding/`.
-- Directory names are `YYYYMMDD-<semantic-name>`: kebab-case, 2-4 words.
+## 文档一律不删
 
-## Documents are never deleted
+任何技能都不得删除文档，包括 `spec.md`、`plan.md`、`AGENTS.md`、`GLOSSARY.md`、ADR、`.coding/` 下的账本和任务简报，以及审查和研究报告。过时文档应保留，或注明已由新文档替代。这些技能用于他人的仓库，删除文档可能造成永久损失。
 
-No skill deletes a document: not `spec.md` or `plan.md`, not `AGENTS.md` or `GLOSSARY.md`, not an ADR, not a ledger or task brief under `.coding/`, not a review or research report. A document that looks obsolete is superseded or left in place. These skills run in other people's repositories, where a deleted document is gone for good.
+经验文档满足共享生命周期引用中的归档条件后，可以移到 `docs/learnings/_archived/`。归档必须保留原文，不得删除，也不得覆盖已有归档。
 
-A learning may be moved to `docs/learnings/_archived/` when the archival gates in its shared lifecycle reference are met. Archiving preserves the document; it never permits deleting it or overwriting an archived copy.
+这条只针对文档。不是文档的临时内容照常清理：一次性探针、日志，以及用户明确说不要的分支。
 
-This covers documents only. Scratch that is not a document is still cleaned up: throwaway probes and logs, and a branch the user explicitly asks to drop.
+## 共享引用文件
 
-## Shared reference files
+多个技能共用的文件以 `shared/references/` 为源，各技能保存同步副本。文件与使用技能的对应关系只在 `scripts/sync-references.mjs` 的 `MAP` 中维护。
 
-Several files are shared. The source is `shared/references/`; each consuming skill carries a synced copy. `MAP` in `scripts/sync-references.mjs` holds which file goes to which skills, and is the only copy of that list.
+- 只修改 `shared/references/` 中的源文件，然后运行 `node scripts/sync-references.mjs`。不要手动修改带有 `do not edit` 文件头的副本，同步时会覆盖它们。
+- 要共享新文件，就加进 `MAP`。能只归一个技能用的，优先给那个技能，别共享。
+- `--check` 会报四类问题：副本和源不一致、源文件缺失、`references/` 里有文件没被 `SKILL.md` 点名、`SKILL.md` 点了 `./references/<file>` 但文件不存在。
 
-- Edit only `shared/references/`, then run `node scripts/sync-references.mjs`. Never edit a copy: it carries a `do not edit` header and is overwritten.
-- To share another file, add it to `MAP`. Prefer moving a file to its single owner over sharing it.
-- `--check` reports a copy that drifted, a missing source, a `references/` file no `SKILL.md` names, and a `./references/<file>` name with no file behind it.
+## 写技能的规则
 
-## Skill authoring rules
+- 技能既支持模型主动选择，也支持用户明确调用。默认省略 `disable-model-invocation`；只有专供手动调用的技能才设为 `true`。`guide` 负责请求不明确时的路由，不是必经入口。选中技能不代表获得批准、扩大范围或获准进入下一阶段。
+- frontmatter 中的 `description` 用于触发技能，必须与正文一致，准确说明输出位置和工作单元（任务，而非步骤）。
+- 描述所需能力，不指定工具名。例如写“委派给只读子代理”或“搜索网络”，并说明相应能力不可用时如何处理。
+- 哪个技能写项目文档，哪个技能负责提交，而且只暂存自己写的文件。任何技能都不推送。谁提交什么，见 README 的“提交责任”。
+- 随包分发的文件里不留编写标记（`ponytail:`、TODO）。
+- 一条规则只留一个出处。`SKILL.md` 不重复引用里的内容，指过去就行。
+- 能修改仓库文件或 Git 状态的技能，必须列出 `./references/repository-changes.md`，并在首次相关操作前读取；写文档和工作记录也包括在内。各技能的审批、验证、输出和提交契约仍由技能正文规定，共享引用不授予权限，也不增加流程阶段。
+- 技能交付结果并说明下一步后即结束，只有契约要求保存时才写入文件。`guide` 交接给选中的技能；`autoflow` 是唯一的多阶段编排器，只能从已批准规格依次调用 `plan` → `execute` → `code-review`，各技能完成后将控制权交回。调用 `autoflow` 即授权范围内的规划、计划修订、实施，以及 Blocking/Important 审查修复，无需例行计划审批或阶段确认。用户明确的草稿或先审批要求、已批准的产品/UI 输入、仓库安全、验证、具体高风险操作的专项批准和提交契约仍然有效。规划请求授权其所需产出；执行请求允许依据证据和共享修订契约调整实施安排，不授权新的产品决定或流程阶段。其他技能不得自动调用下一技能。
 
-- Skills support model-selected and explicit user invocation. Omit `disable-model-invocation` by default; set it to `true` only for a deliberately manual-only skill. `guide` is a fallback router, not a mandatory entry point. Selection alone does not grant approval, expand scope, or authorize another workflow stage.
-- `description` frontmatter is the trigger text. It must match the body: name the real output location and the real unit (task, not step).
-- Describe capabilities, not tool names. Write "delegate to a read-only subagent" or "search the web", never a specific harness tool, and say what to do when the capability is missing.
-- The skill that writes a project document commits it, staging only its own files. No skill pushes. README's 提交责任 says which skill commits what.
-- Skill text is English. Leave no authoring markers (`ponytail:`, TODO) in shipped files.
-- One source of truth per rule. Do not restate a reference's content in `SKILL.md`; point to it.
-- Every skill that can write repository files or Git state must name and load `./references/repository-changes.md` before its first affected action, including document and work-record writes. Keep skill-specific approval, verification, output, and commit contracts in the skill; the shared reference does not grant permission or add workflow stages.
-- A skill ends when its result is delivered and says what comes next; save output only when its contract calls for persistence. `guide` hands off to its selected skill; `autoflow` is the sole multi-stage orchestrator and may invoke only `plan` → `execute` → `code-review` from an already approved spec. Called skills return to it. Autoflow's invocation authorizes in-scope planning, plan revisions, execution, and Blocking/Important review fixes without routine plan or stage approval; explicit draft/approval-first restrictions, approved product/UI inputs, repository safety, verification, specific high-risk sign-off, and commit contracts still apply. Planning requests authorize their requested output; execution requests permit evidence-backed implementation-only plan adjustments under the shared revision contract without granting product decisions or another workflow stage. No other skill auto-invokes a next skill.
+## 术语
 
-## Terminology
+这里只定开发用语。面向用户的词见 README 的“关键概念”。
 
-Development terms only; user-facing vocabulary is README's 关键概念.
+- **任务**：一个能独立测试的单元，也就是纵向切片。**步骤**：任务里的一个原子动作。审查、提交、账本记录都算任务级的事，不算步骤。
+- **引用**：`skills/<skill>/references/` 下按需读取的文档，不是技能。
 
-- **task**: an independent testable unit (vertical slice). **step**: an atomic action inside a task. A review, commit, or ledger entry belongs to a task, never a step.
-- **reference**: a doc under `skills/<skill>/references/` read on demand. It is not a skill.
+## 新增、改名、删除技能
 
-## Adding, renaming, or removing a skill
+以下四处要在同一个提交里一起改：
 
-Update all of these in the same commit:
+1. `skills/<name>/SKILL.md` 和它的 `references/`
+2. `skills/guide/SKILL.md`：技能清单；若属于路由目标，还需更新路由顺序
+3. `README.md`：技能表和快速开始
+4. `scripts/sync-references.mjs` 的 `MAP`（有共享文件时）
 
-1. `skills/<name>/SKILL.md` and its `references/`
-2. `skills/guide/SKILL.md`: the skill list and, if it is a routing target, the routing order
-3. `README.md`: the skill table and quick start
-4. `MAP` in `scripts/sync-references.mjs`, if it holds shared files
-
-## Checks before committing
+## 提交前检查
 
 ```bash
 npm run check
 ```
 
-The command runs consistency, synchronizer, executable-example, native simplify-trace self-checks, adapter, portability, and Git whitespace checks, then prints the offline package manifest for inspection. Use Pi's required Node version. It does not run agent evaluations or prove agent behavior.
+此命令执行一致性、同步器、可执行示例、simplify 轨迹自检、适配器、可移植性和 Git 空白检查，最后输出离线包清单供核对。使用 Pi 要求的 Node 版本。这些检查不运行代理评测，也不能证明代理会遵循指令。
 
-Extension changes also need real-host loading, dispatch, filtering, source-conflict, reload, and non-UI checks in isolated local fixtures under `tmp/`. Record the actual host/platform and unverified surfaces.
+扩展改动还需在 `tmp/` 下的隔离本地夹具中，验证真实宿主的加载、分派、筛选、来源冲突、重载和非 UI 行为。记录实际宿主、平台和未验证的部分。
 
-When evaluating agent behavior, use `scripts/workflow-cases.json` as a manual evaluation pack. Run each case in a fresh isolated local fixture with the README-defined core and the optional skills it exercises installed, except any explicitly absent route target. Supply any stated follow-up or approval only at its gate. Save the actual agent trace, resulting diff, check output, and per-expectation pass/fail evidence under `tmp/`. The script validates case structure, not agent compliance; never report behavioral passes without those traces. Do not add an evaluation framework or make network access a prerequisite.
+要评估代理行为，用 `scripts/workflow-cases.json` 这份手工用例集。每个场景开一个全新的隔离本地夹具，装上 README 定义的核心技能和该场景用到的可选技能（明确要求缺位的路由目标除外）。场景里写明的追问或批准，只在对应门槛处给。把实际轨迹、最终差异、检查输出、逐项预期的通过/失败证据存到 `tmp/`。脚本只校验用例结构，不校验代理有没有照做；没有轨迹就不要说行为通过。不要引入评测框架，也不要把联网设成前提。
 
-## Conventions
+## 约定
 
-- **Commits**: Conventional Commits with a scope, for example `docs(spec): define knowledge-base contract`. One logical change per commit.
-- **Branches**: `feature/YYYYMMDD-<name>`.
-- **Testing**: no application test suite; use the small standard-library self-checks and consistency checks above.
-- **Linting**: respect existing config. No new linter rules without approval.
+- **提交**：Conventional Commits，带作用域，例如 `docs(spec): define knowledge-base contract`。一个提交只做一件事。
+- **分支**：`feature/YYYYMMDD-<name>`。
+- **测试**：没有应用测试套件，用上面那些标准库小自检和一致性检查。
+- **代码检查**：跟着现有配置走。新的检查规则要经批准才加。
 
-## Version Management
+## 版本管理
 
-Semantic Versioning. The version lives in `package.json` and in a git tag (`vX.Y.Z`); `npm version` keeps both in step, so never edit a version number or create a tag by hand.
+语义化版本。版本号同时写在 `package.json` 和 Git 标签（`vX.Y.Z`）里，用 `npm version` 保持同步，别手改版本号，也别手动打标签。
 
-Which digit moves: **patch** = bug fixes, documentation; **minor** = new skills, backward-compatible features; **major** = breaking changes (path changes, skill removal, incompatible refactors).
+版本递增规则：**patch** 用于缺陷修复和文档变更；**minor** 用于新增技能和向后兼容的功能；**major** 用于路径变更、技能移除、不兼容重构等破坏性变更。
 
-### Release Workflow
+### 发布流程
 
-1. **Update CHANGELOG.md** with the new version and changes, then commit it. First, because `npm version` refuses to run on a dirty tree and the release notes must be inside the tag.
-2. **Bump, commit, and tag** in one atomic step:
+1. **先改 `CHANGELOG.md`**，写上版本和变更，然后提交。必须排在最前：工作区不干净时 `npm version` 会拒绝执行，而发布说明得落在标签里面。
+2. **升版本、提交、打标签**，一步做完：
    ```bash
    npm version patch -m "chore(release): bump version to %s"   # patch | minor | major
    ```
-3. **Push with tags**:
+3. **连标签一起推**：
    ```bash
    git push origin master --tags
    ```
 
-skills.sh picks up new tags on its own.
+skills.sh 会自动识别新标签。
